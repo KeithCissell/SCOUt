@@ -3,6 +3,7 @@ package environment.variable
 
 trait Variable {
   val name: String
+  var value: Double
 }
 
 
@@ -10,8 +11,12 @@ class Height(var value: Double) extends Variable {
   val name = "Height"
 }
 
-class Location(var latitude: Double, var longitude: Double) extends Variable {
-  val name = "Location"
+class Latitude(var value: Double) extends Variable {
+  val name = "Latitude"
+}
+
+class Longitude(var value: Double) extends Variable {
+  val name = "Longitude"
 }
 
 class Temperature(var value: Double) extends Variable {
