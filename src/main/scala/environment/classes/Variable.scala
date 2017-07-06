@@ -1,6 +1,7 @@
 // src\main\scala\environment\variable\Variable.scala
 package environment.variable
 
+
 trait Variable {
   val name: String
   val unit: String

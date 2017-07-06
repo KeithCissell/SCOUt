@@ -11,8 +11,6 @@ object SandBox {
     val ws = new WindSpeed(7.0)
     val p1 = new Point(1,2,AB(ws))
     val env = new Environment("Test", AB(AB(Some(p1))))
-
-
   }
 
 }

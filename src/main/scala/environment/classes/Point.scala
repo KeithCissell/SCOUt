@@ -5,6 +5,7 @@ import scala.math.sqrt
 import environment.variable._
 import scala.collection.mutable.{ArrayBuffer => AB}
 
+
 case class Point(val x: Int, val y: Int,
     var variables: AB[Variable] = AB.empty) {
 

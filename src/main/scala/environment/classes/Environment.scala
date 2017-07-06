@@ -1,15 +1,11 @@
 // src\main\scala\environment\Environment.scala
 package environment
 
+import customtypes.Grid._
 import environment.point._
 import environment.variable._
 import scala.collection.mutable.{ArrayBuffer => AB}
 
-object GridType {
-  type Grid[A] = AB[AB[Option[A]]]
-}
-
-import environment.GridType.Grid
 
 class Environment(val name: String, var grid: Grid[Point] = AB(AB(None))) {
   val length = grid.length
