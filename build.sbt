@@ -1,5 +1,13 @@
 name := "SCOUt-sbtBuild"
+version := "0.0.1-SNAPSHOT"
+scalaVersion := "2.12.2"
+
+val Http4sVersion = "0.15.11a"
 
 libraryDependencies ++= Seq(
-  "org.specs2" %% "specs2-core" % "3.7.2" % "test"
+  "org.http4s"      %% "http4s-blaze-server"  % Http4sVersion,
+  "org.http4s"      %% "http4s-circe"         % Http4sVersion,
+  "org.http4s"      %% "http4s-dsl"           % Http4sVersion,
+  "ch.qos.logback"  % "logback-classic"       % "1.2.1",
+  "org.specs2"      % "specs2_2.9.1"          % "1.8" % "test"
 )

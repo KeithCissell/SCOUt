@@ -1,35 +1,26 @@
 // src\main\scala\environment\Environment.scala
 package environment
 
+import customtypes.Grid._
 import environment.point._
 import environment.variable._
 import scala.collection.mutable.{ArrayBuffer => AB}
 
-object GridType {
-  type Grid[A] = AB[AB[Option[A]]]
-}
 
-import environment.GridType.Grid
-
-class Environment(val name: String, val length: Int,
-    val width: Int, var grid: Grid[Point]) {
-
-  //        CONSTRUCTOR OVERLOADS
-  def this(s: String, l: Int, w: Int) {
-    this(s, l, w, AB.fill(l)(AB.fill(w)(None)))
-  }
+class Environment(val name: String, var grid: Grid[Point] = AB(AB(None))) {
+  val length = grid.length
+  val width = if (grid.isEmpty) 0 else grid(0).length
 
   //        METHODS
   // returns the grid point at (x,y)
   def getPoint(x: Int, y: Int): Option[Point] = {
-    grid(x)(y)
+    grid(x - 1)(y - 1)
   }
   // returns a set of all variables in the grid
   def getVariableNames: Set[String] = {
     (for {
-      p   <- grid.flatten.filter(_ != None)
-      vs  <- p.get.getAll.filter(_ != None)
-      v   <- vs
+      p <- grid.flatten.filter(_ != None)
+      v <- p.get.variables
     } yield v.name).toSet
   }
   // returns a grid with a specified variable at each point
