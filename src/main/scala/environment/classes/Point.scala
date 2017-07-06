@@ -1,7 +1,7 @@
 // src\main\scala\environment\point\Point.scala
 package environment.point
 
-import scala.math.sqrt
+import scala.math._
 import environment.variable._
 import scala.collection.mutable.{ArrayBuffer => AB}
 
@@ -12,7 +12,18 @@ case class Point(val x: Int, val y: Int,
   def getX: Int = x
   def getY: Int = y
   def dist(p2: Point): Double = {
-    sqrt((p2.getX - x) + (p2.getY - y))
+    val x1 = x.toDouble
+    val y1 = y.toDouble
+    val x2 = p2.getX.toDouble
+    val y2 = p2.getY.toDouble
+    sqrt(pow(x2 - x1, 2.0) + pow(y2 - y1, 2.0))
+  }
+  def dist(xInt: Int, yInt: Int): Double = {
+    val x1 = x.toDouble
+    val y1 = y.toDouble
+    val x2 = xInt.toDouble
+    val y2 = yInt.toDouble
+    sqrt(pow(x2 - x1, 2.0) + pow(y2 - y1, 2.0))
   }
   def get(s: String): Option[Variable] = {
     var result: Option[Variable] = None

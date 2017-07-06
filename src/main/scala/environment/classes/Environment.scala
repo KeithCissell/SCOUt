@@ -13,8 +13,15 @@ class Environment(val name: String, var grid: Grid[Point] = AB(AB(None))) {
 
   //        METHODS
   // returns the grid point at (x,y)
-  def getPoint(x: Int, y: Int): Option[Point] = {
-    grid(x - 1)(y - 1)
+  def getPoint(x: Int, y: Int): Option[Point] = { //(x-1,y-1) match {
+    if (x >= 1 && x <= length && y >= 1 && y <= width) {
+      grid(x-1)(y-1)
+    } else None
+    // case (a, b) if (a >= 0 && a < length) => b match {
+    //   case b2 if (b2 >= 0 && b2 < width) => grid(x)(y)
+    //   case _ => None
+    // }
+    // case _ => None
   }
   // returns a set of all variables in the grid
   def getVariableNames: Set[String] = {
@@ -35,6 +42,29 @@ class Environment(val name: String, var grid: Grid[Point] = AB(AB(None))) {
       case _        => None
     }
     return layer
+  }
+  // returns all points in range of an origin
+  def getCluster(p: Point, range: Int): Seq[Point] = {
+    val origin = (p.getX, p.getY)
+    val cluster = for {
+      x <- -range to range
+      y <- -range to range
+      if p.dist(origin._1 + x, origin._2 + y) <= range
+      if p.dist(origin._1 + x, origin._2 + y) != 0
+    } yield getPoint(origin._1 + x, origin._2 + y)
+    return cluster.flatten
+  }
+  // returns all points in range of an origin (takes Ints instead of a Point)
+  def getCluster(originX: Int, originY: Int, range: Int): Seq[Point] = {
+    val refPoint = new Point(originX, originY)
+    val origin = (originX, originY)
+    val cluster = for {
+      x <- -range to range
+      y <- -range to range
+      if refPoint.dist(origin._1 + x, origin._2 + y) <= range
+      if refPoint.dist(origin._1 + x, origin._2 + y) != 0
+    } yield getPoint(origin._1 + x, origin._2 + y)
+    return cluster.flatten
   }
 
 }
