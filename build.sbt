@@ -9,5 +9,5 @@ libraryDependencies ++= Seq(
   "org.http4s"      %% "http4s-circe"         % Http4sVersion,
   "org.http4s"      %% "http4s-dsl"           % Http4sVersion,
   "ch.qos.logback"  % "logback-classic"       % "1.2.1",
-  "org.specs2"      % "specs2_2.9.1"          % "1.8" % "test"
+  "org.specs2"      %% "specs2-core"          % "3.9.2" % "test"
 )

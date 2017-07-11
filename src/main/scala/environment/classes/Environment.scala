@@ -4,6 +4,7 @@ package environment
 import customtypes.Grid._
 import environment.point._
 import environment.variable._
+
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
@@ -17,11 +18,6 @@ class Environment(val name: String, var grid: Grid[Point] = AB(AB(None))) {
     if (x >= 1 && x <= length && y >= 1 && y <= width) {
       grid(x-1)(y-1)
     } else None
-    // case (a, b) if (a >= 0 && a < length) => b match {
-    //   case b2 if (b2 >= 0 && b2 < width) => grid(x)(y)
-    //   case _ => None
-    // }
-    // case _ => None
   }
   // returns a set of all variables in the grid
   def getVariableNames: Set[String] = {

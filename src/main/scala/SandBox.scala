@@ -2,7 +2,10 @@
 import environment._
 import environment.point._
 import environment.variable._
+import environment.Builder._
+
 import customtypes.Grid._
+
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
@@ -51,6 +54,10 @@ object SandBox {
     val environment = new Environment("Test", grid)
     val emptyEnv = new Environment("Empty")
 
+    // EnvironmentBuilder
+    val scarcityMap1 = Map("Height" -> 1.0, "Temperature" -> 0.5, "Latitude" -> 0.25)
+    val testBuild = buildRandomGrid(3, 3, scarcityMap1)
+
     // Other
     val allVariableTypes = AB(
       height1, latitude1, longitude1, temperature1, windSpeed1
@@ -67,11 +74,13 @@ object SandBox {
     *******************************************************/
 
     // Test getCluster
-    println(environment.getPoint(1, 1))
-    println(environment.getPoint(-3, 10))
-    println(environment.getCluster(2, 2, 1))
-    println(environment.getCluster(2, 2, 5))
+    // println(environment.getPoint(1, 1))
+    // println(environment.getPoint(-3, 10))
+    // println(environment.getCluster(2, 2, 1))
+    // println(environment.getCluster(2, 2, 5))
 
+    // Test buildRandomGrid
+    println(testBuild)
 
 
   }

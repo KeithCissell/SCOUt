@@ -2,7 +2,9 @@
 import environment._
 import environment.point._
 import environment.variable._
-import environment.GridType.Grid
+
+import customtypes.Grid._
+
 import org.specs2.mutable.Specification
 import scala.collection.mutable.{ArrayBuffer => AB, Map => MM}
 
