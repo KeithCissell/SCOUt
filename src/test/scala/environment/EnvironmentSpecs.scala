@@ -1,8 +1,10 @@
 // src\test\scala\environment\EnvironmentSpecs.scala
 import environment._
-import environment.point._
+import environment.cell._
 import environment.variable._
-import environment.GridType.Grid
+
+import customtypes.Grid._
+
 import org.specs2.mutable.Specification
 import scala.collection.mutable.{ArrayBuffer => AB, Map => MM}
 
@@ -31,22 +33,22 @@ object EnvironmentSpecs extends Specification {
     height2, latitude2, longitude2, temperature2, windSpeed2
   )
 
-  // Point
-  val point11 = new Point(1, 1, variableList1)
-  val point12 = new Point(1, 2, variableList2)
-  val point13 = new Point(1, 3)
-  val point21 = new Point(2, 1)
-  val point22 = new Point(2, 2)
-  val point23 = new Point(2, 3)
-  val point31 = new Point(3, 1)
-  val point32 = new Point(3, 2)
-  val point33 = new Point(3, 3)
+  // Cell
+  val point11 = new Cell(1, 1, variableList1)
+  val point12 = new Cell(1, 2, variableList2)
+  val point13 = new Cell(1, 3)
+  val point21 = new Cell(2, 1)
+  val point22 = new Cell(2, 2)
+  val point23 = new Cell(2, 3)
+  val point31 = new Cell(3, 1)
+  val point32 = new Cell(3, 2)
+  val point33 = new Cell(3, 3)
 
   // Environment
-  val row1: AB[Option[Point]] = AB(Some(point11), Some(point12), Some(point13))
-  val row2: AB[Option[Point]] = AB(Some(point21), Some(point22), Some(point23))
-  val row3: AB[Option[Point]] = AB(Some(point31), Some(point32), Some(point33))
-  val grid: Grid[Point] = AB(row1, row2, row3)
+  val row1: AB[Option[Cell]] = AB(Some(point11), Some(point12), Some(point13))
+  val row2: AB[Option[Cell]] = AB(Some(point21), Some(point22), Some(point23))
+  val row3: AB[Option[Cell]] = AB(Some(point31), Some(point32), Some(point33))
+  val grid: Grid[Cell] = AB(row1, row2, row3)
   val environment = new Environment("Test", grid)
   val emptyEnv = new Environment("Empty")
 
@@ -83,8 +85,8 @@ object EnvironmentSpecs extends Specification {
       (latitude1.value == Some(123.45))
     }
   }
-  // Point Tests
-  "\nPoint class holds (x,y) position and list of Variables and" should {
+  // Cell Tests
+  "\nCell class holds (x,y) position and list of Variables and" should {
 
     "Properly construct" in {
       (point11.variables == variableList1) &&
@@ -96,19 +98,19 @@ object EnvironmentSpecs extends Specification {
     "Get y position" in {
       point11.getY == 1
     }
-    "Calculate distance to another Point" in {
+    "Calculate distance to another Cell" in {
       point11.dist(point12) == 1.0
     }
   }
   // Environment Tests
-  "\nEnvironment class holds a grid of Points and" should {
+  "\nEnvironment class holds a grid of Cells and" should {
 
     "Properly construct" in {
       (environment.grid == grid) &&
       (emptyEnv.grid == AB(AB(None)))
     }
-    "Return a point from (x,y)" in {
-      environment.getPoint(1, 1) == Some(point11)
+    "Return a Cell from (x,y)" in {
+      environment.getCell(1, 1) == Some(point11)
     }
     "Return a Set of all varialbe names on the grid" in {
       environment.getVariableNames == allVariableTypes.map(_.name).toSet
