@@ -1,5 +1,5 @@
-// src\main\scala\environment\point\Point.scala
-package environment.point
+// src\main\scala\environment\Cell\Cell.scala
+package environment.cell
 
 import environment.variable._
 
@@ -7,18 +7,18 @@ import scala.math._
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
-case class Point(val x: Int, val y: Int,
+case class Cell(val x: Int, val y: Int,
     var variables: AB[Variable] = AB.empty) {
 
   override def toString: String = {
     var variablesString = ""
     for (v <- variables) variablesString += s"\n\t${v.name}: ${v.value} ${v.unit}"
-    return s"\nPoint ($x, $y)\nVariables:$variablesString"
+    return s"\nCell ($x, $y)\nVariables:$variablesString"
   }
 
   def getX: Int = x
   def getY: Int = y
-  def dist(p2: Point): Double = {
+  def dist(p2: Cell): Double = {
     val x1 = x.toDouble
     val y1 = y.toDouble
     val x2 = p2.getX.toDouble

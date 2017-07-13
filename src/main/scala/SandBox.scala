@@ -1,6 +1,6 @@
 // src\main\scala\SandBox.scala
 import environment._
-import environment.point._
+import environment.cell._
 import environment.variable._
 import environment.Builder._
 
@@ -35,22 +35,22 @@ object SandBox {
       height2, latitude2, longitude2, temperature2, windSpeed2
     )
 
-    // Point
-    val point11 = new Point(1, 1, variableList1)
-    val point12 = new Point(1, 2, variableList2)
-    val point13 = new Point(1, 3)
-    val point21 = new Point(2, 1)
-    val point22 = new Point(2, 2)
-    val point23 = new Point(2, 3)
-    val point31 = new Point(3, 1)
-    val point32 = new Point(3, 2)
-    val point33 = new Point(3, 3)
+    // Cell
+    val cell11 = new Cell(1, 1, variableList1)
+    val cell12 = new Cell(1, 2, variableList2)
+    val cell13 = new Cell(1, 3)
+    val cell21 = new Cell(2, 1)
+    val cell22 = new Cell(2, 2)
+    val cell23 = new Cell(2, 3)
+    val cell31 = new Cell(3, 1)
+    val cell32 = new Cell(3, 2)
+    val cell33 = new Cell(3, 3)
 
     // Environment
-    val row1: AB[Option[Point]] = AB(Some(point11), Some(point12), Some(point13))
-    val row2: AB[Option[Point]] = AB(Some(point21), Some(point22), Some(point23))
-    val row3: AB[Option[Point]] = AB(Some(point31), Some(point32), Some(point33))
-    val grid: Grid[Point] = AB(row1, row2, row3)
+    val row1: AB[Option[Cell]] = AB(Some(cell11), Some(cell12), Some(cell13))
+    val row2: AB[Option[Cell]] = AB(Some(cell21), Some(cell22), Some(cell23))
+    val row3: AB[Option[Cell]] = AB(Some(cell31), Some(cell32), Some(cell33))
+    val grid: Grid[Cell] = AB(row1, row2, row3)
     val environment = new Environment("Test", grid)
     val emptyEnv = new Environment("Empty")
 
@@ -74,8 +74,8 @@ object SandBox {
     *******************************************************/
 
     // Test getCluster
-    // println(environment.getPoint(1, 1))
-    // println(environment.getPoint(-3, 10))
+    // println(environment.getCell(1, 1))
+    // println(environment.getCell(-3, 10))
     // println(environment.getCluster(2, 2, 1))
     // println(environment.getCluster(2, 2, 5))
 

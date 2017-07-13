@@ -2,7 +2,7 @@
 package environment
 
 import environment._
-import environment.point._
+import environment.cell._
 import environment.variable._
 
 import customtypes.Grid._
@@ -16,12 +16,12 @@ object Builder {
 
   case class VariableScarcity(var scarcityMap: Map[String,Double] = Map.empty)
 
-  def buildRandomGrid(length: Int, width: Int, scarcityMap: Map[String,Double]): Grid[Point] = {
-    val grid: Grid[Point] = AB.fill(length)(AB.fill(width)(None))
+  def buildRandomGrid(length: Int, width: Int, scarcityMap: Map[String,Double]): Grid[Cell] = {
+    val grid: Grid[Cell] = AB.fill(length)(AB.fill(width)(None))
     for {
       x <- 0 until length
       y <- 0 until width
-    } grid(x)(y) = Some(Point(x, y, populateVariables(scarcityMap)))
+    } grid(x)(y) = Some(Cell(x, y, populateVariables(scarcityMap)))
     return grid
   }
 
