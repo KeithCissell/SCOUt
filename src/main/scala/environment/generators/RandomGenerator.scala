@@ -1,4 +1,4 @@
-// src\main\scala\environment\EnvironmentBuilder.scala
+// src\main\scala\environment\generators\RandomGenerator.scala
 package environment
 
 import environment._
@@ -12,7 +12,7 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 
 
 
-object Builder {
+object RandomGenerator {
 
   case class VariableScarcity(var scarcityMap: Map[String,Double] = Map.empty)
 

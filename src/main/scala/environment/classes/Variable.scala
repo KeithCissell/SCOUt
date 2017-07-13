@@ -2,6 +2,7 @@
 package environment.variable
 
 import scala.util.Random
+import scala.math.BigDecimal
 
 
 trait Variable {
@@ -18,7 +19,9 @@ trait Variable {
 
   def random = {
     if (!constant || value == None) {
-      value = Some(lowerBound + (upperBound - lowerBound) * Random.nextDouble)
+      val v = lowerBound + (upperBound - lowerBound) * Random.nextDouble
+      val roundV = BigDecimal(v).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+      value = Some(roundV)
     }
   }
 

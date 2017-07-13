@@ -2,7 +2,7 @@
 import environment._
 import environment.cell._
 import environment.variable._
-import environment.Builder._
+import environment.RandomGenerator._
 
 import customtypes.Grid._
 
