@@ -66,4 +66,5 @@ class Environment(val name: String, private var grid: Grid[Cell]) {
       if layer(x)(y) != None
     } setElement(x, y, layer(x)(y).get)
   }
+
 }

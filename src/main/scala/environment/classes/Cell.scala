@@ -36,7 +36,5 @@ case class Cell(val x: Int, val y: Int,
   }
   def getElements: List[Element] = elements.values.toList
   def getElementNames: Set[String] = elements.keys.toSet
-  def setElement(element: Element) = {
-    elements + (element.name -> element)
-  }
+  def setElement(element: Element) = elements + (element.name -> element)
 }

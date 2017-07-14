@@ -3,6 +3,7 @@ import environment.cell._
 import environment.element._
 import environment.generator.RandomGenerator._
 
+
 import customtypes.Grid._
 
 import scala.collection.mutable.{ArrayBuffer => AB}
@@ -64,6 +65,7 @@ object SandBox {
     val scarcityMap1 = Map("Elevation" -> Some(1.0), "Temperature" -> Some(0.5), "Latitude" -> Some(0.25))
     //val testBuild = buildRandomEnvironment("TestRandom", 3, 3, scarcityMap1)
 
+
     // Other
     val allElementTypes = AB(
       elevation1, latitude1, longitude1, temperature1, windSpeed1
@@ -90,7 +92,6 @@ object SandBox {
 
     println(cell11.getElements)
     println(cell11.getElementNames)
-
 
   }
 
