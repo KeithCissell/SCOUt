@@ -7,7 +7,7 @@ import environment.variable._
 object Groups {
 
   val allVariables = Seq(
-    new Height(None),
+    new Elevation(None),
     new Latitude(None),
     new Longitude(None),
     new Temperature(None),

@@ -34,7 +34,7 @@ object RandomGenerator {
   }
 
   def createVariable(variableName: String): Variable = variableName match {
-    case "Height"       => val v = new Height(); v.random; v
+    case "Elevation"       => val v = new Elevation(); v.random; v
     case "Latitude"     => val v = new Latitude(); v.random; v
     case "Longitude"    => val v = new Longitude(); v.random; v
     case "Temperature"  => val v = new Temperature(); v.random; v

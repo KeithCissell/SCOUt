@@ -15,22 +15,22 @@ object EnvironmentSpecs extends Specification {
   *******************************************************/
 
   // Variable
-  val height1 = new Height(Some(417.0))
+  val elevation1 = new Elevation(Some(417.0))
   val latitude1 = new Latitude()
   val longitude1 = new Longitude(245.5)
   val temperature1 = new Temperature(77.0)
   val windSpeed1 = new WindSpeed(0)
   val variableList1 = AB(
-    height1, latitude1, longitude1, temperature1, windSpeed1
+    elevation1, latitude1, longitude1, temperature1, windSpeed1
   )
 
-  val height2 = new Height(17)
+  val elevation2 = new Elevation(17)
   val latitude2 = new Latitude(23.45)
   val longitude2 = new Longitude(200.0)
   val temperature2 = new Temperature(100)
   val windSpeed2 = new WindSpeed(15)
   val variableList2 = AB(
-    height2, latitude2, longitude2, temperature2, windSpeed2
+    elevation2, latitude2, longitude2, temperature2, windSpeed2
   )
 
   // Cell
@@ -54,10 +54,10 @@ object EnvironmentSpecs extends Specification {
 
   // Other
   val allVariableTypes = AB(
-    height1, latitude1, longitude1, temperature1, windSpeed1
+    elevation1, latitude1, longitude1, temperature1, windSpeed1
   )
   val testLayer = AB(
-    AB(Some(height1), Some(height2), None),
+    AB(Some(elevation1), Some(elevation2), None),
     AB(None, None, None),
     AB(None, None, None)
   )
@@ -72,15 +72,15 @@ object EnvironmentSpecs extends Specification {
   "\nVariable classes hold environmental information and" should {
 
     "Properly construct" in {
-      (height1.value == Some(417.0)) &&
+      (elevation1.value == Some(417.0)) &&
       (temperature1.value == Some(77.0)) &&
       (latitude1.value == None)
     }
-    step(height1.set(0.0))
+    step(elevation1.set(0.0))
     step(temperature1.set(85.0))
     step(latitude1.set(123.45))
     "Allow uninitialized or inconstant value to be set" in {
-      (height1.value == Some(417.0)) &&
+      (elevation1.value == Some(417.0)) &&
       (temperature1.value == Some(85.0)) &&
       (latitude1.value == Some(123.45))
     }
@@ -116,7 +116,7 @@ object EnvironmentSpecs extends Specification {
       environment.getVariableNames == allVariableTypes.map(_.name).toSet
     }
     "Return a grid layer of a specific Variable" in {
-      environment.getLayer("Height") == testLayer
+      environment.getLayer("Elevation") == testLayer
     }
   }
 
