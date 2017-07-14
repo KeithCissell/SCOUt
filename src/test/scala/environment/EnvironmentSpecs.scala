@@ -19,8 +19,15 @@ object EnvironmentSpecs extends Specification {
   val longitude1 = new Longitude(245.5)
   val temperature1 = new Temperature(77.0)
   val windSpeed1 = new WindSpeed(0)
-  val elementList1 = AB(
+  val elementList1 = List(
     elevation1, latitude1, longitude1, temperature1, windSpeed1
+  )
+  val elementMap1 = Map(
+    elevation1.name -> elevation1,
+    latitude1.name -> latitude1,
+    longitude1.name -> longitude1,
+    temperature1.name -> temperature1,
+    windSpeed1.name -> windSpeed1
   )
 
   val elevation2 = new Elevation(17)
@@ -28,28 +35,31 @@ object EnvironmentSpecs extends Specification {
   val longitude2 = new Longitude(200.0)
   val temperature2 = new Temperature(100)
   val windSpeed2 = new WindSpeed(15)
-  val elementList2 = AB(
-    elevation2, latitude2, longitude2, temperature2, windSpeed2
+  val elementMap2 = Map(
+    elevation2.name -> elevation2,
+    latitude2.name -> latitude2,
+    longitude2.name -> longitude2,
+    temperature2.name -> temperature2,
+    windSpeed2.name -> windSpeed2
   )
 
   // Cell
-  val point11 = new Cell(1, 1, elementList1)
-  val point12 = new Cell(1, 2, elementList2)
-  val point13 = new Cell(1, 3)
-  val point21 = new Cell(2, 1)
-  val point22 = new Cell(2, 2)
-  val point23 = new Cell(2, 3)
-  val point31 = new Cell(3, 1)
-  val point32 = new Cell(3, 2)
-  val point33 = new Cell(3, 3)
+  val cell11 = new Cell(1, 1, elementMap1)
+  val cell12 = new Cell(1, 2, elementMap2)
+  val cell13 = new Cell(1, 3)
+  val cell21 = new Cell(2, 1)
+  val cell22 = new Cell(2, 2)
+  val cell23 = new Cell(2, 3)
+  val cell31 = new Cell(3, 1)
+  val cell32 = new Cell(3, 2)
+  val cell33 = new Cell(3, 3)
 
   // Environment
-  val row1: AB[Option[Cell]] = AB(Some(point11), Some(point12), Some(point13))
-  val row2: AB[Option[Cell]] = AB(Some(point21), Some(point22), Some(point23))
-  val row3: AB[Option[Cell]] = AB(Some(point31), Some(point32), Some(point33))
+  val row1: AB[Option[Cell]] = AB(Some(cell11), Some(cell12), Some(cell13))
+  val row2: AB[Option[Cell]] = AB(Some(cell21), Some(cell22), Some(cell23))
+  val row3: AB[Option[Cell]] = AB(Some(cell31), Some(cell32), Some(cell33))
   val grid: Grid[Cell] = AB(row1, row2, row3)
   val environment = new Environment("Test", grid)
-  val emptyEnv = new Environment("Empty")
 
   // Other
   val allElementTypes = AB(
@@ -78,7 +88,7 @@ object EnvironmentSpecs extends Specification {
     step(elevation1.set(0.0))
     step(temperature1.set(85.0))
     step(latitude1.set(123.45))
-    "Allow uninitialized or inconstant value to be set" in {
+    "Allow an uninitialized or inconstant value to be set" in {
       (elevation1.value == Some(417.0)) &&
       (temperature1.value == Some(85.0)) &&
       (latitude1.value == Some(123.45))
@@ -88,28 +98,27 @@ object EnvironmentSpecs extends Specification {
   "\nCell class holds (x,y) position and list of Elements and" should {
 
     "Properly construct" in {
-      (point11.elements == elementList1) &&
-      (point13.elements == AB.empty)
+      (cell11.getElements == elementList1) &&
+      (cell13.getElements == Nil)
     }
     "Get x position" in {
-      point11.getX == 1
+      cell11.getX == 1
     }
     "Get y position" in {
-      point11.getY == 1
+      cell11.getY == 1
     }
     "Calculate distance to another Cell" in {
-      point11.dist(point12) == 1.0
+      cell11.dist(cell12) == 1.0
     }
   }
   // Environment Tests
   "\nEnvironment class holds a grid of Cells and" should {
 
     "Properly construct" in {
-      (environment.grid == grid) &&
-      (emptyEnv.grid == AB(AB(None)))
+      environment.getGrid == grid
     }
     "Return a Cell from (x,y)" in {
-      environment.getCell(1, 1) == Some(point11)
+      environment.getCell(1, 1) == Some(cell11)
     }
     "Return a Set of all varialbe names on the grid" in {
       environment.getElementNames == allElementTypes.map(_.name).toSet

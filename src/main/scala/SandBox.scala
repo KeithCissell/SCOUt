@@ -1,7 +1,8 @@
 import environment._
 import environment.cell._
 import environment.element._
-import environment.RandomGenerator._
+import environment.generator.RandomGenerator._
+
 
 import customtypes.Grid._
 
@@ -21,8 +22,12 @@ object SandBox {
     val longitude1 = new Longitude(245.5)
     val temperature1 = new Temperature(77.0)
     val windSpeed1 = new WindSpeed(0)
-    val elementList1 = AB(
-      elevation1, latitude1, longitude1, temperature1, windSpeed1
+    val elementMap1 = Map(
+      elevation1.name -> elevation1,
+      latitude1.name -> latitude1,
+      longitude1.name -> longitude1,
+      temperature1.name -> temperature1,
+      windSpeed1.name -> windSpeed1
     )
 
     val elevation2 = new Elevation(17)
@@ -30,13 +35,17 @@ object SandBox {
     val longitude2 = new Longitude(200.0)
     val temperature2 = new Temperature(100)
     val windSpeed2 = new WindSpeed(15)
-    val elementList2 = AB(
-      elevation2, latitude2, longitude2, temperature2, windSpeed2
+    val elementMap2 = Map(
+      elevation2.name -> elevation2,
+      latitude2.name -> latitude2,
+      longitude2.name -> longitude2,
+      temperature2.name -> temperature2,
+      windSpeed2.name -> windSpeed2
     )
 
     // Cell
-    val cell11 = new Cell(1, 1, elementList1)
-    val cell12 = new Cell(1, 2, elementList2)
+    val cell11 = new Cell(1, 1, elementMap1)
+    val cell12 = new Cell(1, 2, elementMap2)
     val cell13 = new Cell(1, 3)
     val cell21 = new Cell(2, 1)
     val cell22 = new Cell(2, 2)
@@ -51,11 +60,11 @@ object SandBox {
     val row3: AB[Option[Cell]] = AB(Some(cell31), Some(cell32), Some(cell33))
     val grid: Grid[Cell] = AB(row1, row2, row3)
     val environment = new Environment("Test", grid)
-    val emptyEnv = new Environment("Empty")
 
     // EnvironmentBuilder
-    val scarcityMap1 = Map("Elevation" -> 1.0, "Temperature" -> 0.5, "Latitude" -> 0.25)
-    val testBuild = buildRandomGrid(3, 3, scarcityMap1)
+    val scarcityMap1 = Map("Elevation" -> Some(1.0), "Temperature" -> Some(0.5), "Latitude" -> Some(0.25))
+    //val testBuild = buildRandomEnvironment("TestRandom", 3, 3, scarcityMap1)
+
 
     // Other
     val allElementTypes = AB(
@@ -79,8 +88,10 @@ object SandBox {
     // println(environment.getCluster(2, 2, 5))
 
     // Test buildRandomGrid
-    println(testBuild)
+    //println(testBuild)
 
+    println(cell11.getElements)
+    println(cell11.getElementNames)
 
   }
 
