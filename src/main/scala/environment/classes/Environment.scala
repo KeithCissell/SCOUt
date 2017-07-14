@@ -42,17 +42,6 @@ class Environment(val name: String, private var grid: Grid[Cell]) {
     return layer
   }
   // returns all Cells in range of an origin
-  def getCluster(p: Cell, range: Int): Seq[Cell] = {
-    val origin = (p.getX, p.getY)
-    val cluster = for {
-      x <- -range to range
-      y <- -range to range
-      if p.dist(origin._1 + x, origin._2 + y) <= range
-      if p.dist(origin._1 + x, origin._2 + y) != 0
-    } yield getCell(origin._1 + x, origin._2 + y)
-    return cluster.flatten
-  }
-  // returns all Cells in range of an origin (takes Ints instead of a Cell)
   def getCluster(originX: Int, originY: Int, range: Int): Seq[Cell] = {
     val refCell = new Cell(originX, originY)
     val origin = (originX, originY)
