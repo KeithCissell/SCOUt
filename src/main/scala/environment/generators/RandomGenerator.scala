@@ -3,6 +3,7 @@ package environment.generator
 import environment._
 import environment.cell._
 import environment.element._
+import environment.generator.ElementSeeds._
 import environment.generator.LayerGenerator._
 
 import customtypes.Grid._
@@ -14,11 +15,11 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 
 object RandomGenerator {
 
-  def buildRandomEnvironment(name: String, length: Int, width: Int, scarcityMap: Map[String,Option[Double]]): Environment = {
+  def buildRandomEnvironment(name: String, length: Int, width: Int, seeds: Seq[ElementSeed]): Environment = {
     val grid = initializedGrid(length, width)
     val environment = new Environment(name, grid)
-    for ((element, scarcity) <- scarcityMap) {
-      val layer = generateLayer(element, scarcity)
+    for (seed <- seeds) {
+      val layer = generateLayer(length, width, seed)
       environment.setLayer(layer)
     }
     return environment

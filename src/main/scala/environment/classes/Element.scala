@@ -23,7 +23,7 @@ trait Element {
     if (settable) { value = Some(d) }
   }
   // Assigns a random value based on predefined uper and lower bounds
-  def random = {
+  def setRandom = {
     if (settable) {
       val v = lowerBound + (upperBound - lowerBound) * Random.nextDouble
       value = Some(round(v))
