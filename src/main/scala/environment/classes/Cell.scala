@@ -1,19 +1,18 @@
-// src\main\scala\environment\Cell\Cell.scala
 package environment.cell
 
-import environment.variable._
+import environment.element._
 
 import scala.math._
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
 case class Cell(val x: Int, val y: Int,
-    var variables: AB[Variable] = AB.empty) {
+    var elements: AB[Element] = AB.empty) {
 
   override def toString: String = {
-    var variablesString = ""
-    for (v <- variables) variablesString += s"\n\t${v.name}: ${v.value} ${v.unit}"
-    return s"\nCell ($x, $y)\nVariables:$variablesString"
+    var elementsString = ""
+    for (v <- elements) elementsString += s"\n\t${v.name}: ${v.value} ${v.unit}"
+    return s"\nCell ($x, $y)\nElements:$elementsString"
   }
 
   def getX: Int = x
@@ -32,9 +31,9 @@ case class Cell(val x: Int, val y: Int,
     val y2 = yInt.toDouble
     sqrt(pow(x2 - x1, 2.0) + pow(y2 - y1, 2.0))
   }
-  def get(s: String): Option[Variable] = {
-    var result: Option[Variable] = None
-    for (v <- variables) if (v.name == s) result = Some(v)
+  def get(s: String): Option[Element] = {
+    var result: Option[Element] = None
+    for (v <- elements) if (v.name == s) result = Some(v)
     return result
   }
 }

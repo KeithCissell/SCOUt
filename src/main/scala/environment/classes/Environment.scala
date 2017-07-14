@@ -1,9 +1,8 @@
-// src\main\scala\environment\Environment.scala
 package environment
 
 import customtypes.Grid._
 import environment.cell._
-import environment.variable._
+import environment.element._
 
 import scala.collection.mutable.{ArrayBuffer => AB}
 
@@ -19,21 +18,21 @@ class Environment(val name: String, var grid: Grid[Cell] = AB(AB(None))) {
       grid(x-1)(y-1)
     } else None
   }
-  // returns a set of all variables in the grid
-  def getVariableNames: Set[String] = {
+  // returns a set of all elements in the grid
+  def getElementNames: Set[String] = {
     (for {
       p <- grid.flatten.filter(_ != None)
-      v <- p.get.variables
+      v <- p.get.elements
     } yield v.name).toSet
   }
-  // returns a grid with a specified variable at each Cell
-  def getLayer(variable: String): Grid[Variable] = {
-    var layer: Grid[Variable] = AB.fill(length)(AB.fill(width)(None))
+  // returns a grid with a specified element at each Cell
+  def getLayer(element: String): Grid[Element] = {
+    var layer: Grid[Element] = AB.fill(length)(AB.fill(width)(None))
     for {
       x <- 0 until length
       y <- 0 until width
     } layer(x)(y) = grid(x)(y) match {
-      case Some(p)  => p.get(variable)
+      case Some(p)  => p.get(element)
       case None     => None
       case _        => None
     }
