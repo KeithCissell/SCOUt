@@ -1,4 +1,3 @@
-// src\main\scala\environment\types\Grid.scala
 package customtypes
 
 import scala.collection.mutable.ArrayBuffer

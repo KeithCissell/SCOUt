@@ -1,12 +1,11 @@
-// src\main\scala\environment\VariableGroups.scala
-package environment.variable
+package environment.element
 
-import environment.variable._
+import environment.element._
 
 
 object Groups {
 
-  val allVariables = Seq(
+  val allElements = Seq(
     new Elevation(None),
     new Latitude(None),
     new Longitude(None),

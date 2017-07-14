@@ -1,9 +1,8 @@
-// src\main\scala\environment\generators\RandomGenerator.scala
 package environment
 
 import environment._
 import environment.cell._
-import environment.variable._
+import environment.element._
 
 import customtypes.Grid._
 
@@ -14,26 +13,26 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 
 object RandomGenerator {
 
-  case class VariableScarcity(var scarcityMap: Map[String,Double] = Map.empty)
+  case class ElementScarcity(var scarcityMap: Map[String,Double] = Map.empty)
 
   def buildRandomGrid(length: Int, width: Int, scarcityMap: Map[String,Double]): Grid[Cell] = {
     val grid: Grid[Cell] = AB.fill(length)(AB.fill(width)(None))
     for {
       x <- 0 until length
       y <- 0 until width
-    } grid(x)(y) = Some(Cell(x, y, populateVariables(scarcityMap)))
+    } grid(x)(y) = Some(Cell(x, y, populateElements(scarcityMap)))
     return grid
   }
 
-  def populateVariables(scarcityMap: Map[String,Double]): AB[Variable] = {
-    val variables: AB[Variable] = (for {
-      (variable, scarcity) <- scarcityMap
+  def populateElements(scarcityMap: Map[String,Double]): AB[Element] = {
+    val elements: AB[Element] = (for {
+      (element, scarcity) <- scarcityMap
       if Random.nextDouble <= scarcity
-    } yield createVariable(variable)).to[AB]
-    return variables
+    } yield createElement(element)).to[AB]
+    return elements
   }
 
-  def createVariable(variableName: String): Variable = variableName match {
+  def createElement(elementName: String): Element = elementName match {
     case "Elevation"       => val v = new Elevation(); v.random; v
     case "Latitude"     => val v = new Latitude(); v.random; v
     case "Longitude"    => val v = new Longitude(); v.random; v

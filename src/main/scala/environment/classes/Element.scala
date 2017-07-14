@@ -1,37 +1,45 @@
-// src\main\scala\environment\variable\Variable.scala
-package environment.variable
+package environment.element
 
 import scala.util.Random
 import scala.math.BigDecimal
 
 
-trait Variable {
+trait Element {
   var value: Option[Double]
   val name: String
   val unit: String
   val constant: Boolean
   val lowerBound: Double
   val upperBound: Double
-  val standardDeviation: Double
+  //val standardDeviation: (Double, Double) // ._1 deviation ._2 per unit
 
-  def set(d: Double) = {
-    if (!constant || value == None) { value = Some(d) }
+  // Determines if element can be set
+  def settable: Boolean = constant match {
+    case true   => value == None
+    case false  => true
   }
-
+  // Set value
+  def set(d: Double) = {
+    if (settable) { value = Some(d) }
+  }
   // Assigns a random value based on predefined uper and lower bounds
   def random = {
-    if (!constant || value == None) {
+    if (settable) {
       val v = lowerBound + (upperBound - lowerBound) * Random.nextDouble
       value = Some(round(v))
     }
   }
-  // Helper function to cut double to 2 decimal places
+  // Helper function to shorten double to 2 decimal places
   private def round(d: Double): Double = {
     BigDecimal(d).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
   }
 }
 
-class Decible(var value: Option[Double]) extends Variable {
+trait ConstantElement extends Element {
+
+}
+
+class Decible(var value: Option[Double]) extends Element {
   val name = "Decible"
   val unit = "dB"
   val constant = false
@@ -41,7 +49,7 @@ class Decible(var value: Option[Double]) extends Variable {
   def this()          = this(None)
 }
 
-class Elevation(var value: Option[Double]) extends Variable {
+class Elevation(var value: Option[Double]) extends Element {
   val name = "Elevation"
   val unit = "mi"
   val constant = true
@@ -51,7 +59,7 @@ class Elevation(var value: Option[Double]) extends Variable {
   def this()          = this(None)
 }
 
-class Latitude(var value: Option[Double]) extends Variable {
+class Latitude(var value: Option[Double]) extends Element {
   val name = "Latitude"
   val unit = "°"
   val constant = true
@@ -61,7 +69,7 @@ class Latitude(var value: Option[Double]) extends Variable {
   def this()          = this(None)
 }
 
-class Longitude(var value: Option[Double]) extends Variable {
+class Longitude(var value: Option[Double]) extends Element {
   val name = "Longitude"
   val unit = "°"
   val constant = true
@@ -71,7 +79,7 @@ class Longitude(var value: Option[Double]) extends Variable {
   def this()          = this(None)
 }
 
-class Temperature(var value: Option[Double]) extends Variable {
+class Temperature(var value: Option[Double]) extends Element {
   val name = "Temperature"
   val unit = "°F"
   val constant = false
@@ -81,32 +89,12 @@ class Temperature(var value: Option[Double]) extends Variable {
   def this()          = this(None)
 }
 
-class WindSpeed(var value: Option[Double]) extends Variable {
+class WindSpeed(var value: Option[Double]) extends Element {
   val name = "Wind Speed"
   val unit = "MPH"
   val constant = false
   val lowerBound = 0.0
   val upperBound = 200.0
-  def this(d: Double) = this(Some(d))
-  def this()          = this(None)
-}
-
-
-
-
-
-
-
-
-
-
-
-class Template(var value: Option[Double]) extends Variable {
-  val name = ""
-  val unit = ""
-  val constant = false
-  val lowerBound = 0.0
-  val upperBound = 0.0
   def this(d: Double) = this(Some(d))
   def this()          = this(None)
 }

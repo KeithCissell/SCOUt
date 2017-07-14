@@ -1,7 +1,6 @@
-// src\test\scala\environment\EnvironmentSpecs.scala
 import environment._
 import environment.cell._
-import environment.variable._
+import environment.element._
 
 import customtypes.Grid._
 
@@ -14,13 +13,13 @@ object EnvironmentSpecs extends Specification {
   ** Create data to test on
   *******************************************************/
 
-  // Variable
+  // Element
   val elevation1 = new Elevation(Some(417.0))
   val latitude1 = new Latitude()
   val longitude1 = new Longitude(245.5)
   val temperature1 = new Temperature(77.0)
   val windSpeed1 = new WindSpeed(0)
-  val variableList1 = AB(
+  val elementList1 = AB(
     elevation1, latitude1, longitude1, temperature1, windSpeed1
   )
 
@@ -29,13 +28,13 @@ object EnvironmentSpecs extends Specification {
   val longitude2 = new Longitude(200.0)
   val temperature2 = new Temperature(100)
   val windSpeed2 = new WindSpeed(15)
-  val variableList2 = AB(
+  val elementList2 = AB(
     elevation2, latitude2, longitude2, temperature2, windSpeed2
   )
 
   // Cell
-  val point11 = new Cell(1, 1, variableList1)
-  val point12 = new Cell(1, 2, variableList2)
+  val point11 = new Cell(1, 1, elementList1)
+  val point12 = new Cell(1, 2, elementList2)
   val point13 = new Cell(1, 3)
   val point21 = new Cell(2, 1)
   val point22 = new Cell(2, 2)
@@ -53,7 +52,7 @@ object EnvironmentSpecs extends Specification {
   val emptyEnv = new Environment("Empty")
 
   // Other
-  val allVariableTypes = AB(
+  val allElementTypes = AB(
     elevation1, latitude1, longitude1, temperature1, windSpeed1
   )
   val testLayer = AB(
@@ -68,8 +67,8 @@ object EnvironmentSpecs extends Specification {
   ** Specs2 Tests
   *******************************************************/
 
-  // Variable Tests
-  "\nVariable classes hold environmental information and" should {
+  // Element Tests
+  "\nElement classes hold environmental information and" should {
 
     "Properly construct" in {
       (elevation1.value == Some(417.0)) &&
@@ -86,11 +85,11 @@ object EnvironmentSpecs extends Specification {
     }
   }
   // Cell Tests
-  "\nCell class holds (x,y) position and list of Variables and" should {
+  "\nCell class holds (x,y) position and list of Elements and" should {
 
     "Properly construct" in {
-      (point11.variables == variableList1) &&
-      (point13.variables == AB.empty)
+      (point11.elements == elementList1) &&
+      (point13.elements == AB.empty)
     }
     "Get x position" in {
       point11.getX == 1
@@ -113,9 +112,9 @@ object EnvironmentSpecs extends Specification {
       environment.getCell(1, 1) == Some(point11)
     }
     "Return a Set of all varialbe names on the grid" in {
-      environment.getVariableNames == allVariableTypes.map(_.name).toSet
+      environment.getElementNames == allElementTypes.map(_.name).toSet
     }
-    "Return a grid layer of a specific Variable" in {
+    "Return a grid layer of a specific Element" in {
       environment.getLayer("Elevation") == testLayer
     }
   }

@@ -1,7 +1,6 @@
-// src\main\scala\SandBox.scala
 import environment._
 import environment.cell._
-import environment.variable._
+import environment.element._
 import environment.RandomGenerator._
 
 import customtypes.Grid._
@@ -16,13 +15,13 @@ object SandBox {
     ** Create data to test on
     *******************************************************/
 
-    // Variable
+    // Element
     val elevation1 = new Elevation(Some(417.0))
     val latitude1 = new Latitude()
     val longitude1 = new Longitude(245.5)
     val temperature1 = new Temperature(77.0)
     val windSpeed1 = new WindSpeed(0)
-    val variableList1 = AB(
+    val elementList1 = AB(
       elevation1, latitude1, longitude1, temperature1, windSpeed1
     )
 
@@ -31,13 +30,13 @@ object SandBox {
     val longitude2 = new Longitude(200.0)
     val temperature2 = new Temperature(100)
     val windSpeed2 = new WindSpeed(15)
-    val variableList2 = AB(
+    val elementList2 = AB(
       elevation2, latitude2, longitude2, temperature2, windSpeed2
     )
 
     // Cell
-    val cell11 = new Cell(1, 1, variableList1)
-    val cell12 = new Cell(1, 2, variableList2)
+    val cell11 = new Cell(1, 1, elementList1)
+    val cell12 = new Cell(1, 2, elementList2)
     val cell13 = new Cell(1, 3)
     val cell21 = new Cell(2, 1)
     val cell22 = new Cell(2, 2)
@@ -59,7 +58,7 @@ object SandBox {
     val testBuild = buildRandomGrid(3, 3, scarcityMap1)
 
     // Other
-    val allVariableTypes = AB(
+    val allElementTypes = AB(
       elevation1, latitude1, longitude1, temperature1, windSpeed1
     )
     val testLayer = AB(
