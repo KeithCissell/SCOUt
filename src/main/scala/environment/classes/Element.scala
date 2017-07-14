@@ -35,9 +35,6 @@ trait Element {
   }
 }
 
-trait ConstantElement extends Element {
-
-}
 
 class Decible(var value: Option[Double]) extends Element {
   val name = "Decible"
