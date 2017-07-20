@@ -10,50 +10,49 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 
 object LayerGenerator {
 
-  def generateLayer(length: Int, width: Int, seed: ElementSeed): Grid[Element] = seed match {
+  def generateLayer(length: Int, width: Int, seed: ElementSeed): Layer = seed match {
     case s: ElevationSeed   => elevationLayer(length, width, s)
     case s: LatitudeSeed    => latitudeLayer(length, width, s)
     case s: LongitudeSeed   => longitudeLayer(length, width, s)
   }
 
 
-  def decibleLayer: Grid[Element] = {
-    AB(AB(None))
-  }
-
-  def elevationLayer(l: Int, w: Int, seed: ElevationSeed): Grid[Element] = {
-    val layer: Grid[Element] = AB.fill(l)(AB.fill(w)(None))
+  def elevationLayer(l: Int, w: Int, seed: ElevationSeed): Layer = {
+    val emptyL: Grid[Element] = AB.fill(l)(AB.fill(w)(None))
+    val layer = new Layer(emptyL)
     for {
       x <- 0 until l
       y <- 0 until w
-    } layer(x)(y) = Some(new Elevation(100.0))
+    } {
+      val value = 100.0
+      layer.setElement(x, y, new Elevation(value))
+    }
     return layer
   }
 
-  def latitudeLayer(l: Int, w: Int, seed: LatitudeSeed): Grid[Element] = {
-    val layer: Grid[Element] = AB.fill(l)(AB.fill(w)(None))
+  def latitudeLayer(l: Int, w: Int, seed: LatitudeSeed): Layer = {
+    val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
     for {
       x <- 0 until l
       y <- 0 until w
-    } layer(x)(y) = Some(new Latitude(seed.rootValue + (y * seed.scale)))
+    } {
+      val value = seed.rootValue + (y * seed.scale)
+      layer.setElement(x, y, new Latitude(value))
+    }
     return layer
   }
 
-  def longitudeLayer(l: Int, w: Int, seed: LongitudeSeed): Grid[Element] = {
-    val layer: Grid[Element] = AB.fill(l)(AB.fill(w)(None))
+  def longitudeLayer(l: Int, w: Int, seed: LongitudeSeed): Layer = {
+    val emptyL: Grid[Element] = AB.fill(l)(AB.fill(w)(None))
+    val layer = new Layer(emptyL)
     for {
       x <- 0 until l
       y <- 0 until w
-    } layer(x)(y) = Some(new Latitude(seed.rootValue + (x * seed.scale)))
+    } {
+      val value = seed.rootValue + (x * seed.scale)
+      layer.setElement(x, y, new Longitude(value))
+    }
     return layer
-  }
-
-  def temperatureLayer: Grid[Element] = {
-    AB(AB(None))
-  }
-
-  def windSpeedLayer: Grid[Element] = {
-    AB(AB(None))
   }
 
 }

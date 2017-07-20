@@ -2,6 +2,7 @@ package environment
 
 import customtypes.Grid._
 import environment.cell._
+import environment.layer._
 import environment.element._
 
 import scala.collection.mutable.{ArrayBuffer => AB}
@@ -29,12 +30,12 @@ class Environment(val name: String, private var grid: Grid[Cell]) {
     } yield v).toSet
   }
   // returns a grid with a specified element at each Cell
-  def getLayer(element: String): Grid[Element] = {
-    var layer: Grid[Element] = AB.fill(length)(AB.fill(width)(None))
+  def getLayer(element: String): Layer = {
+    var layer = new Layer(AB.fill(length)(AB.fill(width)(None)))
     for {
       x <- 0 until length
       y <- 0 until width
-    } layer(x)(y) = grid(x)(y) match {
+    } layer.layer(x)(y) = grid(x)(y) match {
       case Some(p)  => p.get(element)
       case None     => None
       case _        => None
@@ -58,12 +59,12 @@ class Environment(val name: String, private var grid: Grid[Cell]) {
     case None     => grid(x)(y) = Some(new Cell(x, y, Map(element.name -> element)))
   }
   // takes a layer of elements and adds it to the environment
-  def setLayer(layer: Grid[Element]) = {
+  def setLayer(layer: Layer) = {
     for {
       x <- 0 until length
       y <- 0 until width
-      if layer(x)(y) != None
-    } setElement(x, y, layer(x)(y).get)
+      if layer.getElement(x, y) != None
+    } setElement(x, y, layer.getElement(x, y).get)
   }
 
 }

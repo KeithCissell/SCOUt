@@ -76,8 +76,6 @@ object SandBox {
     val longLayer1 = longitudeLayer(3, 3, longSeed1)
 
     // EnvironmentGenerator
-    val scarcityMap1 = Map("Elevation" -> Some(1.0), "Temperature" -> Some(0.5), "Latitude" -> Some(0.25))
-    //val testBuild = buildRandomEnvironment("TestRandom", 3, 3, scarcityMap1)
 
 
     // Other
@@ -89,14 +87,6 @@ object SandBox {
       AB(None, None, None),
       AB(None, None, None)
     )
-    def printLayer(l: Grid[Element]) = {
-      for (x <- l) {
-        for (y <- x) {
-          print(y.get + "\t")
-        }
-        print("\n")
-      }
-    }
 
 
     /*******************************************************
@@ -113,9 +103,9 @@ object SandBox {
     //println(testBuild)
 
     // Test generateLayer
-    // printLayer(elvLayer1)
-    // printLayer(latLayer1)
-    // printLayer(longLayer1)
+    println(elvLayer1)
+    println(latLayer1)
+    println(longLayer1)
 
   }
 
