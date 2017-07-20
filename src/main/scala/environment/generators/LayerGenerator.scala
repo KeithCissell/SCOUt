@@ -6,6 +6,7 @@ import environment.generator.ElementSeeds._
 
 import customtypes.Grid._
 
+import scala.util.Random
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 object LayerGenerator {
@@ -17,15 +18,27 @@ object LayerGenerator {
   }
 
 
+  def randomDeviation(deviation: Double, mean: Double): Double = {
+    val lowerBound = mean - deviation
+    val upperBound = mean + deviation
+    val d = lowerBound + (upperBound - lowerBound) * Random.nextDouble
+    BigDecimal(d).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+  }
+
+
   def elevationLayer(l: Int, w: Int, seed: ElevationSeed): Layer = {
-    val emptyL: Grid[Element] = AB.fill(l)(AB.fill(w)(None))
-    val layer = new Layer(emptyL)
+    val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
     for {
       x <- 0 until l
       y <- 0 until w
-    } {
-      val value = 100.0
-      layer.setElement(x, y, new Elevation(value))
+    } (x,y) match {
+      case (0,0)  => layer.setElement(x, y, new Elevation(seed.average))
+      case _      => {
+        val cluster = layer.getCluster(x, y, 3)
+        val mean = cluster.sum / cluster.length
+        val value = randomDeviation(seed.deviation, mean)
+        layer.setElement(x, y, new Elevation(value))
+      }
     }
     return layer
   }
@@ -43,8 +56,7 @@ object LayerGenerator {
   }
 
   def longitudeLayer(l: Int, w: Int, seed: LongitudeSeed): Layer = {
-    val emptyL: Grid[Element] = AB.fill(l)(AB.fill(w)(None))
-    val layer = new Layer(emptyL)
+    val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
     for {
       x <- 0 until l
       y <- 0 until w
