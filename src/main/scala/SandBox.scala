@@ -1,8 +1,10 @@
 import environment._
 import environment.cell._
+import environment.layer._
 import environment.element._
+import environment.generator.ElementSeeds._
+import environment.generator.LayerGenerator._
 import environment.generator.RandomGenerator._
-
 
 import customtypes.Grid._
 
@@ -61,7 +63,19 @@ object SandBox {
     val grid: Grid[Cell] = AB(row1, row2, row3)
     val environment = new Environment("Test", grid)
 
-    // EnvironmentBuilder
+    // LayerGenerator
+    val elvSeed1 = ElevationSeed()
+    val elvLayer1 = elevationLayer(3, 3, elvSeed1)
+
+    val latSeed1 = LatitudeSeed()
+    val latLayer1 = latitudeLayer(3, 3, latSeed1)
+    val latSeed2 = LatitudeSeed(scale = 2.0)
+    val latLayer2 = latitudeLayer(3, 3, latSeed2)
+
+    val longSeed1 = LongitudeSeed()
+    val longLayer1 = longitudeLayer(3, 3, longSeed1)
+
+    // EnvironmentGenerator
     val scarcityMap1 = Map("Elevation" -> Some(1.0), "Temperature" -> Some(0.5), "Latitude" -> Some(0.25))
     //val testBuild = buildRandomEnvironment("TestRandom", 3, 3, scarcityMap1)
 
@@ -75,6 +89,14 @@ object SandBox {
       AB(None, None, None),
       AB(None, None, None)
     )
+    def printLayer(l: Grid[Element]) = {
+      for (x <- l) {
+        for (y <- x) {
+          print(y.get + "\t")
+        }
+        print("\n")
+      }
+    }
 
 
     /*******************************************************
@@ -90,8 +112,10 @@ object SandBox {
     // Test buildRandomGrid
     //println(testBuild)
 
-    println(cell11.getElements)
-    println(cell11.getElementNames)
+    // Test generateLayer
+    // printLayer(elvLayer1)
+    // printLayer(latLayer1)
+    // printLayer(longLayer1)
 
   }
 

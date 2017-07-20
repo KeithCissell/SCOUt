@@ -11,7 +11,11 @@ trait Element {
   val constant: Boolean
   val lowerBound: Double
   val upperBound: Double
-  //val standardDeviation: (Double, Double) // ._1 deviation ._2 per unit
+
+  override def toString: String = value match {
+    case Some(v)  => v.toString + unit
+    case None     => "NONE"
+  }
 
   // Determines if element can be set
   def settable: Boolean = constant match {
@@ -48,10 +52,10 @@ class Decible(var value: Option[Double]) extends Element {
 
 class Elevation(var value: Option[Double]) extends Element {
   val name = "Elevation"
-  val unit = "mi"
+  val unit = "ft"
   val constant = true
-  val lowerBound = -15.0
-  val upperBound = 15.0
+  val lowerBound = -1500.0
+  val upperBound = 1500.0
   def this(d: Double) = this(Some(d))
   def this()          = this(None)
 }

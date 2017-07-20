@@ -44,13 +44,12 @@ class Environment(val name: String, private var grid: Grid[Cell]) {
   // returns all Cells in range of an origin
   def getCluster(originX: Int, originY: Int, range: Int): Seq[Cell] = {
     val refCell = new Cell(originX, originY)
-    val origin = (originX, originY)
     val cluster = for {
       x <- -range to range
       y <- -range to range
-      if refCell.dist(origin._1 + x, origin._2 + y) <= range
-      if refCell.dist(origin._1 + x, origin._2 + y) != 0
-    } yield getCell(origin._1 + x, origin._2 + y)
+      if refCell.dist(originX + x, originY + y) <= range
+      if refCell.dist(originX + x, originY + y) != 0
+    } yield getCell(originX + x, originY + y)
     return cluster.flatten
   }
   // add a variable to a given point
