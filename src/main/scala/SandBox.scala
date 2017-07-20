@@ -46,20 +46,20 @@ object SandBox {
     )
 
     // Cell
-    val cell11 = new Cell(1, 1, elementMap1)
-    val cell12 = new Cell(1, 2, elementMap2)
-    val cell13 = new Cell(1, 3)
+    val cell00 = new Cell(0, 0, elementMap1)
+    val cell01 = new Cell(0, 1, elementMap2)
+    val cell02 = new Cell(0, 2)
+    val cell10 = new Cell(1, 0)
+    val cell11 = new Cell(1, 1)
+    val cell12 = new Cell(1, 2)
+    val cell20 = new Cell(2, 0)
     val cell21 = new Cell(2, 1)
     val cell22 = new Cell(2, 2)
-    val cell23 = new Cell(2, 3)
-    val cell31 = new Cell(3, 1)
-    val cell32 = new Cell(3, 2)
-    val cell33 = new Cell(3, 3)
 
     // Environment
-    val row1: AB[Option[Cell]] = AB(Some(cell11), Some(cell12), Some(cell13))
-    val row2: AB[Option[Cell]] = AB(Some(cell21), Some(cell22), Some(cell23))
-    val row3: AB[Option[Cell]] = AB(Some(cell31), Some(cell32), Some(cell33))
+    val row1: AB[Option[Cell]] = AB(Some(cell00), Some(cell01), Some(cell02))
+    val row2: AB[Option[Cell]] = AB(Some(cell10), Some(cell11), Some(cell12))
+    val row3: AB[Option[Cell]] = AB(Some(cell20), Some(cell21), Some(cell22))
     val grid: Grid[Cell] = AB(row1, row2, row3)
     val environment = new Environment("Test", grid)
 
@@ -75,7 +75,14 @@ object SandBox {
     val longSeed1 = LongitudeSeed()
     val longLayer1 = longitudeLayer(3, 3, longSeed1)
 
+    val seedList1 = List (
+      elvSeed1,
+      latSeed1,
+      longSeed1
+    )
+
     // EnvironmentGenerator
+    val randomEnv1 = generateRandomEnvironment("Random1", 3, 3, seedList1)
 
 
     // Other
@@ -103,9 +110,7 @@ object SandBox {
     //println(testBuild)
 
     // Test generateLayer
-    println(elvLayer1)
-    println(latLayer1)
-    println(longLayer1)
+    println(randomEnv1)
 
   }
 

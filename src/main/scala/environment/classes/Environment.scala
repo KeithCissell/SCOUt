@@ -13,13 +13,25 @@ class Environment(val name: String, private var grid: Grid[Cell]) {
   val length = grid.length
   val width = if (grid.isEmpty) 0 else grid(0).length
 
+  override def toString: String = {
+    var str = name + "\n"
+    for {
+      x <- 0 until length
+      y <- 0 until width
+    } getCell(x, y) match {
+      case Some(c)  => str += c.toString + "\n"
+      case None     => str += s"No Cell Found at: ($x, $y)\n"
+    }
+    return str
+  }
+
   //        METHODS
   // return copy of the grid
   def getGrid: Grid[Cell] = grid
   // returns the grid Cell at (x,y)
   def getCell(x: Int, y: Int): Option[Cell] = { //(x-1,y-1) match {
-    if (x >= 1 && x <= length && y >= 1 && y <= width) {
-      grid(x-1)(y-1)
+    if (x >= 0 && x < length && y >= 0 && y < width) {
+      grid(x)(y)
     } else None
   }
   // returns a set of all elements in the grid
@@ -55,7 +67,7 @@ class Environment(val name: String, private var grid: Grid[Cell]) {
   }
   // add a variable to a given point
   def setElement(x: Int, y: Int, element: Element) = getCell(x, y) match {
-    case Some(_)  => grid(x)(y).get.setElement(element)
+    case Some(e)  => grid(x)(y).get.setElement(element)
     case None     => grid(x)(y) = Some(new Cell(x, y, Map(element.name -> element)))
   }
   // takes a layer of elements and adds it to the environment
@@ -63,8 +75,10 @@ class Environment(val name: String, private var grid: Grid[Cell]) {
     for {
       x <- 0 until length
       y <- 0 until width
-      if layer.getElement(x, y) != None
-    } setElement(x, y, layer.getElement(x, y).get)
+    } layer.getElement(x, y) match {
+      case Some(e)  => setElement(x, y, e)
+      case None     => // Nothing to do here
+    }
   }
 
 }

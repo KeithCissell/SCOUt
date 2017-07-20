@@ -10,9 +10,12 @@ case class Cell(val x: Int, val y: Int,
     private var elements: Map[String,Element] = Map.empty) {
 
   override def toString: String = {
-    var elementsString = ""
-    for (v <- elements.values) elementsString += s"\n\t${v.name}: ${v.value} ${v.unit}"
-    return s"\nCell ($x, $y)\nElements:$elementsString"
+    var str = s"\nCell ($x, $y)"
+    for (e <- elements.values) e.value match {
+      case Some(v)  => str += s"\n\t${e.name}: $v ${e.unit}"
+      case None     => str += s"\n\t${e.name}: NONE"
+    }
+    return str
   }
 
   def getX: Int = x
@@ -36,5 +39,11 @@ case class Cell(val x: Int, val y: Int,
   }
   def getElements: List[Element] = elements.values.toList
   def getElementNames: Set[String] = elements.keys.toSet
-  def setElement(element: Element) = elements + (element.name -> element)
+  def setElement(element: Element) = elements.get(element.name) match {
+    case None     => elements = elements + (element.name -> element)
+    case Some(e)  => element.value match {
+      case Some(v)  => e.set(v)
+      case None     => // Nothing to do
+    }
+  }
 }
