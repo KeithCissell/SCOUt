@@ -56,13 +56,6 @@ class Decible(var value: Option[Double]) extends Element {
   val upperBound = 120.0
   def this(d: Double) = this(Some(d))
   def this()          = this(None)
-  override def set(d: Double) = {
-    if (settable) d match {
-      case v if v < lowerBound  => value = Some(lowerBound)
-      case v if v > upperBound  => value = Some(upperBound)
-      case _                    => value = Some(d)
-    }
-  }
 }
 
 class Elevation(var value: Option[Double]) extends Element {

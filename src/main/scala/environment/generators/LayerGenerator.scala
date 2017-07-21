@@ -14,10 +14,13 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 object LayerGenerator {
 
   def generateLayer(length: Int, width: Int, seed: ElementSeed): Layer = seed match {
-    case s: DecibleSeed     => decibleLayer(length, width, s)
-    case s: ElevationSeed   => elevationLayer(length, width, s)
-    case s: LatitudeSeed    => latitudeLayer(length, width, s)
-    case s: LongitudeSeed   => longitudeLayer(length, width, s)
+    case s: DecibleSeed       => decibleLayer(length, width, s)
+    case s: ElevationSeed     => elevationLayer(length, width, s)
+    case s: LatitudeSeed      => latitudeLayer(length, width, s)
+    case s: LongitudeSeed     => longitudeLayer(length, width, s)
+    case s: TemperatureSeed   => temperatureLayer(length, width, s)
+    case s: WindDirectionSeed => windDirectionLayer(length, width, s)
+    case s: WindSpeedSeed     => windSpeedLayer(length, width, s)
   }
 
 
@@ -40,17 +43,16 @@ object LayerGenerator {
 
   def elevationLayer(l: Int, w: Int, seed: ElevationSeed): Layer = {
     val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
+    if (l > 0 && w > 0) layer.setElement(0, 0, new Elevation(seed.average))
     for {
       x <- 0 until l
       y <- 0 until w
-    } (x,y) match {
-      case (0,0)  => layer.setElement(x, y, new Elevation(seed.average))
-      case _      => {
-        val cluster = layer.getClusterValues(x, y, 3)
-        val mean = cluster.sum / cluster.length
-        val value = seed.randomDeviation(seed.deviation, mean)
-        layer.setElement(x, y, new Elevation(value))
-      }
+      if (x,y) != (0,0)
+    } {
+      val cluster = layer.getClusterValues(x, y, 3)
+      val mean = cluster.sum / cluster.length
+      val value = seed.randomDeviation(mean)
+      layer.setElement(x, y, new Elevation(value))
     }
     return layer
   }
@@ -75,6 +77,54 @@ object LayerGenerator {
     } {
       val value = seed.rootValue + (x * seed.scale)
       layer.setElement(x, y, new Longitude(value))
+    }
+    return layer
+  }
+
+  def temperatureLayer(l: Int, w: Int, seed: TemperatureSeed): Layer = {
+    val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
+    if (l > 0 && w > 0) layer.setElement(0, 0, new Elevation(seed.average))
+    for {
+      x <- 0 until l
+      y <- 0 until w
+      if (x,y) != (0,0)
+    } {
+      val cluster = layer.getClusterValues(x, y, 3)
+      val mean = cluster.sum / cluster.length
+      val value = seed.randomDeviation(mean)
+      layer.setElement(x, y, new Temperature(value))
+    }
+    return layer
+  }
+
+  def windDirectionLayer(l: Int, w: Int, seed: WindDirectionSeed): Layer = {
+    val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
+    if (l > 0 && w > 0) layer.setElement(0, 0, new WindDirection(seed.average))
+    for {
+      x <- 0 until l
+      y <- 0 until w
+      if (x,y) != (0,0)
+    } {
+      val cluster = layer.getClusterValues(x, y, 3)
+      val mean = cluster.sum / cluster.length
+      val value = seed.randomDeviation(mean)
+      layer.setElement(x, y, new WindDirection(value))
+    }
+    return layer
+  }
+
+  def windSpeedLayer(l: Int, w: Int, seed: WindSpeedSeed): Layer = {
+    val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
+    if (l > 0 && w > 0) layer.setElement(0, 0, new WindSpeed(seed.average))
+    for {
+      x <- 0 until l
+      y <- 0 until w
+      if (x,y) != (0,0)
+    } {
+      val cluster = layer.getClusterValues(x, y, 3)
+      val mean = cluster.sum / cluster.length
+      val value = seed.randomDeviation(mean)
+      layer.setElement(x, y, new WindSpeed(value))
     }
     return layer
   }

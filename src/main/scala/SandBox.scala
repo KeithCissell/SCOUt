@@ -78,15 +78,27 @@ object SandBox {
     val longSeed1 = LongitudeSeed()
     val longLayer1 = longitudeLayer(3, 3, longSeed1)
 
+    val tempSeed1 = TemperatureSeed()
+    val tempLayer1 = temperatureLayer(3, 3, tempSeed1)
+
+    val wdSeed1 = WindDirectionSeed()
+    val wdLayer1 = windDirectionLayer(3, 3, wdSeed1)
+
+    val wsSeed1 = WindSpeedSeed()
+    val wsLayer1 = windSpeedLayer(3, 3, wsSeed1)
+
     val seedList1 = List(
       decSeed1,
       elvSeed1,
       latSeed1,
-      longSeed1
+      longSeed1,
+      tempSeed1,
+      wdSeed1,
+      wsSeed1
     )
 
     // EnvironmentGenerator
-    // val randomEnv1 = generateRandomEnvironment("Random1", 5, 5, seedList1)
+    val randomEnv1 = generateRandomEnvironment("Random1", 5, 5, seedList1)
 
 
     // Other
@@ -111,14 +123,15 @@ object SandBox {
     // println(environment.getCluster(2, 2, 5))
 
     // Test generateLayer
-    println(decLayer1)
+    // println(decLayer1)
     // println(elvLayer1)
     // println(latLayer1)
     // println(latLayer2)
     // println(longLayer1)
+    // println(tempLayer1)
 
     // Test generateRandomEnvironment
-    // println(randomEnv1)
+    println(randomEnv1)
 
   }
 

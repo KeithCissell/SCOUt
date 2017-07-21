@@ -54,9 +54,9 @@ object ElementSeeds {
     val elementName: String = "Elevation",
     val dynamic: Boolean = false,
     val average: Double = 0.0,
-    val deviation: Double = .15 * scale
+    val deviation: Double = 0.15 * scale
   ) extends ElementSeed {
-    def randomDeviation(deviation: Double, mean: Double): Double = {
+    def randomDeviation(mean: Double): Double = {
       val lowerBound = mean - deviation
       val upperBound = mean + deviation
       randomRange(lowerBound, upperBound)
@@ -76,5 +76,44 @@ object ElementSeeds {
     val rootValue: Double = 1.0,
     val scale: Double = .000003 * scale
   ) extends ElementSeed {}
+
+  case class TemperatureSeed(
+    val elementName: String = "Temperature",
+    val dynamic: Boolean = true,
+    val average: Double = 70.0,
+    val deviation: Double = 0.2
+  ) extends ElementSeed {
+    def randomDeviation(mean: Double): Double = {
+      val lowerBound = mean - deviation
+      val upperBound = mean - deviation
+      randomRange(lowerBound, upperBound)
+    }
+  }
+
+  case class WindDirectionSeed(
+    val elementName: String = "Wind Direction",
+    val dynamic: Boolean = true,
+    val average: Double = 0.0,
+    val deviation: Double = 1.5
+  ) extends ElementSeed {
+    def randomDeviation(mean: Double): Double = {
+      val lowerBound = mean - deviation
+      val upperBound = mean - deviation
+      randomRange(lowerBound, upperBound)
+    }
+  }
+
+  case class WindSpeedSeed(
+    val elementName: String = "Wind Speed",
+    val dynamic: Boolean = true,
+    val average: Double = 3.0,
+    val deviation: Double = 0.2
+  ) extends ElementSeed {
+    def randomDeviation(mean: Double): Double = {
+      val lowerBound = mean - deviation
+      val upperBound = mean - deviation
+      randomRange(lowerBound, upperBound)
+    }
+  }
 
 }
