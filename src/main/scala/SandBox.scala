@@ -23,7 +23,7 @@ object SandBox {
     val latitude1 = new Latitude()
     val longitude1 = new Longitude(245.5)
     val temperature1 = new Temperature(77.0)
-    val windSpeed1 = new WindSpeed(0)
+    val windSpeed1 = new WindSpeed(2.0)
     val elementMap1 = Map(
       elevation1.name -> elevation1,
       latitude1.name -> latitude1,
@@ -32,11 +32,11 @@ object SandBox {
       windSpeed1.name -> windSpeed1
     )
 
-    val elevation2 = new Elevation(17)
+    val elevation2 = new Elevation(17.0)
     val latitude2 = new Latitude(23.45)
     val longitude2 = new Longitude(200.0)
-    val temperature2 = new Temperature(100)
-    val windSpeed2 = new WindSpeed(15)
+    val temperature2 = new Temperature(100.0)
+    val windSpeed2 = new WindSpeed(15.0)
     val elementMap2 = Map(
       elevation2.name -> elevation2,
       latitude2.name -> latitude2,
@@ -64,6 +64,9 @@ object SandBox {
     val environment = new Environment("Test", grid)
 
     // LayerGenerator
+    val decSeed1 = DecibleSeed(randomSources = 3)
+    val decLayer1 = decibleLayer(3, 3, decSeed1)
+
     val elvSeed1 = ElevationSeed()
     val elvLayer1 = elevationLayer(3, 3, elvSeed1)
 
@@ -76,13 +79,14 @@ object SandBox {
     val longLayer1 = longitudeLayer(3, 3, longSeed1)
 
     val seedList1 = List (
+      decSeed1,
       elvSeed1,
       latSeed1,
       longSeed1
     )
 
     // EnvironmentGenerator
-    val randomEnv1 = generateRandomEnvironment("Random1", 3, 3, seedList1)
+    //val randomEnv1 = generateRandomEnvironment("Random1", 3, 3, seedList1)
 
 
     // Other
@@ -106,11 +110,23 @@ object SandBox {
     // println(environment.getCluster(2, 2, 1))
     // println(environment.getCluster(2, 2, 5))
 
-    // Test buildRandomGrid
-    //println(testBuild)
-
     // Test generateLayer
-    println(randomEnv1)
+    // println(decSeed1)
+    // println(elvLayer1)
+    // println(latLayer1)
+    // println(latLayer2)
+    // println(longLayer1)
+
+    // Test generateRandomEnvironment
+    //println(randomEnv1)
+
+    // Quick Tests
+    println(windSpeed1.value)
+    println(latitude1.value)
+    windSpeed1.set(-30.0)
+    latitude1.set(327)
+    println(windSpeed1.value)
+    println(latitude1.value)
 
   }
 

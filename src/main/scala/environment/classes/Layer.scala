@@ -24,6 +24,10 @@ class Layer(val layer: Grid[Element]) {
   private def inLayer(x: Int, y: Int): Boolean = {
     x >= 0 && x < length && y >= 0 && y < width
   }
+  
+  private def dist(x1: Int, y1: Int, x2: Int, y2: Int): Double = {
+    sqrt(pow(x2 - x1, 2.0) + pow(y2 - y1, 2.0))
+  }
 
   def getElement(x: Int, y: Int): Option[Element] = {
     if (inLayer(x, y)) {
@@ -35,10 +39,6 @@ class Layer(val layer: Grid[Element]) {
     if (inLayer(x, y)) {
       layer(x)(y) = Some(e)
     }
-  }
-
-  private def dist(x1: Int, y1: Int, x2: Int, y2: Int): Double = {
-    sqrt(pow(x2 - x1, 2.0) + pow(y2 - y1, 2.0))
   }
 
   def getCluster(originX: Int, originY: Int, range: Int): List[Double] = {

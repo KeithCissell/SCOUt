@@ -12,19 +12,18 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 object LayerGenerator {
 
   def generateLayer(length: Int, width: Int, seed: ElementSeed): Layer = seed match {
+    case s: DecibleSeed     => decibleLayer(length, width, s)
     case s: ElevationSeed   => elevationLayer(length, width, s)
     case s: LatitudeSeed    => latitudeLayer(length, width, s)
     case s: LongitudeSeed   => longitudeLayer(length, width, s)
   }
 
 
-  def randomDeviation(deviation: Double, mean: Double): Double = {
-    val lowerBound = mean - deviation
-    val upperBound = mean + deviation
-    val d = lowerBound + (upperBound - lowerBound) * Random.nextDouble
-    BigDecimal(d).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+  def decibleLayer(l: Int, w:Int, seed: DecibleSeed): Layer = {
+    val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
+    for (rs <- 0 until seed.randomSources) seed.createRandomSource(l, w)
+    return layer
   }
-
 
   def elevationLayer(l: Int, w: Int, seed: ElevationSeed): Layer = {
     val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
@@ -36,7 +35,7 @@ object LayerGenerator {
       case _      => {
         val cluster = layer.getCluster(x, y, 3)
         val mean = cluster.sum / cluster.length
-        val value = randomDeviation(seed.deviation, mean)
+        val value = seed.randomDeviation(seed.deviation, mean)
         layer.setElement(x, y, new Elevation(value))
       }
     }
