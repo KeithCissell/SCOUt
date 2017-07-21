@@ -1,8 +1,10 @@
 import environment._
 import environment.cell._
+import environment.layer._
 import environment.element._
+import environment.generator.ElementSeeds._
+import environment.generator.LayerGenerator._
 import environment.generator.RandomGenerator._
-
 
 import customtypes.Grid._
 
@@ -21,7 +23,7 @@ object SandBox {
     val latitude1 = new Latitude()
     val longitude1 = new Longitude(245.5)
     val temperature1 = new Temperature(77.0)
-    val windSpeed1 = new WindSpeed(0)
+    val windSpeed1 = new WindSpeed(2.0)
     val elementMap1 = Map(
       elevation1.name -> elevation1,
       latitude1.name -> latitude1,
@@ -30,11 +32,11 @@ object SandBox {
       windSpeed1.name -> windSpeed1
     )
 
-    val elevation2 = new Elevation(17)
+    val elevation2 = new Elevation(17.0)
     val latitude2 = new Latitude(23.45)
     val longitude2 = new Longitude(200.0)
-    val temperature2 = new Temperature(100)
-    val windSpeed2 = new WindSpeed(15)
+    val temperature2 = new Temperature(100.0)
+    val windSpeed2 = new WindSpeed(15.0)
     val elementMap2 = Map(
       elevation2.name -> elevation2,
       latitude2.name -> latitude2,
@@ -44,26 +46,59 @@ object SandBox {
     )
 
     // Cell
-    val cell11 = new Cell(1, 1, elementMap1)
-    val cell12 = new Cell(1, 2, elementMap2)
-    val cell13 = new Cell(1, 3)
+    val cell00 = new Cell(0, 0, elementMap1)
+    val cell01 = new Cell(0, 1, elementMap2)
+    val cell02 = new Cell(0, 2)
+    val cell10 = new Cell(1, 0)
+    val cell11 = new Cell(1, 1)
+    val cell12 = new Cell(1, 2)
+    val cell20 = new Cell(2, 0)
     val cell21 = new Cell(2, 1)
     val cell22 = new Cell(2, 2)
-    val cell23 = new Cell(2, 3)
-    val cell31 = new Cell(3, 1)
-    val cell32 = new Cell(3, 2)
-    val cell33 = new Cell(3, 3)
 
     // Environment
-    val row1: AB[Option[Cell]] = AB(Some(cell11), Some(cell12), Some(cell13))
-    val row2: AB[Option[Cell]] = AB(Some(cell21), Some(cell22), Some(cell23))
-    val row3: AB[Option[Cell]] = AB(Some(cell31), Some(cell32), Some(cell33))
+    val row1: AB[Option[Cell]] = AB(Some(cell00), Some(cell01), Some(cell02))
+    val row2: AB[Option[Cell]] = AB(Some(cell10), Some(cell11), Some(cell12))
+    val row3: AB[Option[Cell]] = AB(Some(cell20), Some(cell21), Some(cell22))
     val grid: Grid[Cell] = AB(row1, row2, row3)
     val environment = new Environment("Test", grid)
 
-    // EnvironmentBuilder
-    val scarcityMap1 = Map("Elevation" -> Some(1.0), "Temperature" -> Some(0.5), "Latitude" -> Some(0.25))
-    //val testBuild = buildRandomEnvironment("TestRandom", 3, 3, scarcityMap1)
+    // LayerGenerator
+    val decSeed1 = DecibleSeed(sources = AB(NoiseSource(2,2,27.0)))
+    val decLayer1 = decibleLayer(5, 5, decSeed1)
+
+    val elvSeed1 = ElevationSeed()
+    val elvLayer1 = elevationLayer(3, 3, elvSeed1)
+
+    val latSeed1 = LatitudeSeed()
+    val latLayer1 = latitudeLayer(3, 3, latSeed1)
+    val latSeed2 = LatitudeSeed(scale = 2.0)
+    val latLayer2 = latitudeLayer(3, 3, latSeed2)
+
+    val longSeed1 = LongitudeSeed()
+    val longLayer1 = longitudeLayer(3, 3, longSeed1)
+
+    val tempSeed1 = TemperatureSeed()
+    val tempLayer1 = temperatureLayer(3, 3, tempSeed1)
+
+    val wdSeed1 = WindDirectionSeed()
+    val wdLayer1 = windDirectionLayer(3, 3, wdSeed1)
+
+    val wsSeed1 = WindSpeedSeed()
+    val wsLayer1 = windSpeedLayer(3, 3, wsSeed1)
+
+    val seedList1 = List(
+      decSeed1,
+      elvSeed1,
+      latSeed1,
+      longSeed1,
+      tempSeed1,
+      wdSeed1,
+      wsSeed1
+    )
+
+    // EnvironmentGenerator
+    val randomEnv1 = generateRandomEnvironment("Random1", 5, 5, seedList1)
 
 
     // Other
@@ -87,11 +122,16 @@ object SandBox {
     // println(environment.getCluster(2, 2, 1))
     // println(environment.getCluster(2, 2, 5))
 
-    // Test buildRandomGrid
-    //println(testBuild)
+    // Test generateLayer
+    // println(decLayer1)
+    // println(elvLayer1)
+    // println(latLayer1)
+    // println(latLayer2)
+    // println(longLayer1)
+    // println(tempLayer1)
 
-    println(cell11.getElements)
-    println(cell11.getElementNames)
+    // Test generateRandomEnvironment
+    println(randomEnv1)
 
   }
 

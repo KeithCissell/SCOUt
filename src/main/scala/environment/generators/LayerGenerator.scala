@@ -1,44 +1,132 @@
 package environment.generator
 
+import myutil.Util._
+import environment.layer._
 import environment.element._
+import environment.generator.ElementSeeds._
 
 import customtypes.Grid._
 
+import scala.math._
+import scala.util.Random
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 object LayerGenerator {
 
-  def generateLayer(element: String, scarcity: Option[Double]): Grid[Element] = element match {
-    case "Decible"      => decibleLayer
-    case "Elevation"    => elevationLayer
-    case "Latitude"     => latitudeLayer
-    case "Longitude"    => longitudeLayer
-    case "Temperature"  => temperatureLayer
-    case "Wind Speed"   => windSpeedLayer
+  def generateLayer(length: Int, width: Int, seed: ElementSeed): Layer = seed match {
+    case s: DecibleSeed       => decibleLayer(length, width, s)
+    case s: ElevationSeed     => elevationLayer(length, width, s)
+    case s: LatitudeSeed      => latitudeLayer(length, width, s)
+    case s: LongitudeSeed     => longitudeLayer(length, width, s)
+    case s: TemperatureSeed   => temperatureLayer(length, width, s)
+    case s: WindDirectionSeed => windDirectionLayer(length, width, s)
+    case s: WindSpeedSeed     => windSpeedLayer(length, width, s)
   }
 
-  def decibleLayer: Grid[Element] = {
-    AB(AB(None))
+
+  def decibleLayer(l: Int, w:Int, seed: DecibleSeed): Layer = {
+    val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
+    for (rs <- 0 until seed.randomSources) seed.createRandomSource(l, w)
+    for (source <- seed.sources) {
+      layer.setElement(source.x, source.y, new Decible(source.value))
+      val cellRange = round(seed.soundRange(source) / seed.scale).toInt
+      for {
+        x <- (source.x - cellRange) to (source.x + cellRange)
+        y <- (source.y - cellRange) to (source.y + cellRange)
+        if dist(x, y, source.x, source.y) != 0
+        if dist(x, y, source.x, source.y) <= cellRange
+        if layer.inLayer(x, y)
+      } layer.setElement(x, y, new Decible(seed.soundReduction(source, x, y)))
+    }
+    return layer
   }
 
-  def elevationLayer: Grid[Element] = {
-    AB(AB(None))
+  def elevationLayer(l: Int, w: Int, seed: ElevationSeed): Layer = {
+    val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
+    if (l > 0 && w > 0) layer.setElement(0, 0, new Elevation(seed.average))
+    for {
+      x <- 0 until l
+      y <- 0 until w
+      if (x,y) != (0,0)
+    } {
+      val cluster = layer.getClusterValues(x, y, 3)
+      val mean = cluster.sum / cluster.length
+      val value = seed.randomDeviation(mean)
+      layer.setElement(x, y, new Elevation(value))
+    }
+    return layer
   }
 
-  def latitudeLayer: Grid[Element] = {
-    AB(AB(None))
+  def latitudeLayer(l: Int, w: Int, seed: LatitudeSeed): Layer = {
+    val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
+    for {
+      x <- 0 until l
+      y <- 0 until w
+    } {
+      val value = seed.rootValue + (y * seed.scale)
+      layer.setElement(x, y, new Latitude(value))
+    }
+    return layer
   }
 
-  def longitudeLayer: Grid[Element] = {
-    AB(AB(None))
+  def longitudeLayer(l: Int, w: Int, seed: LongitudeSeed): Layer = {
+    val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
+    for {
+      x <- 0 until l
+      y <- 0 until w
+    } {
+      val value = seed.rootValue + (x * seed.scale)
+      layer.setElement(x, y, new Longitude(value))
+    }
+    return layer
   }
 
-  def temperatureLayer: Grid[Element] = {
-    AB(AB(None))
+  def temperatureLayer(l: Int, w: Int, seed: TemperatureSeed): Layer = {
+    val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
+    if (l > 0 && w > 0) layer.setElement(0, 0, new Elevation(seed.average))
+    for {
+      x <- 0 until l
+      y <- 0 until w
+      if (x,y) != (0,0)
+    } {
+      val cluster = layer.getClusterValues(x, y, 3)
+      val mean = cluster.sum / cluster.length
+      val value = seed.randomDeviation(mean)
+      layer.setElement(x, y, new Temperature(value))
+    }
+    return layer
   }
 
-  def windSpeedLayer: Grid[Element] = {
-    AB(AB(None))
+  def windDirectionLayer(l: Int, w: Int, seed: WindDirectionSeed): Layer = {
+    val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
+    if (l > 0 && w > 0) layer.setElement(0, 0, new WindDirection(seed.average))
+    for {
+      x <- 0 until l
+      y <- 0 until w
+      if (x,y) != (0,0)
+    } {
+      val cluster = layer.getClusterValues(x, y, 3)
+      val mean = cluster.sum / cluster.length
+      val value = seed.randomDeviation(mean)
+      layer.setElement(x, y, new WindDirection(value))
+    }
+    return layer
+  }
+
+  def windSpeedLayer(l: Int, w: Int, seed: WindSpeedSeed): Layer = {
+    val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
+    if (l > 0 && w > 0) layer.setElement(0, 0, new WindSpeed(seed.average))
+    for {
+      x <- 0 until l
+      y <- 0 until w
+      if (x,y) != (0,0)
+    } {
+      val cluster = layer.getClusterValues(x, y, 3)
+      val mean = cluster.sum / cluster.length
+      val value = seed.randomDeviation(mean)
+      layer.setElement(x, y, new WindSpeed(value))
+    }
+    return layer
   }
 
 }
