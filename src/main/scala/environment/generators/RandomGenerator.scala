@@ -21,7 +21,6 @@ object RandomGenerator {
     for (seed <- seeds) {
       val layer = generateLayer(length, width, seed)
       environment.setLayer(layer)
-      //println(environment)
     }
     return environment
   }

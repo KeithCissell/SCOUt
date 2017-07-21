@@ -1,10 +1,11 @@
 package environment.generator
 
-import myutil.RandomRange._
+import myutil.Util._
 import environment.element._
 
 import scala.math._
 import scala.util.Random
+import scala.collection.mutable.{ArrayBuffer => AB}
 
 
 object ElementSeeds {
@@ -14,7 +15,9 @@ object ElementSeeds {
     val dynamic: Boolean
   }
 
-  // Defaults within this program are generated with a scale of 10 ft. between each Cell.
+
+  // NOTE:  Defaults within this program are generated with a scale of 10 ft. between each Cell.
+  //        The scale can be adjusted but all equations are relative to ft.
   implicit val scale = 10.0
 
 
@@ -23,23 +26,27 @@ object ElementSeeds {
   case class DecibleSeed(
     val elementName: String = "Decible",
     val dynamic: Boolean = true,
-    val randomSources: Int = 1,
-    val sources: List[NoiseSource] = Nil
+    val scale: Double = scale,
+    val lowerBound: Double = 0.0,
+    val upperBound: Double = 120.0,
+    val randomSources: Int = 0,
+    val sources: AB[NoiseSource] = AB.empty
   ) extends ElementSeed {
-    private def dist(x1: Int, y1: Int, x2: Int, y2: Int): Double = {
-      sqrt(pow(x2 - x1, 2.0) + pow(y2 - y1, 2.0))
-    }
     def log2(x: Double): Double = log(x) / log(2)
     // NOTE: using noise ruduction of -6 dB every doubling of distance
     // http://www.sengpielaudio.com/calculator-distance.htm
     def soundReduction(source: NoiseSource, x: Int, y: Int): Double = {
-      val distance = dist(source.x, source.y, x, y)
-      source.value - (abs(log2(distance)) * 6)
+      val cellDist = dist(source.x, source.y, x, y) * scale
+      roundDouble2(source.value - (abs(log2(cellDist)) * 6))
+    }
+    def soundRange(source: NoiseSource): Double = {
+      pow(2, source.value / 6)
     }
     def createRandomSource(length: Int, width: Int) = {
-      val randX = round(randomRange(0, length-1))
-      val randY = round(randomRange(0, width-1))
-      
+      val randX = round(randomRange(0, length-1)).toInt
+      val randY = round(randomRange(0, width-1)).toInt
+      val randValue = randomRange(upperBound, lowerBound)
+      sources += NoiseSource(randX, randY, randValue)
     }
   }
 

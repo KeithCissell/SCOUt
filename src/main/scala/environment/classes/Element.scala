@@ -1,6 +1,6 @@
 package environment.element
 
-import myutil.RandomRange._
+import myutil.Util._
 
 import scala.math.BigDecimal
 
@@ -15,7 +15,7 @@ trait Element {
   val upperBound: Double
 
   override def toString: String = value match {
-    case Some(v)  => v.toString + unit
+    case Some(v)  => v.toString + " " + unit
     case None     => "NONE"
   }
 

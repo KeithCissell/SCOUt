@@ -64,8 +64,8 @@ object SandBox {
     val environment = new Environment("Test", grid)
 
     // LayerGenerator
-    val decSeed1 = DecibleSeed(randomSources = 3)
-    val decLayer1 = decibleLayer(3, 3, decSeed1)
+    val decSeed1 = DecibleSeed(sources = AB(NoiseSource(2,2,27.0)))
+    val decLayer1 = decibleLayer(5, 5, decSeed1)
 
     val elvSeed1 = ElevationSeed()
     val elvLayer1 = elevationLayer(3, 3, elvSeed1)
@@ -78,7 +78,7 @@ object SandBox {
     val longSeed1 = LongitudeSeed()
     val longLayer1 = longitudeLayer(3, 3, longSeed1)
 
-    val seedList1 = List (
+    val seedList1 = List(
       decSeed1,
       elvSeed1,
       latSeed1,
@@ -86,7 +86,7 @@ object SandBox {
     )
 
     // EnvironmentGenerator
-    //val randomEnv1 = generateRandomEnvironment("Random1", 3, 3, seedList1)
+    // val randomEnv1 = generateRandomEnvironment("Random1", 5, 5, seedList1)
 
 
     // Other
@@ -111,22 +111,14 @@ object SandBox {
     // println(environment.getCluster(2, 2, 5))
 
     // Test generateLayer
-    // println(decSeed1)
+    println(decLayer1)
     // println(elvLayer1)
     // println(latLayer1)
     // println(latLayer2)
     // println(longLayer1)
 
     // Test generateRandomEnvironment
-    //println(randomEnv1)
-
-    // Quick Tests
-    println(windSpeed1.value)
-    println(latitude1.value)
-    windSpeed1.set(-30.0)
-    latitude1.set(327)
-    println(windSpeed1.value)
-    println(latitude1.value)
+    // println(randomEnv1)
 
   }
 

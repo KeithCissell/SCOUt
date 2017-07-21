@@ -1,5 +1,6 @@
 package environment
 
+import myutil.Util._
 import customtypes.Grid._
 import environment.cell._
 import environment.layer._
@@ -55,15 +56,13 @@ class Environment(val name: String, private var grid: Grid[Cell]) {
     return layer
   }
   // returns all Cells in range of an origin
-  def getCluster(originX: Int, originY: Int, range: Int): Seq[Cell] = {
-    val refCell = new Cell(originX, originY)
-    val cluster = for {
-      x <- -range to range
-      y <- -range to range
-      if refCell.dist(originX + x, originY + y) <= range
-      if refCell.dist(originX + x, originY + y) != 0
-    } yield getCell(originX + x, originY + y)
-    return cluster.flatten
+  def getCluster(originX: Int, originY: Int, range: Int): List[Cell] = {
+    (for {
+      x <- (originX - range) to (originX + range)
+      y <- (originY - range) to (originY + range)
+      if dist(x, y, originX, originY) != 0
+      if dist(x, y, originX, originY) <= range
+    } yield getCell(x, y)).flatten.toList
   }
   // add a variable to a given point
   def setElement(x: Int, y: Int, element: Element) = getCell(x, y) match {
