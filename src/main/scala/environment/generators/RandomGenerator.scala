@@ -15,7 +15,7 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 
 object RandomGenerator {
 
-  def generateRandomEnvironment(name: String, length: Int, width: Int, seeds: List[ElementSeed]): Environment = {
+  def generateRandomEnvironment(name: String, length: Int, width: Int, seeds: List[ElementSeed] = Nil): Environment = {
     val grid = initializedGrid(length, width)
     val environment = new Environment(name, grid)
     for (seed <- seeds) {

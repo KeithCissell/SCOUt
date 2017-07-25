@@ -35,6 +35,13 @@ class Environment(val name: String, private var grid: Grid[Cell]) {
       grid(x)(y)
     } else None
   }
+  // returns a list of all cells in the grid
+  def getAllCells: List[Cell] = {
+    (for {
+      row   <- grid
+      cell  <- row
+    } yield cell).flatten.toList
+  }
   // returns a set of all elements in the grid
   def getElementNames: Set[String] = {
     (for {
