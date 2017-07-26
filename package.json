@@ -4,7 +4,9 @@
   "description": "An AI navigation training simulator",
   "main": "main.js",
   "scripts": {
-    "start": "start sbt \"run-main server.SCOUtServer\" && start electron ."
+    "full-start": "start sbt \"run-main server.SCOUtServer\" && start electron .",
+    "start": "start electron .",
+    "scout-server": "start sbt \"run-main server.SCOUtServer\""
   },
   "repository": "https://github.com/KeithCissell/SCOUt",
   "keywords": [

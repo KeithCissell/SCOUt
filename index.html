@@ -2,12 +2,13 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>SCOUt Environment Simulator</title>
+    <link rel="stylesheet" type="text/css" href="./src/main/css/index.css" />
   </head>
   <body>
-    <h1>Hello World!</h1>
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chrome <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+    <h1 id="Header">Attempting to contact SCOUt server...</h1>
   </body>
+  <script>
+    require('./src/main/js/index.js')
+  </script>
 </html>
