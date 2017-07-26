@@ -6,6 +6,9 @@ import environment.generator.ElementSeeds._
 import environment.generator.LayerGenerator._
 import environment.generator.RandomGenerator._
 
+import jsonhandler.Encoder._
+import jsonhandler.Decoder._
+
 import customtypes.Grid._
 
 import scala.collection.mutable.{ArrayBuffer => AB}
@@ -98,7 +101,7 @@ object SandBox {
     )
 
     // EnvironmentGenerator
-    val randomEnv1 = generateRandomEnvironment("Random1", 5, 5, seedList1)
+    val randomEnv1 = generateRandomEnvironment("Random1", 1, 1, seedList1)
 
 
     // Other
@@ -131,7 +134,10 @@ object SandBox {
     // println(tempLayer1)
 
     // Test generateRandomEnvironment
-    println(randomEnv1)
+    // println(randomEnv1)
+
+    // Test Json Encoder
+    println(encodeEnvironment(randomEnv1))
 
   }
 
