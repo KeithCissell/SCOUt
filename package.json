@@ -1,0 +1,20 @@
+{
+  "name": "SCOUt",
+  "version": "1.0.0",
+  "description": "An AI navigation training simulator",
+  "main": "main.js",
+  "scripts": {
+    "start": "start sbt \"run-main server.SCOUtServer\" && start electron ."
+  },
+  "repository": "https://github.com/KeithCissell/SCOUt",
+  "keywords": [
+    "SCOUt"
+  ],
+  "author": "Keith Cissell",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^1.6.11",
+    "jquery": "^3.2.1",
+    "node-fetch": "^1.7.1"
+  }
+}
