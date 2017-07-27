@@ -35,7 +35,7 @@ object SCOUtService {
 
   // Server request handler
   val service = HttpService {
-    case req @ GET  -> Root / "ping"                    => Ok("pong")
+    case req @ GET  -> Root / "ping"                    => Ok("\"pong\"")
     case req @ GET  -> Root / "current_state"           => getCurrentState
     case req @ GET  -> Root / "new_random_environment"  => newRandomEnvironment
   }
