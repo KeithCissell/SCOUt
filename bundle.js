@@ -11747,11 +11747,12 @@ async function attemptContact() {
 }
 
 // Handles successful server contact
-function successfulContact() {
+async function successfulContact() {
   header.innerHTML = "We have contact!!";
-  console.log((0, _SCOUtAPI.newRandomEnvironment)("RandomTest", 5, 5));
-  var environment = getCurrentState().body();
-  body.innerHTML = '${environment}';
+  var nre = await (0, _SCOUtAPI.newRandomEnvironment)("RandomTest", 5, 5);
+  console.log(nre.json());
+  var gcs = await (0, _SCOUtAPI.getCurrentState)();
+  console.log(gcs.json());
 }
 
 // Handles unsuccessful server contact
@@ -11803,22 +11804,23 @@ function getCurrentState() {
 
 // Get a new random environment
 function newRandomEnvironment(name, length, width) {
-  var reqBody = '{\n    "name": ' + name + ',\n    "length": ' + length + ',\n    "width": ' + width + '\n  }';
-  var reqSpecs = { method: 'PUT',
+  var reqBody = '{\n    "name": "' + name + '",\n    "length": "' + length + '",\n    "width": "' + width + '"\n  }';
+  var reqSpecs = { method: 'POST',
     headers: reqHeaders,
     mode: 'cors',
     cache: 'default',
     body: reqBody };
-  return new Promise(function (resolve) {
+  return new Promise(function (resolve, reject) {
     fetch('http://localhost:8080/new_random_environment', reqSpecs).then(function (resp) {
       resolve(resp);
     }).catch(function (error) {
-      return resolve(Response.error(error));
+      return reject(Response.error(error));
     });
   });
 }
 
 exports.pingServer = pingServer;
+exports.getCurrentState = getCurrentState;
 exports.newRandomEnvironment = newRandomEnvironment;
 
 /***/ }),

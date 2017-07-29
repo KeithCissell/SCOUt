@@ -42,20 +42,16 @@ object SCOUtService {
 
   // Sets environment to new randomly generated environment
   def newRandomEnvironment(req: Request): Task[Response] = req.decode[Json] { data =>
-    val name = decodeJson("name", data).getOrElse("")
-    val length = decodeJson("length", data).getOrElse("")
-    val width = decodeJson("width", data).getOrElse("")
-    if (name != "" && length != "" && width != "") {
-      environment = generateRandomEnvironment("Random Environment", 2, 2, defaultSeedList)
-      return Ok(encodeEnvironment(environment))
-    } else return BadRequest(req)
-    // return input match {
-    //   case ("","","") => BadRequest(req)
-    //   case (n, l, w) => {
-    //     environment = generateRandomEnvironment("Random Environment", 2, 2, defaultSeedList)
-    //     Ok(encodeEnvironment(environment))
-    //   }
-    // }
+    val name = extractString("name", data).getOrElse("")
+    val length = extractInt("length", data).getOrElse(0)
+    val width = extractInt("width", data).getOrElse(0)
+    (name, length, width) match {
+      case ("", 0, 0) => BadRequest(data)
+      case (n, w, l)  => {
+        environment = generateRandomEnvironment(n, w, l, defaultSeedList)
+        Ok(encodeEnvironment(environment))
+      }
+    }
   }
 
 }

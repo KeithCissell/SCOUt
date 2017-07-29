@@ -15,11 +15,19 @@ import environment.generator.ElementSeeds._
 
 object Decoder {
 
-  def decodeJson(field: String, data: Json): Option[String] = {
+  def extractString(field: String, data: Json): Option[String] = {
     val cursor: HCursor = data.hcursor
     cursor.downField(field).as[String] match {
       case Left(_)  => None
       case Right(s) => Some(s)
+    }
+  }
+
+  def extractInt(field: String, data: Json): Option[Int] = {
+    val cursor: HCursor = data.hcursor
+    cursor.downField(field).as[Int] match {
+      case Left(_)  => None
+      case Right(i) => Some(i)
     }
   }
 
@@ -29,7 +37,7 @@ object Encoder {
 
   def encodeCell(c: Cell): String = {
     val json =
-      ("cell" ->
+      (s"cell.${c.x}.${c.y}" ->
         ("x" -> c.x) ~
         ("y" -> c.y) ~
         ("elements" -> c.getElements.map { e =>
@@ -50,7 +58,7 @@ object Encoder {
         ("length" -> e.length) ~
         ("width" -> e.width) ~
         ("grid" -> e.getAllCells.map { c =>
-          "cell" ->
+          s"cell.${c.x}.${c.y}" ->
             ("x" -> c.x) ~
             ("y" -> c.y) ~
             ("elements" -> c.getElements.map { e =>

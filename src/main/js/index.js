@@ -1,4 +1,5 @@
 import {pingServer,
+        getCurrentState,
         newRandomEnvironment} from './SCOUtAPI.js'
 
 window.$ = window.jQuery = require('jquery')
@@ -34,11 +35,12 @@ async function attemptContact() {
 }
 
 // Handles successful server contact
-function successfulContact() {
+async function successfulContact() {
   header.innerHTML = "We have contact!!"
-  console.log(newRandomEnvironment("RandomTest", 5, 5))
-  let environment = getCurrentState().body()
-  body.innerHTML = '${environment}'
+  let nre = await newRandomEnvironment("RandomTest", 5, 5)
+  console.log(nre.json())
+  let gcs = await getCurrentState()
+  console.log(gcs.json())
 }
 
 // Handles unsuccessful server contact

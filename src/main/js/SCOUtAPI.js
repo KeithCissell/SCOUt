@@ -28,20 +28,20 @@ function getCurrentState() {
 // Get a new random environment
 function newRandomEnvironment(name, length, width) {
   let reqBody = `{
-    "name": ${name},
-    "length": ${length},
-    "width": ${width}
+    "name": "${name}",
+    "length": "${length}",
+    "width": "${width}"
   }`
-  let reqSpecs = {  method: 'PUT',
+  let reqSpecs = {  method: 'POST',
                     headers: reqHeaders,
                     mode: 'cors',
                     cache: 'default',
                     body: reqBody}
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     fetch('http://localhost:8080/new_random_environment', reqSpecs).then(function(resp) {
       resolve(resp)
-    }).catch(error => resolve(Response.error(error)))
+    }).catch(error => reject(Response.error(error)))
   })
 }
 
-export {pingServer, newRandomEnvironment}
+export {pingServer, getCurrentState, newRandomEnvironment}
