@@ -35,21 +35,23 @@ object SCOUtService {
 
   // Server request handler
   val service = HttpService {
-    case req @ GET  -> Root / "ping"                    => Ok("pong")
-    case req @ GET  -> Root / "current_state"           => getCurrentState
-    case req @ GET  -> Root / "new_random_environment"  => newRandomEnvironment
-  }
-
-
-  // Returns the environment at its current state
-  def getCurrentState: Task[Response] = {
-    val encode = encodeEnvironment(environment)
-    Ok(encodeEnvironment(environment))
+    case req @ GET  -> Root / "ping"                    => Ok("\"pong\"")
+    case req @ GET  -> Root / "current_state"           => Ok(encodeEnvironment(environment))
+    case req @ POST -> Root / "new_random_environment"  => newRandomEnvironment(req)
   }
 
   // Sets environment to new randomly generated environment
-  def newRandomEnvironment: Task[Response] = {
-    environment = generateRandomEnvironment("Random Environment", 2, 2, defaultSeedList)
-    Ok(encodeEnvironment(environment))
+  def newRandomEnvironment(req: Request): Task[Response] = req.decode[Json] { data =>
+    val name = extractString("name", data).getOrElse("")
+    val length = extractInt("length", data).getOrElse(0)
+    val width = extractInt("width", data).getOrElse(0)
+    (name, length, width) match {
+      case ("", 0, 0) => BadRequest(data)
+      case (n, w, l)  => {
+        environment = generateRandomEnvironment(n, w, l, defaultSeedList)
+        Ok(encodeEnvironment(environment))
+      }
+    }
   }
+
 }
