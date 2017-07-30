@@ -64,6 +64,7 @@ object Encoder {
             ("elements" -> c.getElements.map { e =>
               s"${e.name}" ->
                 ("value" -> e.value) ~
+                ("name" -> e.name) ~
                 ("unit" -> e.unit) ~
                 ("constant" -> e.constant) ~
                 ("circular" -> e.circular)
