@@ -26,7 +26,7 @@ async function establishConnection() {
   mainContent.innerHTML = ""
   message.innerHTML = "Attempting to contact SCOUt server..."
   let contactMade = await attemptContact()
-  await console.clear()
+  //await console.clear()
   if (contactMade) successfulContact()
   else unsuccessfulContact()
 }
