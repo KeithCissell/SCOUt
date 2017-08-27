@@ -12368,7 +12368,7 @@ function buildEnvironment(json) {
     var jCell = jGrid[key];
     var x = jCell.x;
     var y = jCell.y;
-    var elements = [];
+    var elements = new Map();
     var jElements = jCell.elements;
     for (var _key in jElements) {
       var jElement = jElements[_key];
@@ -12378,7 +12378,7 @@ function buildEnvironment(json) {
       var constant = jElement.constant;
       var circular = jElement.circular;
       if (!envElementTypes.includes(eName)) envElementTypes.push(eName);
-      elements.push(new _Element.Element(value, eName, unit, constant, circular));
+      elements.set(eName, new _Element.Element(value, eName, unit, constant, circular));
     }
     envGrid[x][y] = new _Cell.Cell(x, y, elements);
   }
@@ -12447,43 +12447,43 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Environment = undefined;
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _Layer = __webpack_require__(57);
 
 var _Utils = __webpack_require__(26);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Environment = function Environment(name, length, width, grid, elementTypes) {
-  _classCallCheck(this, Environment);
+var Environment = function () {
+  function Environment(name, length, width, grid, elementTypes) {
+    _classCallCheck(this, Environment);
 
-  this.name = name;
-  this.length = length;
-  this.width = width;
-  this.grid = grid;
-  this.elementTypes = elementTypes;
-  this.layers = extractLayers(grid, elementTypes, length, width);
-};
+    this.name = name;
+    this.length = length;
+    this.width = width;
+    this.grid = grid;
+    this.elementTypes = elementTypes;
+  }
 
-function extractLayers(grid, elementTypes, l, w) {
-  var layerList = [];
-  for (var i in elementTypes) {
-    var eType = elementTypes[i];
-    var layer = (0, _Utils.empty2D)(l, w);
-    for (var x in grid) {
-      for (var y in grid[x]) {
-        var cell = grid[x][y];
-        for (var e in cell.elements) {
-          var element = cell.elements[e];
-          if (element.name == eType) {
-            layer[x][y] = element;
+  _createClass(Environment, [{
+    key: 'extractLayer',
+    value: function extractLayer(elementType) {
+      if (this.elementTypes.includes(elementType)) {
+        var layer = (0, _Utils.empty2D)(this.length, this.width);
+        for (var x in this.grid) {
+          for (var y in this.grid[x]) {
+            var cell = this.grid[x][y];
+            if (cell.elements.has(elementType)) layer[x][y] = cell.elements.get(elementType);
           }
         }
-      }
+        return new _Layer.Layer(elementType, layer, this.length, this.width);
+      } else throw new Error("Element " + elementType + " not found.");
     }
-    layerList.push(new _Layer.Layer(eType, layer));
-  }
-  return layerList;
-}
+  }]);
+
+  return Environment;
+}();
 
 exports.Environment = Environment;
 
@@ -12498,14 +12498,38 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Layer = function Layer(elementType, grid) {
-  _classCallCheck(this, Layer);
+var Layer = function () {
+  function Layer(elementType, grid, length, width) {
+    _classCallCheck(this, Layer);
 
-  this.elementType = elementType;
-  this.grid = grid;
-};
+    this.elementType = elementType;
+    this.grid = grid;
+    this.length = length;
+    this.width = width;
+  }
+
+  _createClass(Layer, [{
+    key: "toJson",
+    value: function toJson() {
+      var obj = {};
+      obj.width = this.width;
+      obj.length = this.length;
+      obj.values = [];
+      for (var x in this.grid) {
+        for (var y in this.grid[x]) {
+          obj.values.push(this.grid[x][y].value);
+        }
+      }
+      return obj;
+    }
+  }]);
+
+  return Layer;
+}();
 
 exports.Layer = Layer;
 
@@ -12531,19 +12555,18 @@ var message = document.getElementById("message");
 var mainContent = document.getElementById("content");
 
 // Globals
-var layers = void 0;
+var environment = void 0;
 var elementTypes = void 0;
 var currentLayerIndex = 0;
 
-function loadEnvironmentDisplay(environment) {
-  layers = environment.layers;
+function loadEnvironmentDisplay(targetEnvironment) {
+  environment = targetEnvironment;
   elementTypes = environment.elementTypes;
-
-  loadToolbar(elementTypes, layers);
-  if (!layers.empty) displayLayer(currentLayerIndex);else currentLayerName.innerText = "!!No Layers Found!!";
+  loadToolbar(elementTypes);
+  displayLayer(currentLayerIndex);
 }
 
-function loadToolbar(elementTypes, layers) {
+function loadToolbar(elementTypes) {
   var previousLayerButton = document.createElement("button");
   previousLayerButton.textContent = " <<< ";
   previousLayerButton.addEventListener("click", function () {
@@ -12561,9 +12584,17 @@ function loadToolbar(elementTypes, layers) {
   }
 }
 
-function displayLayer(index) {
+function switchLayer(newIndex) {
+  if (newIndex < 0) displayLayer(elementTypes.length - 1);else if (newIndex >= elementTypes.length) displayLayer(0);else displayLayer(newIndex);
+}
+
+async function displayLayer(index) {
   currentLayerIndex = index;
-  var layer = layers[index];
+  console.log(index);
+  var elementType = elementTypes[index];
+  console.log(elementType);
+  var layer = await environment.extractLayer(elementType);
+  var layerJson = await layer.toJson();
   currentLayerName.innerText = layer.elementType;
   message.innerHTML = "";
 
@@ -12574,34 +12605,26 @@ function displayLayer(index) {
   },
       color = d3.scaleSequential(interpolateTerrain).domain([90, 190]);
 
-  d3.json("volcano.json", function (error, volcano) {
-    if (error) throw error;
+  var n = layerJson.width;
+  var m = layerJson.length;
 
-    var n = volcano.width,
-        m = volcano.height;
+  var canvas = d3.select("#canvas").attr("width", n).attr("height", m);
+  // console.log(canvas)
 
-    var canvas = d3.select("#canvas").attr("width", n).attr("height", m);
-    console.log(canvas);
+  var context = canvas.node().getContext("2d"),
+      image = context.createImageData(n, m);
 
-    var context = canvas.node().getContext("2d"),
-        image = context.createImageData(n, m);
-
-    for (var j = 0, k = 0, l = 0; j < m; ++j) {
-      for (var i = 0; i < n; ++i, ++k, l += 4) {
-        var c = d3.rgb(color(volcano.values[k]));
-        image.data[l + 0] = c.r;
-        image.data[l + 1] = c.g;
-        image.data[l + 2] = c.b;
-        image.data[l + 3] = 255;
-      }
+  for (var j = 0, k = 0, l = 0; j < m; ++j) {
+    for (var i = 0; i < n; ++i, ++k, l += 4) {
+      var c = d3.rgb(color(layerJson.values[k]));
+      image.data[l + 0] = c.r;
+      image.data[l + 1] = c.g;
+      image.data[l + 2] = c.b;
+      image.data[l + 3] = 255;
     }
+  }
 
-    context.putImageData(image, 0, 0);
-  });
-}
-
-function switchLayer(newIndex) {
-  if (newIndex < 0) displayLayer(layers.length - 1);else if (newIndex > layers.length) displayLayer(0);else displayLayer(newIndex);
+  context.putImageData(image, 0, 0);
 }
 
 exports.loadEnvironmentDisplay = loadEnvironmentDisplay;

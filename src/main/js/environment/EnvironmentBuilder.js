@@ -15,7 +15,7 @@ function buildEnvironment(json) {
     let jCell = jGrid[key]
     let x = jCell.x
     let y = jCell.y
-    let elements = []
+    let elements = new Map()
     let jElements = jCell.elements
     for(let key in jElements) {
       let jElement = jElements[key]
@@ -25,7 +25,7 @@ function buildEnvironment(json) {
       let constant = jElement.constant
       let circular = jElement.circular
       if (!envElementTypes.includes(eName)) envElementTypes.push(eName)
-      elements.push(new Element(value, eName, unit, constant, circular))
+      elements.set(eName, new Element(value, eName, unit, constant, circular))
     }
     envGrid[x][y] = new Cell(x, y, elements)
   }

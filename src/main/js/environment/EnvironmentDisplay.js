@@ -10,20 +10,18 @@ const message = document.getElementById("message")
 const mainContent = document.getElementById("content")
 
 // Globals
-let layers
+let environment
 let elementTypes
 let currentLayerIndex = 0
 
-function loadEnvironmentDisplay(environment) {
-  layers = environment.layers
+function loadEnvironmentDisplay(targetEnvironment) {
+  environment = targetEnvironment
   elementTypes = environment.elementTypes
-
-  loadToolbar(elementTypes, layers)
-  if (!layers.empty) displayLayer(currentLayerIndex)
-  else currentLayerName.innerText = "!!No Layers Found!!"
+  loadToolbar(elementTypes)
+  displayLayer(currentLayerIndex)
 }
 
-function loadToolbar(elementTypes, layers) {
+function loadToolbar(elementTypes) {
   let previousLayerButton = document.createElement("button")
   previousLayerButton.textContent = " <<< "
   previousLayerButton.addEventListener("click", () => {
@@ -42,9 +40,20 @@ function loadToolbar(elementTypes, layers) {
   }
 }
 
-function displayLayer(index) {
+function switchLayer(newIndex) {
+  if (newIndex < 0) displayLayer(elementTypes.length - 1)
+  else if (newIndex >= elementTypes.length) displayLayer(0)
+  else displayLayer(newIndex)
+}
+
+
+async function displayLayer(index) {
   currentLayerIndex = index
-  let layer = layers[index]
+  console.log(index)
+  let elementType = elementTypes[index]
+  console.log(elementType)
+  let layer = await environment.extractLayer(elementType)
+  let layerJson = await layer.toJson()
   currentLayerName.innerText = layer.elementType
   message.innerHTML = ""
 
@@ -58,32 +67,29 @@ function displayLayer(index) {
       interpolateTerrain = function(t) { return t < 0.5 ? i0(t * 2) : i1((t - 0.5) * 2); },
       color = d3.scaleSequential(interpolateTerrain).domain([90, 190]);
 
-  d3.json("volcano.json", function(error, volcano) {
-    if (error) throw error;
 
-    var n = volcano.width,
-        m = volcano.height;
+  var n = layerJson.width
+  let m = layerJson.length
 
-    var canvas = d3.select("#canvas")
-        .attr("width", n)
-        .attr("height", m);
-    console.log(canvas)
+  var canvas = d3.select("#canvas")
+      .attr("width", n)
+      .attr("height", m);
+  // console.log(canvas)
 
-    var context = canvas.node().getContext("2d"),
-        image = context.createImageData(n, m);
+  var context = canvas.node().getContext("2d"),
+      image = context.createImageData(n, m);
 
-    for (var j = 0, k = 0, l = 0; j < m; ++j) {
-      for (var i = 0; i < n; ++i, ++k, l += 4) {
-        var c = d3.rgb(color(volcano.values[k]));
-        image.data[l + 0] = c.r;
-        image.data[l + 1] = c.g;
-        image.data[l + 2] = c.b;
-        image.data[l + 3] = 255;
-      }
+  for (var j = 0, k = 0, l = 0; j < m; ++j) {
+    for (var i = 0; i < n; ++i, ++k, l += 4) {
+      var c = d3.rgb(color(layerJson.values[k]));
+      image.data[l + 0] = c.r;
+      image.data[l + 1] = c.g;
+      image.data[l + 2] = c.b;
+      image.data[l + 3] = 255;
     }
+  }
 
-    context.putImageData(image, 0, 0);
-  });
+  context.putImageData(image, 0, 0);
 
 
 
@@ -91,10 +97,5 @@ function displayLayer(index) {
 
 }
 
-function switchLayer(newIndex) {
-  if (newIndex < 0) displayLayer(layers.length - 1)
-  else if (newIndex > layers.length) displayLayer(0)
-  else displayLayer(newIndex)
-}
 
 export {loadEnvironmentDisplay}
