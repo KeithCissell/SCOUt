@@ -46,53 +46,48 @@ function switchLayer(newIndex) {
   else displayLayer(newIndex)
 }
 
-
-async function displayLayer(index) {
+function displayLayer(index) {
   currentLayerIndex = index
   let elementType = elementTypes[index]
-  let layer = await environment.extractLayer(elementType)
-  let layerJson = await layer.toJson()
+  let layer = environment.extractLayer(elementType)
+  let layerJson = layer.toJson()
   currentLayerName.innerText = layer.elementType
   message.innerHTML = ""
+  drawCanvas(layerJson)
+}
 
 
+function drawCanvas(layerJson) {
+  let width = layerJson.width
+  let height = layerJson.length
+  let values = layerJson.values
+  let min = Math.min.apply(null, values)
+  let max = Math.max.apply(null, values)
 
+  let i0 = hsv.interpolateHsvLong(hsv.hsv(120, 1, 0.65), hsv.hsv(60, 1, 0.90))
+  let i1 = hsv.interpolateHsvLong(hsv.hsv(60, 1, 0.90), hsv.hsv(0, 0, 0.95))
+  let interpolateTerrain = function(t) { return t < 0.5 ? i0(t * 2) : i1((t - 0.5) * 2); }
+  let color = d3.scaleSequential(interpolateTerrain)
+              .domain([min, max])
+              //.range(["purple", "red"])
 
-
-
-  var i0 = hsv.interpolateHsvLong(hsv.hsv(120, 1, 0.65), hsv.hsv(60, 1, 0.90)),
-      i1 = hsv.interpolateHsvLong(hsv.hsv(60, 1, 0.90), hsv.hsv(0, 0, 0.95)),
-      interpolateTerrain = function(t) { return t < 0.5 ? i0(t * 2) : i1((t - 0.5) * 2); },
-      color = d3.scaleSequential(interpolateTerrain).domain([90, 190]);
-
-
-  var n = layerJson.width
-  let m = layerJson.length
-
-  var canvas = d3.select("#canvas")
-      .attr("width", n)
-      .attr("height", m);
+  let canvas = d3.select("#canvas")
+      .attr("width", width)
+      .attr("height", height)
   // console.log(canvas)
 
-  var context = canvas.node().getContext("2d"),
-      image = context.createImageData(n, m);
+  let context = canvas.node().getContext("2d")
+  let image = context.createImageData(width, height)
 
-  for (var j = 0, k = 0, l = 0; j < m; ++j) {
-    for (var i = 0; i < n; ++i, ++k, l += 4) {
-      var c = d3.rgb(color(layerJson.values[k]));
-      image.data[l + 0] = c.r;
-      image.data[l + 1] = c.g;
-      image.data[l + 2] = c.b;
-      image.data[l + 3] = 255;
-    }
+  for (let i = 0; i < values.length; ++i) {
+    let c = d3.rgb(color(values[i]))
+    image.data[i * 4 + 0] = c.r
+    image.data[i * 4 + 1] = c.g
+    image.data[i * 4 + 2] = c.b
+    image.data[i * 4 + 3] = 255
   }
 
   context.putImageData(image, 0, 0);
-
-
-
-
-
 }
 
 

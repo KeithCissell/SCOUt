@@ -49,7 +49,7 @@ async function attemptContact() {
 async function successfulContact() {
   mainContent.innerHTML = ""
   message.innerHTML = "We have contact!!"
-  let nre = await newRandomEnvironment("RandomTest", 5, 5)
+  let nre = await newRandomEnvironment("RandomTest", 100, 100)
   nre.json().then((json) => {
     let environment = buildEnvironment(json)
     console.log(environment)
