@@ -12498,39 +12498,16 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Layer = function () {
-  function Layer(elementType, grid, length, width) {
-    _classCallCheck(this, Layer);
+var Layer = function Layer(elementType, grid, length, width) {
+  _classCallCheck(this, Layer);
 
-    this.elementType = elementType;
-    this.grid = grid;
-    this.length = length;
-    this.width = width;
-  }
-
-  _createClass(Layer, [{
-    key: "toJson",
-    value: function toJson() {
-      var obj = {};
-      console.log(this);
-      obj.width = this.width;
-      obj.length = this.length;
-      obj.values = [];
-      for (var x in this.grid) {
-        for (var y in this.grid[x]) {
-          obj.values.push(this.grid[x][y].value);
-        }
-      }
-      return obj;
-    }
-  }]);
-
-  return Layer;
-}();
+  this.elementType = elementType;
+  this.grid = grid;
+  this.length = length;
+  this.width = width;
+};
 
 exports.Layer = Layer;
 
@@ -12593,13 +12570,16 @@ function displayLayer(index) {
   currentLayerIndex = index;
   var elementType = elementTypes[index];
   var layer = environment.extractLayer(elementType);
-  var layerJson = layer.toJson();
   currentLayerName.innerText = layer.elementType;
   message.innerHTML = "";
-  drawCanvas(layerJson);
+  drawCanvas(layer);
 }
 
-function drawCanvas(layerJson) {
+function drawCanvas(layer) {
+  console.log(layer);
+  var layerJson = layerToJson(layer);
+  console.log(layerJson);
+
   var width = layerJson.width;
   var height = layerJson.length;
   var values = layerJson.values;
@@ -12629,6 +12609,21 @@ function drawCanvas(layerJson) {
   }
 
   context.putImageData(image, 0, 0);
+}
+
+function layerToJson(layer) {
+  var obj = {};
+  // Rotate the object 90 degrees counter-clockwise for visualization tool: (x, y) = (y, -x)
+  obj.width = layer.length;
+  obj.length = layer.width;
+  obj.values = [];
+  for (var y = 0; y < layer.length; y++) {
+    var flipY = layer.length - 1 - y;
+    for (var x = 0; x < layer.width; x++) {
+      obj.values.push(layer.grid[x][flipY].value);
+    }
+  }
+  return obj;
 }
 
 exports.loadEnvironmentDisplay = loadEnvironmentDisplay;

@@ -50,14 +50,17 @@ function displayLayer(index) {
   currentLayerIndex = index
   let elementType = elementTypes[index]
   let layer = environment.extractLayer(elementType)
-  let layerJson = layer.toJson()
   currentLayerName.innerText = layer.elementType
   message.innerHTML = ""
-  drawCanvas(layerJson)
+  drawCanvas(layer)
 }
 
 
-function drawCanvas(layerJson) {
+function drawCanvas(layer) {
+  console.log(layer)
+  let layerJson = layerToJson(layer)
+  console.log(layerJson)
+
   let width = layerJson.width
   let height = layerJson.length
   let values = layerJson.values
@@ -88,6 +91,21 @@ function drawCanvas(layerJson) {
   }
 
   context.putImageData(image, 0, 0);
+}
+
+function layerToJson(layer) {
+  let obj = {}
+  // Rotate the object 90 degrees counter-clockwise for visualization tool: (x, y) = (y, -x)
+  obj.width = layer.length
+  obj.length = layer.width
+  obj.values = []
+  for (let y = 0; y < layer.length; y++) {
+    let flipY = layer.length - 1 - y
+    for (let x = 0; x < layer.width; x++) {
+      obj.values.push(layer.grid[x][flipY].value)
+    }
+  }
+  return obj
 }
 
 
