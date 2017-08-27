@@ -12516,6 +12516,7 @@ var Layer = function () {
     key: "toJson",
     value: function toJson() {
       var obj = {};
+      console.log(this);
       obj.width = this.width;
       obj.length = this.length;
       obj.values = [];
@@ -12590,9 +12591,7 @@ function switchLayer(newIndex) {
 
 async function displayLayer(index) {
   currentLayerIndex = index;
-  console.log(index);
   var elementType = elementTypes[index];
-  console.log(elementType);
   var layer = await environment.extractLayer(elementType);
   var layerJson = await layer.toJson();
   currentLayerName.innerText = layer.elementType;

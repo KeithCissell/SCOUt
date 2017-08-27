@@ -83,7 +83,7 @@ object LayerGenerator {
 
   def temperatureLayer(l: Int, w: Int, seed: TemperatureSeed): Layer = {
     val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
-    if (l > 0 && w > 0) layer.setElement(0, 0, new Elevation(seed.average))
+    if (l > 0 && w > 0) layer.setElement(0, 0, new Temperature(seed.average))
     for {
       x <- 0 until l
       y <- 0 until w

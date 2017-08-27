@@ -49,9 +49,7 @@ function switchLayer(newIndex) {
 
 async function displayLayer(index) {
   currentLayerIndex = index
-  console.log(index)
   let elementType = elementTypes[index]
-  console.log(elementType)
   let layer = await environment.extractLayer(elementType)
   let layerJson = await layer.toJson()
   currentLayerName.innerText = layer.elementType

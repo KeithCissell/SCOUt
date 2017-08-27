@@ -10,6 +10,7 @@ class Layer {
 
   toJson() {
     let obj = {}
+    console.log(this)
     obj.width = this.width
     obj.length = this.length
     obj.values = []
