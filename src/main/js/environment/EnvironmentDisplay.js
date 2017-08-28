@@ -59,7 +59,6 @@ function displayLayer(index) {
 function drawCanvas(layer) {
   console.log(layer)
   let layerJson = layerToJson(layer)
-  console.log(layerJson)
 
   let width = layerJson.width
   let height = layerJson.length

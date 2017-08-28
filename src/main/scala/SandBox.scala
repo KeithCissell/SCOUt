@@ -67,7 +67,7 @@ object SandBox {
     val environment = new Environment("Test", grid)
 
     // LayerGenerator
-    val decSeed1 = DecibleSeed(sources = AB(NoiseSource(2,2,27.0)))
+    val decSeed1 = DecibleSeed() //DecibleSeed(sources = AB(NoiseSource(2,2,27.0)))
     val decLayer1 = decibleLayer(5, 5, decSeed1)
 
     val elvSeed1 = ElevationSeed()
@@ -101,7 +101,7 @@ object SandBox {
     )
 
     // EnvironmentGenerator
-    val randomEnv1 = generateRandomEnvironment("Random1", 1, 1, seedList1)
+    val randomEnv1 = generateRandomEnvironment("Random1", 2, 2, seedList1)
 
 
     // Other
@@ -134,10 +134,10 @@ object SandBox {
     // println(tempLayer1)
 
     // Test generateRandomEnvironment
-    // println(randomEnv1)
+    println(randomEnv1)
 
     // Test Json Encoder
-    println(encodeEnvironment(randomEnv1))
+    // println(encodeEnvironment(randomEnv1))
 
   }
 

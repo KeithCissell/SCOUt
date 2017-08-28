@@ -24,19 +24,22 @@ object LayerGenerator {
   }
 
 
-  def decibleLayer(l: Int, w:Int, seed: DecibleSeed): Layer = {
-    val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
+  def decibleLayer(l: Int, w: Int, seed: DecibleSeed): Layer = {
+    val layer = new Layer(AB.fill(l)(AB.fill(w)(Some(new Decible(0.0)))))
     for (rs <- 0 until seed.randomSources) seed.createRandomSource(l, w)
     for (source <- seed.sources) {
-      layer.setElement(source.x, source.y, new Decible(source.value))
-      val cellRange = round(seed.soundRange(source) / seed.scale).toInt
+      val currentValue = 0 // layer.layer(source.x)(source.y).flatMap(dec => dec.value).getOrElse(0.0)
+      if (source.value > currentValue) layer.setElement(source.x, source.y, new Decible(source.value))
       for {
-        x <- (source.x - cellRange) to (source.x + cellRange)
-        y <- (source.y - cellRange) to (source.y + cellRange)
+        x <- 0 until l
+        y <- 0 until w
         if dist(x, y, source.x, source.y) != 0
-        if dist(x, y, source.x, source.y) <= cellRange
         if layer.inLayer(x, y)
-      } layer.setElement(x, y, new Decible(seed.soundReduction(source, x, y)))
+      } {
+        val currentValue = layer.layer(x)(y).flatMap(dec => dec.value).getOrElse(0.0)
+        val newValue = seed.soundReduction(source, x, y)
+        if (newValue > currentValue) layer.setElement(x, y, new Decible(newValue))
+      }
     }
     return layer
   }

@@ -29,7 +29,7 @@ object ElementSeeds {
     val scale: Double = scale,
     val lowerBound: Double = 0.0,
     val upperBound: Double = 120.0,
-    val randomSources: Int = 0,
+    val randomSources: Int = 20,
     val sources: AB[NoiseSource] = AB.empty
   ) extends ElementSeed {
     def log2(x: Double): Double = log(x) / log(2)
@@ -37,7 +37,10 @@ object ElementSeeds {
     // http://www.sengpielaudio.com/calculator-distance.htm
     def soundReduction(source: NoiseSource, x: Int, y: Int): Double = {
       val cellDist = dist(source.x, source.y, x, y) * scale
-      roundDouble2(source.value - (abs(log2(cellDist)) * 6))
+      val range = soundRange(source)
+      if (cellDist <= range) {
+        return roundDouble2(source.value - (abs(log2(cellDist)) * 6))
+      } else return 0.0
     }
     def soundRange(source: NoiseSource): Double = {
       pow(2, source.value / 6)
