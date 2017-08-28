@@ -1,7 +1,8 @@
 import {pingServer,
         getCurrentState,
         newRandomEnvironment} from './SCOUtAPI.js'
-import {buildEnvironment} from './EnvironmentBuilder.js'
+import {buildEnvironment} from './environment/EnvironmentBuilder.js'
+import {loadEnvironmentDisplay} from './environment/EnvironmentDisplay.js'
 
 window.$ = window.jQuery = require('jquery')
 const fetch = require('node-fetch')
@@ -9,6 +10,7 @@ const fetch = require('node-fetch')
 
 // Document Elements
 const header = document.getElementById("header")
+const toolbar = document.getElementById("toolbar")
 const main = document.getElementById("main")
 const message = document.getElementById("message")
 const mainContent = document.getElementById("content")
@@ -24,7 +26,7 @@ async function establishConnection() {
   mainContent.innerHTML = ""
   message.innerHTML = "Attempting to contact SCOUt server..."
   let contactMade = await attemptContact()
-  console.clear()
+  //await console.clear()
   if (contactMade) successfulContact()
   else unsuccessfulContact()
 }
@@ -47,11 +49,12 @@ async function attemptContact() {
 async function successfulContact() {
   mainContent.innerHTML = ""
   message.innerHTML = "We have contact!!"
-  let nre = await newRandomEnvironment("RandomTest", 5, 5)
+  let nre = await newRandomEnvironment("RandomTest", 100, 100)
   nre.json().then((json) => {
     let environment = buildEnvironment(json)
     console.log(environment)
-  }).catch((err) => { unsuccessfulContact() })
+    loadEnvironmentDisplay(environment)
+  }).catch((err) => { console.log(err) })
 }
 
 // Handles unsuccessful server contact
