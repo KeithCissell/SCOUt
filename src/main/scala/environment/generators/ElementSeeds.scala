@@ -29,7 +29,7 @@ object ElementSeeds {
     val scale: Double = scale,
     val lowerBound: Double = 0.0,
     val upperBound: Double = 120.0,
-    val randomSources: Int = 20,
+    val randomSources: Int = 5,
     val sources: AB[NoiseSource] = AB.empty
   ) extends ElementSeed {
     def log2(x: Double): Double = log(x) / log(2)
@@ -88,7 +88,7 @@ object ElementSeeds {
   ) extends ElementSeed {
     def randomDeviation(mean: Double): Double = {
       val lowerBound = mean - deviation
-      val upperBound = mean - deviation
+      val upperBound = mean + deviation
       randomRange(lowerBound, upperBound)
     }
   }
@@ -101,7 +101,7 @@ object ElementSeeds {
   ) extends ElementSeed {
     def randomDeviation(mean: Double): Double = {
       val lowerBound = mean - deviation
-      val upperBound = mean - deviation
+      val upperBound = mean + deviation
       randomRange(lowerBound, upperBound)
     }
   }
@@ -114,7 +114,7 @@ object ElementSeeds {
   ) extends ElementSeed {
     def randomDeviation(mean: Double): Double = {
       val lowerBound = mean - deviation
-      val upperBound = mean - deviation
+      val upperBound = mean + deviation
       randomRange(lowerBound, upperBound)
     }
   }
