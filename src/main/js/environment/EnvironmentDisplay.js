@@ -1,4 +1,5 @@
 const d3 = require('d3')
+const d3Contour = require('d3-contour')
 const hsv = require('d3-hsv')
 
 // Document Elements
@@ -52,7 +53,9 @@ function displayLayer(index) {
   let layer = environment.extractLayer(elementType)
   currentLayerName.innerText = layer.elementType
   message.innerHTML = ""
-  drawCanvas(layer)
+
+  if (elementType == "Elevation") drawContourPlot(layer)
+  else drawCanvas(layer)
 }
 
 
@@ -89,7 +92,46 @@ function drawCanvas(layer) {
     image.data[i * 4 + 3] = 255
   }
 
-  context.putImageData(image, 0, 0);
+  context.putImageData(image, 0, 0)
+}
+
+function drawContourPlot(layer) {
+  console.log(layer)
+  let layerJson = layerToJson(layer)
+  // console.log(layerJson)
+
+  let width = layerJson.width
+  let height = layerJson.length
+  let values = layerJson.values
+  let min = Math.min.apply(null, values)
+  let max = Math.max.apply(null, values)
+
+  let i0 = hsv.interpolateHsvLong(hsv.hsv(120, 1, 0.65), hsv.hsv(60, 1, 0.90))
+  let i1 = hsv.interpolateHsvLong(hsv.hsv(60, 1, 0.90), hsv.hsv(0, 0, 0.95))
+  let interpolateTerrain = function(t) { return t < 0.5 ? i0(t * 2) : i1((t - 0.5) * 2) }
+  let color = d3.scaleSequential(interpolateTerrain).domain([min, max])
+
+  let canvas = d3.select("#canvas")
+      .style("background-color", "white")
+      .attr("width", 500)
+      .attr("height", 500)
+
+  let contours = d3Contour.contours()
+      .size([width, height])
+      .thresholds(d3.range(min, max, 2))
+      (values);
+  // console.log(contours)
+
+  canvas.selectAll("path")
+    .data(contours)
+    .enter()
+      .append("path")
+      .attr("d", d3.geoPath(d3.geoIdentity().scale(500 / width)))
+      .attr("stroke", "black")
+      .attr("stroke-width", "1")
+      .attr("fill", "none")
+      // .attr("fill", function(d) { return color(d.value); })
+
 }
 
 function layerToJson(layer) {

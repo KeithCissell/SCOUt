@@ -28,5 +28,8 @@
     "jquery": "^3.2.1",
     "node-fetch": "^1.7.1",
     "webpack": "^3.4.1"
+  },
+  "dependencies": {
+    "d3-contour": "^1.1.1"
   }
 }
