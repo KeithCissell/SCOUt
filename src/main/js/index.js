@@ -2,7 +2,7 @@ import {pingServer,
         getCurrentState,
         newRandomEnvironment} from './SCOUtAPI.js'
 import {buildEnvironment} from './environment/EnvironmentBuilder.js'
-import {loadEnvironmentDisplay} from './environment/EnvironmentDisplay.js'
+import {loadVisualizer} from './visualizer/LoadVisualizer.js'
 
 window.$ = window.jQuery = require('jquery')
 const fetch = require('node-fetch')
@@ -48,12 +48,12 @@ async function attemptContact() {
 // Handles successful server contact
 async function successfulContact() {
   mainContent.innerHTML = ""
-  message.innerHTML = "We have contact!!"
+  message.innerHTML = "Loading..."
   let nre = await newRandomEnvironment("RandomTest", 100, 100)
   nre.json().then((json) => {
     let environment = buildEnvironment(json)
     console.log(environment)
-    loadEnvironmentDisplay(environment)
+    loadVisualizer(environment)
   }).catch((err) => { console.log(err) })
 }
 
