@@ -13361,7 +13361,7 @@ function drawContourPlot(layer) {
   };
   var color = d3.scaleSequential(interpolateTerrain).domain([min, max]);
 
-  var contours = d3Contour.contours().size([width, height]).thresholds(d3.range(min, max, 6))(values);
+  var contours = d3Contour.contours().size([width, height]).thresholds(d3.range(min, max, (max - min) / 4))(values);
   // console.log(contours)
 
   canvas.selectAll("path").data(contours).enter().append("path").attr("d", d3.geoPath(d3.geoIdentity().scale(500 / width))).attr("stroke", "black").attr("stroke-width", "1")

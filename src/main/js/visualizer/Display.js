@@ -57,7 +57,7 @@ function drawContourPlot(layer) {
 
   let contours = d3Contour.contours()
       .size([width, height])
-      .thresholds(d3.range(min, max, 6))
+      .thresholds(d3.range(min, max, (max-min)/4))
       (values);
   // console.log(contours)
 
