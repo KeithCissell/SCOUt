@@ -13303,14 +13303,13 @@ exports.loadVisualizer = loadVisualizer;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+// External Libraries
 var d3 = __webpack_require__(79);
 var d3Contour = __webpack_require__(80);
 var hsv = __webpack_require__(103);
 
-// Build an SVG canvas
-var canvas = d3.select("#canvas").style("background-color", "white");
-// .attr("width", width)
-// .attr("height", height)
+// Globals
+var canvas = d3.select("#canvas");
 
 function drawCanvas(layer) {
   console.log(layer);
@@ -13332,6 +13331,7 @@ function drawCanvas(layer) {
 
   var context = canvas.node().getContext("2d");
   var image = context.createImageData(width, height);
+  console.log(image);
 
   for (var i = 0; i < values.length; ++i) {
     var c = d3.rgb(color(values[i]));
@@ -13361,16 +13361,14 @@ function drawContourPlot(layer) {
   };
   var color = d3.scaleSequential(interpolateTerrain).domain([min, max]);
 
-  // let canvas = d3.select("#canvas")
-  //     .style("background-color", "white")
-  //     .attr("width", 500)
-  //     .attr("height", 500)
-
-  var contours = d3Contour.contours().size([width, height]).thresholds(d3.range(min, max, 2))(values);
+  var contours = d3Contour.contours().size([width, height]).thresholds(d3.range(min, max, 6))(values);
   // console.log(contours)
 
-  canvas.selectAll("path").data(contours).enter().append("path").attr("d", d3.geoPath(d3.geoIdentity().scale(500 / width))).attr("stroke", "black").attr("stroke-width", "1").attr("fill", "none");
-  // .attr("fill", function(d) { return color(d.value); })
+  canvas.selectAll("path").data(contours).enter().append("path").attr("d", d3.geoPath(d3.geoIdentity().scale(500 / width))).attr("stroke", "black").attr("stroke-width", "1")
+  // .attr("fill", "none")
+  .attr("fill", function (d) {
+    return color(d.value);
+  });
 }
 
 function layerToJson(layer) {

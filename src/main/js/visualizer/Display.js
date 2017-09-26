@@ -26,6 +26,7 @@ function drawCanvas(layer) {
 
   let context = canvas.node().getContext("2d")
   let image = context.createImageData(width, height)
+  console.log(image)
 
   for (let i = 0; i < values.length; ++i) {
     let c = d3.rgb(color(values[i]))
@@ -54,14 +55,9 @@ function drawContourPlot(layer) {
   let interpolateTerrain = function(t) { return t < 0.5 ? i0(t * 2) : i1((t - 0.5) * 2) }
   let color = d3.scaleSequential(interpolateTerrain).domain([min, max])
 
-  // let canvas = d3.select("#canvas")
-  //     .style("background-color", "white")
-  //     .attr("width", 500)
-  //     .attr("height", 500)
-
   let contours = d3Contour.contours()
       .size([width, height])
-      .thresholds(d3.range(min, max, 2))
+      .thresholds(d3.range(min, max, 6))
       (values);
   // console.log(contours)
 
@@ -72,8 +68,8 @@ function drawContourPlot(layer) {
       .attr("d", d3.geoPath(d3.geoIdentity().scale(500 / width)))
       .attr("stroke", "black")
       .attr("stroke-width", "1")
-      .attr("fill", "none")
-      // .attr("fill", function(d) { return color(d.value); })
+      // .attr("fill", "none")
+      .attr("fill", function(d) { return color(d.value); })
 
 }
 
