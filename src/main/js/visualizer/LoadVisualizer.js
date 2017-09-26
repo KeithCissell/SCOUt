@@ -1,6 +1,6 @@
 import {drawCanvas,
         drawContourPlot} from './Display.js'
-        
+
 
 // Document Elements
 const header = document.getElementById("header")

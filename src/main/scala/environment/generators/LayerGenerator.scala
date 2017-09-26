@@ -23,6 +23,7 @@ object LayerGenerator {
     case s: WindSpeedSeed     => windSpeedLayer(length, width, s)
   }
 
+  // Layer generators specific to each element type
 
   def decibleLayer(l: Int, w: Int, seed: DecibleSeed): Layer = {
     val layer = new Layer(AB.fill(l)(AB.fill(w)(Some(new Decible(0.0)))))
@@ -56,6 +57,15 @@ object LayerGenerator {
       val mean = cluster.sum / cluster.length
       val value = seed.randomDeviation(mean)
       layer.setElement(x, y, new Elevation(value))
+    }
+    // Smooth the layer
+    for {
+      x <- 0 until l
+      y <- 0 until w
+    } {
+      val cluster = layer.getClusterValues(x, y, 3)
+      val mean = cluster.sum / cluster.length
+      layer.setElement(x, y, new Elevation(mean))
     }
     return layer
   }
@@ -97,6 +107,15 @@ object LayerGenerator {
       val value = seed.randomDeviation(mean)
       layer.setElement(x, y, new Temperature(value))
     }
+    // Smooth the layer
+    for {
+      x <- 0 until l
+      y <- 0 until w
+    } {
+      val cluster = layer.getClusterValues(x, y, 3)
+      val mean = cluster.sum / cluster.length
+      layer.setElement(x, y, new Temperature(mean))
+    }
     return layer
   }
 
@@ -113,6 +132,15 @@ object LayerGenerator {
       val value = seed.randomDeviation(mean)
       layer.setElement(x, y, new WindDirection(value))
     }
+    // Smooth the layer
+    for {
+      x <- 0 until l
+      y <- 0 until w
+    } {
+      val cluster = layer.getClusterValues(x, y, 3)
+      val mean = cluster.sum / cluster.length
+      layer.setElement(x, y, new WindDirection(mean))
+    }
     return layer
   }
 
@@ -128,6 +156,15 @@ object LayerGenerator {
       val mean = cluster.sum / cluster.length
       val value = seed.randomDeviation(mean)
       layer.setElement(x, y, new WindSpeed(value))
+    }
+    // Smooth the layer
+    for {
+      x <- 0 until l
+      y <- 0 until w
+    } {
+      val cluster = layer.getClusterValues(x, y, 3)
+      val mean = cluster.sum / cluster.length
+      layer.setElement(x, y, new WindSpeed(mean))
     }
     return layer
   }
