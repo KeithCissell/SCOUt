@@ -12920,7 +12920,7 @@ var _SCOUtAPI = __webpack_require__(71);
 
 var _EnvironmentBuilder = __webpack_require__(72);
 
-var _LoadVisualizer = __webpack_require__(77);
+var _Visualizer = __webpack_require__(77);
 
 window.$ = window.jQuery = __webpack_require__(110);
 var fetch = __webpack_require__(111);
@@ -12970,7 +12970,7 @@ async function successfulContact() {
   nre.json().then(function (json) {
     var environment = (0, _EnvironmentBuilder.buildEnvironment)(json);
     console.log(environment);
-    (0, _LoadVisualizer.loadVisualizer)(environment);
+    (0, _Visualizer.loadVisualizer)(environment);
   }).catch(function (err) {
     console.log(err);
   });
@@ -13287,8 +13287,8 @@ function displayLayer(index) {
   var layer = environment.extractLayer(elementType);
   currentLayerName.innerText = layer.elementType;
   message.innerHTML = "";
-
-  if (elementType == "Elevation") (0, _Display.drawContourPlot)(layer);else (0, _Display.drawCanvas)(layer);
+  // drawContourPlot(layer)
+  if (elementType == "Elevation") (0, _Display.drawContourPlot)(layer);else (0, _Display.drawHeatmap)(layer);
 }
 
 exports.loadVisualizer = loadVisualizer;
@@ -13309,11 +13309,22 @@ var d3Contour = __webpack_require__(80);
 var hsv = __webpack_require__(103);
 
 // Globals
-var canvas = d3.select("#canvas");
+var display = document.getElementById("display");
 
-function drawCanvas(layer) {
-  console.log(layer);
+// Creates a heatmap of a given layer
+function drawHeatmap(layer) {
+  // console.log(layer)
   var layerJson = layerToJson(layer);
+
+  // build a canvas element to draw on
+  display.innerHTML = "";
+  var canvasElement = document.createElement("canvas");
+  canvasElement.setAttribute("id", "canvas");
+  canvasElement.style.height = "100%";
+  canvasElement.style.width = "100%";
+  display.appendChild(canvasElement);
+
+  var canvas = d3.select("#canvas");
 
   var width = layerJson.width;
   var height = layerJson.length;
@@ -13343,10 +13354,22 @@ function drawCanvas(layer) {
   context.putImageData(image, 0, 0);
 }
 
+// Creates a contour plot of a given layer
 function drawContourPlot(layer) {
-  console.log(layer);
+  // console.log(layer)
   var layerJson = layerToJson(layer);
-  // console.log(layerJson)
+
+  // create an svg element to draw contours in
+  display.innerHTML = "";
+  var svgElement = document.createElement("svg");
+  svgElement.setAttribute("id", "svg");
+  svgElement.setAttribute("float", "left");
+  svgElement.setAttribute("fill", "black");
+  svgElement.style.height = "100%";
+  svgElement.style.width = "100%";
+  display.appendChild(svgElement);
+
+  var svg = d3.select("#svg");
 
   var width = layerJson.width;
   var height = layerJson.length;
@@ -13362,9 +13385,8 @@ function drawContourPlot(layer) {
   var color = d3.scaleSequential(interpolateTerrain).domain([min, max]);
 
   var contours = d3Contour.contours().size([width, height]).thresholds(d3.range(min, max, (max - min) / 4))(values);
-  // console.log(contours)
 
-  canvas.selectAll("path").data(contours).enter().append("path").attr("d", d3.geoPath(d3.geoIdentity().scale(500 / width))).attr("stroke", "black").attr("stroke-width", "1")
+  svg.selectAll("path").data(contours).enter().append("path").attr("d", d3.geoPath(d3.geoIdentity().scale(500 / width))).attr("stroke", "black").attr("stroke-width", "1")
   // .attr("fill", "none")
   .attr("fill", function (d) {
     return color(d.value);
@@ -13386,7 +13408,7 @@ function layerToJson(layer) {
   return obj;
 }
 
-exports.drawCanvas = drawCanvas;
+exports.drawHeatmap = drawHeatmap;
 exports.drawContourPlot = drawContourPlot;
 
 /***/ }),

@@ -5,11 +5,22 @@ const hsv = require('d3-hsv')
 
 
 // Globals
-const canvas = d3.select("#canvas")
+const display = document.getElementById("display")
 
-function drawCanvas(layer) {
-  console.log(layer)
+// Creates a heatmap of a given layer
+function drawHeatmap(layer) {
+  // console.log(layer)
   let layerJson = layerToJson(layer)
+
+  // build a canvas element to draw on
+  display.innerHTML = ""
+  let canvasElement = document.createElement("canvas")
+  canvasElement.setAttribute("id", "canvas")
+  canvasElement.style.height = "100%"
+  canvasElement.style.width = "100%"
+  display.appendChild(canvasElement)
+
+  let canvas = d3.select("#canvas")
 
   let width = layerJson.width
   let height = layerJson.length
@@ -38,11 +49,22 @@ function drawCanvas(layer) {
   context.putImageData(image, 0, 0)
 }
 
-
+// Creates a contour plot of a given layer
 function drawContourPlot(layer) {
-  console.log(layer)
+  // console.log(layer)
   let layerJson = layerToJson(layer)
-  // console.log(layerJson)
+
+  // create an svg element to draw contours in
+  display.innerHTML = ""
+  let svgElement = document.createElement("svg")
+  svgElement.setAttribute("id", "svg")
+  svgElement.setAttribute("float", "left")
+  svgElement.setAttribute("fill", "black")
+  svgElement.style.height = "100%"
+  svgElement.style.width = "100%"
+  display.appendChild(svgElement)
+
+  let svg = d3.select("#svg")
 
   let width = layerJson.width
   let height = layerJson.length
@@ -59,9 +81,8 @@ function drawContourPlot(layer) {
       .size([width, height])
       .thresholds(d3.range(min, max, (max-min)/4))
       (values);
-  // console.log(contours)
 
-  canvas.selectAll("path")
+  svg.selectAll("path")
     .data(contours)
     .enter()
       .append("path")
@@ -70,7 +91,6 @@ function drawContourPlot(layer) {
       .attr("stroke-width", "1")
       // .attr("fill", "none")
       .attr("fill", function(d) { return color(d.value); })
-
 }
 
 function layerToJson(layer) {
@@ -89,4 +109,4 @@ function layerToJson(layer) {
 }
 
 
-export {drawCanvas, drawContourPlot}
+export {drawHeatmap, drawContourPlot}

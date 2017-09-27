@@ -1,4 +1,4 @@
-import {drawCanvas,
+import {drawHeatmap,
         drawContourPlot} from './Display.js'
 
 
@@ -52,9 +52,9 @@ function displayLayer(index) {
   let layer = environment.extractLayer(elementType)
   currentLayerName.innerText = layer.elementType
   message.innerHTML = ""
-
+  // drawContourPlot(layer)
   if (elementType == "Elevation") drawContourPlot(layer)
-  else drawCanvas(layer)
+  else drawHeatmap(layer)
 }
 
 
