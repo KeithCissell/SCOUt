@@ -8,8 +8,20 @@ const hsv = require('d3-hsv')
 const display = document.getElementById("display")
 
 
-// Draws Layer Countour to SVG
-function drawLayer(layer, threshold, colorValue, opacity, lines) {
+/*
+_____drawLayer_____
+Description
+    Uses d3-contour to create multiple contour layers from Environment layer.
+    Converts the contour data into SVG paths and appends them to the display.
+Parameters
+    layerName (string)  : elementType associated to layer in Environment
+    threshold (int)     : how many contour-lines should be generated for display
+    hue (int) [0,359]   : primary color between contour-lines
+    saturation (flt) [0.0,1.0]
+    opacity (flt) [0.0,1.0]     : opacity for the color between contour-lines
+    lines (boolean)     : should contour-lines appear
+*/
+function drawLayer(layer, threshold, hue, saturation, opacity, lines) {
 
   let layerJson = layer.toJson()
 
@@ -20,8 +32,8 @@ function drawLayer(layer, threshold, colorValue, opacity, lines) {
   let min = Math.min.apply(null, values)
   let max = Math.max.apply(null, values)
 
-  let i0 = hsv.interpolateHsvLong(hsv.hsv(0, 0, 1, opacity), hsv.hsv(0, 0, 0, opacity))
-  let i1 = hsv.interpolateHsvLong(hsv.hsv(0, 0, 1, opacity), hsv.hsv(0, 0, 0, opacity))
+  let i0 = hsv.interpolateHsvLong(hsv.hsv(hue, saturation, .8, opacity), hsv.hsv(hue, saturation, .2, opacity))
+  let i1 = hsv.interpolateHsvLong(hsv.hsv(hue, saturation, .8, opacity), hsv.hsv(hue, saturation, .2, opacity))
   let interpolateTerrain = function(t) { return t < 0.5 ? i0(t * 2) : i1((t - 0.5) * 2) }
   let color = d3.scaleSequential(interpolateTerrain).domain([min, max])
 
@@ -35,7 +47,7 @@ function drawLayer(layer, threshold, colorValue, opacity, lines) {
     let newPath = document.createElementNS("http://www.w3.org/2000/svg", "path")
     let dFunc = d3.geoPath(d3.geoIdentity().scale(500 / width))
     let d = dFunc(contour)
-    newPath.setAttribute("id", elementType)
+    newPath.setAttribute("class", elementType)
     newPath.setAttribute("d", d)
     newPath.setAttribute("stroke",  "black")
     newPath.setAttribute("stroke-width", lines ? 1 : 0 )
@@ -45,4 +57,15 @@ function drawLayer(layer, threshold, colorValue, opacity, lines) {
 
 }
 
-export {drawLayer}
+
+// Remove all child elements of display that have the given class name
+function eraseLayer(layerName) {
+  let children = display.children
+  for (let i = 0; i < children.length; i++) {
+    let child = children[i]
+    if (child.className.baseVal === layerName) { display.removeChild(child); i-- }
+  }
+}
+
+
+export {drawLayer, eraseLayer}

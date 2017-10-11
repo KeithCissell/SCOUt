@@ -13276,14 +13276,52 @@ var mainContent = document.getElementById("content");
 var environment = void 0;
 var elementTypes = void 0;
 var currentLayerIndex = 0;
+var currentLayerType = "None";
 
+// Main function to load display and interactive tools
 function loadVisualizer(targetEnvironment) {
   environment = targetEnvironment;
   elementTypes = environment.elementTypes;
+  elementTypes.unshift("None"); // adds "None" to the front of array
+  loadDisplayFoundation();
   loadToolbar();
   displayLayer(currentLayerIndex);
+  message.innerHTML = "";
 }
 
+// Loads/draws Layers that will remain permanent on the display
+function loadDisplayFoundation() {
+  loadPermanentLayer("Elevation", 7, 0, 0, .2, true);
+  loadPermanentLayer("Latitude", 10, 0, 0, 0, true);
+  loadPermanentLayer("Longitude", 10, 0, 0, 0, true);
+}
+
+/*
+_____loadPermanentLayer_____
+Description
+    Attempts to find a layer in Environment and call drawLayer().
+    Throws an Error if it does not find the layer.
+Parameters
+    layerName (string)  : elementType associated to layer in Environment
+    threshold (int)     : how many contour-lines should be generated for display
+    hue (int) [0,359]   : primary color between contour-lines
+    saturation (flt) [0.0,1.0]
+    opacity (flt) [0.0,1.0]     : opacity for the color between contour-lines
+    lines (boolean)     : should contour-lines appear
+*/
+function loadPermanentLayer(layerName, threshold, hue, saturation, opacity, lines) {
+  var index = elementTypes.indexOf(layerName);
+  if (index >= 0) {
+    var elementType = elementTypes[index];
+    var layer = environment.extractLayer(elementType);
+    (0, _Display.drawLayer)(layer, threshold, hue, saturation, opacity, lines);
+    elementTypes.splice(index, 1);
+  } else {
+    throw new Error(layerName + " layer not found within Environment");
+  }
+}
+
+// Loads toolbar for switching the displayed layer
 function loadToolbar() {
   var previousLayerButton = document.createElement("button");
   previousLayerButton.textContent = " <<< ";
@@ -13299,18 +13337,24 @@ function loadToolbar() {
   toolbar.appendChild(nextLayerButton);
 }
 
+// Assures that `currentLayerIndex` stays within bounds
 function switchLayer(newIndex) {
   if (newIndex < 0) displayLayer(elementTypes.length - 1);else if (newIndex >= elementTypes.length) displayLayer(0);else displayLayer(newIndex);
 }
 
+// Requests to display a layer by index
 function displayLayer(index) {
-  currentLayerIndex = index;
+  if (currentLayerType != "None") (0, _Display.eraseLayer)(currentLayerType);
+
   var elementType = elementTypes[index];
-  var layer = environment.extractLayer(elementType);
-  currentLayerName.innerText = layer.elementType;
-  message.innerHTML = "";
-  var contours = ["Elevation", "Latitude", "Longitude"];
-  if (contours.indexOf(elementType) >= 0) (0, _Display.drawLayer)(layer, 0, 0, true);else (0, _Display.drawLayer)(layer, 0, .5, false);
+  currentLayerIndex = index;
+  currentLayerType = elementType;
+  currentLayerName.innerText = elementType;
+
+  if (currentLayerType != "None") {
+    var layer = environment.extractLayer(elementType);
+    (0, _Display.drawLayer)(layer, 4, 220, .5, 0.3, false);
+  }
 }
 
 exports.loadVisualizer = loadVisualizer;
@@ -13334,11 +13378,9 @@ var hsv = __webpack_require__(103);
 var display = document.getElementById("display");
 
 // Draws Layer Countour to SVG
-function drawLayer(layer, colorValue, opacity, lines) {
-  // console.log(layer)
-  var layerJson = layer.toJson();
+function drawLayer(layer, threshold, hue, saturation, opacity, lines) {
 
-  // display.innerHTML = ""
+  var layerJson = layer.toJson();
 
   var elementType = layerJson.elementType;
   var width = layerJson.width;
@@ -13347,49 +13389,45 @@ function drawLayer(layer, colorValue, opacity, lines) {
   var min = Math.min.apply(null, values);
   var max = Math.max.apply(null, values);
 
-  var i0 = hsv.interpolateHsvLong(hsv.hsv(0, 0, 1, opacity), hsv.hsv(0, 0, 0, opacity));
-  var i1 = hsv.interpolateHsvLong(hsv.hsv(0, 0, 1, opacity), hsv.hsv(0, 0, 0, opacity));
+  var i0 = hsv.interpolateHsvLong(hsv.hsv(hue, saturation, .8, opacity), hsv.hsv(hue, saturation, .2, opacity));
+  var i1 = hsv.interpolateHsvLong(hsv.hsv(hue, saturation, .8, opacity), hsv.hsv(hue, saturation, .2, opacity));
   var interpolateTerrain = function interpolateTerrain(t) {
     return t < 0.5 ? i0(t * 2) : i1((t - 0.5) * 2);
   };
   var color = d3.scaleSequential(interpolateTerrain).domain([min, max]);
 
-  var contours = d3Contour.contours().size([width, height]).thresholds(d3.range(min, max, (max - min) / 4))(values);
-
-  // let newPath = document.createElementNS("http://www.w3.org/2000/svg", "path")
-  // newPath.setAttribute("id", elementType)
-  // newPath.setAttribute("d", "M 20 35 L 120 100 Z")
-  // newPath.setAttribute("stroke",  "black")
-  // newPath.setAttribute("stroke-width", 3 )
-  // newPath.setAttribute("fill", "none")
-  // display.appendChild(newPath)
+  var contours = d3Contour.contours().size([width, height]).thresholds(d3.range(min, max, (max - min) / threshold))(values);
 
   for (var i = 0; i < contours.length; i++) {
     var contour = contours[i];
     var newPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
     var dFunc = d3.geoPath(d3.geoIdentity().scale(500 / width));
     var d = dFunc(contour);
-    newPath.setAttribute("id", elementType);
+    newPath.setAttribute("class", elementType);
     newPath.setAttribute("d", d);
     newPath.setAttribute("stroke", "black");
     newPath.setAttribute("stroke-width", lines ? 1 : 0);
     newPath.setAttribute("fill", color(contour.value));
     display.appendChild(newPath);
-    // console.log(newPath)
   }
+}
 
-  //   d3.select("#display").selectAll("path")
-  //     .data(contours)
-  //     .enter()
-  //       .append("path")
-  //       .attr("id", elementType)
-  //       .attr("d", d3.geoPath(d3.geoIdentity().scale(500 / width)))
-  //       .attr("stroke", "black")
-  //       .attr("stroke-width", lines ? 1 : 0 )
-  //       .attr("fill", function(d) { return color(d.value); })
+// Remove all child elements of display that have the given class name
+function eraseLayer(layerName) {
+  var children = display.children;
+  for (var i = 0; i < children.length; i++) {
+    var child = children[i];
+    console.log(child.className.baseVal + ('  ' + i));
+    if (child.className.baseVal === layerName) {
+      console.log(child.className.baseVal + "==" + layerName);
+      display.removeChild(child);
+      i--;
+    }
+  }
 }
 
 exports.drawLayer = drawLayer;
+exports.eraseLayer = eraseLayer;
 
 /***/ }),
 /* 79 */
