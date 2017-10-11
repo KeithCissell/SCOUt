@@ -13272,9 +13272,6 @@ function loadToolbar(elementTypes) {
     switchLayer(currentLayerIndex + 1);
   });
   toolbar.appendChild(nextLayerButton);
-  for (var e in elementTypes) {
-    var elementType = elementTypes[e];
-  }
 }
 
 function switchLayer(newIndex) {
@@ -13320,9 +13317,11 @@ function drawHeatmap(layer) {
   display.innerHTML = "";
   var canvasElement = document.createElement("canvas");
   canvasElement.setAttribute("id", "canvas");
-  canvasElement.style.height = "100%";
-  canvasElement.style.width = "100%";
+  canvasElement.style.height = display.height;
+  canvasElement.style.width = display.width;
   display.appendChild(canvasElement);
+
+  console.log(document.getElementById("canvas").height, document.getElementById("canvas").width);
 
   var canvas = d3.select("#canvas");
 

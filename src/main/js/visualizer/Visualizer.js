@@ -35,9 +35,6 @@ function loadToolbar(elementTypes) {
     switchLayer(currentLayerIndex + 1)
   })
   toolbar.appendChild(nextLayerButton)
-  for (let e in elementTypes) {
-    let elementType = elementTypes[e]
-  }
 }
 
 function switchLayer(newIndex) {
