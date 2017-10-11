@@ -13212,16 +13212,41 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Layer = function Layer(elementType, grid, length, width) {
-  _classCallCheck(this, Layer);
+var Layer = function () {
+  function Layer(elementType, grid, length, width) {
+    _classCallCheck(this, Layer);
 
-  this.elementType = elementType;
-  this.grid = grid;
-  this.length = length;
-  this.width = width;
-};
+    this.elementType = elementType;
+    this.grid = grid;
+    this.length = length;
+    this.width = width;
+  }
+
+  _createClass(Layer, [{
+    key: "toJson",
+    value: function toJson() {
+      var obj = {};
+      // Rotate the object 90 degrees counter-clockwise for visualization tool: (x, y) = (y, -x)
+      obj.elementType = this.elementType;
+      obj.width = this.length;
+      obj.length = this.width;
+      obj.values = [];
+      for (var y = 0; y < this.length; y++) {
+        var flipY = this.length - 1 - y;
+        for (var x = 0; x < this.width; x++) {
+          obj.values.push(this.grid[x][flipY].value);
+        }
+      }
+      return obj;
+    }
+  }]);
+
+  return Layer;
+}();
 
 exports.Layer = Layer;
 
@@ -13255,11 +13280,11 @@ var currentLayerIndex = 0;
 function loadVisualizer(targetEnvironment) {
   environment = targetEnvironment;
   elementTypes = environment.elementTypes;
-  loadToolbar(elementTypes);
+  loadToolbar();
   displayLayer(currentLayerIndex);
 }
 
-function loadToolbar(elementTypes) {
+function loadToolbar() {
   var previousLayerButton = document.createElement("button");
   previousLayerButton.textContent = " <<< ";
   previousLayerButton.addEventListener("click", function () {
@@ -13284,8 +13309,8 @@ function displayLayer(index) {
   var layer = environment.extractLayer(elementType);
   currentLayerName.innerText = layer.elementType;
   message.innerHTML = "";
-  // drawContourPlot(layer)
-  if (elementType == "Elevation") (0, _Display.drawContourPlot)(layer);else (0, _Display.drawHeatmap)(layer);
+  var contours = ["Elevation", "Latitude", "Longitude"];
+  if (contours.indexOf(elementType) >= 0) (0, _Display.drawLayer)(layer, 0, 0, true);else (0, _Display.drawLayer)(layer, 0, .5, false);
 }
 
 exports.loadVisualizer = loadVisualizer;
@@ -13308,76 +13333,22 @@ var hsv = __webpack_require__(103);
 // Globals
 var display = document.getElementById("display");
 
-// Creates a heatmap of a given layer
-function drawHeatmap(layer) {
+// Draws Layer Countour to SVG
+function drawLayer(layer, colorValue, opacity, lines) {
   // console.log(layer)
-  var layerJson = layerToJson(layer);
+  var layerJson = layer.toJson();
 
-  // build a canvas element to draw on
-  display.innerHTML = "";
-  var canvasElement = document.createElement("canvas");
-  canvasElement.setAttribute("id", "canvas");
-  canvasElement.style.height = display.height;
-  canvasElement.style.width = display.width;
-  display.appendChild(canvasElement);
+  // display.innerHTML = ""
 
-  console.log(document.getElementById("canvas").height, document.getElementById("canvas").width);
-
-  var canvas = d3.select("#canvas");
-
+  var elementType = layerJson.elementType;
   var width = layerJson.width;
   var height = layerJson.length;
   var values = layerJson.values;
   var min = Math.min.apply(null, values);
   var max = Math.max.apply(null, values);
 
-  var i0 = hsv.interpolateHsvLong(hsv.hsv(120, 1, 0.65), hsv.hsv(60, 1, 0.90));
-  var i1 = hsv.interpolateHsvLong(hsv.hsv(60, 1, 0.90), hsv.hsv(0, 0, 0.95));
-  var interpolateTerrain = function interpolateTerrain(t) {
-    return t < 0.5 ? i0(t * 2) : i1((t - 0.5) * 2);
-  };
-  var color = d3.scaleSequential(interpolateTerrain).domain([min, max]);
-  //.range(["purple", "red"])
-
-  var context = canvas.node().getContext("2d");
-  var image = context.createImageData(width, height);
-  console.log(image);
-
-  for (var i = 0; i < values.length; ++i) {
-    var c = d3.rgb(color(values[i]));
-    image.data[i * 4 + 0] = c.r;
-    image.data[i * 4 + 1] = c.g;
-    image.data[i * 4 + 2] = c.b;
-    image.data[i * 4 + 3] = 255;
-  }
-  context.putImageData(image, 0, 0);
-}
-
-// Creates a contour plot of a given layer
-function drawContourPlot(layer) {
-  // console.log(layer)
-  var layerJson = layerToJson(layer);
-
-  // create an svg element to draw contours in
-  display.innerHTML = "";
-  var svgElement = document.createElement("svg");
-  svgElement.setAttribute("id", "svg");
-  svgElement.setAttribute("float", "left");
-  svgElement.setAttribute("fill", "black");
-  svgElement.style.height = "100%";
-  svgElement.style.width = "100%";
-  display.appendChild(svgElement);
-
-  var svg = d3.select("#svg");
-
-  var width = layerJson.width;
-  var height = layerJson.length;
-  var values = layerJson.values;
-  var min = Math.min.apply(null, values);
-  var max = Math.max.apply(null, values);
-
-  var i0 = hsv.interpolateHsvLong(hsv.hsv(120, 1, 0.65), hsv.hsv(60, 1, 0.90));
-  var i1 = hsv.interpolateHsvLong(hsv.hsv(60, 1, 0.90), hsv.hsv(0, 0, 0.95));
+  var i0 = hsv.interpolateHsvLong(hsv.hsv(0, 0, 1, opacity), hsv.hsv(0, 0, 0, opacity));
+  var i1 = hsv.interpolateHsvLong(hsv.hsv(0, 0, 1, opacity), hsv.hsv(0, 0, 0, opacity));
   var interpolateTerrain = function interpolateTerrain(t) {
     return t < 0.5 ? i0(t * 2) : i1((t - 0.5) * 2);
   };
@@ -13385,30 +13356,40 @@ function drawContourPlot(layer) {
 
   var contours = d3Contour.contours().size([width, height]).thresholds(d3.range(min, max, (max - min) / 4))(values);
 
-  svg.selectAll("path").data(contours).enter().append("path").attr("d", d3.geoPath(d3.geoIdentity().scale(500 / width))).attr("stroke", "black").attr("stroke-width", "1")
-  // .attr("fill", "none")
-  .attr("fill", function (d) {
-    return color(d.value);
-  });
-}
+  // let newPath = document.createElementNS("http://www.w3.org/2000/svg", "path")
+  // newPath.setAttribute("id", elementType)
+  // newPath.setAttribute("d", "M 20 35 L 120 100 Z")
+  // newPath.setAttribute("stroke",  "black")
+  // newPath.setAttribute("stroke-width", 3 )
+  // newPath.setAttribute("fill", "none")
+  // display.appendChild(newPath)
 
-function layerToJson(layer) {
-  var obj = {};
-  // Rotate the object 90 degrees counter-clockwise for visualization tool: (x, y) = (y, -x)
-  obj.width = layer.length;
-  obj.length = layer.width;
-  obj.values = [];
-  for (var y = 0; y < layer.length; y++) {
-    var flipY = layer.length - 1 - y;
-    for (var x = 0; x < layer.width; x++) {
-      obj.values.push(layer.grid[x][flipY].value);
-    }
+  for (var i = 0; i < contours.length; i++) {
+    var contour = contours[i];
+    var newPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    var dFunc = d3.geoPath(d3.geoIdentity().scale(500 / width));
+    var d = dFunc(contour);
+    newPath.setAttribute("id", elementType);
+    newPath.setAttribute("d", d);
+    newPath.setAttribute("stroke", "black");
+    newPath.setAttribute("stroke-width", lines ? 1 : 0);
+    newPath.setAttribute("fill", color(contour.value));
+    display.appendChild(newPath);
+    // console.log(newPath)
   }
-  return obj;
+
+  //   d3.select("#display").selectAll("path")
+  //     .data(contours)
+  //     .enter()
+  //       .append("path")
+  //       .attr("id", elementType)
+  //       .attr("d", d3.geoPath(d3.geoIdentity().scale(500 / width)))
+  //       .attr("stroke", "black")
+  //       .attr("stroke-width", lines ? 1 : 0 )
+  //       .attr("fill", function(d) { return color(d.value); })
 }
 
-exports.drawHeatmap = drawHeatmap;
-exports.drawContourPlot = drawContourPlot;
+exports.drawLayer = drawLayer;
 
 /***/ }),
 /* 79 */

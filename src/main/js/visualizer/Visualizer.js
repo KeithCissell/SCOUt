@@ -1,5 +1,4 @@
-import {drawHeatmap,
-        drawContourPlot} from './Display.js'
+import {drawLayer} from './Display.js'
 
 
 // Document Elements
@@ -18,11 +17,11 @@ let currentLayerIndex = 0
 function loadVisualizer(targetEnvironment) {
   environment = targetEnvironment
   elementTypes = environment.elementTypes
-  loadToolbar(elementTypes)
+  loadToolbar()
   displayLayer(currentLayerIndex)
 }
 
-function loadToolbar(elementTypes) {
+function loadToolbar() {
   let previousLayerButton = document.createElement("button")
   previousLayerButton.textContent = " <<< "
   previousLayerButton.addEventListener("click", () => {
@@ -49,9 +48,9 @@ function displayLayer(index) {
   let layer = environment.extractLayer(elementType)
   currentLayerName.innerText = layer.elementType
   message.innerHTML = ""
-  // drawContourPlot(layer)
-  if (elementType == "Elevation") drawContourPlot(layer)
-  else drawHeatmap(layer)
+  let contours = ["Elevation", "Latitude", "Longitude"]
+  if (contours.indexOf(elementType) >= 0) drawLayer(layer, 4, 0, 0, true)
+  else drawLayer(layer, 4, 0, .5, false)
 }
 
 
