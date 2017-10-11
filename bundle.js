@@ -12920,7 +12920,7 @@ var _SCOUtAPI = __webpack_require__(71);
 
 var _EnvironmentBuilder = __webpack_require__(72);
 
-var _LoadVisualizer = __webpack_require__(77);
+var _Visualizer = __webpack_require__(77);
 
 window.$ = window.jQuery = __webpack_require__(110);
 var fetch = __webpack_require__(111);
@@ -12970,7 +12970,7 @@ async function successfulContact() {
   nre.json().then(function (json) {
     var environment = (0, _EnvironmentBuilder.buildEnvironment)(json);
     console.log(environment);
-    (0, _LoadVisualizer.loadVisualizer)(environment);
+    (0, _Visualizer.loadVisualizer)(environment);
   }).catch(function (err) {
     console.log(err);
   });
@@ -13212,16 +13212,41 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Layer = function Layer(elementType, grid, length, width) {
-  _classCallCheck(this, Layer);
+var Layer = function () {
+  function Layer(elementType, grid, length, width) {
+    _classCallCheck(this, Layer);
 
-  this.elementType = elementType;
-  this.grid = grid;
-  this.length = length;
-  this.width = width;
-};
+    this.elementType = elementType;
+    this.grid = grid;
+    this.length = length;
+    this.width = width;
+  }
+
+  _createClass(Layer, [{
+    key: "toJson",
+    value: function toJson() {
+      var obj = {};
+      // Rotate the object 90 degrees counter-clockwise for visualization tool: (x, y) = (y, -x)
+      obj.elementType = this.elementType;
+      obj.width = this.length;
+      obj.length = this.width;
+      obj.values = [];
+      for (var y = 0; y < this.length; y++) {
+        var flipY = this.length - 1 - y;
+        for (var x = 0; x < this.width; x++) {
+          obj.values.push(this.grid[x][flipY].value);
+        }
+      }
+      return obj;
+    }
+  }]);
+
+  return Layer;
+}();
 
 exports.Layer = Layer;
 
@@ -13251,15 +13276,53 @@ var mainContent = document.getElementById("content");
 var environment = void 0;
 var elementTypes = void 0;
 var currentLayerIndex = 0;
+var currentLayerType = "None";
 
+// Main function to load display and interactive tools
 function loadVisualizer(targetEnvironment) {
   environment = targetEnvironment;
   elementTypes = environment.elementTypes;
-  loadToolbar(elementTypes);
+  elementTypes.unshift("None"); // adds "None" to the front of array
+  loadDisplayFoundation();
+  loadToolbar();
   displayLayer(currentLayerIndex);
+  message.innerHTML = "";
 }
 
-function loadToolbar(elementTypes) {
+// Loads/draws Layers that will remain permanent on the display
+function loadDisplayFoundation() {
+  loadPermanentLayer("Elevation", 7, 0, 0, .2, true);
+  loadPermanentLayer("Latitude", 10, 0, 0, 0, true);
+  loadPermanentLayer("Longitude", 10, 0, 0, 0, true);
+}
+
+/*
+_____loadPermanentLayer_____
+Description
+    Attempts to find a layer in Environment and call drawLayer().
+    Throws an Error if it does not find the layer.
+Parameters
+    layerName (string)  : elementType associated to layer in Environment
+    threshold (int)     : how many contour-lines should be generated for display
+    hue (int) [0,359]   : primary color between contour-lines
+    saturation (flt) [0.0,1.0]
+    opacity (flt) [0.0,1.0]     : opacity for the color between contour-lines
+    lines (boolean)     : should contour-lines appear
+*/
+function loadPermanentLayer(layerName, threshold, hue, saturation, opacity, lines) {
+  var index = elementTypes.indexOf(layerName);
+  if (index >= 0) {
+    var elementType = elementTypes[index];
+    var layer = environment.extractLayer(elementType);
+    (0, _Display.drawLayer)(layer, threshold, hue, saturation, opacity, lines);
+    elementTypes.splice(index, 1);
+  } else {
+    throw new Error(layerName + " layer not found within Environment");
+  }
+}
+
+// Loads toolbar for switching the displayed layer
+function loadToolbar() {
   var previousLayerButton = document.createElement("button");
   previousLayerButton.textContent = " <<< ";
   previousLayerButton.addEventListener("click", function () {
@@ -13272,23 +13335,26 @@ function loadToolbar(elementTypes) {
     switchLayer(currentLayerIndex + 1);
   });
   toolbar.appendChild(nextLayerButton);
-  for (var e in elementTypes) {
-    var elementType = elementTypes[e];
-  }
 }
 
+// Assures that `currentLayerIndex` stays within bounds
 function switchLayer(newIndex) {
   if (newIndex < 0) displayLayer(elementTypes.length - 1);else if (newIndex >= elementTypes.length) displayLayer(0);else displayLayer(newIndex);
 }
 
+// Requests to display a layer by index
 function displayLayer(index) {
-  currentLayerIndex = index;
-  var elementType = elementTypes[index];
-  var layer = environment.extractLayer(elementType);
-  currentLayerName.innerText = layer.elementType;
-  message.innerHTML = "";
+  if (currentLayerType != "None") (0, _Display.eraseLayer)(currentLayerType);
 
-  if (elementType == "Elevation") (0, _Display.drawContourPlot)(layer);else (0, _Display.drawCanvas)(layer);
+  var elementType = elementTypes[index];
+  currentLayerIndex = index;
+  currentLayerType = elementType;
+  currentLayerName.innerText = elementType;
+
+  if (currentLayerType != "None") {
+    var layer = environment.extractLayer(elementType);
+    (0, _Display.drawLayer)(layer, 4, 220, .5, 0.3, false);
+  }
 }
 
 exports.loadVisualizer = loadVisualizer;
@@ -13309,85 +13375,59 @@ var d3Contour = __webpack_require__(80);
 var hsv = __webpack_require__(103);
 
 // Globals
-var canvas = d3.select("#canvas");
+var display = document.getElementById("display");
 
-function drawCanvas(layer) {
-  console.log(layer);
-  var layerJson = layerToJson(layer);
+// Draws Layer Countour to SVG
+function drawLayer(layer, threshold, hue, saturation, opacity, lines) {
 
+  var layerJson = layer.toJson();
+
+  var elementType = layerJson.elementType;
   var width = layerJson.width;
   var height = layerJson.length;
   var values = layerJson.values;
   var min = Math.min.apply(null, values);
   var max = Math.max.apply(null, values);
 
-  var i0 = hsv.interpolateHsvLong(hsv.hsv(120, 1, 0.65), hsv.hsv(60, 1, 0.90));
-  var i1 = hsv.interpolateHsvLong(hsv.hsv(60, 1, 0.90), hsv.hsv(0, 0, 0.95));
+  var i0 = hsv.interpolateHsvLong(hsv.hsv(hue, saturation, .8, opacity), hsv.hsv(hue, saturation, .2, opacity));
+  var i1 = hsv.interpolateHsvLong(hsv.hsv(hue, saturation, .8, opacity), hsv.hsv(hue, saturation, .2, opacity));
   var interpolateTerrain = function interpolateTerrain(t) {
     return t < 0.5 ? i0(t * 2) : i1((t - 0.5) * 2);
   };
   var color = d3.scaleSequential(interpolateTerrain).domain([min, max]);
-  //.range(["purple", "red"])
 
-  var context = canvas.node().getContext("2d");
-  var image = context.createImageData(width, height);
-  console.log(image);
+  var contours = d3Contour.contours().size([width, height]).thresholds(d3.range(min, max, (max - min) / threshold))(values);
 
-  for (var i = 0; i < values.length; ++i) {
-    var c = d3.rgb(color(values[i]));
-    image.data[i * 4 + 0] = c.r;
-    image.data[i * 4 + 1] = c.g;
-    image.data[i * 4 + 2] = c.b;
-    image.data[i * 4 + 3] = 255;
+  for (var i = 0; i < contours.length; i++) {
+    var contour = contours[i];
+    var newPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    var dFunc = d3.geoPath(d3.geoIdentity().scale(500 / width));
+    var d = dFunc(contour);
+    newPath.setAttribute("class", elementType);
+    newPath.setAttribute("d", d);
+    newPath.setAttribute("stroke", "black");
+    newPath.setAttribute("stroke-width", lines ? 1 : 0);
+    newPath.setAttribute("fill", color(contour.value));
+    display.appendChild(newPath);
   }
-  context.putImageData(image, 0, 0);
 }
 
-function drawContourPlot(layer) {
-  console.log(layer);
-  var layerJson = layerToJson(layer);
-  // console.log(layerJson)
-
-  var width = layerJson.width;
-  var height = layerJson.length;
-  var values = layerJson.values;
-  var min = Math.min.apply(null, values);
-  var max = Math.max.apply(null, values);
-
-  var i0 = hsv.interpolateHsvLong(hsv.hsv(120, 1, 0.65), hsv.hsv(60, 1, 0.90));
-  var i1 = hsv.interpolateHsvLong(hsv.hsv(60, 1, 0.90), hsv.hsv(0, 0, 0.95));
-  var interpolateTerrain = function interpolateTerrain(t) {
-    return t < 0.5 ? i0(t * 2) : i1((t - 0.5) * 2);
-  };
-  var color = d3.scaleSequential(interpolateTerrain).domain([min, max]);
-
-  var contours = d3Contour.contours().size([width, height]).thresholds(d3.range(min, max, (max - min) / 4))(values);
-  // console.log(contours)
-
-  canvas.selectAll("path").data(contours).enter().append("path").attr("d", d3.geoPath(d3.geoIdentity().scale(500 / width))).attr("stroke", "black").attr("stroke-width", "1")
-  // .attr("fill", "none")
-  .attr("fill", function (d) {
-    return color(d.value);
-  });
-}
-
-function layerToJson(layer) {
-  var obj = {};
-  // Rotate the object 90 degrees counter-clockwise for visualization tool: (x, y) = (y, -x)
-  obj.width = layer.length;
-  obj.length = layer.width;
-  obj.values = [];
-  for (var y = 0; y < layer.length; y++) {
-    var flipY = layer.length - 1 - y;
-    for (var x = 0; x < layer.width; x++) {
-      obj.values.push(layer.grid[x][flipY].value);
+// Remove all child elements of display that have the given class name
+function eraseLayer(layerName) {
+  var children = display.children;
+  for (var i = 0; i < children.length; i++) {
+    var child = children[i];
+    console.log(child.className.baseVal + ('  ' + i));
+    if (child.className.baseVal === layerName) {
+      console.log(child.className.baseVal + "==" + layerName);
+      display.removeChild(child);
+      i--;
     }
   }
-  return obj;
 }
 
-exports.drawCanvas = drawCanvas;
-exports.drawContourPlot = drawContourPlot;
+exports.drawLayer = drawLayer;
+exports.eraseLayer = eraseLayer;
 
 /***/ }),
 /* 79 */

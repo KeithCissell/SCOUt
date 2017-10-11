@@ -2,7 +2,7 @@ import {pingServer,
         getCurrentState,
         newRandomEnvironment} from './SCOUtAPI.js'
 import {buildEnvironment} from './environment/EnvironmentBuilder.js'
-import {loadVisualizer} from './visualizer/LoadVisualizer.js'
+import {loadVisualizer} from './visualizer/Visualizer.js'
 
 window.$ = window.jQuery = require('jquery')
 const fetch = require('node-fetch')

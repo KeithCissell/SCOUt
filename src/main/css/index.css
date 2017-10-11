@@ -11,14 +11,14 @@ body {
   text-align: center;
 }
 
-#canvas {
+#content {
+  margin: 0;
+}
+
+#display {
   width: 70%;
   height: 80%;
   background-color: white;
-}
-
-#content {
-  margin: 0;
 }
 
 header {
@@ -27,7 +27,7 @@ header {
   padding: 10pt;
   padding-left: 0;
   padding-right: 0;
-  background-color: dodgerblue;
+  background-color: forestGreen;
   text-align: center;
 }
 
