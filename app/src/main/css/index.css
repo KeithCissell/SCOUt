@@ -100,6 +100,17 @@ h2.sidebar {
   text-align: left;
 }
 
+ul.legend-list {
+  padding-left: 20pt;
+  list-style: none;
+  text-align: left;
+  color: white;
+}
+
+strong.legend-li-name {
+  color: #b3b3b3;
+}
+
 
 /*******************************************************************************
       STYLING FOR TOGGLE SWITCHES

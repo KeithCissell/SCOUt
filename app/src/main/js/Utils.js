@@ -19,4 +19,20 @@ function empty2D(length, width) {
   return empty2D
 }
 
-export {empty2D}
+/*******************************************************************************
+_____roundDecimalX_____
+Description
+    Rounds a double or float to X decimal values
+Parameters
+    num:    double or float to round
+    x:      number of decimal places to round to (must be > 0)
+*******************************************************************************/
+function roundDecimalX(num, x) {
+  if (x > 0) {
+    let rounder = 10 ** x
+    return Math.round(num * rounder) / rounder
+  } else return num
+
+}
+
+export {empty2D, roundDecimalX}

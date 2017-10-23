@@ -1,13 +1,12 @@
+import {roundDecimalX} from '../Utils.js'
 import {drawLayer, eraseLayer} from './Display.js'
 import {addToggle, addSelection} from './Toolbar.js'
+import {loadLegendMainItem} from './Legend.js'
 
 
 // Document Elements
-const header = document.getElementById("header")
-const main = document.getElementById("main")
 const message = document.getElementById("message")
-const mainContent = document.getElementById("content")
-const toolbar = document.getElementById("toolbar")
+const legendEnvironmentName = document.getElementById("legend-environment-name")
 
 // Globals
 let environment
@@ -23,11 +22,12 @@ Parameters
 *******************************************************************************/
 function loadVisualizer(targetEnvironment) {
   environment = targetEnvironment
-  elementSelections = environment.elementTypes
+  elementSelections = environment.elementTypes.slice(0)
   elementSelections.unshift("None") // adds "None" to the front of array
 
   loadDisplay()
   loadToolbar()
+  loadLegend()
 
   document.getElementById("Elevation-Toggle").click()
   message.innerHTML = ""
@@ -39,15 +39,15 @@ Description
     Builds toolbar for adjusting the display
 *******************************************************************************/
 function loadDisplay() {
-  loadPermanentLayer("Latitude", 10, 0, 0, 0, true)
-  loadPermanentLayer("Longitude", 10, 0, 0, 0, true)
+  loadGrid("Latitude", environment.width, 0, 0, 0, true)
+  loadGrid("Longitude", environment.length, 0, 0, 0, true)
   loadElevationLayer()
 }
 
 /*******************************************************************************
-_____loadPermanentLayer_____
+_____loadGrid_____
 Description
-    Attempts to find a layer in Environment and call drawLayer().
+    Permanantly loads Longitude or Latitude grid lines into the display.
     Throws an Error if it does not find the layer.
 Parameters
     layerName (string)  : elementType associated to layer in Environment
@@ -57,7 +57,7 @@ Parameters
     opacity (flt) [0.0,1.0]     : opacity for the color between contour-lines
     lines (boolean)     : should contour-lines appear
 *******************************************************************************/
-function loadPermanentLayer(layerName, threshold, hue, saturation, opacity, lines) {
+function loadGrid(layerName, threshold, hue, saturation, opacity, lines) {
   let index = elementSelections.indexOf(layerName)
   if (index >= 0) {
     let elementType = elementSelections[index]
@@ -131,6 +131,21 @@ function displayLayer(elementType) {
     let layer = environment.extractLayer(elementType)
     drawLayer(layer, 4, 100, .5, 0.3, false)
   }
+}
+
+function loadLegend() {
+  legendEnvironmentName.innerText = environment.name
+  loadLegendMainItem("Dimensions", environment.length + " X " + environment.width)
+
+  let elevationLayer = environment.extractLayer("Elevation")
+  let elevationJson = elevationLayer.toJson()
+  let elevationMin = Math.min.apply(null, elevationJson.values)
+  let elevationMax = Math.max.apply(null, elevationJson.values)
+  loadLegendMainItem("Min Elevation", roundDecimalX(elevationMin, 3) + " " + elevationLayer.unit)
+  loadLegendMainItem("Max Elevation", roundDecimalX(elevationMax, 3) + " " + elevationLayer.unit)
+
+  let longLayer = environment.extractLayer("Longitude")
+  let longJson = longLayer.toJson()
 }
 
 export {loadVisualizer}

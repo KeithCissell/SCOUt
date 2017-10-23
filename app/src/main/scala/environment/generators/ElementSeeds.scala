@@ -32,7 +32,6 @@ object ElementSeeds {
     val randomSources: Int = 5,
     val sources: AB[NoiseSource] = AB.empty
   ) extends ElementSeed {
-    def log2(x: Double): Double = log(x) / log(2)
     // NOTE: using noise ruduction of -6 dB every doubling of distance
     // http://www.sengpielaudio.com/calculator-distance.htm
     def soundReduction(source: NoiseSource, x: Int, y: Int): Double = {
@@ -118,5 +117,16 @@ object ElementSeeds {
       randomRange(lowerBound, upperBound)
     }
   }
+
+  // List of all seed defaults
+  val defaultSeedList: List[ElementSeed] = List(
+    DecibleSeed(),
+    ElevationSeed(),
+    LatitudeSeed(),
+    LongitudeSeed(),
+    TemperatureSeed(),
+    WindDirectionSeed(),
+    WindSpeedSeed()
+  )
 
 }
