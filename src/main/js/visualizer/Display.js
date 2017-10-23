@@ -20,8 +20,9 @@ Parameters
     saturation (flt) [0.0,1.0]
     opacity (flt) [0.0,1.0]     : opacity for the color between contour-lines
     lines (boolean)     : should contour-lines appear
+    bottom (boolean)    : insert layer at the behind all existing layers
 */
-function drawLayer(layer, threshold, hue, saturation, opacity, lines) {
+function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
 
   let layerJson = layer.toJson()
 
@@ -42,6 +43,8 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines) {
       .thresholds(d3.range(min, max, (max-min)/threshold))
       (values);
 
+  let currentBottomNode = display.children[0]
+
   for (let i = 0; i < contours.length; i++) {
     let contour = contours[i]
     let newPath = document.createElementNS("http://www.w3.org/2000/svg", "path")
@@ -52,13 +55,20 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines) {
     newPath.setAttribute("stroke",  "black")
     newPath.setAttribute("stroke-width", lines ? 1 : 0 )
     newPath.setAttribute("fill", color(contour.value))
-    display.appendChild(newPath)
+    if (bottom) display.insertBefore(newPath, currentBottomNode)
+    else display.appendChild(newPath)
   }
 
 }
 
 
-// Remove all child elements of display that have the given class name
+/*******************************************************************************
+_____eraseLayer_____
+Description
+    Remove all svg paths of a given element type from the display
+Parameters
+    layerName:    element type of the layer to remove from the svg
+*******************************************************************************/
 function eraseLayer(layerName) {
   let children = display.children
   for (let i = 0; i < children.length; i++) {

@@ -21,20 +21,29 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 
-// Attempts to establish connection with SCOUt Server
+/*******************************************************************************
+_____establishConnection_____
+Description
+    Attempts to establish connection with SCOUt Server
+*******************************************************************************/
 async function establishConnection() {
   mainContent.innerHTML = ""
   message.innerHTML = "Attempting to contact SCOUt server..."
-  let contactMade = await attemptContact()
+  let contactMade = await attemptContact(20, 500)
   //await console.clear()
   if (contactMade) successfulContact()
   else unsuccessfulContact()
 }
 
-// Returns response once server is contacted or attempts reaches 0
-async function attemptContact() {
-  let attempts = 20   // number of attempts to reach server
-  let buffer = 500    // time between contact attempts (ms)
+/*******************************************************************************
+_____attemptContact_____
+Description
+    Returns response once server is contacted or attempts reaches 0
+Parameters
+    attempts:   number of attempts to reach server
+    buffer:     time between contact attempts (ms)
+*******************************************************************************/
+async function attemptContact(attempts, buffer) {
   for (let i = 0; i < attempts; i++) {
     console.log("Server contact attempt: " + i)
     let response = await new Promise(resolve => {
@@ -45,7 +54,11 @@ async function attemptContact() {
   return false
 }
 
-// Handles successful server contact
+/*******************************************************************************
+_____successfulContact_____
+Description
+    Handles successful server contact
+*******************************************************************************/
 async function successfulContact() {
   mainContent.innerHTML = ""
   message.innerHTML = "Loading..."
@@ -57,7 +70,11 @@ async function successfulContact() {
   }).catch((err) => { console.log(err) })
 }
 
-// Handles unsuccessful server contact
+/*******************************************************************************
+_____unsuccessfulContact_____
+Description
+    Handles unsuccessful server contact
+*******************************************************************************/
 function unsuccessfulContact() {
   mainContent.innerHTML = ""
   message.innerHTML = "Could Not Contact SCOUt Server"

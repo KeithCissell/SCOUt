@@ -3,7 +3,13 @@ import {Cell} from './classes/Cell.js'
 import {Environment} from './classes/Environment'
 import {empty2D} from '../Utils.js'
 
-// Takes JSON and returns an Environment class
+/*******************************************************************************
+_____buildEnvironment_____
+Description
+    Builds an Environment object from Json data
+Parameters
+    json:   Json formatted data to be parsed
+*******************************************************************************/
 function buildEnvironment(json) {
   let envName = json.environment.name
   let length = json.environment.length

@@ -8,9 +8,16 @@ class Layer {
     this.width = width
   }
 
+  /*******************************************************************************
+  _____toJson_____
+  Description
+      Creates a Json object of the layer to be used for display purposes
+  Notes
+      Rotate the object 90 degrees counter-clockwise for proper visualization:
+          (x, y) = (y, -x)
+  *******************************************************************************/
   toJson() {
     let obj = {}
-    // Rotate the object 90 degrees counter-clockwise for visualization tool: (x, y) = (y, -x)
     obj.elementType = this.elementType
     obj.width = this.length
     obj.length = this.width

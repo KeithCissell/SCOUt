@@ -1,45 +1,227 @@
 html {
   height: 100%;
+  font-family: sans-serif;
 }
 
 body {
-  width: 100%;
   height: 100%;
+  width: 100%;
   margin: 0;
   padding: 0;
   background-color: lightgrey;
   text-align: center;
 }
 
-#content {
-  margin: 0;
-}
-
-#display {
-  width: 70%;
-  height: 80%;
-  background-color: white;
-}
-
 header {
-  width: 100%;
   height: 10%;
-  padding: 10pt;
-  padding-left: 0;
-  padding-right: 0;
+  width: 100%;
+  padding: 0;
+  overflow: auto;
   background-color: forestGreen;
   text-align: center;
 }
 
-header span {
-  margin: 5pt;
+header h1 {
+  color: white;
+  font-size: 35pt;
+  margin: 0;
+  margin-left: 10pt;
 }
 
 main {
   height: 85%;
+  overflow: auto;
 }
 
-#message {
+#navigation {
+  margin: 2%;
+  height: 16%;
+  width: 96%;
+  background-color: grey;
+  border-radius: 6pt;
+}
+
+h1 #message {
   height: 10%;
   margin: 0;
+}
+
+p #content {
+  margin: 0;
+}
+
+#toolbar {
+  height: 76%;
+  width: 21%;
+  margin-left: 2%;
+  margin-right: 2%;
+  float: left;
+  background-color: grey;
+  border-radius: 6pt;
+}
+
+#display {
+  height: 76%;
+  width: 50%;
+  float: left;
+  text-align: center;
+  background-color: white;
+}
+
+#legend {
+  height: 76%;
+  width: 21%;
+  margin-left: 2%;
+  margin-right: 2%;
+  float: left;
+  background-color: grey;
+  border-radius: 6pt;
+}
+
+h1.sidebar {
+  color: black;
+  text-decoration: underline;
+}
+
+h2.sidebar {
+  margin-left: 15pt;
+  font-size: 15pt;
+  color: black;
+  text-align: left;
+}
+
+#layer-toggles {
+  margin-left: 15pt;
+  text-align: left;
+}
+
+#layer-selector {
+  margin-left: 15pt;
+  text-align: left;
+}
+
+
+/*******************************************************************************
+      STYLING FOR TOGGLE SWITCHES
+*******************************************************************************/
+
+.switch {
+  display: inline-block;
+  height: 17pt;
+  position: relative;
+  width: 30pt;
+  margin-bottom: 5pt;
+}
+
+.switch input {
+  display:none;
+}
+
+.slider {
+  background-color: #ccc;
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .4s;
+}
+
+.slider:before {
+  background-color: #fff;
+  bottom: 2pt;
+  content: "";
+  height: 13pt;
+  left: 2pt;
+  position: absolute;
+  transition: .4s;
+  width: 13pt;
+}
+
+input:checked + .slider {
+  background-color: forestgreen;
+}
+
+input:checked + .slider:before {
+  transform: translateX(13pt);
+}
+
+.slider.round {
+  border-radius: 17pt;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.container {
+  margin: 0 auto;
+}
+
+.toggle-text {
+  position: relative;
+  left: 35pt;
+  top: 0.5pt;
+  font-size: 15pt;
+  color: #b3b3b3;
+}
+
+
+/*******************************************************************************
+    STYLING FOR RADIO BUTTONS
+*******************************************************************************/
+
+.inline{
+  display: inline-block;
+}
+.radio{
+  color:#b3b3b3;
+  font-size:15pt;
+  position:relative;
+}
+.radio span{
+  position:relative;
+  padding-left:20pt;
+}
+.radio span:after{
+  content:'';
+  width:15pt;
+  height:15pt;
+  border:2pt solid;
+  position:absolute;
+  left:0;
+  top:1pt;
+  border-radius:100%;
+  -ms-border-radius:100%;
+  -moz-border-radius:100%;
+  -webkit-border-radius:100%;
+  box-sizing:border-box;
+  -ms-box-sizing:border-box;
+  -moz-box-sizing:border-box;
+  -webkit-box-sizing:border-box;
+}
+.radio input[type="radio"]{
+  cursor: pointer;
+  position: absolute;
+  width:100%;
+  height:100%;
+  z-index: 1;
+  opacity: 0;
+}
+.radio input[type="radio"]:checked + span{
+  color: black;
+}
+.radio input[type="radio"]:checked + span:before{
+  content:'';
+  width:15pt;
+  height:15pt;
+  position:absolute;
+  background: forestgreen;
+  left:0pt;
+  top:1pt;
+  border-radius:100%;
+  -ms-border-radius:100%;
+  -moz-border-radius:100%;
+  -webkit-border-radius:100%;
 }
