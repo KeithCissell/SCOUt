@@ -13276,28 +13276,37 @@ var toolbar = document.getElementById("toolbar");
 // Globals
 var environment = void 0;
 var elementSelections = void 0;
-var selectedLayer = "None";
+var selectedLayer = "None"; // initialize as "None" to display no layer
 
-// Main function to load display and interactive tools
+/*******************************************************************************
+_____loadVisualizer_____
+Description
+    Main function to load visualization components
+*******************************************************************************/
 function loadVisualizer(targetEnvironment) {
   environment = targetEnvironment;
   elementSelections = environment.elementTypes;
   elementSelections.unshift("None"); // adds "None" to the front of array
-  loadDisplayTools();
-  displayLayer(selectedLayer);
+
+  loadDisplay();
+  loadToolbar();
+
+  document.getElementById("Elevation-Toggle").click();
   message.innerHTML = "";
 }
 
-// Builds toolbar for adjusting the display
-function loadDisplayTools() {
+/*******************************************************************************
+_____loadDisplay_____
+Description
+    Builds toolbar for adjusting the display
+*******************************************************************************/
+function loadDisplay() {
   loadPermanentLayer("Latitude", 10, 0, 0, 0, true);
   loadPermanentLayer("Longitude", 10, 0, 0, 0, true);
-  loadToggleLayer("Elevation", 7, 0, 0, .2, true, true);
-  document.getElementById("Elevation-Toggle").click();
-  loadLayerSelector();
+  loadElevationLayer();
 }
 
-/*
+/*******************************************************************************
 _____loadPermanentLayer_____
 Description
     Attempts to find a layer in Environment and call drawLayer().
@@ -13309,7 +13318,7 @@ Parameters
     saturation (flt) [0.0,1.0]
     opacity (flt) [0.0,1.0]     : opacity for the color between contour-lines
     lines (boolean)     : should contour-lines appear
-*/
+*******************************************************************************/
 function loadPermanentLayer(layerName, threshold, hue, saturation, opacity, lines) {
   var index = elementSelections.indexOf(layerName);
   if (index >= 0) {
@@ -13322,34 +13331,26 @@ function loadPermanentLayer(layerName, threshold, hue, saturation, opacity, line
   }
 }
 
-/*
+/*******************************************************************************
 _____loadToggleLayer_____
 Description
     Attempts to find a layer in Environment and call drawLayer().
     Throws an Error if it does not find the layer.
-Parameters
-    layerName (string)  : elementType associated to layer in Environment
-    threshold (int)     : how many contour-lines should be generated for display
-    hue (int) [0,359]   : primary color between contour-lines
-    saturation (flt) [0.0,1.0]
-    opacity (flt) [0.0,1.0]     : opacity for the color between contour-lines
-    lines (boolean)     : should contour-lines appear
-    bottom (boolean)    : insert layer at the behind all existing layers
-*/
-function loadToggleLayer(layerName, threshold, hue, saturation, opacity, lines, bottom) {
-  var index = elementSelections.indexOf(layerName);
+*******************************************************************************/
+function loadElevationLayer() {
+  var elementType = "Elevation";
+  var index = elementSelections.indexOf(elementType);
   if (index >= 0) {
     // Draw layer and remove it from list of remaining layers
-    var elementType = elementSelections[index];
-    var layer = environment.extractLayer(elementType);
+    var _elementType = elementSelections[index];
+    var layer = environment.extractLayer(_elementType);
     elementSelections.splice(index, 1);
-
-    // Add toggle to toolbar and event listner
-    var toggleID = elementType + "-Toggle";
-    (0, _Toolbar.addToggle)(elementType, toggleID);
+    // Loads toggle button Elevation layer
+    var toggleID = _elementType + "-Toggle";
+    (0, _Toolbar.addToggle)(_elementType, toggleID);
     var toggle = document.getElementById(toggleID);
     toggle.addEventListener("click", function () {
-      if (this.checked) (0, _Display.drawLayer)(layer, threshold, hue, saturation, opacity, lines, bottom);else (0, _Display.eraseLayer)(elementType);
+      if (this.checked) (0, _Display.drawLayer)(layer, 7, 0, 0, .2, true, true);else (0, _Display.eraseLayer)(_elementType);
     });
   } else {
     // Throw error if layer was not found
@@ -13357,8 +13358,13 @@ function loadToggleLayer(layerName, threshold, hue, saturation, opacity, lines, 
   }
 }
 
-// Loads toolbar for switching the displayed layer
-function loadLayerSelector() {
+/*******************************************************************************
+_____loadToolbar_____
+Description
+    Loads toolbar for manipulating the display
+*******************************************************************************/
+function loadToolbar() {
+  // Load radio buttons for selectable layers
   for (var i = 0; i < elementSelections.length; i++) {
     var elementType = elementSelections[i];
     var selectionID = elementType + "-Selection";
@@ -13372,13 +13378,17 @@ function loadLayerSelector() {
   noneSelection.checked = true;
 }
 
-// Requests to display a layer by type
+/*******************************************************************************
+_____displayLayer_____
+Description
+    Displays a layer by type
+*******************************************************************************/
 function displayLayer(elementType) {
   if (selectedLayer != "None") (0, _Display.eraseLayer)(selectedLayer);
   selectedLayer = elementType;
   if (elementType != "None") {
     var layer = environment.extractLayer(elementType);
-    (0, _Display.drawLayer)(layer, 4, 220, .5, 0.3, false);
+    (0, _Display.drawLayer)(layer, 4, 100, .5, 0.3, false);
   }
 }
 
@@ -31382,8 +31392,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 var layerToggles = document.getElementById("layer-toggles");
 var layerSelector = document.getElementById("layer-selector");
+var layerTogglesHeader = document.getElementById("layer-toggles-header");
+var layerSelectorHeader = document.getElementById("layer-selector-header");
 
 function addToggle(layerName, toggleID) {
+  if (layerTogglesHeader.innerText == "") layerTogglesHeader.innerText = "Toggle Layers";
   var newLable = document.createElement("label");
   newLable.setAttribute("class", "switch");
   newLable.setAttribute("for", toggleID);
@@ -31403,6 +31416,7 @@ function addToggle(layerName, toggleID) {
 }
 
 function addSelection(layerName, selectionID) {
+  if (layerSelectorHeader.innerText == "") layerSelectorHeader.innerText = "Current Layer";
   var newLable = document.createElement("label");
   newLable.setAttribute("class", "radio inline");
   newLable.setAttribute("for", selectionID);

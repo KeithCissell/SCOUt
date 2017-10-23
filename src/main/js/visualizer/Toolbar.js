@@ -1,7 +1,10 @@
 const layerToggles = document.getElementById("layer-toggles")
 const layerSelector = document.getElementById("layer-selector")
+const layerTogglesHeader = document.getElementById("layer-toggles-header")
+const layerSelectorHeader = document.getElementById("layer-selector-header")
 
 function addToggle(layerName, toggleID) {
+  if (layerTogglesHeader.innerText == "") layerTogglesHeader.innerText = "Toggle Layers"
   let newLable = document.createElement("label")
   newLable.setAttribute("class", "switch")
   newLable.setAttribute("for", toggleID)
@@ -21,6 +24,7 @@ function addToggle(layerName, toggleID) {
 }
 
 function addSelection(layerName, selectionID) {
+  if (layerSelectorHeader.innerText == "") layerSelectorHeader.innerText = "Current Layer"
   let newLable = document.createElement("label")
   newLable.setAttribute("class", "radio inline")
   newLable.setAttribute("for", selectionID)
