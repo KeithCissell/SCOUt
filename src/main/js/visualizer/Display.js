@@ -62,7 +62,13 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
 }
 
 
-// Remove all child elements of display that have the given class name
+/*******************************************************************************
+_____eraseLayer_____
+Description
+    Remove all svg paths of a given element type from the display
+Parameters
+    layerName:    element type of the layer to remove from the svg
+*******************************************************************************/
 function eraseLayer(layerName) {
   let children = display.children
   for (let i = 0; i < children.length; i++) {

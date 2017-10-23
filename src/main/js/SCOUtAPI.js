@@ -7,7 +7,11 @@ let getSpecs = {  method: 'GET',
                   mode: 'cors',
                   cache: 'default' }
 
-// Trys to ping server
+/*******************************************************************************
+_____pingServer_____
+Description
+    Trys to ping SCOUt server
+*******************************************************************************/
 function pingServer() {
   return new Promise(resolve => {
     fetch('http://localhost:8080/ping', getSpecs).then(function(resp) {
@@ -16,7 +20,11 @@ function pingServer() {
   })
 }
 
-// Gets the current state of the environment
+/*******************************************************************************
+_____getCurrentState_____
+Description
+    Gets the current state of the environment
+*******************************************************************************/
 function getCurrentState() {
   return new Promise(resolve => {
     fetch('http://localhost:8080/current_state', getSpecs).then(function(resp) {
@@ -25,7 +33,15 @@ function getCurrentState() {
   })
 }
 
-// Get a new random environment
+/*******************************************************************************
+_____newRandomEnvironment_____
+Description
+    Get a new random environment
+Parameters
+    name:     associated name for random Environment
+    length:   number of cells long the Environment will be
+    width:    number of cells wide the Environment will be
+*******************************************************************************/
 function newRandomEnvironment(name, length, width) {
   let reqBody = `{
     "name": "${name}",

@@ -6578,8 +6578,16 @@ Headers.prototype.raw = function() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+// Utility functions for javascript code
 
-
+/*******************************************************************************
+_____empty2D_____
+Description
+    Builds and returns a 2-D array of null elements
+Parameters
+    length:   size of the 1st matrix dimension
+    width:    size of the 2nd matrix dimension
+*******************************************************************************/
 function empty2D(length, width) {
   var empty2D = [];
   for (var i = 0; i < length; i++) {
@@ -12937,19 +12945,28 @@ document.addEventListener("DOMContentLoaded", function () {
   establishConnection();
 });
 
-// Attempts to establish connection with SCOUt Server
+/*******************************************************************************
+_____establishConnection_____
+Description
+    Attempts to establish connection with SCOUt Server
+*******************************************************************************/
 async function establishConnection() {
   mainContent.innerHTML = "";
   message.innerHTML = "Attempting to contact SCOUt server...";
-  var contactMade = await attemptContact();
+  var contactMade = await attemptContact(20, 500);
   //await console.clear()
   if (contactMade) successfulContact();else unsuccessfulContact();
 }
 
-// Returns response once server is contacted or attempts reaches 0
-async function attemptContact() {
-  var attempts = 20; // number of attempts to reach server
-  var buffer = 500; // time between contact attempts (ms)
+/*******************************************************************************
+_____attemptContact_____
+Description
+    Returns response once server is contacted or attempts reaches 0
+Parameters
+    attempts:   number of attempts to reach server
+    buffer:     time between contact attempts (ms)
+*******************************************************************************/
+async function attemptContact(attempts, buffer) {
   for (var i = 0; i < attempts; i++) {
     console.log("Server contact attempt: " + i);
     var response = await new Promise(function (resolve) {
@@ -12962,7 +12979,11 @@ async function attemptContact() {
   return false;
 }
 
-// Handles successful server contact
+/*******************************************************************************
+_____successfulContact_____
+Description
+    Handles successful server contact
+*******************************************************************************/
 async function successfulContact() {
   mainContent.innerHTML = "";
   message.innerHTML = "Loading...";
@@ -12976,7 +12997,11 @@ async function successfulContact() {
   });
 }
 
-// Handles unsuccessful server contact
+/*******************************************************************************
+_____unsuccessfulContact_____
+Description
+    Handles unsuccessful server contact
+*******************************************************************************/
 function unsuccessfulContact() {
   mainContent.innerHTML = "";
   message.innerHTML = "Could Not Contact SCOUt Server";
@@ -13007,7 +13032,11 @@ var getSpecs = { method: 'GET',
   mode: 'cors',
   cache: 'default'
 
-  // Trys to ping server
+  /*******************************************************************************
+  _____pingServer_____
+  Description
+      Trys to ping SCOUt server
+  *******************************************************************************/
 };function pingServer() {
   return new Promise(function (resolve) {
     fetch('http://localhost:8080/ping', getSpecs).then(function (resp) {
@@ -13018,7 +13047,11 @@ var getSpecs = { method: 'GET',
   });
 }
 
-// Gets the current state of the environment
+/*******************************************************************************
+_____getCurrentState_____
+Description
+    Gets the current state of the environment
+*******************************************************************************/
 function getCurrentState() {
   return new Promise(function (resolve) {
     fetch('http://localhost:8080/current_state', getSpecs).then(function (resp) {
@@ -13029,7 +13062,15 @@ function getCurrentState() {
   });
 }
 
-// Get a new random environment
+/*******************************************************************************
+_____newRandomEnvironment_____
+Description
+    Get a new random environment
+Parameters
+    name:     associated name for random Environment
+    length:   number of cells long the Environment will be
+    width:    number of cells wide the Environment will be
+*******************************************************************************/
 function newRandomEnvironment(name, length, width) {
   var reqBody = '{\n    "name": "' + name + '",\n    "length": "' + length + '",\n    "width": "' + width + '"\n  }';
   var reqSpecs = { method: 'POST',
@@ -13070,7 +13111,13 @@ var _Environment = __webpack_require__(75);
 
 var _Utils = __webpack_require__(29);
 
-// Takes JSON and returns an Environment class
+/*******************************************************************************
+_____buildEnvironment_____
+Description
+    Builds an Environment object from Json data
+Parameters
+    json:   Json formatted data to be parsed
+*******************************************************************************/
 function buildEnvironment(json) {
   var envName = json.environment.name;
   var length = json.environment.length;
@@ -13180,6 +13227,15 @@ var Environment = function () {
     this.elementTypes = elementTypes;
   }
 
+  /*******************************************************************************
+  _____extractLayer_____
+  Description
+      Creates a Layer object of a given element type
+  Parameters
+      elementType:    name of element type to extract
+  *******************************************************************************/
+
+
   _createClass(Environment, [{
     key: 'extractLayer',
     value: function extractLayer(elementType) {
@@ -13226,11 +13282,20 @@ var Layer = function () {
     this.width = width;
   }
 
+  /*******************************************************************************
+  _____toJson_____
+  Description
+      Creates a Json object of the layer to be used for display purposes
+  Notes
+      Rotate the object 90 degrees counter-clockwise for proper visualization:
+          (x, y) = (y, -x)
+  *******************************************************************************/
+
+
   _createClass(Layer, [{
     key: "toJson",
     value: function toJson() {
       var obj = {};
-      // Rotate the object 90 degrees counter-clockwise for visualization tool: (x, y) = (y, -x)
       obj.elementType = this.elementType;
       obj.width = this.length;
       obj.length = this.width;
@@ -13282,6 +13347,8 @@ var selectedLayer = "None"; // initialize as "None" to display no layer
 _____loadVisualizer_____
 Description
     Main function to load visualization components
+Parameters
+    targetEnvironment:    Environment object to be loaded into the visualizer
 *******************************************************************************/
 function loadVisualizer(targetEnvironment) {
   environment = targetEnvironment;
@@ -13382,6 +13449,8 @@ function loadToolbar() {
 _____displayLayer_____
 Description
     Displays a layer by type
+Parameters
+    elementType:   element type of the layer to be displayed
 *******************************************************************************/
 function displayLayer(elementType) {
   if (selectedLayer != "None") (0, _Display.eraseLayer)(selectedLayer);
@@ -13462,7 +13531,13 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
   }
 }
 
-// Remove all child elements of display that have the given class name
+/*******************************************************************************
+_____eraseLayer_____
+Description
+    Remove all svg paths of a given element type from the display
+Parameters
+    layerName:    element type of the layer to remove from the svg
+*******************************************************************************/
 function eraseLayer(layerName) {
   var children = display.children;
   for (var i = 0; i < children.length; i++) {
@@ -31388,49 +31463,65 @@ function hue(a, b) {
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 var layerToggles = document.getElementById("layer-toggles");
 var layerSelector = document.getElementById("layer-selector");
 var layerTogglesHeader = document.getElementById("layer-toggles-header");
 var layerSelectorHeader = document.getElementById("layer-selector-header");
 
+/*******************************************************************************
+_____addToggle_____
+Description
+    Adds a toggle button to allow turning display of a layer on/off
+Parameters
+    layerName:    element type of the layer
+    toggleID:     associated ID that will be given to the DOM element
+*******************************************************************************/
 function addToggle(layerName, toggleID) {
-  if (layerTogglesHeader.innerText == "") layerTogglesHeader.innerText = "Toggle Layers";
-  var newLable = document.createElement("label");
-  newLable.setAttribute("class", "switch");
-  newLable.setAttribute("for", toggleID);
-  var newToggle = document.createElement("input");
-  newToggle.setAttribute("type", "checkbox");
-  newToggle.setAttribute("id", toggleID);
-  var newSlider = document.createElement("div");
-  newSlider.setAttribute("class", "slider round");
-  var newSpan = document.createElement("span");
-  newSpan.setAttribute("class", "toggle-text");
-  newSpan.innerText = layerName;
-  // Add into DOM
-  newLable.appendChild(newToggle);
-  newLable.appendChild(newSlider);
-  newLable.appendChild(newSpan);
-  layerToggles.appendChild(newLable);
+    if (layerTogglesHeader.innerText == "") layerTogglesHeader.innerText = "Toggle Layers";
+    var newLable = document.createElement("label");
+    newLable.setAttribute("class", "switch");
+    newLable.setAttribute("for", toggleID);
+    var newToggle = document.createElement("input");
+    newToggle.setAttribute("type", "checkbox");
+    newToggle.setAttribute("id", toggleID);
+    var newSlider = document.createElement("div");
+    newSlider.setAttribute("class", "slider round");
+    var newSpan = document.createElement("span");
+    newSpan.setAttribute("class", "toggle-text");
+    newSpan.innerText = layerName;
+    // Add into DOM
+    newLable.appendChild(newToggle);
+    newLable.appendChild(newSlider);
+    newLable.appendChild(newSpan);
+    layerToggles.appendChild(newLable);
 }
 
+/*******************************************************************************
+_____addSelection_____
+Description
+    Adds a radio button to allow selection of a given element layer
+Parameters
+    layerName:    element type of the layer
+    selectionID:  associated ID that will be given to the DOM element
+*******************************************************************************/
 function addSelection(layerName, selectionID) {
-  if (layerSelectorHeader.innerText == "") layerSelectorHeader.innerText = "Current Layer";
-  var newLable = document.createElement("label");
-  newLable.setAttribute("class", "radio inline");
-  newLable.setAttribute("for", selectionID);
-  var newSelection = document.createElement("input");
-  newSelection.setAttribute("type", "radio");
-  newSelection.setAttribute("id", selectionID);
-  newSelection.setAttribute("name", "Selection");
-  newSelection.setAttribute("value", layerName);
-  var newSpan = document.createElement("span");
-  newSpan.innerText = layerName;
-  // Add into DOM
-  newLable.appendChild(newSelection);
-  newLable.appendChild(newSpan);
-  layerSelector.appendChild(newLable);
+    if (layerSelectorHeader.innerText == "") layerSelectorHeader.innerText = "Current Layer";
+    var newLable = document.createElement("label");
+    newLable.setAttribute("class", "radio inline");
+    newLable.setAttribute("for", selectionID);
+    var newSelection = document.createElement("input");
+    newSelection.setAttribute("type", "radio");
+    newSelection.setAttribute("id", selectionID);
+    newSelection.setAttribute("name", "Selection");
+    newSelection.setAttribute("value", layerName);
+    var newSpan = document.createElement("span");
+    newSpan.innerText = layerName;
+    // Add into DOM
+    newLable.appendChild(newSelection);
+    newLable.appendChild(newSpan);
+    layerSelector.appendChild(newLable);
 }
 
 exports.addToggle = addToggle;

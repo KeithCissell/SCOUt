@@ -10,6 +10,13 @@ class Environment {
     this.elementTypes = elementTypes
   }
 
+  /*******************************************************************************
+  _____extractLayer_____
+  Description
+      Creates a Layer object of a given element type
+  Parameters
+      elementType:    name of element type to extract
+  *******************************************************************************/
   extractLayer(elementType) {
     if (this.elementTypes.includes(elementType)) {
       let layer = empty2D(this.length, this.width)

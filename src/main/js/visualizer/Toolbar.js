@@ -3,6 +3,14 @@ const layerSelector = document.getElementById("layer-selector")
 const layerTogglesHeader = document.getElementById("layer-toggles-header")
 const layerSelectorHeader = document.getElementById("layer-selector-header")
 
+/*******************************************************************************
+_____addToggle_____
+Description
+    Adds a toggle button to allow turning display of a layer on/off
+Parameters
+    layerName:    element type of the layer
+    toggleID:     associated ID that will be given to the DOM element
+*******************************************************************************/
 function addToggle(layerName, toggleID) {
   if (layerTogglesHeader.innerText == "") layerTogglesHeader.innerText = "Toggle Layers"
   let newLable = document.createElement("label")
@@ -23,6 +31,14 @@ function addToggle(layerName, toggleID) {
   layerToggles.appendChild(newLable)
 }
 
+/*******************************************************************************
+_____addSelection_____
+Description
+    Adds a radio button to allow selection of a given element layer
+Parameters
+    layerName:    element type of the layer
+    selectionID:  associated ID that will be given to the DOM element
+*******************************************************************************/
 function addSelection(layerName, selectionID) {
   if (layerSelectorHeader.innerText == "") layerSelectorHeader.innerText = "Current Layer"
   let newLable = document.createElement("label")

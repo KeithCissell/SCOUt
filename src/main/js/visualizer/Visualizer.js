@@ -18,6 +18,8 @@ let selectedLayer = "None" // initialize as "None" to display no layer
 _____loadVisualizer_____
 Description
     Main function to load visualization components
+Parameters
+    targetEnvironment:    Environment object to be loaded into the visualizer
 *******************************************************************************/
 function loadVisualizer(targetEnvironment) {
   environment = targetEnvironment
@@ -119,6 +121,8 @@ function loadToolbar() {
 _____displayLayer_____
 Description
     Displays a layer by type
+Parameters
+    elementType:   element type of the layer to be displayed
 *******************************************************************************/
 function displayLayer(elementType) {
   if (selectedLayer != "None") eraseLayer(selectedLayer)
