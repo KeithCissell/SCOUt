@@ -1,5 +1,5 @@
-target/
-project/
-/node_modules
-npm-debug.log
-package-lock.json
+**/target/
+**/project/
+app/node_modules/
+app/npm-debug.log
+app/package-lock.json
