@@ -100,15 +100,20 @@ h2.sidebar {
   text-align: left;
 }
 
-ul.legend-list {
-  padding-left: 20pt;
-  list-style: none;
+table.legend-table {
+  margin: 0;
+  padding-left: 10pt;
   text-align: left;
   color: white;
 }
 
-strong.legend-li-name {
-  color: #b3b3b3;
+td.legend-table-name {
+  color: #D6D6D6;
+  font-weight: bold;
+}
+
+td.legend-table-value {
+  color: white;
 }
 
 

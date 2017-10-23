@@ -1,12 +1,14 @@
 import {roundDecimalX} from '../Utils.js'
 import {drawLayer, eraseLayer} from './Display.js'
 import {addToggle, addSelection} from './Toolbar.js'
-import {loadLegendMainItem} from './Legend.js'
+import {addLegendMainItem, addLegendLayerItem} from './Legend.js'
 
 
 // Document Elements
 const message = document.getElementById("message")
-const legendEnvironmentName = document.getElementById("legend-environment-name")
+const legendEnvironmentTitle = document.getElementById("legend-environment-title")
+const legendLayerTitle = document.getElementById("legend-layer-title")
+const legendCurrentLayerTable = document.getElementById("legend-current-layer-table")
 
 // Globals
 let environment
@@ -111,6 +113,7 @@ function loadToolbar() {
     let selection = document.getElementById(selectionID)
     selection.addEventListener("click", function() {
       displayLayer(this.value)
+      loadLegendLayer(this.value)
     })
   }
   let noneSelection = document.getElementById("None-Selection")
@@ -134,18 +137,39 @@ function displayLayer(elementType) {
 }
 
 function loadLegend() {
-  legendEnvironmentName.innerText = environment.name
-  loadLegendMainItem("Dimensions", environment.length + " X " + environment.width)
-
+  // Load Main section
+  legendEnvironmentTitle.innerText = environment.name
+  addLegendMainItem("Dimensions", environment.length + " X " + environment.width)
   let elevationLayer = environment.extractLayer("Elevation")
   let elevationJson = elevationLayer.toJson()
   let elevationMin = Math.min.apply(null, elevationJson.values)
   let elevationMax = Math.max.apply(null, elevationJson.values)
-  loadLegendMainItem("Min Elevation", roundDecimalX(elevationMin, 3) + " " + elevationLayer.unit)
-  loadLegendMainItem("Max Elevation", roundDecimalX(elevationMax, 3) + " " + elevationLayer.unit)
+  addLegendMainItem("Min Elevation", roundDecimalX(elevationMin, 3) + " " + elevationLayer.unit)
+  addLegendMainItem("Max Elevation", roundDecimalX(elevationMax, 3) + " " + elevationLayer.unit)
+  // Load legend layer <<<and selected cell>>> section<<<s>>>
+  loadLegendLayer(selectedLayer)
+}
 
-  let longLayer = environment.extractLayer("Longitude")
-  let longJson = longLayer.toJson()
+function loadLegendLayer(layerName) {
+  legendCurrentLayerTable.innerHTML = ""
+  let unit = ""
+  let min = "-"
+  let max = "-"
+  // let average = "-"
+  if (layerName != "None") {
+    legendLayerTitle.innerText = layerName
+    let layer = environment.extractLayer(layerName)
+    let layerJson = layer.toJson()
+    unit = layerJson.unit
+    min = roundDecimalX(Math.min.apply(null, layerJson.values), 3)
+    max = roundDecimalX(Math.max.apply(null, layerJson.values), 3)
+    // average =
+  } else {
+    legendLayerTitle.innerText = "No Layer Selected"
+  }
+  addLegendLayerItem("Min", min + " " + unit)
+  addLegendLayerItem("Max", max + " " + unit)
+  // addLegendLayerItem("Average", average)
 }
 
 export {loadVisualizer}

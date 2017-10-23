@@ -13362,7 +13362,9 @@ var _Legend = __webpack_require__(111);
 
 // Document Elements
 var message = document.getElementById("message");
-var legendEnvironmentName = document.getElementById("legend-environment-name");
+var legendEnvironmentTitle = document.getElementById("legend-environment-title");
+var legendLayerTitle = document.getElementById("legend-layer-title");
+var legendCurrentLayerTable = document.getElementById("legend-current-layer-table");
 
 // Globals
 var environment = void 0;
@@ -13466,6 +13468,7 @@ function loadToolbar() {
     var selection = document.getElementById(selectionID);
     selection.addEventListener("click", function () {
       displayLayer(this.value);
+      loadLegendLayer(this.value);
     });
   }
   var noneSelection = document.getElementById("None-Selection");
@@ -13489,18 +13492,39 @@ function displayLayer(elementType) {
 }
 
 function loadLegend() {
-  legendEnvironmentName.innerText = environment.name;
-  (0, _Legend.loadLegendMainItem)("Dimensions", environment.length + " X " + environment.width);
-
+  // Load Main section
+  legendEnvironmentTitle.innerText = environment.name;
+  (0, _Legend.addLegendMainItem)("Dimensions", environment.length + " X " + environment.width);
   var elevationLayer = environment.extractLayer("Elevation");
   var elevationJson = elevationLayer.toJson();
   var elevationMin = Math.min.apply(null, elevationJson.values);
   var elevationMax = Math.max.apply(null, elevationJson.values);
-  (0, _Legend.loadLegendMainItem)("Min Elevation", (0, _Utils.roundDecimalX)(elevationMin, 3) + " " + elevationLayer.unit);
-  (0, _Legend.loadLegendMainItem)("Max Elevation", (0, _Utils.roundDecimalX)(elevationMax, 3) + " " + elevationLayer.unit);
+  (0, _Legend.addLegendMainItem)("Min Elevation", (0, _Utils.roundDecimalX)(elevationMin, 3) + " " + elevationLayer.unit);
+  (0, _Legend.addLegendMainItem)("Max Elevation", (0, _Utils.roundDecimalX)(elevationMax, 3) + " " + elevationLayer.unit);
+  // Load legend layer <<<and selected cell>>> section<<<s>>>
+  loadLegendLayer(selectedLayer);
+}
 
-  var longLayer = environment.extractLayer("Longitude");
-  var longJson = longLayer.toJson();
+function loadLegendLayer(layerName) {
+  legendCurrentLayerTable.innerHTML = "";
+  var unit = "";
+  var min = "-";
+  var max = "-";
+  // let average = "-"
+  if (layerName != "None") {
+    legendLayerTitle.innerText = layerName;
+    var layer = environment.extractLayer(layerName);
+    var layerJson = layer.toJson();
+    unit = layerJson.unit;
+    min = (0, _Utils.roundDecimalX)(Math.min.apply(null, layerJson.values), 3);
+    max = (0, _Utils.roundDecimalX)(Math.max.apply(null, layerJson.values), 3);
+    // average =
+  } else {
+    legendLayerTitle.innerText = "No Layer Selected";
+  }
+  (0, _Legend.addLegendLayerItem)("Min", min + " " + unit);
+  (0, _Legend.addLegendLayerItem)("Max", max + " " + unit);
+  // addLegendLayerItem("Average", average)
 }
 
 exports.loadVisualizer = loadVisualizer;
@@ -31579,17 +31603,37 @@ exports.addSelection = addSelection;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var mainLegendList = document.getElementById("main-legend-list");
-var currentLayerLegendList = document.getElementById("current-layer-legend-list");
+var mainTable = document.getElementById("legend-main-table");
+var currentLayerTable = document.getElementById("legend-current-layer-table");
 
-function loadLegendMainItem(name, value) {
-  var newListItem = document.createElement("li");
-  newListItem.innerHTML = "<strong class=\"legend-li-name\">" + (name + ": ") + "</strong>" + value;
-  mainLegendList.appendChild(newListItem);
-  console.log(name + " = " + value);
+function addLegendMainItem(name, value) {
+  var newTableRow = document.createElement("tr");
+  var newTableName = document.createElement("td");
+  newTableName.setAttribute("class", "legend-table-name");
+  newTableName.innerText = name;
+  newTableRow.appendChild(newTableName);
+  var newTableValue = document.createElement("td");
+  newTableValue.setAttribute("class", "legend-table-value");
+  newTableValue.innerText = value;
+  newTableRow.appendChild(newTableValue);
+  mainTable.appendChild(newTableRow);
 }
 
-exports.loadLegendMainItem = loadLegendMainItem;
+function addLegendLayerItem(name, value) {
+  var newTableRow = document.createElement("tr");
+  var newTableName = document.createElement("td");
+  newTableName.setAttribute("class", "legend-table-name");
+  newTableName.innerText = name;
+  newTableRow.appendChild(newTableName);
+  var newTableValue = document.createElement("td");
+  newTableValue.setAttribute("class", "legend-table-value");
+  newTableValue.innerText = value;
+  newTableRow.appendChild(newTableValue);
+  currentLayerTable.appendChild(newTableRow);
+}
+
+exports.addLegendMainItem = addLegendMainItem;
+exports.addLegendLayerItem = addLegendLayerItem;
 
 /***/ }),
 /* 112 */
