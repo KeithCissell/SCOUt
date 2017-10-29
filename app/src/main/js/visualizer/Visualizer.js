@@ -1,14 +1,16 @@
 import {roundDecimalX} from '../Utils.js'
 import {drawLayer, drawCell, eraseLayer} from './Display.js'
 import {addToggle, addSelection} from './Toolbar.js'
-import {addLegendMainItem, addLegendLayerItem} from './Legend.js'
+import {addLegendMainItem, addLegendLayerItem, addLegendCellItem} from './Legend.js'
 
 
 // Document Elements
 const message = document.getElementById("message")
 const legendEnvironmentTitle = document.getElementById("legend-environment-title")
 const legendLayerTitle = document.getElementById("legend-layer-title")
-const legendCurrentLayerTable = document.getElementById("legend-current-layer-table")
+const legendSelectedLayerTable = document.getElementById("legend-selected-layer-table")
+const legendCellTitle = document.getElementById("legend-cell-title")
+const legendSelectedCellTable = document.getElementById("legend-selected-cell-table")
 
 // Globals
 let environment
@@ -42,8 +44,6 @@ Description
     Builds toolbar for adjusting the display
 *******************************************************************************/
 function loadDisplay() {
-  // loadGrid("Latitude", environment.width, 0, 0, 0, true)
-  // loadGrid("Longitude", environment.length, 0, 0, 0, true)
   loadGrid()
   loadElevationLayer()
 }
@@ -92,9 +92,11 @@ function selectCell(cell) {
   cell.selected = "true"
   cell.setAttribute("stroke", "forestGreen")
   cell.setAttribute("stroke-width", 2)
-  cell.setAttribute("fill-opacity", 1)
+  cell.setAttribute("fill-opacity", .6)
   if (selectedCell != "None") deSelectCell(selectedCell)
   selectedCell = cell
+  let cellData = environment.grid[cell.xValue][cell.yValue]
+  loadLegendCell(cellData)
 }
 
 /*******************************************************************************
@@ -110,6 +112,7 @@ function deSelectCell(cell) {
   cell.setAttribute("stroke-width", 1)
   cell.setAttribute("fill-opacity", 0)
   selectedCell = "None"
+  loadLegendCell("None")
 }
 
 /*******************************************************************************
@@ -177,6 +180,11 @@ function displayLayer(elementType) {
   }
 }
 
+/*******************************************************************************
+_____loadLegend_____
+Description
+    Loads legend to display information about the Environment
+*******************************************************************************/
 function loadLegend() {
   // Load Main section
   legendEnvironmentTitle.innerText = environment.name
@@ -189,10 +197,18 @@ function loadLegend() {
   addLegendMainItem("Max Elevation", roundDecimalX(elevationMax, 3) + " " + elevationLayer.unit)
   // Load legend layer <<<and selected cell>>> section<<<s>>>
   loadLegendLayer(selectedLayer)
+  loadLegendCell(selectedCell)
 }
 
+/*******************************************************************************
+_____loadLegendLayer_____
+Description
+    Loads selected layer info into legend
+Parameters
+    layerName:  the element type of the layer selected
+*******************************************************************************/
 function loadLegendLayer(layerName) {
-  legendCurrentLayerTable.innerHTML = ""
+  legendSelectedLayerTable.innerHTML = ""
   let unit = ""
   let min = "-"
   let max = "-"
@@ -211,6 +227,27 @@ function loadLegendLayer(layerName) {
   addLegendLayerItem("Min", min + " " + unit)
   addLegendLayerItem("Max", max + " " + unit)
   // addLegendLayerItem("Average", average)
+}
+
+/*******************************************************************************
+_____loadLegendCell_____
+Description
+    Loads selected cell info into legend
+Parameters
+    cellData:  cell class object or "None"
+*******************************************************************************/
+function loadLegendCell(cellData) {
+  legendSelectedCellTable.innerHTML = ""
+  if (cellData != "None") {
+    legendCellTitle.innerText = `Cell (${cellData.x}, ${cellData.y})`
+    cellData.elements.forEach(element => {
+      let name = element.name
+      let value = roundDecimalX(element.value, 4) + " " + element.unit
+      addLegendCellItem(name, value)
+    })
+  } else {
+    legendCellTitle.innerText = "No Cell Selected"
+  }
 }
 
 export {loadVisualizer}

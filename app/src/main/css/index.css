@@ -69,7 +69,7 @@ p #content {
 }
 
 rect.display-cell:hover {
-  fill-opacity: .5;
+  fill-opacity: .4;
 }
 
 #legend {
@@ -77,9 +77,11 @@ rect.display-cell:hover {
   width: 21%;
   margin-left: 2%;
   margin-right: 2%;
+  padding: 0;
   float: left;
   background-color: grey;
   border-radius: 6pt;
+  word-wrap: break-word;
 }
 
 h1.sidebar {
@@ -118,6 +120,22 @@ td.legend-table-name {
 
 td.legend-table-value {
   color: white;
+}
+
+div.cell-table {
+  overflow-y: auto;
+}
+
+table.legend-cell-table {
+  margin: 0;
+  padding-left: 10pt;
+  padding-right: 10pt;
+  text-align: left;
+  color: white;
+}
+
+tr.legend-cell-row {
+  border-bottom: 1px solid white;
 }
 
 
