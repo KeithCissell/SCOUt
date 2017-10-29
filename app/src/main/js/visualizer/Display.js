@@ -32,6 +32,8 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
   let values = layerJson.values
   let min = Math.min.apply(null, values)
   let max = Math.max.apply(null, values)
+  let displaySize = Math.max(display.width.baseVal.value, display.height.baseVal.value) - 1
+  let scaleFactor = displaySize / Math.max(width, height)
 
   let i0 = hsv.interpolateHsvLong(hsv.hsv(hue, saturation, .8, opacity), hsv.hsv(hue, saturation, .2, opacity))
   let i1 = hsv.interpolateHsvLong(hsv.hsv(hue, saturation, .8, opacity), hsv.hsv(hue, saturation, .2, opacity))
@@ -48,17 +50,40 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
   for (let i = 0; i < contours.length; i++) {
     let contour = contours[i]
     let newPath = document.createElementNS("http://www.w3.org/2000/svg", "path")
-    let dFunc = d3.geoPath(d3.geoIdentity().scale(500 / width))
+    let dFunc = d3.geoPath(d3.geoIdentity().scale(scaleFactor))
     let d = dFunc(contour)
-    newPath.setAttribute("class", elementType)
-    newPath.setAttribute("d", d)
-    newPath.setAttribute("stroke",  "black")
-    newPath.setAttribute("stroke-width", lines ? 1 : 0 )
-    newPath.setAttribute("fill", color(contour.value))
-    if (bottom) display.insertBefore(newPath, currentBottomNode)
-    else display.appendChild(newPath)
+    if (d != null) {
+      newPath.setAttribute("class", elementType)
+      newPath.setAttribute("d", d)
+      newPath.setAttribute("stroke", "black")
+      newPath.setAttribute("stroke-width", lines ? 1 : 0 )
+      newPath.setAttribute("fill", color(contour.value))
+      if (bottom) display.insertBefore(newPath, currentBottomNode)
+      else display.appendChild(newPath)
+    }
   }
 
+}
+
+
+function drawCell(width, height, cellID, x, y, cellData) {
+  let displaySize = Math.max(display.width.baseVal.value, display.height.baseVal.value) - 1
+  let scaleFactor = displaySize / Math.max(width, height)
+  let xPos = x * scaleFactor
+  let yPos = (height - 1 - y) * scaleFactor // flip y axis for visualization
+
+  let newCell = document.createElementNS("http://www.w3.org/2000/svg", "rect")
+  newCell.setAttribute("id", cellID)
+  newCell.setAttribute("class", "display-cell")
+  newCell.setAttribute("x", xPos)
+  newCell.setAttribute("y", yPos)
+  newCell.setAttribute("width", scaleFactor)
+  newCell.setAttribute("height", scaleFactor)
+  newCell.setAttribute("stroke", "black")
+  newCell.setAttribute("stroke-width", 1)
+  newCell.setAttribute("fill-opacity", 0)
+  newCell.selected = "false"
+  display.appendChild(newCell)
 }
 
 
@@ -78,4 +103,4 @@ function eraseLayer(layerName) {
 }
 
 
-export {drawLayer, eraseLayer}
+export {drawLayer, drawCell, eraseLayer}

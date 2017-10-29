@@ -1,5 +1,5 @@
 import {roundDecimalX} from '../Utils.js'
-import {drawLayer, eraseLayer} from './Display.js'
+import {drawLayer, drawCell, eraseLayer} from './Display.js'
 import {addToggle, addSelection} from './Toolbar.js'
 import {addLegendMainItem, addLegendLayerItem} from './Legend.js'
 
@@ -14,6 +14,7 @@ const legendCurrentLayerTable = document.getElementById("legend-current-layer-ta
 let environment
 let elementSelections
 let selectedLayer = "None" // initialize as "None" to display no layer
+let selectedCell = "None"
 
 /*******************************************************************************
 _____loadVisualizer_____
@@ -41,8 +42,9 @@ Description
     Builds toolbar for adjusting the display
 *******************************************************************************/
 function loadDisplay() {
-  loadGrid("Latitude", environment.width, 0, 0, 0, true)
-  loadGrid("Longitude", environment.length, 0, 0, 0, true)
+  // loadGrid("Latitude", environment.width, 0, 0, 0, true)
+  // loadGrid("Longitude", environment.length, 0, 0, 0, true)
+  loadGrid()
   loadElevationLayer()
 }
 
@@ -51,24 +53,63 @@ _____loadGrid_____
 Description
     Permanantly loads Longitude or Latitude grid lines into the display.
     Throws an Error if it does not find the layer.
-Parameters
-    layerName (string)  : elementType associated to layer in Environment
-    threshold (int)     : how many contour-lines should be generated for display
-    hue (int) [0,359]   : primary color between contour-lines
-    saturation (flt) [0.0,1.0]
-    opacity (flt) [0.0,1.0]     : opacity for the color between contour-lines
-    lines (boolean)     : should contour-lines appear
 *******************************************************************************/
-function loadGrid(layerName, threshold, hue, saturation, opacity, lines) {
-  let index = elementSelections.indexOf(layerName)
-  if (index >= 0) {
-    let elementType = elementSelections[index]
-    let layer = environment.extractLayer(elementType)
-    drawLayer(layer, threshold, hue, saturation, opacity, lines, false)
-    elementSelections.splice(index, 1)
+function loadGrid() {
+  // Remove Longitude and Latitude form selectable elements
+  let longitudeIndex = elementSelections.indexOf("Longitude")
+  let latitudeIndex = elementSelections.indexOf("Latitude")
+  if (longitudeIndex >= 0 && latitudeIndex >= 0) {
+    elementSelections.splice(longitudeIndex, 1)
+    elementSelections.splice(latitudeIndex, 1)
   } else {
-    throw new Error(`${layerName} layer not found within Environment`)
+    throw new Error(`Longitude or Latitude layer not found within Environment`)
   }
+  // Draw each cell
+  for (let x = 0; x < environment.length; x++) {
+    for (let y = 0; y < environment.width; y++) {
+      let cellID = "cell-" + x + "-" + y
+      let cellData = environment.grid[x][y]
+
+      drawCell(environment.length, environment.width, cellID, x, y, cellData)
+
+      let cell = document.getElementById(cellID)
+      cell.addEventListener("click", function() {
+        if (this.selected == "false") selectCell(this)
+        else deSelectCell(this)
+      })
+    }
+  }
+}
+
+/*******************************************************************************
+_____selectCell_____
+Description
+    Selects a cell to highlight and provide info on
+Parameters
+    DOM object for the cell selected
+*******************************************************************************/
+function selectCell(cell) {
+  cell.selected = "true"
+  cell.setAttribute("stroke", "forestGreen")
+  cell.setAttribute("stroke-width", 2)
+  cell.setAttribute("fill-opacity", 1)
+  if (selectedCell != "None") deSelectCell(selectedCell)
+  selectedCell = cell
+}
+
+/*******************************************************************************
+_____deSelectCell_____
+Description
+    Deselects the currently selected cell
+Parameters
+    DOM object for the cell de-selected
+*******************************************************************************/
+function deSelectCell(cell) {
+  cell.selected = "false"
+  cell.setAttribute("stroke", "black")
+  cell.setAttribute("stroke-width", 1)
+  cell.setAttribute("fill-opacity", 0)
+  selectedCell = "None"
 }
 
 /*******************************************************************************

@@ -13003,7 +13003,7 @@ Description
 async function successfulContact() {
   mainContent.innerHTML = "";
   message.innerHTML = "Loading...";
-  var nre = await (0, _SCOUtAPI.newRandomEnvironment)("My Environment", 20, 19);
+  var nre = await (0, _SCOUtAPI.newRandomEnvironment)("My Environment", 10, 10);
   nre.json().then(function (json) {
     var environment = (0, _EnvironmentBuilder.buildEnvironment)(json);
     console.log(environment);
@@ -13370,6 +13370,7 @@ var legendCurrentLayerTable = document.getElementById("legend-current-layer-tabl
 var environment = void 0;
 var elementSelections = void 0;
 var selectedLayer = "None"; // initialize as "None" to display no layer
+var selectedCell = "None";
 
 /*******************************************************************************
 _____loadVisualizer_____
@@ -13397,8 +13398,9 @@ Description
     Builds toolbar for adjusting the display
 *******************************************************************************/
 function loadDisplay() {
-  loadGrid("Latitude", environment.width, 0, 0, 0, true);
-  loadGrid("Longitude", environment.length, 0, 0, 0, true);
+  // loadGrid("Latitude", environment.width, 0, 0, 0, true)
+  // loadGrid("Longitude", environment.length, 0, 0, 0, true)
+  loadGrid();
   loadElevationLayer();
 }
 
@@ -13407,24 +13409,62 @@ _____loadGrid_____
 Description
     Permanantly loads Longitude or Latitude grid lines into the display.
     Throws an Error if it does not find the layer.
-Parameters
-    layerName (string)  : elementType associated to layer in Environment
-    threshold (int)     : how many contour-lines should be generated for display
-    hue (int) [0,359]   : primary color between contour-lines
-    saturation (flt) [0.0,1.0]
-    opacity (flt) [0.0,1.0]     : opacity for the color between contour-lines
-    lines (boolean)     : should contour-lines appear
 *******************************************************************************/
-function loadGrid(layerName, threshold, hue, saturation, opacity, lines) {
-  var index = elementSelections.indexOf(layerName);
-  if (index >= 0) {
-    var elementType = elementSelections[index];
-    var layer = environment.extractLayer(elementType);
-    (0, _Display.drawLayer)(layer, threshold, hue, saturation, opacity, lines, false);
-    elementSelections.splice(index, 1);
+function loadGrid() {
+  // Remove Longitude and Latitude form selectable elements
+  var longitudeIndex = elementSelections.indexOf("Longitude");
+  var latitudeIndex = elementSelections.indexOf("Latitude");
+  if (longitudeIndex >= 0 && latitudeIndex >= 0) {
+    elementSelections.splice(longitudeIndex, 1);
+    elementSelections.splice(latitudeIndex, 1);
   } else {
-    throw new Error(layerName + ' layer not found within Environment');
+    throw new Error('Longitude or Latitude layer not found within Environment');
   }
+  // Draw each cell
+  for (var x = 0; x < environment.length; x++) {
+    for (var y = 0; y < environment.width; y++) {
+      var cellID = "cell-" + x + "-" + y;
+      var cellData = environment.grid[x][y];
+
+      (0, _Display.drawCell)(environment.length, environment.width, cellID, x, y, cellData);
+
+      var cell = document.getElementById(cellID);
+      cell.addEventListener("click", function () {
+        if (this.selected == "false") selectCell(this);else deSelectCell(this);
+      });
+    }
+  }
+}
+
+/*******************************************************************************
+_____selectCell_____
+Description
+    Selects a cell to highlight and provide info on
+Parameters
+    DOM object for the cell selected
+*******************************************************************************/
+function selectCell(cell) {
+  cell.selected = "true";
+  cell.setAttribute("stroke", "forestGreen");
+  cell.setAttribute("stroke-width", 2);
+  cell.setAttribute("fill-opacity", 1);
+  if (selectedCell != "None") deSelectCell(selectedCell);
+  selectedCell = cell;
+}
+
+/*******************************************************************************
+_____deSelectCell_____
+Description
+    Deselects the currently selected cell
+Parameters
+    DOM object for the cell de-selected
+*******************************************************************************/
+function deSelectCell(cell) {
+  cell.selected = "false";
+  cell.setAttribute("stroke", "black");
+  cell.setAttribute("stroke-width", 1);
+  cell.setAttribute("fill-opacity", 0);
+  selectedCell = "None";
 }
 
 /*******************************************************************************
@@ -13571,6 +13611,8 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
   var values = layerJson.values;
   var min = Math.min.apply(null, values);
   var max = Math.max.apply(null, values);
+  var displaySize = Math.max(display.width.baseVal.value, display.height.baseVal.value) - 1;
+  var scaleFactor = displaySize / Math.max(width, height);
 
   var i0 = hsv.interpolateHsvLong(hsv.hsv(hue, saturation, .8, opacity), hsv.hsv(hue, saturation, .2, opacity));
   var i1 = hsv.interpolateHsvLong(hsv.hsv(hue, saturation, .8, opacity), hsv.hsv(hue, saturation, .2, opacity));
@@ -13586,15 +13628,37 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
   for (var i = 0; i < contours.length; i++) {
     var contour = contours[i];
     var newPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    var dFunc = d3.geoPath(d3.geoIdentity().scale(500 / width));
+    var dFunc = d3.geoPath(d3.geoIdentity().scale(scaleFactor));
     var d = dFunc(contour);
-    newPath.setAttribute("class", elementType);
-    newPath.setAttribute("d", d);
-    newPath.setAttribute("stroke", "black");
-    newPath.setAttribute("stroke-width", lines ? 1 : 0);
-    newPath.setAttribute("fill", color(contour.value));
-    if (bottom) display.insertBefore(newPath, currentBottomNode);else display.appendChild(newPath);
+    if (d != null) {
+      newPath.setAttribute("class", elementType);
+      newPath.setAttribute("d", d);
+      newPath.setAttribute("stroke", "black");
+      newPath.setAttribute("stroke-width", lines ? 1 : 0);
+      newPath.setAttribute("fill", color(contour.value));
+      if (bottom) display.insertBefore(newPath, currentBottomNode);else display.appendChild(newPath);
+    }
   }
+}
+
+function drawCell(width, height, cellID, x, y, cellData) {
+  var displaySize = Math.max(display.width.baseVal.value, display.height.baseVal.value) - 1;
+  var scaleFactor = displaySize / Math.max(width, height);
+  var xPos = x * scaleFactor;
+  var yPos = (height - 1 - y) * scaleFactor; // flip y axis for visualization
+
+  var newCell = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  newCell.setAttribute("id", cellID);
+  newCell.setAttribute("class", "display-cell");
+  newCell.setAttribute("x", xPos);
+  newCell.setAttribute("y", yPos);
+  newCell.setAttribute("width", scaleFactor);
+  newCell.setAttribute("height", scaleFactor);
+  newCell.setAttribute("stroke", "black");
+  newCell.setAttribute("stroke-width", 1);
+  newCell.setAttribute("fill-opacity", 0);
+  newCell.selected = "false";
+  display.appendChild(newCell);
 }
 
 /*******************************************************************************
@@ -13615,6 +13679,7 @@ function eraseLayer(layerName) {
 }
 
 exports.drawLayer = drawLayer;
+exports.drawCell = drawCell;
 exports.eraseLayer = eraseLayer;
 
 /***/ }),

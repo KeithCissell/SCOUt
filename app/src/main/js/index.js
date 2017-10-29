@@ -62,7 +62,7 @@ Description
 async function successfulContact() {
   mainContent.innerHTML = ""
   message.innerHTML = "Loading..."
-  let nre = await newRandomEnvironment("My Environment", 20, 19)
+  let nre = await newRandomEnvironment("My Environment", 10, 10)
   nre.json().then((json) => {
     let environment = buildEnvironment(json)
     console.log(environment)

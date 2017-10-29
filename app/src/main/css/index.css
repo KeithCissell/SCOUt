@@ -68,6 +68,10 @@ p #content {
   background-color: white;
 }
 
+rect.display-cell:hover {
+  fill-opacity: .5;
+}
+
 #legend {
   height: 76%;
   width: 21%;
