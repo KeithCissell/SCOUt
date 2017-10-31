@@ -13660,7 +13660,9 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
 
   var contours = d3Contour.contours().size([width, height]).thresholds(d3.range(min, max, (max - min) / threshold))(values);
 
-  var currentBottomNode = display.children[0];
+  console.log(display.getElementsByClassName("display-cell")[0]);
+
+  var currentBottomNode = bottom ? display.children[0] : display.getElementsByClassName("display-cell")[0];
 
   for (var i = 0; i < contours.length; i++) {
     var contour = contours[i];
@@ -13673,7 +13675,7 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
       newPath.setAttribute("stroke", "black");
       newPath.setAttribute("stroke-width", lines ? 1 : 0);
       newPath.setAttribute("fill", color(contour.value));
-      if (bottom) display.insertBefore(newPath, currentBottomNode);else display.appendChild(newPath);
+      display.insertBefore(newPath, currentBottomNode);
     }
   }
 }

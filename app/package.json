@@ -30,6 +30,7 @@
     "webpack": "^3.4.1"
   },
   "dependencies": {
+    "bootstrap": "^3.3.7",
     "d3-contour": "^1.1.1"
   }
 }

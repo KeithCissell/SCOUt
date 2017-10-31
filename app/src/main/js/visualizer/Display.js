@@ -45,7 +45,7 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
       .thresholds(d3.range(min, max, (max-min)/threshold))
       (values);
 
-  let currentBottomNode = display.children[0]
+  let currentBottomNode = bottom ? display.children[0] : display.getElementsByClassName("display-cell")[0]
 
   for (let i = 0; i < contours.length; i++) {
     let contour = contours[i]
@@ -58,8 +58,7 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
       newPath.setAttribute("stroke", "black")
       newPath.setAttribute("stroke-width", lines ? 1 : 0 )
       newPath.setAttribute("fill", color(contour.value))
-      if (bottom) display.insertBefore(newPath, currentBottomNode)
-      else display.appendChild(newPath)
+      display.insertBefore(newPath, currentBottomNode)
     }
   }
 

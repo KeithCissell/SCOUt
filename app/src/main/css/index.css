@@ -1,3 +1,7 @@
+/*******************************************************************************
+      PRIMARY CONTENT
+*******************************************************************************/
+
 html {
   height: 100%;
   font-family: sans-serif;
@@ -33,6 +37,38 @@ main {
   overflow: auto;
 }
 
+h1.sidebar {
+  color: black;
+  text-decoration: underline;
+}
+
+h2.sidebar {
+  margin-left: 15pt;
+  font-size: 15pt;
+  color: black;
+  text-align: left;
+}
+
+/*******************************************************************************
+      VISUALIZER DISPLAY
+*******************************************************************************/
+
+#display {
+  height: 76%;
+  width: 50%;
+  float: left;
+  text-align: center;
+  background-color: white;
+}
+
+rect.display-cell:hover {
+  fill-opacity: .4;
+}
+
+/*******************************************************************************
+      NAVIGATION BAR
+*******************************************************************************/
+
 #navigation {
   margin: 2%;
   height: 16%;
@@ -50,6 +86,10 @@ p #content {
   margin: 0;
 }
 
+/*******************************************************************************
+      CONTROL TOOLBAR
+*******************************************************************************/
+
 #toolbar {
   height: 76%;
   width: 21%;
@@ -60,42 +100,6 @@ p #content {
   border-radius: 6pt;
 }
 
-#display {
-  height: 76%;
-  width: 50%;
-  float: left;
-  text-align: center;
-  background-color: white;
-}
-
-rect.display-cell:hover {
-  fill-opacity: .4;
-}
-
-#legend {
-  height: 76%;
-  width: 21%;
-  margin-left: 2%;
-  margin-right: 2%;
-  padding: 0;
-  float: left;
-  background-color: grey;
-  border-radius: 6pt;
-  word-wrap: break-word;
-}
-
-h1.sidebar {
-  color: black;
-  text-decoration: underline;
-}
-
-h2.sidebar {
-  margin-left: 15pt;
-  font-size: 15pt;
-  color: black;
-  text-align: left;
-}
-
 #layer-toggles {
   margin-left: 15pt;
   text-align: left;
@@ -104,6 +108,24 @@ h2.sidebar {
 #layer-selector {
   margin-left: 15pt;
   text-align: left;
+}
+
+/*******************************************************************************
+      LEGEND
+*******************************************************************************/
+
+#legend {
+  height: 76%;
+  width: 21%;
+  margin-left: 2%;
+  margin-right: 2%;
+  padding: 0;
+  padding-bottom: 1pt;
+  float: left;
+  background-color: grey;
+  border-radius: 6pt;
+  word-wrap: break-word;
+  overflow: hidden;
 }
 
 table.legend-table {
@@ -123,10 +145,11 @@ td.legend-table-value {
 }
 
 div.cell-table {
-  overflow-y: auto;
+  margin-bottom: 1pt;
 }
 
 table.legend-cell-table {
+  overflow: scroll;
   margin: 0;
   padding-left: 10pt;
   padding-right: 10pt;
@@ -135,7 +158,7 @@ table.legend-cell-table {
 }
 
 tr.legend-cell-row {
-  border-bottom: 1px solid white;
+  max-width: 100%;
 }
 
 
