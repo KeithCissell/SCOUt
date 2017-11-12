@@ -29,7 +29,7 @@ object LayerGenerator {
     val layer = new Layer(AB.fill(l)(AB.fill(w)(Some(new Decible(0.0)))))
     for (rs <- 0 until seed.randomSources) seed.createRandomSource(l, w)
     for (source <- seed.sources) {
-      val currentValue = 0 // layer.layer(source.x)(source.y).flatMap(dec => dec.value).getOrElse(0.0)
+      val currentValue = layer.layer(source.x)(source.y).flatMap(dec => dec.value).getOrElse(0.0)
       if (source.value > currentValue) layer.setElement(source.x, source.y, new Decible(source.value))
       for {
         x <- 0 until l

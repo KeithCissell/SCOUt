@@ -20,16 +20,7 @@ object SCOUtService {
 
   // Holds an initialy empty Environment
   var environment = generateRandomEnvironment("Empty", 2, 2)
-  // List of all seed defaults
-  val defaultSeedList: List[ElementSeed] = List(
-    DecibleSeed(),
-    ElevationSeed(),
-    LatitudeSeed(),
-    LongitudeSeed(),
-    TemperatureSeed(),
-    WindDirectionSeed(),
-    WindSpeedSeed()
-  )
+  
   // Mutable list of seeds
   var seedList: List[ElementSeed] = defaultSeedList
 

@@ -18,16 +18,25 @@
       </div>
       <div id="toolbar">
         <h1 class="sidebar">Controls</h1>
-        <h2 id="layer-toggles-header" class="sidebar"></h2>
-        <div id="layer-toggles" class="sidebar-container"></div>
-        <h2 id="layer-selector-header" class="sidebar"></h2>
-        <div id="layer-selector" class="sidebar-container"></div>
+        <h2 class="sidebar" id="layer-toggles-header"></h2>
+        <div class="toolbar-container" id="layer-toggles"></div>
+        <h2 class="sidebar" id="layer-selector-header"></h2>
+        <div class="toolbar-container" id="layer-selector"></div>
       </div>
       <svg id="display"></svg>
       <div id="legend">
         <h1 class="sidebar">Legend</h1>
+        <h2 class="sidebar" id="legend-environment-title"></h2>
+        <table class="legend-table" id="legend-main-table"></table>
+        <h2 class="sidebar" id="legend-layer-title"></h2>
+        <table class="legend-table" id="legend-selected-layer-table"></table>
+        <h2 class="sidebar" id="legend-cell-title"></h2>
+        <table class="legend-cell-table" id="legend-selected-cell-table"></table>
       </div>
     </main>
+
+    <footer>
+    </footer>
   </body>
 
   <script src="bundle.js"></script>

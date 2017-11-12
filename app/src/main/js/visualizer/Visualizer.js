@@ -1,18 +1,22 @@
-import {drawLayer, eraseLayer} from './Display.js'
+import {roundDecimalX} from '../Utils.js'
+import {drawLayer, drawCell, eraseLayer} from './Display.js'
 import {addToggle, addSelection} from './Toolbar.js'
+import {addLegendMainItem, addLegendLayerItem, addLegendCellItem} from './Legend.js'
 
 
 // Document Elements
-const header = document.getElementById("header")
-const main = document.getElementById("main")
 const message = document.getElementById("message")
-const mainContent = document.getElementById("content")
-const toolbar = document.getElementById("toolbar")
+const legendEnvironmentTitle = document.getElementById("legend-environment-title")
+const legendLayerTitle = document.getElementById("legend-layer-title")
+const legendSelectedLayerTable = document.getElementById("legend-selected-layer-table")
+const legendCellTitle = document.getElementById("legend-cell-title")
+const legendSelectedCellTable = document.getElementById("legend-selected-cell-table")
 
 // Globals
 let environment
 let elementSelections
 let selectedLayer = "None" // initialize as "None" to display no layer
+let selectedCell = "None"
 
 /*******************************************************************************
 _____loadVisualizer_____
@@ -23,11 +27,12 @@ Parameters
 *******************************************************************************/
 function loadVisualizer(targetEnvironment) {
   environment = targetEnvironment
-  elementSelections = environment.elementTypes
+  elementSelections = environment.elementTypes.slice(0)
   elementSelections.unshift("None") // adds "None" to the front of array
 
   loadDisplay()
   loadToolbar()
+  loadLegend()
 
   document.getElementById("Elevation-Toggle").click()
   message.innerHTML = ""
@@ -39,34 +44,75 @@ Description
     Builds toolbar for adjusting the display
 *******************************************************************************/
 function loadDisplay() {
-  loadPermanentLayer("Latitude", 10, 0, 0, 0, true)
-  loadPermanentLayer("Longitude", 10, 0, 0, 0, true)
+  loadGrid()
   loadElevationLayer()
 }
 
 /*******************************************************************************
-_____loadPermanentLayer_____
+_____loadGrid_____
 Description
-    Attempts to find a layer in Environment and call drawLayer().
+    Permanantly loads Longitude or Latitude grid lines into the display.
     Throws an Error if it does not find the layer.
-Parameters
-    layerName (string)  : elementType associated to layer in Environment
-    threshold (int)     : how many contour-lines should be generated for display
-    hue (int) [0,359]   : primary color between contour-lines
-    saturation (flt) [0.0,1.0]
-    opacity (flt) [0.0,1.0]     : opacity for the color between contour-lines
-    lines (boolean)     : should contour-lines appear
 *******************************************************************************/
-function loadPermanentLayer(layerName, threshold, hue, saturation, opacity, lines) {
-  let index = elementSelections.indexOf(layerName)
-  if (index >= 0) {
-    let elementType = elementSelections[index]
-    let layer = environment.extractLayer(elementType)
-    drawLayer(layer, threshold, hue, saturation, opacity, lines, false)
-    elementSelections.splice(index, 1)
+function loadGrid() {
+  // Remove Longitude and Latitude form selectable elements
+  let longitudeIndex = elementSelections.indexOf("Longitude")
+  let latitudeIndex = elementSelections.indexOf("Latitude")
+  if (longitudeIndex >= 0 && latitudeIndex >= 0) {
+    elementSelections.splice(longitudeIndex, 1)
+    elementSelections.splice(latitudeIndex, 1)
   } else {
-    throw new Error(`${layerName} layer not found within Environment`)
+    throw new Error(`Longitude or Latitude layer not found within Environment`)
   }
+  // Draw each cell
+  for (let x = 0; x < environment.length; x++) {
+    for (let y = 0; y < environment.width; y++) {
+      let cellID = "cell-" + x + "-" + y
+      let cellData = environment.grid[x][y]
+
+      drawCell(environment.length, environment.width, cellID, x, y, cellData)
+
+      let cell = document.getElementById(cellID)
+      cell.addEventListener("click", function() {
+        if (this.selected == "false") selectCell(this)
+        else deSelectCell(this)
+      })
+    }
+  }
+}
+
+/*******************************************************************************
+_____selectCell_____
+Description
+    Selects a cell to highlight and provide info on
+Parameters
+    DOM object for the cell selected
+*******************************************************************************/
+function selectCell(cell) {
+  cell.selected = "true"
+  // cell.setAttribute("stroke", "forestGreen")
+  cell.setAttribute("stroke-width", 3)
+  cell.setAttribute("fill-opacity", .6)
+  if (selectedCell != "None") deSelectCell(selectedCell)
+  selectedCell = cell
+  let cellData = environment.grid[cell.xValue][cell.yValue]
+  loadLegendCell(cellData)
+}
+
+/*******************************************************************************
+_____deSelectCell_____
+Description
+    Deselects the currently selected cell
+Parameters
+    DOM object for the cell de-selected
+*******************************************************************************/
+function deSelectCell(cell) {
+  cell.selected = "false"
+  cell.setAttribute("stroke", "black")
+  cell.setAttribute("stroke-width", 1)
+  cell.setAttribute("fill-opacity", 0)
+  selectedCell = "None"
+  loadLegendCell("None")
 }
 
 /*******************************************************************************
@@ -111,6 +157,7 @@ function loadToolbar() {
     let selection = document.getElementById(selectionID)
     selection.addEventListener("click", function() {
       displayLayer(this.value)
+      loadLegendLayer(this.value)
     })
   }
   let noneSelection = document.getElementById("None-Selection")
@@ -130,6 +177,76 @@ function displayLayer(elementType) {
   if (elementType != "None") {
     let layer = environment.extractLayer(elementType)
     drawLayer(layer, 4, 100, .5, 0.3, false)
+  }
+}
+
+/*******************************************************************************
+_____loadLegend_____
+Description
+    Loads legend to display information about the Environment
+*******************************************************************************/
+function loadLegend() {
+  // Load Main section
+  legendEnvironmentTitle.innerText = environment.name
+  addLegendMainItem("Dimensions", environment.length + " X " + environment.width)
+  let elevationLayer = environment.extractLayer("Elevation")
+  let elevationJson = elevationLayer.toJson()
+  let elevationMin = Math.min.apply(null, elevationJson.values)
+  let elevationMax = Math.max.apply(null, elevationJson.values)
+  addLegendMainItem("Min Elevation", roundDecimalX(elevationMin, 3) + " " + elevationLayer.unit)
+  addLegendMainItem("Max Elevation", roundDecimalX(elevationMax, 3) + " " + elevationLayer.unit)
+  // Load legend layer <<<and selected cell>>> section<<<s>>>
+  loadLegendLayer(selectedLayer)
+  loadLegendCell(selectedCell)
+}
+
+/*******************************************************************************
+_____loadLegendLayer_____
+Description
+    Loads selected layer info into legend
+Parameters
+    layerName:  the element type of the layer selected
+*******************************************************************************/
+function loadLegendLayer(layerName) {
+  legendSelectedLayerTable.innerHTML = ""
+  let unit = ""
+  let min = "-"
+  let max = "-"
+  // let average = "-"
+  if (layerName != "None") {
+    legendLayerTitle.innerText = layerName
+    let layer = environment.extractLayer(layerName)
+    let layerJson = layer.toJson()
+    unit = layerJson.unit
+    min = roundDecimalX(Math.min.apply(null, layerJson.values), 3)
+    max = roundDecimalX(Math.max.apply(null, layerJson.values), 3)
+    // average =
+  } else {
+    legendLayerTitle.innerText = "No Layer Selected"
+  }
+  addLegendLayerItem("Min", min + " " + unit)
+  addLegendLayerItem("Max", max + " " + unit)
+  // addLegendLayerItem("Average", average)
+}
+
+/*******************************************************************************
+_____loadLegendCell_____
+Description
+    Loads selected cell info into legend
+Parameters
+    cellData:  cell class object or "None"
+*******************************************************************************/
+function loadLegendCell(cellData) {
+  legendSelectedCellTable.innerHTML = ""
+  if (cellData != "None") {
+    legendCellTitle.innerText = `Cell (${cellData.x}, ${cellData.y})`
+    cellData.elements.forEach(element => {
+      let name = element.name
+      let value = roundDecimalX(element.value, 4) + " " + element.unit
+      addLegendCellItem(name, value)
+    })
+  } else {
+    legendCellTitle.innerText = "No Cell Selected"
   }
 }
 

@@ -19,14 +19,19 @@ class Environment {
   *******************************************************************************/
   extractLayer(elementType) {
     if (this.elementTypes.includes(elementType)) {
+      let unit = ""
       let layer = empty2D(this.length, this.width)
       for (let x in this.grid) {
         for (let y in this.grid[x]) {
           let cell = this.grid[x][y]
-          if (cell.elements.has(elementType)) layer[x][y] = cell.elements.get(elementType)
+          if (cell.elements.has(elementType)) {
+            let element = cell.elements.get(elementType)
+            layer[x][y] = element
+            if (unit == "") { unit = element.unit }
+          }
         }
       }
-      return new Layer(elementType, layer, this.length, this.width)
+      return new Layer(elementType, unit, layer, this.length, this.width)
     } else throw new Error("Element " + elementType + " not found.")
   }
 
