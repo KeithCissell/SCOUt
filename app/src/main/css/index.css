@@ -49,20 +49,9 @@ h2.sidebar {
   text-align: left;
 }
 
-/*******************************************************************************
-      VISUALIZER DISPLAY
-*******************************************************************************/
-
-#display {
-  height: 76%;
-  width: 50%;
-  float: left;
-  text-align: center;
-  background-color: white;
-}
-
-rect.display-cell:hover {
-  fill-opacity: .4;
+footer {
+  height: 5%;
+  width: 100%;
 }
 
 /*******************************************************************************
@@ -84,6 +73,22 @@ h1 #message {
 
 p #content {
   margin: 0;
+}
+
+/*******************************************************************************
+      VISUALIZER DISPLAY
+*******************************************************************************/
+
+#display {
+  height: 76%;
+  width: 50%;
+  float: left;
+  text-align: center;
+  background-color: white;
+}
+
+rect.display-cell:hover {
+  fill-opacity: .4;
 }
 
 /*******************************************************************************
@@ -116,11 +121,11 @@ p #content {
 
 #legend {
   height: 76%;
+  max-height: 76%;
   width: 21%;
   margin-left: 2%;
   margin-right: 2%;
   padding: 0;
-  padding-bottom: 1pt;
   float: left;
   background-color: grey;
   border-radius: 6pt;
@@ -128,11 +133,22 @@ p #content {
   overflow: hidden;
 }
 
+#cell-table {
+  padding-bottom: 5%;
+  overflow: auto;
+}
+
 table.legend-table {
+  table-layout: fixed;
   margin: 0;
   padding-left: 10pt;
   text-align: left;
   color: white;
+}
+
+
+tr.legend-cell-row {
+  max-width: 100%;
 }
 
 td.legend-table-name {
@@ -144,10 +160,6 @@ td.legend-table-value {
   color: white;
 }
 
-div.cell-table {
-  margin-bottom: 1pt;
-}
-
 table.legend-cell-table {
   overflow: scroll;
   margin: 0;
@@ -156,11 +168,6 @@ table.legend-cell-table {
   text-align: left;
   color: white;
 }
-
-tr.legend-cell-row {
-  max-width: 100%;
-}
-
 
 /*******************************************************************************
       STYLING FOR TOGGLE SWITCHES

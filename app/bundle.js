@@ -13445,8 +13445,8 @@ Parameters
 *******************************************************************************/
 function selectCell(cell) {
   cell.selected = "true";
-  cell.setAttribute("stroke", "forestGreen");
-  cell.setAttribute("stroke-width", 2);
+  // cell.setAttribute("stroke", "forestGreen")
+  cell.setAttribute("stroke-width", 3);
   cell.setAttribute("fill-opacity", .6);
   if (selectedCell != "None") deSelectCell(selectedCell);
   selectedCell = cell;
@@ -13648,7 +13648,7 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
   var values = layerJson.values;
   var min = Math.min.apply(null, values);
   var max = Math.max.apply(null, values);
-  var displaySize = Math.max(display.width.baseVal.value, display.height.baseVal.value) - 1;
+  var displaySize = Math.min(display.width.baseVal.value, display.height.baseVal.value) - 1;
   var scaleFactor = displaySize / Math.max(width, height);
 
   var i0 = hsv.interpolateHsvLong(hsv.hsv(hue, saturation, .8, opacity), hsv.hsv(hue, saturation, .2, opacity));
@@ -13659,8 +13659,6 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
   var color = d3.scaleSequential(interpolateTerrain).domain([min, max]);
 
   var contours = d3Contour.contours().size([width, height]).thresholds(d3.range(min, max, (max - min) / threshold))(values);
-
-  console.log(display.getElementsByClassName("display-cell")[0]);
 
   var currentBottomNode = bottom ? display.children[0] : display.getElementsByClassName("display-cell")[0];
 
@@ -13681,7 +13679,7 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
 }
 
 function drawCell(width, height, cellID, x, y, cellData) {
-  var displaySize = Math.max(display.width.baseVal.value, display.height.baseVal.value) - 1;
+  var displaySize = Math.min(display.width.baseVal.value, display.height.baseVal.value) - 1;
   var scaleFactor = displaySize / Math.max(width, height);
   var xPos = x * scaleFactor;
   var yPos = (height - 1 - y) * scaleFactor; // flip y axis for visualization

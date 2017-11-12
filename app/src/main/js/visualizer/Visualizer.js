@@ -90,8 +90,8 @@ Parameters
 *******************************************************************************/
 function selectCell(cell) {
   cell.selected = "true"
-  cell.setAttribute("stroke", "forestGreen")
-  cell.setAttribute("stroke-width", 2)
+  // cell.setAttribute("stroke", "forestGreen")
+  cell.setAttribute("stroke-width", 3)
   cell.setAttribute("fill-opacity", .6)
   if (selectedCell != "None") deSelectCell(selectedCell)
   selectedCell = cell

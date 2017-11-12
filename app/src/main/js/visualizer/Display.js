@@ -32,7 +32,7 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
   let values = layerJson.values
   let min = Math.min.apply(null, values)
   let max = Math.max.apply(null, values)
-  let displaySize = Math.max(display.width.baseVal.value, display.height.baseVal.value) - 1
+  let displaySize = Math.min(display.width.baseVal.value, display.height.baseVal.value) - 1
   let scaleFactor = displaySize / Math.max(width, height)
 
   let i0 = hsv.interpolateHsvLong(hsv.hsv(hue, saturation, .8, opacity), hsv.hsv(hue, saturation, .2, opacity))
@@ -66,7 +66,7 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
 
 
 function drawCell(width, height, cellID, x, y, cellData) {
-  let displaySize = Math.max(display.width.baseVal.value, display.height.baseVal.value) - 1
+  let displaySize = Math.min(display.width.baseVal.value, display.height.baseVal.value) - 1
   let scaleFactor = displaySize / Math.max(width, height)
   let xPos = x * scaleFactor
   let yPos = (height - 1 - y) * scaleFactor // flip y axis for visualization
