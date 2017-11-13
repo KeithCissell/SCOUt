@@ -54,6 +54,32 @@ footer {
   width: 100%;
 }
 
+
+/*******************************************************************************
+      HOME PAGE
+*******************************************************************************/
+#home-page {
+  margin: 2%;
+  margin-bottom: 0;
+  padding: 2%;
+  height: 90%;
+  width: 92%;
+  background-color: grey;
+  border-radius: 6pt;
+}
+
+#home-title {
+  margin: 2%;
+  width: 96%;
+}
+
+#home-content {
+  margin: 2%;
+  width: 96%;
+  text-align: center;
+}
+
+
 /*******************************************************************************
       NAVIGATION BAR
 *******************************************************************************/
@@ -64,15 +90,6 @@ footer {
   width: 96%;
   background-color: grey;
   border-radius: 6pt;
-}
-
-h1 #message {
-  height: 10%;
-  margin: 0;
-}
-
-p #content {
-  margin: 0;
 }
 
 /*******************************************************************************

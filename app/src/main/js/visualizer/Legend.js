@@ -1,8 +1,7 @@
-const mainTable = document.getElementById("legend-main-table")
-const selectedLayerTable = document.getElementById("legend-selected-layer-table")
-const selectedCellTable = document.getElementById("legend-selected-cell-table")
 
 function addLegendMainItem(name, value) {
+  let mainTable = document.getElementById("legend-main-table")
+
   let newTableRow = document.createElement("tr")
   let newTableName = document.createElement("td")
   newTableName.setAttribute("class", "legend-table-name")
@@ -16,6 +15,8 @@ function addLegendMainItem(name, value) {
 }
 
 function addLegendLayerItem(name, value) {
+  let selectedLayerTable = document.getElementById("legend-selected-layer-table")
+
   let newTableRow = document.createElement("tr")
   let newTableName = document.createElement("td")
   newTableName.setAttribute("class", "legend-table-name")
@@ -29,6 +30,8 @@ function addLegendLayerItem(name, value) {
 }
 
 function addLegendCellItem(name, value) {
+  let selectedCellTable = document.getElementById("legend-selected-cell-table")
+
   let newTableRow = document.createElement("tr")
   newTableRow.setAttribute("class", "legend-cell-row")
   let newTableName = document.createElement("td")
