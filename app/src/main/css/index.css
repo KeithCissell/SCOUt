@@ -70,13 +70,38 @@ footer {
 
 #home-title {
   margin: 2%;
+  margin-bottom: 4%;
+  height: 6%;
   width: 96%;
 }
 
 #home-content {
-  margin: 2%;
+  margin-left: 2%;
+  margin-right: 2%;
+  height: 75%;
   width: 96%;
   text-align: center;
+}
+
+#submit-buttons {
+  margin-left: 2%;
+  margin-right: 2%;
+  height: 10%;
+  width: 96%;
+  text-align: center;
+}
+
+button.submit-button {
+  margin-left: 10%;
+  margin-right: 10%;
+  padding: 16px 31px;
+	background-color: forestGreen;
+	border-radius: 28px;
+	border: 1px solid black;
+	display: inline-block;
+	cursor: pointer;
+	color: white;
+	font-weight: bold;
 }
 
 
