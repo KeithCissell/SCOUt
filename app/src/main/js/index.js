@@ -1,7 +1,7 @@
 import {pingServer,
         getCurrentState,
         newRandomEnvironment} from './SCOUtAPI.js'
-import {loadEnvironmentBuilderPage} from './PageLoader.js'
+import {loadEnvironmentBuilderPage} from './builder/EnvironmentBuilder.js'
 
 
 window.$ = window.jQuery = require('jquery')

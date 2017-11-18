@@ -4,8 +4,6 @@ import {pingServer,
 import {formatEnvironment} from './environment/EnvironmentFormatter.js'
 import {buildRandomEnvironment} from './builder/EnvironmentBuilder.js'
 import {loadVisualizer} from './visualizer/Visualizer.js'
-import {textValidation, numberValidation} from './builder/InputValidators.js'
-import {BasicEnvironmentForm} from './builder/FormClasses.js'
 
 
 // Get Main Element
@@ -13,30 +11,29 @@ const main = document.getElementById("main")
 
 
 function loadEnvironmentBuilderPage() {
-  // Capture DOM elements
-  let homeTitle = document.getElementById("home-title")
-  let homeContent = document.getElementById("home-content")
-  let submitButtons = document.getElementById("submit-buttons")
-
   // Setup Environment Builder Page
-  homeTitle.innerText = "Environment Builder"
-  homeContent.innerHTML = `
-    <form>
-      <div id="basic-inputs">
-        <label for="environment-name">Environment Name</label>
-        <input type="text" id="environment-name" value="My Environment">
-        <label for="height">Height</label>
-        <input type="number" id="height" value="10" min="10" max="100">
-        <label for="width">Width</label>
-        <input type="number" id="width" value="10" min="10" max="100">
-      </div>
-      <div id="custom-inputs">
-      </div>
-    </form>
-  `
-  submitButtons.innerHTML = `
-    <button class="submit-button" id="random-environment-button">Generate Random Environment</button>
-    <button class="submit-button" id="custom-environment-button">Build Custom Environment</button>
+  main.innerHTML = `
+  <div id="home-page">
+    <h1 id="home-title">Environment Builder</h1>
+    <div id="home-content">
+      <form>
+        <div id="basic-inputs">
+          <label for="environment-name">Environment Name</label>
+          <input type="text" id="environment-name" value="My Environment">
+          <label for="height">Height</label>
+          <input type="number" id="height" value="10" min="10" max="100">
+          <label for="width">Width</label>
+          <input type="number" id="width" value="10" min="10" max="100">
+        </div>
+        <div id="custom-inputs">
+        </div>
+      </form>
+    </div>
+    <div id="submit-buttons">
+      <button class="submit-button" id="random-environment-button">Generate Random Environment</button>
+      <button class="submit-button" id="custom-environment-button">Build Custom Environment</button>
+    </div>
+  </div>
   `
 
   // Add event listeners
@@ -44,7 +41,6 @@ function loadEnvironmentBuilderPage() {
   randomEnvironmentButton.addEventListener("click", () => {
     if (checkBasicInputs()) {
       let form = getBasicInputs()
-      console.log(form)
       buildRandomEnvironment(form.name, form.height, form.width)
     }
   })
@@ -89,6 +85,7 @@ function getBasicInputs() {
 function loadVisualizerPage(environment) {
   main.innerHTML = `
     <div id="navigation">
+      <button class="submit-button" id="new-environment">New Environment</button>
       <h1 id="message"></h1>
       <p id="content"></p>
     </div>
