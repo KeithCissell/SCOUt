@@ -5,13 +5,21 @@ import {formatEnvironment} from '../environment/EnvironmentFormatter.js'
 import {BasicEnvironmentForm} from './FormClasses.js'
 import {loadVisualizer} from '../visualizer/Visualizer.js'
 import {loadCustomEnvironmentForm} from './CustomEnvironmentForm.js'
+import {checkBasicInputs, textValidation, numberValidation} from './FormValidators.js'
 
 
 
 // Get Main Element
 const main = document.getElementById("main")
 
-
+/*******************************************************************************
+_____loadEnvironmentBuilderPage_____
+Description
+    Loads the basic environment builder parameters
+    User can:
+        1. build a random environment
+        2. build a custom environment
+*******************************************************************************/
 function loadEnvironmentBuilderPage() {
   // Setup Environment Builder Page
   main.innerHTML = `
@@ -35,22 +43,23 @@ function loadEnvironmentBuilderPage() {
     </div>
   </div>
   `
-
   // Add event listeners
-  let randomEnvironmentButton = document.getElementById("random-environment-button")
-  randomEnvironmentButton.addEventListener("click", () => {
+  document.getElementById("random-environment-button").addEventListener("click", () => {
     if (checkBasicInputs()) {
       let form = getBasicInputs()
       buildRandomEnvironment(form.name, form.height, form.width)
     }
   })
-
-  let customEnvironmentButton = document.getElementById("custom-environment-button")
-  customEnvironmentButton.addEventListener("click", () => {
+  document.getElementById("custom-environment-button").addEventListener("click", () => {
     loadCustomEnvironmentForm()
   })
 }
 
+/*******************************************************************************
+_____getBasicInputs_____
+Description
+    Get basic input values from form fields
+*******************************************************************************/
 function getBasicInputs() {
   let basicInputs = document.getElementById("basic-inputs").getElementsByTagName("input")
   let name = basicInputs["environment-name"].value
@@ -59,6 +68,15 @@ function getBasicInputs() {
   return new BasicEnvironmentForm(name, height, width)
 }
 
+/*******************************************************************************
+_____buildRandomEnvironment_____
+Description
+    Build a new random environment
+Parameters
+    name:     associated name for random Environment
+    height:   number of cells hgih the Environment will be
+    width:    number of cells wide the Environment will be
+*******************************************************************************/
 async function buildRandomEnvironment(name, height, width) {
   let nre = await newRandomEnvironment(name, height, width)
   nre.json().then((json) => {
@@ -67,54 +85,5 @@ async function buildRandomEnvironment(name, height, width) {
     loadVisualizer(environment)
   }).catch((err) => { console.log(err) })
 }
-
-
-
-function checkBasicInputs() {
-  let valid = true
-  let basicInputs = document.getElementById("basic-inputs").getElementsByTagName("input")
-
-  let name = basicInputs["environment-name"]
-  let nameValidation = textValidation("environment-name", name)
-  if (nameValidation != "valid") {
-    alert(nameValidation)
-    valid = false
-  }
-
-  let height = basicInputs["height"]
-  let heightValidation = numberValidation("height", height)
-  if (heightValidation != "valid") {
-    alert(heightValidation)
-    valid = false
-  }
-
-  let width = basicInputs["width"]
-  let widthValidation = numberValidation("width", width)
-  if (widthValidation != "valid") {
-    alert(widthValidation)
-    valid = false
-  }
-
-  return valid
-}
-
-function textValidation(name, input) {
-  if (input) {
-    let value = input.value
-    if (value == "") {return `${name} cannot be blank`}
-    return "valid"
-  } else { throw new Error(`INPUT ELEMENT NOT FOUND: ${name}`) }
-}
-
-function numberValidation(name, input) {
-  if (input) {
-    let value = parseInt(input.value)
-    let min = parseInt(input.min)
-    let max = parseInt(input.max)
-    if (!(value >= min && value <= max)) { return `${name} not in range (${input.min}, ${input.max})` }
-    return "valid"
-  } else { throw new Error(`INPUT ELEMENT NOT FOUND: ${name}`) }
-}
-
 
 export {loadEnvironmentBuilderPage}

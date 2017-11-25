@@ -161,6 +161,7 @@ button.submit-button {
 
 rect.display-cell:hover {
   fill-opacity: .4;
+  cursor: pointer;
 }
 
 /*******************************************************************************

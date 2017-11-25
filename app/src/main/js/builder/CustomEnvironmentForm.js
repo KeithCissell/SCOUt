@@ -17,6 +17,13 @@ let elementSelectionForm = null
 let elementSeedForms = {}
 
 
+/*******************************************************************************
+_____loadCustomEnvironmentForm_____
+Description
+    Load custom environment form page
+    Create new submit buttons
+    Load the initial "Select Element Types" form page
+*******************************************************************************/
 function loadCustomEnvironmentForm() {
   // capture DOM elements
   environmentForm = document.getElementById("environment-form")
@@ -42,7 +49,11 @@ function loadCustomEnvironmentForm() {
   loadElementTypes()
 }
 
-
+/*******************************************************************************
+_____backButtonHandler_____
+Description
+    Handles "Back" clicks while user is filling out the custom environment forms
+*******************************************************************************/
 function backButtonHandler() {
   switch(currentState) {
     case "SelectElementTypes":
@@ -51,7 +62,11 @@ function backButtonHandler() {
   }
 }
 
-
+/*******************************************************************************
+_____nextButtonHandler_____
+Description
+Handles "Next" clicks while user is filling out the custom environment forms
+*******************************************************************************/
 function nextButtonHandler() {
   switch(currentState) {
     case "SelectElementTypes":
@@ -60,7 +75,12 @@ function nextButtonHandler() {
   }
 }
 
-
+/*******************************************************************************
+_____loadElementTypes_____
+Description
+    Checks if element types have been grabed form the backend
+    Calls to load the "Select Element Types" form
+*******************************************************************************/
 async function loadElementTypes() {
   if (elementSelectionForm == null) {
     let elementTypes = await getElementTypes()
@@ -71,7 +91,11 @@ async function loadElementTypes() {
   loadElementSelectionForm()
 }
 
-
+/*******************************************************************************
+_____setupElementForms_____
+Description
+    To do
+*******************************************************************************/
 function setupElementForms(elementTypes) {
   elementSelectionForm = new ElementSelectionForm(elementTypes)
   for (let type in elementTypes) {
@@ -79,7 +103,11 @@ function setupElementForms(elementTypes) {
   }
 }
 
-
+/*******************************************************************************
+_____loadElementSelectionForm_____
+Description
+    Loads checkboxes for each of the possible element types that can be selected
+*******************************************************************************/
 function loadElementSelectionForm() {
   let listLabel = document.createElement("h3")
   listLabel.innerText = "Select Element Types"
