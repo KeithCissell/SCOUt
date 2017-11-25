@@ -33,7 +33,21 @@ object Decoder {
 
 }
 
+
+
 object Encoder {
+
+  def encodeList(name: String, l: List[String]): String = {
+    val json =
+      (name -> l.map { li => li })
+    return compact(render(json))
+  }
+
+  def encodeMap(name: String, m: Map[String, Boolean]): String = {
+    val json =
+      (name -> m.map { case (k,v) => k -> v })
+    return compact(render(json))
+  }
 
   def encodeCell(c: Cell): String = {
     val json =

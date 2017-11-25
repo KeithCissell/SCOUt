@@ -21,6 +21,19 @@ function pingServer() {
 }
 
 /*******************************************************************************
+_____getElementTypes_____
+Description
+    Gets the different element types that can be used in an environment
+*******************************************************************************/
+function getElementTypes() {
+  return new Promise(resolve => {
+    fetch('http://localhost:8080/element_types', getSpecs).then(function(resp) {
+      resolve(resp)
+    }).catch(error => resolve(Response.error(error)))
+  })
+}
+
+/*******************************************************************************
 _____getCurrentState_____
 Description
     Gets the current state of the environment
@@ -60,4 +73,4 @@ function newRandomEnvironment(name, length, width) {
   })
 }
 
-export {pingServer, getCurrentState, newRandomEnvironment}
+export {pingServer, getElementTypes, getCurrentState, newRandomEnvironment}

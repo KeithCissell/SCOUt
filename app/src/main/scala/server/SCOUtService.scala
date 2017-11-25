@@ -12,6 +12,7 @@ import jsonhandler.Encoder._
 import jsonhandler.Decoder._
 
 import environment._
+import environment.element._
 import environment.generator.ElementSeeds._
 import environment.generator.RandomGenerator._
 
@@ -20,16 +21,22 @@ object SCOUtService {
 
   // Holds an initialy empty Environment
   var environment = generateRandomEnvironment("Empty", 2, 2)
-  
+
   // Mutable list of seeds
   var seedList: List[ElementSeed] = defaultSeedList
 
   // Server request handler
   val service = HttpService {
     case req @ GET  -> Root / "ping"                    => Ok("\"pong\"")
+    case req @ GET  -> Root / "element_types"           => Ok(encodeMap("Element Types", ElementTypes.elementTypes))
     case req @ GET  -> Root / "current_state"           => Ok(encodeEnvironment(environment))
     case req @ POST -> Root / "new_random_environment"  => newRandomEnvironment(req)
   }
+
+  // Gets list of all possible element types
+  // def getElementTypes(): Task[Response] = {
+  //
+  // }
 
   // Sets environment to new randomly generated environment
   def newRandomEnvironment(req: Request): Task[Response] = req.decode[Json] { data =>

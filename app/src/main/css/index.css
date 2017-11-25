@@ -73,6 +73,7 @@ footer {
   margin-bottom: 4%;
   height: 6%;
   width: 96%;
+  font-size: 30pt;
 }
 
 #home-content {
@@ -81,6 +82,19 @@ footer {
   height: 75%;
   width: 96%;
   text-align: center;
+  font-size: 18pt;
+}
+
+#basic-inputs {
+  margin-bottom: 3%;
+}
+
+input.basic-input {
+  margin-right: 2%;
+  padding: 2pt;
+  font-size: 14pt;
+  border: 2px solid black;
+  border-radius: 4px;
 }
 
 #submit-buttons {
@@ -97,11 +111,27 @@ button.submit-button {
   padding: 16px 31px;
 	background-color: forestGreen;
 	border-radius: 28px;
-	border: 1px solid black;
+	border: 2px solid black;
 	display: inline-block;
 	cursor: pointer;
 	color: white;
 	font-weight: bold;
+}
+
+
+/*******************************************************************************
+      CUSTOM INPUT FORM
+*******************************************************************************/
+#custom-inputs {
+
+}
+
+#element-selection-list {
+  margin: 10pt;
+  margin-left: 33%;
+  list-style: none;
+  vertical-align: baseline;
+  text-align: left;
 }
 
 

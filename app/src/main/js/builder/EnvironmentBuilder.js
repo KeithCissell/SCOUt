@@ -21,11 +21,11 @@ function loadEnvironmentBuilderPage() {
       <form id="environment-form">
         <div id="basic-inputs">
           <label for="environment-name">Environment Name</label>
-          <input type="text" id="environment-name" value="My Environment">
+          <input class="basic-input" type="text" id="environment-name" value="My Environment">
           <label for="height">Height</label>
-          <input type="number" id="height" value="10" min="10" max="100">
+          <input class="basic-input" type="number" id="height" value="10" min="10" max="100">
           <label for="width">Width</label>
-          <input type="number" id="width" value="10" min="10" max="100">
+          <input class="basic-input" type="number" id="width" value="10" min="10" max="100">
         </div>
       </form>
     </div>
