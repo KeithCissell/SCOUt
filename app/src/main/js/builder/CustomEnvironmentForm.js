@@ -1,5 +1,5 @@
 import {getElementTypes} from '../SCOUtAPI.js'
-import {loadEnvironmentBuilderPage} from './EnvironmentBuilder.js'
+import {loadEnvironmentBuilderPage, getBasicInputs} from './EnvironmentBuilder.js'
 import {BasicEnvironmentForm, ElementSelectionForm, ElementSeedForm} from './FormClasses.js'
 
 
@@ -14,7 +14,8 @@ let nextButton
 // Globals
 let currentState = "SelectElementTypes"
 let elementSelectionForm = null
-let elementSeedForms = {}
+let elementSeedForms = []
+let elementSeedIndex = -1
 
 
 /*******************************************************************************
@@ -50,32 +51,6 @@ function loadCustomEnvironmentForm() {
 }
 
 /*******************************************************************************
-_____backButtonHandler_____
-Description
-    Handles "Back" clicks while user is filling out the custom environment forms
-*******************************************************************************/
-function backButtonHandler() {
-  switch(currentState) {
-    case "SelectElementTypes":
-          loadEnvironmentBuilderPage()
-          break;
-  }
-}
-
-/*******************************************************************************
-_____nextButtonHandler_____
-Description
-Handles "Next" clicks while user is filling out the custom environment forms
-*******************************************************************************/
-function nextButtonHandler() {
-  switch(currentState) {
-    case "SelectElementTypes":
-          // do stuff with selected elements
-          break;
-  }
-}
-
-/*******************************************************************************
 _____loadElementTypes_____
 Description
     Checks if element types have been grabed form the backend
@@ -99,7 +74,54 @@ Description
 function setupElementForms(elementTypes) {
   elementSelectionForm = new ElementSelectionForm(elementTypes)
   for (let type in elementTypes) {
-    console.log("Getting Element Seed:", type)
+    let seedForm = {}
+    seedForm["element"] = type
+    seedForm["selected"] = elementTypes[type]
+    elementSeedForms.push(seedForm)
+  }
+  console.log(elementSeedForms)
+}
+
+/*******************************************************************************
+_____backButtonHandler_____
+Description
+    Handles "Back" clicks while user is filling out the custom environment forms
+*******************************************************************************/
+function backButtonHandler() {
+  switch(currentState) {
+    case "SelectElementTypes":
+          basicInputs = getBasicInputs()
+          loadEnvironmentBuilderPage(basicInputs.name, basicInputs.height, basicInputs.width)
+          break;
+    case "ElementSeedForm":
+          loadPreviousElementSeedForm()
+          break;
+    case "ReviewForm":
+          loadPreviousElementSeedForm()
+  }
+}
+
+/*******************************************************************************
+_____nextButtonHandler_____
+Description
+Handles "Next" clicks while user is filling out the custom environment forms
+*******************************************************************************/
+function nextButtonHandler() {
+  switch(currentState) {
+    case "SelectElementTypes":
+          for (let i = 0; i < elementSeedForms.length; i++) {
+            let type = elementSeedForms[i]["element"]
+            if (!elementSelectionForm.elementTypes[type]) {
+              elementSeedForms[i]["selected"] = elementSelectionForm.selectables[type]
+            }
+          }
+          loadNextElementSeedForm()
+          break;
+    case "ElementSeedForm":
+          loadNextElementSeedForm()
+          break;
+    case "ReviewForm":
+          alert("WE DONE HERE!!")
   }
 }
 
@@ -109,6 +131,8 @@ Description
     Loads checkboxes for each of the possible element types that can be selected
 *******************************************************************************/
 function loadElementSelectionForm() {
+  currentState = "SelectElementTypes"
+  customInputs.innerHTML = ""
   let listLabel = document.createElement("h3")
   listLabel.innerText = "Select Element Types"
   let elementSelectionList = document.createElement("ul")
@@ -141,7 +165,6 @@ function loadElementSelectionForm() {
   }
   customInputs.appendChild(listLabel)
   customInputs.appendChild(elementSelectionList)
-
   // add event listeners
   for (let type in elementSelectionForm.selectables) {
     let typeId = type + "-selection"
@@ -149,6 +172,54 @@ function loadElementSelectionForm() {
       elementSelectionForm.selectables[type] = !elementSelectionForm.selectables[type]
     })
   }
+}
+
+/*******************************************************************************
+_____loadPreviousElementSeedForm_____
+Description
+    Moves to previous selected element seed form or returns to element type selection form
+*******************************************************************************/
+function loadPreviousElementSeedForm() {
+  elementSeedIndex -= 1
+  if (elementSeedIndex == -1) loadElementSelectionForm()
+  else if (elementSeedForms[elementSeedIndex]["selected"]) loadElementSeedForm()
+  else loadPreviousElementSeedForm()
+}
+
+/*******************************************************************************
+_____loadNextElementSeedForm_____
+Description
+    Moves to next selected element seed form or moves to review page
+*******************************************************************************/
+function loadNextElementSeedForm() {
+  elementSeedIndex += 1
+  if (elementSeedIndex == elementSeedForms.length) loadReviewPage()
+  else if (elementSeedForms[elementSeedIndex]["selected"]) loadElementSeedForm()
+  else loadNextElementSeedForm()
+}
+
+/*******************************************************************************
+_____loadElementSeedForm_____
+Description
+    Loads in the form for the element seed at the current index
+*******************************************************************************/
+function loadElementSeedForm() {
+  currentState = "ElementSeedForm"
+
+  customInputs.innerHTML = `
+    <h3 id="quick-form"></h3>
+  `
+  document.getElementById("quick-form").innerText = elementSeedForms[elementSeedIndex]["element"]
+}
+
+/*******************************************************************************
+_____loadReviewPage_____
+Description
+    Loads a page for the user to quickly review the environment before submiting
+*******************************************************************************/
+function loadReviewPage() {
+  currentState = "ReviewForm"
+  customInputs.innerHTML = `<h3>Review</h3>`
 }
 
 export {loadCustomEnvironmentForm}

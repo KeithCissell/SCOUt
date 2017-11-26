@@ -4369,7 +4369,7 @@ exports.newRandomEnvironment = newRandomEnvironment;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.loadEnvironmentBuilderPage = undefined;
+exports.getBasicInputs = exports.loadEnvironmentBuilderPage = undefined;
 
 var _SCOUtAPI = __webpack_require__(17);
 
@@ -4393,10 +4393,22 @@ Description
     User can:
         1. build a random environment
         2. build a custom environment
+Parameters
+    name:     associated name for random Environment
+    height:   number of cells hgih the Environment will be
+    width:    number of cells wide the Environment will be
 *******************************************************************************/
 function loadEnvironmentBuilderPage() {
+  var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "My Environment";
+  var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "10";
+  var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "10";
+
   // Setup Environment Builder Page
-  main.innerHTML = '\n  <div id="home-page">\n    <h1 id="home-title">Environment Builder</h1>\n    <div id="home-content">\n      <form id="environment-form">\n        <div id="basic-inputs">\n          <label for="environment-name">Environment Name</label>\n          <input class="basic-input" type="text" id="environment-name" value="My Environment">\n          <label for="height">Height</label>\n          <input class="basic-input" type="number" id="height" value="10" min="10" max="100">\n          <label for="width">Width</label>\n          <input class="basic-input" type="number" id="width" value="10" min="10" max="100">\n        </div>\n      </form>\n    </div>\n    <div id="submit-buttons">\n      <button class="submit-button" id="random-environment-button">Generate Random Environment</button>\n      <button class="submit-button" id="custom-environment-button">Build Custom Environment</button>\n    </div>\n  </div>\n  ';
+  main.innerHTML = '\n  <div id="home-page">\n    <h1 id="home-title">Environment Builder</h1>\n    <div id="home-content">\n      <form id="environment-form">\n        <div id="basic-inputs">\n          <label for="environment-name">Environment Name</label>\n          <input class="basic-input" type="text" id="environment-name">\n          <label for="height">Height</label>\n          <input class="basic-input" type="number" id="height" min="10" max="100">\n          <label for="width">Width</label>\n          <input class="basic-input" type="number" id="width" min="10" max="100">\n        </div>\n      </form>\n    </div>\n    <div id="submit-buttons">\n      <button class="submit-button" id="random-environment-button">Generate Random Environment</button>\n      <button class="submit-button" id="custom-environment-button">Build Custom Environment</button>\n    </div>\n  </div>\n  ';
+  // Set basic input values
+  document.getElementById("environment-name").value = name;
+  document.getElementById("height").value = height;
+  document.getElementById("width").value = width;
   // Add event listeners
   document.getElementById("random-environment-button").addEventListener("click", function () {
     if ((0, _FormValidators.checkBasicInputs)()) {
@@ -4443,6 +4455,7 @@ async function buildRandomEnvironment(name, height, width) {
 }
 
 exports.loadEnvironmentBuilderPage = loadEnvironmentBuilderPage;
+exports.getBasicInputs = getBasicInputs;
 
 /***/ }),
 /* 19 */
@@ -31932,7 +31945,8 @@ var nextButton = void 0;
 // Globals
 var currentState = "SelectElementTypes";
 var elementSelectionForm = null;
-var elementSeedForms = {};
+var elementSeedForms = [];
+var elementSeedIndex = -1;
 
 /*******************************************************************************
 _____loadCustomEnvironmentForm_____
@@ -31968,32 +31982,6 @@ function loadCustomEnvironmentForm() {
 }
 
 /*******************************************************************************
-_____backButtonHandler_____
-Description
-    Handles "Back" clicks while user is filling out the custom environment forms
-*******************************************************************************/
-function backButtonHandler() {
-  switch (currentState) {
-    case "SelectElementTypes":
-      (0, _EnvironmentBuilder.loadEnvironmentBuilderPage)();
-      break;
-  }
-}
-
-/*******************************************************************************
-_____nextButtonHandler_____
-Description
-Handles "Next" clicks while user is filling out the custom environment forms
-*******************************************************************************/
-function nextButtonHandler() {
-  switch (currentState) {
-    case "SelectElementTypes":
-      // do stuff with selected elements
-      break;
-  }
-}
-
-/*******************************************************************************
 _____loadElementTypes_____
 Description
     Checks if element types have been grabed form the backend
@@ -32017,7 +32005,54 @@ Description
 function setupElementForms(elementTypes) {
   elementSelectionForm = new _FormClasses.ElementSelectionForm(elementTypes);
   for (var type in elementTypes) {
-    console.log("Getting Element Seed:", type);
+    var seedForm = {};
+    seedForm["element"] = type;
+    seedForm["selected"] = elementTypes[type];
+    elementSeedForms.push(seedForm);
+  }
+  console.log(elementSeedForms);
+}
+
+/*******************************************************************************
+_____backButtonHandler_____
+Description
+    Handles "Back" clicks while user is filling out the custom environment forms
+*******************************************************************************/
+function backButtonHandler() {
+  switch (currentState) {
+    case "SelectElementTypes":
+      basicInputs = (0, _EnvironmentBuilder.getBasicInputs)();
+      (0, _EnvironmentBuilder.loadEnvironmentBuilderPage)(basicInputs.name, basicInputs.height, basicInputs.width);
+      break;
+    case "ElementSeedForm":
+      loadPreviousElementSeedForm();
+      break;
+    case "ReviewForm":
+      loadPreviousElementSeedForm();
+  }
+}
+
+/*******************************************************************************
+_____nextButtonHandler_____
+Description
+Handles "Next" clicks while user is filling out the custom environment forms
+*******************************************************************************/
+function nextButtonHandler() {
+  switch (currentState) {
+    case "SelectElementTypes":
+      for (var i = 0; i < elementSeedForms.length; i++) {
+        var type = elementSeedForms[i]["element"];
+        if (!elementSelectionForm.elementTypes[type]) {
+          elementSeedForms[i]["selected"] = elementSelectionForm.selectables[type];
+        }
+      }
+      loadNextElementSeedForm();
+      break;
+    case "ElementSeedForm":
+      loadNextElementSeedForm();
+      break;
+    case "ReviewForm":
+      alert("WE DONE HERE!!");
   }
 }
 
@@ -32027,6 +32062,8 @@ Description
     Loads checkboxes for each of the possible element types that can be selected
 *******************************************************************************/
 function loadElementSelectionForm() {
+  currentState = "SelectElementTypes";
+  customInputs.innerHTML = "";
   var listLabel = document.createElement("h3");
   listLabel.innerText = "Select Element Types";
   var elementSelectionList = document.createElement("ul");
@@ -32059,7 +32096,6 @@ function loadElementSelectionForm() {
   }
   customInputs.appendChild(listLabel);
   customInputs.appendChild(elementSelectionList);
-
   // add event listeners
 
   var _loop = function _loop(_type) {
@@ -32072,6 +32108,30 @@ function loadElementSelectionForm() {
   for (var _type in elementSelectionForm.selectables) {
     _loop(_type);
   }
+}
+
+function loadPreviousElementSeedForm() {
+  elementSeedIndex -= 1;
+  console.log(elementSeedIndex);
+  if (elementSeedIndex == -1) loadElementSelectionForm();else if (elementSeedForms[elementSeedIndex]["selected"]) loadElementSeedForm();else loadPreviousElementSeedForm();
+}
+
+function loadNextElementSeedForm() {
+  elementSeedIndex += 1;
+  console.log(elementSeedIndex);
+  if (elementSeedIndex == elementSeedForms.length) loadReviewPage();else if (elementSeedForms[elementSeedIndex]["selected"]) loadElementSeedForm();else loadNextElementSeedForm();
+}
+
+function loadElementSeedForm() {
+  currentState = "ElementSeedForm";
+
+  customInputs.innerHTML = '\n    <h3 id="quick-form"></h3>\n  ';
+  document.getElementById("quick-form").innerText = elementSeedForms[elementSeedIndex]["element"];
+}
+
+function loadReviewPage() {
+  currentState = "ReviewForm";
+  customInputs.innerHTML = '<h3>Review</h3>';
 }
 
 exports.loadCustomEnvironmentForm = loadCustomEnvironmentForm;

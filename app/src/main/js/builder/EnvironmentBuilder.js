@@ -19,8 +19,12 @@ Description
     User can:
         1. build a random environment
         2. build a custom environment
+Parameters
+    name:     associated name for random Environment
+    height:   number of cells hgih the Environment will be
+    width:    number of cells wide the Environment will be
 *******************************************************************************/
-function loadEnvironmentBuilderPage() {
+function loadEnvironmentBuilderPage(name = "My Environment", height = "10", width = "10") {
   // Setup Environment Builder Page
   main.innerHTML = `
   <div id="home-page">
@@ -29,11 +33,11 @@ function loadEnvironmentBuilderPage() {
       <form id="environment-form">
         <div id="basic-inputs">
           <label for="environment-name">Environment Name</label>
-          <input class="basic-input" type="text" id="environment-name" value="My Environment">
+          <input class="basic-input" type="text" id="environment-name">
           <label for="height">Height</label>
-          <input class="basic-input" type="number" id="height" value="10" min="10" max="100">
+          <input class="basic-input" type="number" id="height" min="10" max="100">
           <label for="width">Width</label>
-          <input class="basic-input" type="number" id="width" value="10" min="10" max="100">
+          <input class="basic-input" type="number" id="width" min="10" max="100">
         </div>
       </form>
     </div>
@@ -43,6 +47,10 @@ function loadEnvironmentBuilderPage() {
     </div>
   </div>
   `
+  // Set basic input values
+  document.getElementById("environment-name").value = name
+  document.getElementById("height").value = height
+  document.getElementById("width").value = width
   // Add event listeners
   document.getElementById("random-environment-button").addEventListener("click", () => {
     if (checkBasicInputs()) {
@@ -86,4 +94,4 @@ async function buildRandomEnvironment(name, height, width) {
   }).catch((err) => { console.log(err) })
 }
 
-export {loadEnvironmentBuilderPage}
+export {loadEnvironmentBuilderPage, getBasicInputs}
