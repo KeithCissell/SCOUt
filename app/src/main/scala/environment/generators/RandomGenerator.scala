@@ -6,7 +6,7 @@ import environment.element._
 import environment.generator.ElementSeeds._
 import environment.generator.LayerGenerator._
 
-import customtypes.Grid._
+import scoututil.Util._
 
 import scala.util.Random
 import scala.collection.mutable.{ArrayBuffer => AB}

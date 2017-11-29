@@ -9,7 +9,7 @@ import environment.generator.RandomGenerator._
 import jsonhandler.Encoder._
 import jsonhandler.Decoder._
 
-import customtypes.Grid._
+import scoututil.Util._
 
 import scala.collection.mutable.{ArrayBuffer => AB}
 

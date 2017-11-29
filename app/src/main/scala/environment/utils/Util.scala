@@ -1,10 +1,16 @@
-package myutil
+package scoututil
 
 import scala.math._
 import scala.util.Random
+import scala.collection.mutable.ArrayBuffer
+
 
 object Util {
 
+  // Custom Types
+  type Grid[A] = ArrayBuffer[ArrayBuffer[Option[A]]]
+
+  // Util Functions
   def dist(x1: Int, y1: Int, x2: Int, y2: Int): Double = {
     sqrt(pow(x2 - x1, 2.0) + pow(y2 - y1, 2.0))
   }

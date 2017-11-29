@@ -1,11 +1,9 @@
 package environment.generator
 
-import myutil.Util._
+import scoututil.Util._
 import environment.layer._
 import environment.element._
 import environment.generator.ElementSeeds._
-
-import customtypes.Grid._
 
 import scala.math._
 import scala.util.Random

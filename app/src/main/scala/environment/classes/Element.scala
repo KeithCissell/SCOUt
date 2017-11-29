@@ -1,6 +1,6 @@
 package environment.element
 
-import myutil.Util._
+import scoututil.Util._
 
 import scala.math.BigDecimal
 
