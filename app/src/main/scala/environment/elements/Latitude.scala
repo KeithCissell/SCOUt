@@ -26,7 +26,7 @@ package seed {
     val rootValue: Double = 1.0,
     val scale: Double = .000003 * 10.0//scale
   ) extends ElementSeed {
-    def generateLayer(l: Int, w: Int): Layer = {
+    def buildLayer(l: Int, w: Int): Layer = {
       val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
       for {
         x <- 0 until l

@@ -50,7 +50,7 @@ package seed {
       val randValue = randomRange(upperBound, lowerBound)
       sources += NoiseSource(randX, randY, randValue)
     }
-    def generateLayer(l: Int, w: Int): Layer = {
+    def buildLayer(l: Int, w: Int): Layer = {
       val layer = new Layer(AB.fill(l)(AB.fill(w)(Some(new Decibel(0.0)))))
       for (rs <- 0 until randomSources) createRandomSource(l, w)
       for (source <- sources) {

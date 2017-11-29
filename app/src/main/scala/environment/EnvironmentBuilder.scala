@@ -1,4 +1,4 @@
-package environment.generator
+package environment
 
 import environment._
 import environment.cell._
@@ -11,13 +11,13 @@ import scala.util.Random
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
-object RandomGenerator {
+object EnvironmentBuilder {
 
-  def generateRandomEnvironment(name: String, length: Int, width: Int, seeds: List[ElementSeed] = Nil): Environment = {
+  def buildEnvironment(name: String, length: Int, width: Int, seeds: List[ElementSeed] = Nil): Environment = {
     val grid = initializedGrid(length, width)
     val environment = new Environment(name, grid)
     for (seed <- seeds) {
-      val layer = seed.generateLayer(length, width)
+      val layer = seed.buildLayer(length, width)
       environment.setLayer(layer)
     }
     return environment

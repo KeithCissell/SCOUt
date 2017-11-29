@@ -25,5 +25,5 @@ object DefaultSeedList {
 trait ElementSeed {
   val elementName: String
   val dynamic: Boolean
-  def generateLayer(length: Int, width: Int): Layer
+  def buildLayer(length: Int, width: Int): Layer
 }

@@ -32,7 +32,7 @@ package seed {
       val upperBound = mean + deviation
       randomRange(lowerBound, upperBound)
     }
-    def generateLayer(l: Int, w: Int): Layer = {
+    def buildLayer(l: Int, w: Int): Layer = {
       val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
       if (l > 0 && w > 0) layer.setElement(0, 0, new Elevation(average))
       for {
