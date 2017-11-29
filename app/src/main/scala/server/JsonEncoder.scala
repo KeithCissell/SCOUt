@@ -49,7 +49,7 @@ object Encoder {
     val json =
       ("environment" ->
         ("name" -> e.name) ~
-        ("length" -> e.length) ~
+        ("height" -> e.height) ~
         ("width" -> e.width) ~
         ("grid" -> e.getAllCells.map { c =>
           s"cell.${c.x}.${c.y}" ->

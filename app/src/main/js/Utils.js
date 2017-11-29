@@ -5,12 +5,12 @@ _____empty2D_____
 Description
     Builds and returns a 2-D array of null elements
 Parameters
-    length:   size of the 1st matrix dimension
+    height:   size of the 1st matrix dimension
     width:    size of the 2nd matrix dimension
 *******************************************************************************/
-function empty2D(length, width) {
+function empty2D(height, width) {
   let empty2D = []
-  for (let i = 0; i < length; i++) {
+  for (let i = 0; i < height; i++) {
     empty2D.push([])
     for (let j = 0; j < width; j++) {
       empty2D[i].push(null)

@@ -47,12 +47,12 @@ object SCOUtService {
   // Sets environment to the default environment
   def newRandomEnvironment(req: Request): Task[Response] = req.decode[Json] { data =>
     val name = extractString("name", data).getOrElse("")
-    val length = extractInt("length", data).getOrElse(0)
+    val height = extractInt("height", data).getOrElse(0)
     val width = extractInt("width", data).getOrElse(0)
-    (name, length, width) match {
+    (name, height, width) match {
       case ("", 0, 0) => BadRequest(data)
       case (n, w, l)  => {
-        environment = buildEnvironment(n, w, l, DefaultSeedList.defaultSeedList)
+        environment = buildEnvironment(n, l, w, DefaultSeedList.defaultSeedList)
         Ok(encodeEnvironment(environment))
       }
     }

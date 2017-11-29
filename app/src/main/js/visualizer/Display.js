@@ -24,13 +24,13 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
   let layerJson = layer.toJson()
 
   let elementType = layerJson.elementType
+  let height = layerJson.height
   let width = layerJson.width
-  let height = layerJson.length
   let values = layerJson.values
   let min = Math.min.apply(null, values)
   let max = Math.max.apply(null, values)
-  let displaySize = Math.min(display.width.baseVal.value, display.height.baseVal.value) - 1
-  let scaleFactor = displaySize / Math.max(width, height)
+  let displaySize = Math.min(display.height.baseVal.value, display.width.baseVal.value) - 1
+  let scaleFactor = displaySize / Math.max(height, width)
 
   let i0 = hsv.interpolateHsvLong(hsv.hsv(hue, saturation, .8, opacity), hsv.hsv(hue, saturation, .2, opacity))
   let i1 = hsv.interpolateHsvLong(hsv.hsv(hue, saturation, .8, opacity), hsv.hsv(hue, saturation, .2, opacity))
@@ -65,8 +65,8 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
 function drawCell(width, height, cellID, x, y, cellData) {
   let display = document.getElementById("display")
 
-  let displaySize = Math.min(display.width.baseVal.value, display.height.baseVal.value) - 1
-  let scaleFactor = displaySize / Math.max(width, height)
+  let displaySize = Math.min(display.height.baseVal.value, display.width.baseVal.value) - 1
+  let scaleFactor = displaySize / Math.max(height, width)
   let xPos = x * scaleFactor
   let yPos = (height - 1 - y) * scaleFactor // flip y axis for visualization
 
@@ -75,8 +75,8 @@ function drawCell(width, height, cellID, x, y, cellData) {
   newCell.setAttribute("class", "display-cell")
   newCell.setAttribute("x", xPos)
   newCell.setAttribute("y", yPos)
-  newCell.setAttribute("width", scaleFactor)
   newCell.setAttribute("height", scaleFactor)
+  newCell.setAttribute("width", scaleFactor)
   newCell.setAttribute("stroke", "black")
   newCell.setAttribute("stroke-width", 1)
   newCell.setAttribute("fill-opacity", 0)
