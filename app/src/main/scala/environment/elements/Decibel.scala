@@ -1,8 +1,12 @@
 package environment.element
 
 import scoututil.Util._
+import environment.layer._
 import environment.element._
 import environment.element.seed._
+
+import scala.math._
+import scala.collection.mutable.{ArrayBuffer => AB}
 
 
 class Decibel(var value: Option[Double]) extends Element {
@@ -19,8 +23,8 @@ class Decibel(var value: Option[Double]) extends Element {
 package seed {
   case class NoiseSource(val x: Int, val y: Int, val value: Double)
 
-  case class DecibleSeed(
-    val elementName: String = "Decible",
+  case class DecibelSeed(
+    val elementName: String = "Decibel",
     val dynamic: Boolean = true,
     val scale: Double = 10.0,//scale,
     val lowerBound: Double = 0.0,
@@ -45,6 +49,25 @@ package seed {
       val randY = round(randomRange(0, width-1)).toInt
       val randValue = randomRange(upperBound, lowerBound)
       sources += NoiseSource(randX, randY, randValue)
+    }
+    def generateLayer(l: Int, w: Int): Layer = {
+      val layer = new Layer(AB.fill(l)(AB.fill(w)(Some(new Decibel(0.0)))))
+      for (rs <- 0 until randomSources) createRandomSource(l, w)
+      for (source <- sources) {
+        val currentValue = layer.layer(source.x)(source.y).flatMap(dec => dec.value).getOrElse(0.0)
+        if (source.value > currentValue) layer.setElement(source.x, source.y, new Decibel(source.value))
+        for {
+          x <- 0 until l
+          y <- 0 until w
+          if dist(x, y, source.x, source.y) != 0
+          if layer.inLayer(x, y)
+        } {
+          val currentValue = layer.layer(x)(y).flatMap(dec => dec.value).getOrElse(0.0)
+          val newValue = soundReduction(source, x, y)
+          if (newValue > currentValue) layer.setElement(x, y, new Decibel(newValue))
+        }
+      }
+      return layer
     }
   }
 }

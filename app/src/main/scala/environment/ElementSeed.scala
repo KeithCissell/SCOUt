@@ -1,6 +1,7 @@
 package environment.element.seed
 
 import scoututil.Util._
+import environment.layer._
 import environment.element._
 
 import scala.math._
@@ -11,7 +12,7 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 // List of all seed defaults
 object DefaultSeedList {
   val defaultSeedList: List[ElementSeed] = List(
-    DecibleSeed(),
+    DecibelSeed(),
     ElevationSeed(),
     LatitudeSeed(),
     LongitudeSeed(),
@@ -24,4 +25,5 @@ object DefaultSeedList {
 trait ElementSeed {
   val elementName: String
   val dynamic: Boolean
+  def generateLayer(length: Int, width: Int): Layer
 }

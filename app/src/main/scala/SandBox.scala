@@ -3,7 +3,6 @@ import environment.cell._
 import environment.layer._
 import environment.element._
 import environment.element.seed._
-import environment.generator.LayerGenerator._
 import environment.generator.RandomGenerator._
 
 import jsonhandler.Encoder._
@@ -68,27 +67,27 @@ object SandBox {
 
     // LayerGenerator
     val decSeed1 = DecibelSeed() //DecibelSeed(sources = AB(NoiseSource(2,2,27.0)))
-    val decLayer1 = decibleLayer(5, 5, decSeed1)
+    val decLayer1 = decSeed1.generateLayer(5, 5)
 
     val elvSeed1 = ElevationSeed()
-    val elvLayer1 = elevationLayer(3, 3, elvSeed1)
+    val elvLayer1 = elvSeed1.generateLayer(3, 3)
 
     val latSeed1 = LatitudeSeed()
-    val latLayer1 = latitudeLayer(3, 3, latSeed1)
+    val latLayer1 = latSeed1.generateLayer(3, 3)
     val latSeed2 = LatitudeSeed(scale = 2.0)
-    val latLayer2 = latitudeLayer(3, 3, latSeed2)
+    val latLayer2 = latSeed2.generateLayer(3, 3)
 
     val longSeed1 = LongitudeSeed()
-    val longLayer1 = longitudeLayer(3, 3, longSeed1)
+    val longLayer1 = longSeed1.generateLayer(3, 3)
 
     val tempSeed1 = TemperatureSeed()
-    val tempLayer1 = temperatureLayer(3, 3, tempSeed1)
+    val tempLayer1 = tempSeed1.generateLayer(3, 3)
 
     val wdSeed1 = WindDirectionSeed()
-    val wdLayer1 = windDirectionLayer(3, 3, wdSeed1)
+    val wdLayer1 = wdSeed1.generateLayer(3, 3)
 
     val wsSeed1 = WindSpeedSeed()
-    val wsLayer1 = windSpeedLayer(3, 3, wsSeed1)
+    val wsLayer1 = wsSeed1.generateLayer(3, 3)
 
     val seedList1 = List(
       decSeed1,
