@@ -13824,13 +13824,13 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
   var layerJson = layer.toJson();
 
   var elementType = layerJson.elementType;
-  var width = layerJson.width;
   var height = layerJson.length;
+  var width = layerJson.width;
   var values = layerJson.values;
   var min = Math.min.apply(null, values);
   var max = Math.max.apply(null, values);
-  var displaySize = Math.min(display.width.baseVal.value, display.height.baseVal.value) - 1;
-  var scaleFactor = displaySize / Math.max(width, height);
+  var displaySize = Math.min(display.height.baseVal.value, display.width.baseVal.value) - 1;
+  var scaleFactor = displaySize / Math.max(height, width);
 
   var i0 = hsv.interpolateHsvLong(hsv.hsv(hue, saturation, .8, opacity), hsv.hsv(hue, saturation, .2, opacity));
   var i1 = hsv.interpolateHsvLong(hsv.hsv(hue, saturation, .8, opacity), hsv.hsv(hue, saturation, .2, opacity));
@@ -13862,8 +13862,8 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
 function drawCell(width, height, cellID, x, y, cellData) {
   var display = document.getElementById("display");
 
-  var displaySize = Math.min(display.width.baseVal.value, display.height.baseVal.value) - 1;
-  var scaleFactor = displaySize / Math.max(width, height);
+  var displaySize = Math.min(display.height.baseVal.value, display.width.baseVal.value) - 1;
+  var scaleFactor = displaySize / Math.max(height, width);
   var xPos = x * scaleFactor;
   var yPos = (height - 1 - y) * scaleFactor; // flip y axis for visualization
 
@@ -13872,8 +13872,8 @@ function drawCell(width, height, cellID, x, y, cellData) {
   newCell.setAttribute("class", "display-cell");
   newCell.setAttribute("x", xPos);
   newCell.setAttribute("y", yPos);
-  newCell.setAttribute("width", scaleFactor);
   newCell.setAttribute("height", scaleFactor);
+  newCell.setAttribute("width", scaleFactor);
   newCell.setAttribute("stroke", "black");
   newCell.setAttribute("stroke-width", 1);
   newCell.setAttribute("fill-opacity", 0);

@@ -52,7 +52,7 @@ object SCOUtService {
     (name, length, width) match {
       case ("", 0, 0) => BadRequest(data)
       case (n, w, l)  => {
-        environment = buildEnvironment(n, w, l, DefaultSeedList.defaultSeedList)
+        environment = buildEnvironment(n, l, w, DefaultSeedList.defaultSeedList)
         Ok(encodeEnvironment(environment))
       }
     }
