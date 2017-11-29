@@ -2,9 +2,9 @@ import {Layer} from './Layer.js'
 import {empty2D} from '../../Utils.js'
 
 class Environment {
-  constructor(name, length, width, grid, elementTypes) {
+  constructor(name, height, width, grid, elementTypes) {
     this.name = name
-    this.length = length
+    this.height = height
     this.width = width
     this.grid = grid
     this.elementTypes = elementTypes
@@ -20,7 +20,7 @@ class Environment {
   extractLayer(elementType) {
     if (this.elementTypes.includes(elementType)) {
       let unit = ""
-      let layer = empty2D(this.length, this.width)
+      let layer = empty2D(this.height, this.width)
       for (let x in this.grid) {
         for (let y in this.grid[x]) {
           let cell = this.grid[x][y]
@@ -31,7 +31,7 @@ class Environment {
           }
         }
       }
-      return new Layer(elementType, unit, layer, this.length, this.width)
+      return new Layer(elementType, unit, layer, this.height, this.width)
     } else throw new Error("Element " + elementType + " not found.")
   }
 

@@ -1,11 +1,11 @@
 
 
 class Layer {
-  constructor(elementType, unit, grid, length, width) {
+  constructor(elementType, unit, grid, height, width) {
     this.elementType = elementType
     this.unit = unit
     this.grid = grid
-    this.length = length
+    this.height = height
     this.width = width
   }
 
@@ -21,11 +21,11 @@ class Layer {
     let obj = {}
     obj.elementType = this.elementType
     obj.unit = this.unit
-    obj.width = this.length
-    obj.length = this.width
+    obj.width = this.height
+    obj.height = this.width
     obj.values = []
-    for (let y = 0; y < obj.length; y++) {
-      let flipY = obj.length - 1 - y
+    for (let y = 0; y < obj.height; y++) {
+      let flipY = obj.height - 1 - y
       for (let x = 0; x < obj.width; x++) {
         obj.values.push(this.grid[x][flipY].value)
       }

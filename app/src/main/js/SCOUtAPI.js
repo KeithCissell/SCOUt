@@ -78,13 +78,13 @@ Description
     Get a new random environment
 Parameters
     name:     associated name for random Environment
-    length:   number of cells long the Environment will be
+    height:   number of cells long the Environment will be
     width:    number of cells wide the Environment will be
 *******************************************************************************/
-function newRandomEnvironment(name, length, width) {
+function newRandomEnvironment(name, height, width) {
   let reqBody = `{
     "name": "${name}",
-    "length": "${length}",
+    "height": "${height}",
     "width": "${width}"
   }`
   let reqSpecs = {  method: 'POST',

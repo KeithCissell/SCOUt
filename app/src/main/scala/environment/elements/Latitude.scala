@@ -26,11 +26,11 @@ package seed {
     val rootValue: Double = 1.0,
     val scale: Double = .000003 * 10.0//scale
   ) extends ElementSeed {
-    def buildLayer(l: Int, w: Int): Layer = {
-      val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
+    def buildLayer(height: Int, width: Int): Layer = {
+      val layer = new Layer(AB.fill(height)(AB.fill(width)(None)))
       for {
-        x <- 0 until l
-        y <- 0 until w
+        x <- 0 until height
+        y <- 0 until width
       } {
         val value = rootValue + (y * scale)
         layer.setElement(x, y, new Latitude(value))

@@ -31,12 +31,12 @@ package seed {
       val upperBound = mean + deviation
       randomRange(lowerBound, upperBound)
     }
-    def buildLayer(l: Int, w: Int): Layer = {
-      val layer = new Layer(AB.fill(l)(AB.fill(w)(None)))
-      if (l > 0 && w > 0) layer.setElement(0, 0, new WindSpeed(average))
+    def buildLayer(height: Int, width: Int): Layer = {
+      val layer = new Layer(AB.fill(height)(AB.fill(width)(None)))
+      if (height > 0 && width > 0) layer.setElement(0, 0, new WindSpeed(average))
       for {
-        x <- 0 until l
-        y <- 0 until w
+        x <- 0 until height
+        y <- 0 until width
         if (x,y) != (0,0)
       } {
         val cluster = layer.getClusterValues(x, y, 3)
@@ -46,8 +46,8 @@ package seed {
       }
       // Smooth the layer
       for {
-        x <- 0 until l
-        y <- 0 until w
+        x <- 0 until height
+        y <- 0 until width
       } {
         val cluster = layer.getClusterValues(x, y, 3)
         val mean = cluster.sum / cluster.length

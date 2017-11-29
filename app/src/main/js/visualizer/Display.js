@@ -24,7 +24,7 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
   let layerJson = layer.toJson()
 
   let elementType = layerJson.elementType
-  let height = layerJson.length
+  let height = layerJson.height
   let width = layerJson.width
   let values = layerJson.values
   let min = Math.min.apply(null, values)

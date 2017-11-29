@@ -97,12 +97,12 @@ function loadGrid() {
     throw new Error(`Longitude or Latitude layer not found within Environment`)
   }
   // Draw each cell
-  for (let x = 0; x < environment.length; x++) {
+  for (let x = 0; x < environment.height; x++) {
     for (let y = 0; y < environment.width; y++) {
       let cellID = "cell-" + x + "-" + y
       let cellData = environment.grid[x][y]
 
-      drawCell(environment.length, environment.width, cellID, x, y, cellData)
+      drawCell(environment.height, environment.width, cellID, x, y, cellData)
 
       let cell = document.getElementById(cellID)
       cell.addEventListener("click", function() {
@@ -222,7 +222,7 @@ function loadLegend() {
   let legendEnvironmentTitle = document.getElementById("legend-environment-title")
 
   legendEnvironmentTitle.innerText = environment.name
-  addLegendMainItem("Dimensions", environment.length + " X " + environment.width)
+  addLegendMainItem("Dimensions", environment.height + " X " + environment.width)
   let elevationLayer = environment.extractLayer("Elevation")
   let elevationJson = elevationLayer.toJson()
   let elevationMin = Math.min.apply(null, elevationJson.values)

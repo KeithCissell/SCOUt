@@ -4361,11 +4361,11 @@ Description
     Get a new random environment
 Parameters
     name:     associated name for random Environment
-    length:   number of cells long the Environment will be
+    height:   number of cells long the Environment will be
     width:    number of cells wide the Environment will be
 *******************************************************************************/
-function newRandomEnvironment(name, length, width) {
-  var reqBody = '{\n    "name": "' + name + '",\n    "length": "' + length + '",\n    "width": "' + width + '"\n  }';
+function newRandomEnvironment(name, height, width) {
+  var reqBody = '{\n    "name": "' + name + '",\n    "height": "' + height + '",\n    "width": "' + width + '"\n  }';
   var reqSpecs = { method: 'POST',
     headers: reqHeaders,
     mode: 'cors',
@@ -4501,12 +4501,12 @@ _____empty2D_____
 Description
     Builds and returns a 2-D array of null elements
 Parameters
-    length:   size of the 1st matrix dimension
+    height:   size of the 1st matrix dimension
     width:    size of the 2nd matrix dimension
 *******************************************************************************/
-function empty2D(length, width) {
+function empty2D(height, width) {
   var empty2D = [];
-  for (var i = 0; i < length; i++) {
+  for (var i = 0; i < height; i++) {
     empty2D.push([]);
     for (var j = 0; j < width; j++) {
       empty2D[i].push(null);
@@ -13301,9 +13301,9 @@ Parameters
 *******************************************************************************/
 function formatEnvironment(json) {
   var envName = json.environment.name;
-  var length = json.environment.length;
+  var height = json.environment.height;
   var width = json.environment.width;
-  var envGrid = (0, _Utils.empty2D)(length, width);
+  var envGrid = (0, _Utils.empty2D)(height, width);
   var envElementTypes = [];
   var jGrid = json.environment.grid;
   for (var key in jGrid) {
@@ -13324,7 +13324,7 @@ function formatEnvironment(json) {
     }
     envGrid[x][y] = new _Cell.Cell(x, y, elements);
   }
-  return new _Environment.Environment(envName, length, width, envGrid, envElementTypes);
+  return new _Environment.Environment(envName, height, width, envGrid, envElementTypes);
 }
 
 exports.formatEnvironment = formatEnvironment;
@@ -13398,11 +13398,11 @@ var _Utils = __webpack_require__(19);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Environment = function () {
-  function Environment(name, length, width, grid, elementTypes) {
+  function Environment(name, height, width, grid, elementTypes) {
     _classCallCheck(this, Environment);
 
     this.name = name;
-    this.length = length;
+    this.height = height;
     this.width = width;
     this.grid = grid;
     this.elementTypes = elementTypes;
@@ -13422,7 +13422,7 @@ var Environment = function () {
     value: function extractLayer(elementType) {
       if (this.elementTypes.includes(elementType)) {
         var unit = "";
-        var layer = (0, _Utils.empty2D)(this.length, this.width);
+        var layer = (0, _Utils.empty2D)(this.height, this.width);
         for (var x in this.grid) {
           for (var y in this.grid[x]) {
             var cell = this.grid[x][y];
@@ -13435,7 +13435,7 @@ var Environment = function () {
             }
           }
         }
-        return new _Layer.Layer(elementType, unit, layer, this.length, this.width);
+        return new _Layer.Layer(elementType, unit, layer, this.height, this.width);
       } else throw new Error("Element " + elementType + " not found.");
     }
   }]);
@@ -13461,13 +13461,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Layer = function () {
-  function Layer(elementType, unit, grid, length, width) {
+  function Layer(elementType, unit, grid, height, width) {
     _classCallCheck(this, Layer);
 
     this.elementType = elementType;
     this.unit = unit;
     this.grid = grid;
-    this.length = length;
+    this.height = height;
     this.width = width;
   }
 
@@ -13487,11 +13487,11 @@ var Layer = function () {
       var obj = {};
       obj.elementType = this.elementType;
       obj.unit = this.unit;
-      obj.width = this.length;
-      obj.length = this.width;
+      obj.width = this.height;
+      obj.height = this.width;
       obj.values = [];
-      for (var y = 0; y < obj.length; y++) {
-        var flipY = obj.length - 1 - y;
+      for (var y = 0; y < obj.height; y++) {
+        var flipY = obj.height - 1 - y;
         for (var x = 0; x < obj.width; x++) {
           obj.values.push(this.grid[x][flipY].value);
         }
@@ -13596,12 +13596,12 @@ function loadGrid() {
     throw new Error('Longitude or Latitude layer not found within Environment');
   }
   // Draw each cell
-  for (var x = 0; x < environment.length; x++) {
+  for (var x = 0; x < environment.height; x++) {
     for (var y = 0; y < environment.width; y++) {
       var cellID = "cell-" + x + "-" + y;
       var cellData = environment.grid[x][y];
 
-      (0, _Display.drawCell)(environment.length, environment.width, cellID, x, y, cellData);
+      (0, _Display.drawCell)(environment.height, environment.width, cellID, x, y, cellData);
 
       var cell = document.getElementById(cellID);
       cell.addEventListener("click", function () {
@@ -13719,7 +13719,7 @@ function loadLegend() {
   var legendEnvironmentTitle = document.getElementById("legend-environment-title");
 
   legendEnvironmentTitle.innerText = environment.name;
-  (0, _Legend.addLegendMainItem)("Dimensions", environment.length + " X " + environment.width);
+  (0, _Legend.addLegendMainItem)("Dimensions", environment.height + " X " + environment.width);
   var elevationLayer = environment.extractLayer("Elevation");
   var elevationJson = elevationLayer.toJson();
   var elevationMin = Math.min.apply(null, elevationJson.values);
@@ -13824,7 +13824,7 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
   var layerJson = layer.toJson();
 
   var elementType = layerJson.elementType;
-  var height = layerJson.length;
+  var height = layerJson.height;
   var width = layerJson.width;
   var values = layerJson.values;
   var min = Math.min.apply(null, values);

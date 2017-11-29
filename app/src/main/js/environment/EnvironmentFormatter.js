@@ -12,9 +12,9 @@ Parameters
 *******************************************************************************/
 function formatEnvironment(json) {
   let envName = json.environment.name
-  let length = json.environment.length
+  let height = json.environment.height
   let width = json.environment.width
-  let envGrid = empty2D(length, width)
+  let envGrid = empty2D(height, width)
   let envElementTypes = []
   let jGrid = json.environment.grid
   for (let key in jGrid) {
@@ -35,7 +35,7 @@ function formatEnvironment(json) {
     }
     envGrid[x][y] = new Cell(x, y, elements)
   }
-  return new Environment(envName, length, width, envGrid, envElementTypes)
+  return new Environment(envName, height, width, envGrid, envElementTypes)
 }
 
 export {formatEnvironment}

@@ -7,7 +7,7 @@ import scala.math._
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 class Layer(val layer: Grid[Element]) {
-  val length = layer.length
+  val height = layer.length
   val width = if (layer.isEmpty) 0 else layer(0).length
 
   override def toString: String = {
@@ -22,7 +22,7 @@ class Layer(val layer: Grid[Element]) {
   }
 
   def inLayer(x: Int, y: Int): Boolean = {
-    x >= 0 && x < length && y >= 0 && y < width
+    x >= 0 && x < height && y >= 0 && y < width
   }
 
   def getElement(x: Int, y: Int): Option[Element] = {

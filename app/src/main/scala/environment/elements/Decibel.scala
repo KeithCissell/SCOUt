@@ -44,8 +44,8 @@ package seed {
     def soundRange(source: NoiseSource): Double = {
       pow(2, source.value / 6)
     }
-    def createRandomSource(length: Int, width: Int) = {
-      val randX = round(randomRange(0, length-1)).toInt
+    def createRandomSource(height: Int, width: Int) = {
+      val randX = round(randomRange(0, height-1)).toInt
       val randY = round(randomRange(0, width-1)).toInt
       val randValue = randomRange(upperBound, lowerBound)
       sources += NoiseSource(randX, randY, randValue)
