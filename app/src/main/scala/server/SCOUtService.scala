@@ -34,6 +34,7 @@ object SCOUtService {
     case req @ POST -> Root / "new_random_environment"  => newRandomEnvironment(req)
   }
 
+
   // Gets the form info needed for a specified element type
   def getElementSeedForm(req: Request): Task[Response] = req.decode[Json] { data =>
     val elementType = extractString("element-type", data).getOrElse("")
