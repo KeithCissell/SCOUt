@@ -2,15 +2,8 @@ import {roundDecimalX} from '../Utils.js'
 import {drawLayer, drawCell, eraseLayer} from './Display.js'
 import {addToggle, addSelection} from './Toolbar.js'
 import {addLegendMainItem, addLegendLayerItem, addLegendCellItem} from './Legend.js'
+import {loadEnvironmentBuilderPage} from '../builder/EnvironmentBuilder.js'
 
-
-// Document Elements
-const message = document.getElementById("message")
-const legendEnvironmentTitle = document.getElementById("legend-environment-title")
-const legendLayerTitle = document.getElementById("legend-layer-title")
-const legendSelectedLayerTable = document.getElementById("legend-selected-layer-table")
-const legendCellTitle = document.getElementById("legend-cell-title")
-const legendSelectedCellTable = document.getElementById("legend-selected-cell-table")
 
 // Globals
 let environment
@@ -26,16 +19,55 @@ Parameters
     targetEnvironment:    Environment object to be loaded into the visualizer
 *******************************************************************************/
 function loadVisualizer(targetEnvironment) {
+  // Load HTML
+  main.innerHTML = `
+    <div id="navigation">
+      <button class="submit-button" id="new-environment">New Environment</button>
+      <h1 id="message"></h1>
+      <p id="content"></p>
+    </div>
+    <div id="toolbar">
+      <h1 class="sidebar">Controls</h1>
+      <h2 class="sidebar" id="layer-toggles-header"></h2>
+      <div class="toolbar-container" id="layer-toggles"></div>
+      <h2 class="sidebar" id="layer-selector-header"></h2>
+      <div class="toolbar-container" id="layer-selector"></div>
+    </div>
+    <svg id="display"></svg>
+    <div id="legend">
+      <h1 class="sidebar">Legend</h1>
+      <h2 class="sidebar" id="legend-environment-title"></h2>
+      <table class="legend-table" id="legend-main-table"></table>
+      <h2 class="sidebar" id="legend-layer-title"></h2>
+      <table class="legend-table" id="legend-selected-layer-table"></table>
+      <h2 class="sidebar" id="legend-cell-title"></h2>
+      <table class="legend-cell-table" id="legend-selected-cell-table"></table>
+    </div>
+  `
+
+  // Set globals
   environment = targetEnvironment
   elementSelections = environment.elementTypes.slice(0)
   elementSelections.unshift("None") // adds "None" to the front of array
 
+  loadNavigation()
   loadDisplay()
   loadToolbar()
   loadLegend()
 
   document.getElementById("Elevation-Toggle").click()
-  message.innerHTML = ""
+}
+
+/*******************************************************************************
+_____loadNavigation_____
+Description
+    Load navigation bar
+*******************************************************************************/
+function loadNavigation() {
+  let newEnvironmentButton = document.getElementById("new-environment")
+  newEnvironmentButton.addEventListener("click", () => {
+    loadEnvironmentBuilderPage()
+  })
 }
 
 /*******************************************************************************
@@ -44,8 +76,8 @@ Description
     Builds toolbar for adjusting the display
 *******************************************************************************/
 function loadDisplay() {
-  loadGrid()
   loadElevationLayer()
+  loadGrid()
 }
 
 /*******************************************************************************
@@ -187,6 +219,8 @@ Description
 *******************************************************************************/
 function loadLegend() {
   // Load Main section
+  let legendEnvironmentTitle = document.getElementById("legend-environment-title")
+
   legendEnvironmentTitle.innerText = environment.name
   addLegendMainItem("Dimensions", environment.length + " X " + environment.width)
   let elevationLayer = environment.extractLayer("Elevation")
@@ -208,6 +242,9 @@ Parameters
     layerName:  the element type of the layer selected
 *******************************************************************************/
 function loadLegendLayer(layerName) {
+  let legendLayerTitle = document.getElementById("legend-layer-title")
+  let legendSelectedLayerTable = document.getElementById("legend-selected-layer-table")
+
   legendSelectedLayerTable.innerHTML = ""
   let unit = ""
   let min = "-"
@@ -237,6 +274,9 @@ Parameters
     cellData:  cell class object or "None"
 *******************************************************************************/
 function loadLegendCell(cellData) {
+  let legendCellTitle = document.getElementById("legend-cell-title")
+  let legendSelectedCellTable = document.getElementById("legend-selected-cell-table")
+
   legendSelectedCellTable.innerHTML = ""
   if (cellData != "None") {
     legendCellTitle.innerText = `Cell (${cellData.x}, ${cellData.y})`

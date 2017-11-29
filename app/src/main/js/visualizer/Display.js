@@ -4,10 +4,6 @@ const d3Contour = require('d3-contour')
 const hsv = require('d3-hsv')
 
 
-// Globals
-const display = document.getElementById("display")
-
-
 /*
 _____drawLayer_____
 Description
@@ -23,6 +19,7 @@ Parameters
     bottom (boolean)    : insert layer at the behind all existing layers
 */
 function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
+  let display = document.getElementById("display")
 
   let layerJson = layer.toJson()
 
@@ -66,6 +63,8 @@ function drawLayer(layer, threshold, hue, saturation, opacity, lines, bottom) {
 
 
 function drawCell(width, height, cellID, x, y, cellData) {
+  let display = document.getElementById("display")
+
   let displaySize = Math.min(display.width.baseVal.value, display.height.baseVal.value) - 1
   let scaleFactor = displaySize / Math.max(width, height)
   let xPos = x * scaleFactor

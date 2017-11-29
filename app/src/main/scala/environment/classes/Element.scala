@@ -5,6 +5,18 @@ import myutil.Util._
 import scala.math.BigDecimal
 
 
+object ElementTypes {
+  val elementTypes = Map(
+    "Elevation" -> true,
+    "Latitude" -> true,
+    "Longitude" -> true,
+    "Decible" -> false,
+    "Temperature" -> false,
+    "Wind Direction" -> false,
+    "Wind Speed" -> false
+  )
+}
+
 trait Element {
   var value: Option[Double]
   val name: String

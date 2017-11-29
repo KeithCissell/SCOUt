@@ -1,19 +1,11 @@
 import {pingServer,
         getCurrentState,
         newRandomEnvironment} from './SCOUtAPI.js'
-import {buildEnvironment} from './environment/EnvironmentBuilder.js'
-import {loadVisualizer} from './visualizer/Visualizer.js'
+import {loadEnvironmentBuilderPage} from './builder/EnvironmentBuilder.js'
+
 
 window.$ = window.jQuery = require('jquery')
 const fetch = require('node-fetch')
-
-
-// Document Elements
-const header = document.getElementById("header")
-const toolbar = document.getElementById("toolbar")
-const main = document.getElementById("main")
-const message = document.getElementById("message")
-const mainContent = document.getElementById("content")
 
 // Establish connection with SCOUt server
 document.addEventListener("DOMContentLoaded", () => {
@@ -27,10 +19,9 @@ Description
     Attempts to establish connection with SCOUt Server
 *******************************************************************************/
 async function establishConnection() {
-  mainContent.innerHTML = ""
-  message.innerHTML = "Attempting to contact SCOUt server..."
+  document.getElementById("home-title").innerHTML = "Attempting to contact SCOUt server..."
+  document.getElementById("home-content").innerHTML = ""
   let contactMade = await attemptContact(20, 500)
-  //await console.clear()
   if (contactMade) successfulContact()
   else unsuccessfulContact()
 }
@@ -59,15 +50,11 @@ _____successfulContact_____
 Description
     Handles successful server contact
 *******************************************************************************/
-async function successfulContact() {
-  mainContent.innerHTML = ""
-  message.innerHTML = "Loading..."
-  let nre = await newRandomEnvironment("My Environment", 10, 10)
-  nre.json().then((json) => {
-    let environment = buildEnvironment(json)
-    console.log(environment)
-    loadVisualizer(environment)
-  }).catch((err) => { console.log(err) })
+function successfulContact() {
+  console.clear()
+  document.getElementById("home-title").innerHTML = "Loading..."
+  document.getElementById("home-content").innerHTML = ""
+  loadEnvironmentBuilderPage()
 }
 
 /*******************************************************************************
@@ -76,10 +63,10 @@ Description
     Handles unsuccessful server contact
 *******************************************************************************/
 function unsuccessfulContact() {
-  mainContent.innerHTML = ""
-  message.innerHTML = "Could Not Contact SCOUt Server"
+  document.getElementById("home-title").innerHTML = "Could Not Contact SCOUt Server"
+  document.getElementById("home-content").innerHTML = ""
   let retryButton = document.createElement("button")
   retryButton.textContent = "Retry Connecting"
   retryButton.addEventListener("click", () => { establishConnection() })
-  mainContent.appendChild(retryButton)
+  document.getElementById("home-content").appendChild(retryButton)
 }

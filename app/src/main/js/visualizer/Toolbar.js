@@ -1,7 +1,3 @@
-const layerToggles = document.getElementById("layer-toggles")
-const layerSelector = document.getElementById("layer-selector")
-const layerTogglesHeader = document.getElementById("layer-toggles-header")
-const layerSelectorHeader = document.getElementById("layer-selector-header")
 
 /*******************************************************************************
 _____addToggle_____
@@ -12,6 +8,9 @@ Parameters
     toggleID:     associated ID that will be given to the DOM element
 *******************************************************************************/
 function addToggle(layerName, toggleID) {
+  let layerTogglesHeader = document.getElementById("layer-toggles-header")
+  let layerToggles = document.getElementById("layer-toggles")
+
   if (layerTogglesHeader.innerText == "") layerTogglesHeader.innerText = "Toggle Layers"
   let newLable = document.createElement("label")
   newLable.setAttribute("class", "switch")
@@ -40,6 +39,9 @@ Parameters
     selectionID:  associated ID that will be given to the DOM element
 *******************************************************************************/
 function addSelection(layerName, selectionID) {
+  let layerSelectorHeader = document.getElementById("layer-selector-header")
+  let layerSelector = document.getElementById("layer-selector")
+
   if (layerSelectorHeader.innerText == "") layerSelectorHeader.innerText = "Current Layer"
   let newLable = document.createElement("label")
   newLable.setAttribute("class", "radio inline")
