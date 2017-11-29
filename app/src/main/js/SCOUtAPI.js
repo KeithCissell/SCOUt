@@ -1,5 +1,8 @@
 // SCOUt server contact API
 
+// Host server
+const host = 'http://localhost:8080'
+
 // Request details
 let reqHeaders = new Headers();
 let getSpecs = {  method: 'GET',
@@ -14,7 +17,7 @@ Description
 *******************************************************************************/
 function pingServer() {
   return new Promise(resolve => {
-    fetch('http://localhost:8080/ping', getSpecs).then(function(resp) {
+    fetch(host + '/ping', getSpecs).then(function(resp) {
       resolve(resp)
     }).catch(error => resolve(Response.error(error)))
   })
@@ -27,9 +30,32 @@ Description
 *******************************************************************************/
 function getElementTypes() {
   return new Promise(resolve => {
-    fetch('http://localhost:8080/element_types', getSpecs).then(function(resp) {
+    fetch(host + '/element_types', getSpecs).then(function(resp) {
       resolve(resp)
     }).catch(error => resolve(Response.error(error)))
+  })
+}
+
+/*******************************************************************************
+_____getElementSeedForm_____
+Description
+    Get the required form data for an element seed form
+Parameters
+    elementType: the element type of the requested seed form data
+*******************************************************************************/
+function getElementSeedForm(elementType) {
+  let reqBody = `{
+    "element-type": "${elementType}"
+  }`
+  let reqSpecs = {  method: 'POST',
+                    headers: reqHeaders,
+                    mode: 'cors',
+                    cache: 'default',
+                    body: reqBody}
+  return new Promise((resolve, reject) => {
+    fetch(host + '/element_seed_form', reqSpecs).then(function(resp) {
+      resolve(resp)
+    }).catch(error => reject(Response.error(error)))
   })
 }
 
@@ -40,7 +66,7 @@ Description
 *******************************************************************************/
 function getCurrentState() {
   return new Promise(resolve => {
-    fetch('http://localhost:8080/current_state', getSpecs).then(function(resp) {
+    fetch(host + '/current_state', getSpecs).then(function(resp) {
       resolve(resp)
     }).catch(error => resolve(Response.error(error)))
   })
@@ -67,10 +93,10 @@ function newRandomEnvironment(name, length, width) {
                     cache: 'default',
                     body: reqBody}
   return new Promise((resolve, reject) => {
-    fetch('http://localhost:8080/new_random_environment', reqSpecs).then(function(resp) {
+    fetch(host + '/new_random_environment', reqSpecs).then(function(resp) {
       resolve(resp)
     }).catch(error => reject(Response.error(error)))
   })
 }
 
-export {pingServer, getElementTypes, getCurrentState, newRandomEnvironment}
+export {pingServer, getElementTypes, getElementSeedForm, getCurrentState, newRandomEnvironment}

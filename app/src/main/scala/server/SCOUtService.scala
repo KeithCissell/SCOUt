@@ -29,14 +29,19 @@ object SCOUtService {
   val service = HttpService {
     case req @ GET  -> Root / "ping"                    => Ok("\"pong\"")
     case req @ GET  -> Root / "element_types"           => Ok(encodeMap("Element Types", ElementTypes.elementTypes))
+    case req @ POST -> Root / "element_seed_form"       => getElementSeedForm(req)
     case req @ GET  -> Root / "current_state"           => Ok(encodeEnvironment(environment))
     case req @ POST -> Root / "new_random_environment"  => newRandomEnvironment(req)
   }
 
-  // Gets list of all possible element types
-  // def getElementTypes(): Task[Response] = {
-  //
-  // }
+  // Gets the form info needed for a specified element type
+  def getElementSeedForm(req: Request): Task[Response] = req.decode[Json] { data =>
+    val elementType = extractString("element-type", data).getOrElse("")
+    if (ElementTypes.elementTypes contains elementType) {
+      println("Yay*******************************")
+      Ok(data)
+    } else BadRequest(data)
+  }
 
   // Sets environment to new randomly generated environment
   def newRandomEnvironment(req: Request): Task[Response] = req.decode[Json] { data =>

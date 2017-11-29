@@ -4277,6 +4277,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 // SCOUt server contact API
 
+// Host server
+var host = 'http://localhost:8080';
+
 // Request details
 var reqHeaders = new Headers();
 var getSpecs = { method: 'GET',
@@ -4291,7 +4294,7 @@ var getSpecs = { method: 'GET',
   *******************************************************************************/
 };function pingServer() {
   return new Promise(function (resolve) {
-    fetch('http://localhost:8080/ping', getSpecs).then(function (resp) {
+    fetch(host + '/ping', getSpecs).then(function (resp) {
       resolve(resp);
     }).catch(function (error) {
       return resolve(Response.error(error));
@@ -4306,10 +4309,33 @@ Description
 *******************************************************************************/
 function getElementTypes() {
   return new Promise(function (resolve) {
-    fetch('http://localhost:8080/element_types', getSpecs).then(function (resp) {
+    fetch(host + '/element_types', getSpecs).then(function (resp) {
       resolve(resp);
     }).catch(function (error) {
       return resolve(Response.error(error));
+    });
+  });
+}
+
+/*******************************************************************************
+_____getElementSeedForm_____
+Description
+    Get the required form data for an element seed form
+Parameters
+    elementType: the element type of the requested seed form data
+*******************************************************************************/
+function getElementSeedForm(elementType) {
+  var reqBody = '{\n    "element-type": "' + elementType + '"\n  }';
+  var reqSpecs = { method: 'POST',
+    headers: reqHeaders,
+    mode: 'cors',
+    cache: 'default',
+    body: reqBody };
+  return new Promise(function (resolve, reject) {
+    fetch(host + '/element_seed_form', reqSpecs).then(function (resp) {
+      resolve(resp);
+    }).catch(function (error) {
+      return reject(Response.error(error));
     });
   });
 }
@@ -4321,7 +4347,7 @@ Description
 *******************************************************************************/
 function getCurrentState() {
   return new Promise(function (resolve) {
-    fetch('http://localhost:8080/current_state', getSpecs).then(function (resp) {
+    fetch(host + '/current_state', getSpecs).then(function (resp) {
       resolve(resp);
     }).catch(function (error) {
       return resolve(Response.error(error));
@@ -4346,7 +4372,7 @@ function newRandomEnvironment(name, length, width) {
     cache: 'default',
     body: reqBody };
   return new Promise(function (resolve, reject) {
-    fetch('http://localhost:8080/new_random_environment', reqSpecs).then(function (resp) {
+    fetch(host + '/new_random_environment', reqSpecs).then(function (resp) {
       resolve(resp);
     }).catch(function (error) {
       return reject(Response.error(error));
@@ -4356,6 +4382,7 @@ function newRandomEnvironment(name, length, width) {
 
 exports.pingServer = pingServer;
 exports.getElementTypes = getElementTypes;
+exports.getElementSeedForm = getElementSeedForm;
 exports.getCurrentState = getCurrentState;
 exports.newRandomEnvironment = newRandomEnvironment;
 
@@ -32110,25 +32137,45 @@ function loadElementSelectionForm() {
   }
 }
 
+/*******************************************************************************
+_____loadPreviousElementSeedForm_____
+Description
+    Moves to previous selected element seed form or returns to element type selection form
+*******************************************************************************/
 function loadPreviousElementSeedForm() {
   elementSeedIndex -= 1;
-  console.log(elementSeedIndex);
   if (elementSeedIndex == -1) loadElementSelectionForm();else if (elementSeedForms[elementSeedIndex]["selected"]) loadElementSeedForm();else loadPreviousElementSeedForm();
 }
 
+/*******************************************************************************
+_____loadNextElementSeedForm_____
+Description
+    Moves to next selected element seed form or moves to review page
+*******************************************************************************/
 function loadNextElementSeedForm() {
   elementSeedIndex += 1;
-  console.log(elementSeedIndex);
   if (elementSeedIndex == elementSeedForms.length) loadReviewPage();else if (elementSeedForms[elementSeedIndex]["selected"]) loadElementSeedForm();else loadNextElementSeedForm();
 }
 
+/*******************************************************************************
+_____loadElementSeedForm_____
+Description
+    Loads in the form for the element seed at the current index
+*******************************************************************************/
 function loadElementSeedForm() {
   currentState = "ElementSeedForm";
+  var elementType = elementSeedForms[elementSeedIndex]["element"];
 
   customInputs.innerHTML = '\n    <h3 id="quick-form"></h3>\n  ';
-  document.getElementById("quick-form").innerText = elementSeedForms[elementSeedIndex]["element"];
+  document.getElementById("quick-form").innerText = elementType;
+  (0, _SCOUtAPI.getElementSeedForm)(elementType);
 }
 
+/*******************************************************************************
+_____loadReviewPage_____
+Description
+    Loads a page for the user to quickly review the environment before submiting
+*******************************************************************************/
 function loadReviewPage() {
   currentState = "ReviewForm";
   customInputs.innerHTML = '<h3>Review</h3>';

@@ -1,4 +1,4 @@
-import {getElementTypes} from '../SCOUtAPI.js'
+import {getElementTypes, getElementSeedForm} from '../SCOUtAPI.js'
 import {loadEnvironmentBuilderPage, getBasicInputs} from './EnvironmentBuilder.js'
 import {BasicEnvironmentForm, ElementSelectionForm, ElementSeedForm} from './FormClasses.js'
 
@@ -205,11 +205,13 @@ Description
 *******************************************************************************/
 function loadElementSeedForm() {
   currentState = "ElementSeedForm"
+  let elementType = elementSeedForms[elementSeedIndex]["element"]
 
   customInputs.innerHTML = `
     <h3 id="quick-form"></h3>
   `
-  document.getElementById("quick-form").innerText = elementSeedForms[elementSeedIndex]["element"]
+  document.getElementById("quick-form").innerText = elementType
+  getElementSeedForm(elementType)
 }
 
 /*******************************************************************************
