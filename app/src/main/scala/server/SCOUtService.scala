@@ -13,7 +13,7 @@ import jsonhandler.Decoder._
 
 import environment._
 import environment.element._
-import environment.generator.ElementSeeds._
+import environment.element.seed._
 import environment.generator.RandomGenerator._
 
 
@@ -22,8 +22,8 @@ object SCOUtService {
   // Holds an initialy empty Environment
   var environment = generateRandomEnvironment("Empty", 2, 2)
 
-  // Mutable list of seeds
-  var seedList: List[ElementSeed] = defaultSeedList
+  // Mutable list of seeds initialized to default
+  var seedList: List[ElementSeed] = DefaultSeedList.defaultSeedList
 
   // Server request handler
   val service = HttpService {
@@ -52,7 +52,7 @@ object SCOUtService {
     (name, length, width) match {
       case ("", 0, 0) => BadRequest(data)
       case (n, w, l)  => {
-        environment = generateRandomEnvironment(n, w, l, defaultSeedList)
+        environment = generateRandomEnvironment(n, w, l, DefaultSeedList.defaultSeedList)
         Ok(encodeEnvironment(environment))
       }
     }

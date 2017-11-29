@@ -3,14 +3,13 @@ package environment.generator
 import environment._
 import environment.cell._
 import environment.element._
-import environment.generator.ElementSeeds._
+import environment.element.seed._
 import environment.generator.LayerGenerator._
 
 import scoututil.Util._
 
 import scala.util.Random
 import scala.collection.mutable.{ArrayBuffer => AB}
-
 
 
 object RandomGenerator {

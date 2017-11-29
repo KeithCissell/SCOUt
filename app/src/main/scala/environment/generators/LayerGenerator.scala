@@ -3,16 +3,17 @@ package environment.generator
 import scoututil.Util._
 import environment.layer._
 import environment.element._
-import environment.generator.ElementSeeds._
+import environment.element.seed._
 
 import scala.math._
 import scala.util.Random
 import scala.collection.mutable.{ArrayBuffer => AB}
 
+
 object LayerGenerator {
 
   def generateLayer(length: Int, width: Int, seed: ElementSeed): Layer = seed match {
-    case s: DecibleSeed       => decibleLayer(length, width, s)
+    case s: DecibleSeed       => decibelLayer(length, width, s)
     case s: ElevationSeed     => elevationLayer(length, width, s)
     case s: LatitudeSeed      => latitudeLayer(length, width, s)
     case s: LongitudeSeed     => longitudeLayer(length, width, s)
@@ -23,7 +24,7 @@ object LayerGenerator {
 
   // Layer generators specific to each element type
 
-  def decibleLayer(l: Int, w: Int, seed: DecibleSeed): Layer = {
+  def decibelLayer(l: Int, w: Int, seed: DecibleSeed): Layer = {
     val layer = new Layer(AB.fill(l)(AB.fill(w)(Some(new Decible(0.0)))))
     for (rs <- 0 until seed.randomSources) seed.createRandomSource(l, w)
     for (source <- seed.sources) {

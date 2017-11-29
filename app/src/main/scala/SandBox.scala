@@ -2,7 +2,7 @@ import environment._
 import environment.cell._
 import environment.layer._
 import environment.element._
-import environment.generator.ElementSeeds._
+import environment.element.seed._
 import environment.generator.LayerGenerator._
 import environment.generator.RandomGenerator._
 
@@ -67,7 +67,7 @@ object SandBox {
     val environment = new Environment("Test", grid)
 
     // LayerGenerator
-    val decSeed1 = DecibleSeed() //DecibleSeed(sources = AB(NoiseSource(2,2,27.0)))
+    val decSeed1 = DecibelSeed() //DecibelSeed(sources = AB(NoiseSource(2,2,27.0)))
     val decLayer1 = decibleLayer(5, 5, decSeed1)
 
     val elvSeed1 = ElevationSeed()

@@ -8,7 +8,7 @@ import environment._
 import environment.cell._
 import environment.layer._
 import environment.element._
-import environment.generator.ElementSeeds._
+import environment.element.seed._
 
 
 object Encoder {
