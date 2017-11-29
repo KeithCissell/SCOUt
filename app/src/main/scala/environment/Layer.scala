@@ -1,7 +1,6 @@
 package environment.layer
 
-import myutil.Util._
-import customtypes.Grid._
+import scoututil.Util._
 import environment.element._
 
 import scala.math._

@@ -13,17 +13,17 @@ import jsonhandler.Decoder._
 
 import environment._
 import environment.element._
-import environment.generator.ElementSeeds._
-import environment.generator.RandomGenerator._
+import environment.element.seed._
+import environment.EnvironmentBuilder._
 
 
 object SCOUtService {
 
   // Holds an initialy empty Environment
-  var environment = generateRandomEnvironment("Empty", 2, 2)
+  var environment = buildEnvironment("Empty", 2, 2)
 
-  // Mutable list of seeds
-  var seedList: List[ElementSeed] = defaultSeedList
+  // Mutable list of seeds initialized to default
+  var seedList: List[ElementSeed] = DefaultSeedList.defaultSeedList
 
   // Server request handler
   val service = HttpService {
@@ -34,6 +34,7 @@ object SCOUtService {
     case req @ POST -> Root / "new_random_environment"  => newRandomEnvironment(req)
   }
 
+
   // Gets the form info needed for a specified element type
   def getElementSeedForm(req: Request): Task[Response] = req.decode[Json] { data =>
     val elementType = extractString("element-type", data).getOrElse("")
@@ -43,7 +44,7 @@ object SCOUtService {
     } else BadRequest(data)
   }
 
-  // Sets environment to new randomly generated environment
+  // Sets environment to the default environment
   def newRandomEnvironment(req: Request): Task[Response] = req.decode[Json] { data =>
     val name = extractString("name", data).getOrElse("")
     val length = extractInt("length", data).getOrElse(0)
@@ -51,7 +52,7 @@ object SCOUtService {
     (name, length, width) match {
       case ("", 0, 0) => BadRequest(data)
       case (n, w, l)  => {
-        environment = generateRandomEnvironment(n, w, l, defaultSeedList)
+        environment = buildEnvironment(n, w, l, DefaultSeedList.defaultSeedList)
         Ok(encodeEnvironment(environment))
       }
     }

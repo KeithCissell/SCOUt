@@ -1,25 +1,23 @@
-package environment.generator
+package environment
 
 import environment._
 import environment.cell._
 import environment.element._
-import environment.generator.ElementSeeds._
-import environment.generator.LayerGenerator._
+import environment.element.seed._
 
-import customtypes.Grid._
+import scoututil.Util._
 
 import scala.util.Random
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
+object EnvironmentBuilder {
 
-object RandomGenerator {
-
-  def generateRandomEnvironment(name: String, length: Int, width: Int, seeds: List[ElementSeed] = Nil): Environment = {
+  def buildEnvironment(name: String, length: Int, width: Int, seeds: List[ElementSeed] = Nil): Environment = {
     val grid = initializedGrid(length, width)
     val environment = new Environment(name, grid)
     for (seed <- seeds) {
-      val layer = generateLayer(length, width, seed)
+      val layer = seed.buildLayer(length, width)
       environment.setLayer(layer)
     }
     return environment

@@ -1,7 +1,6 @@
 package environment
 
-import myutil.Util._
-import customtypes.Grid._
+import scoututil.Util._
 import environment.cell._
 import environment.layer._
 import environment.element._
