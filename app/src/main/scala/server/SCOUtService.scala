@@ -23,7 +23,7 @@ object SCOUtService {
   var environment = buildEnvironment("Empty", 2, 2)
 
   // Mutable list of seeds initialized to default
-  var seedList: List[ElementSeed] = DefaultSeedList.defaultSeedList
+  var seedList: List[ElementSeed] = SeedList.defaultSeedList
 
   // Server request handler
   val service = HttpService {
@@ -39,8 +39,11 @@ object SCOUtService {
   def getElementSeedForm(req: Request): Task[Response] = req.decode[Json] { data =>
     val elementType = extractString("element-type", data).getOrElse("")
     if (ElementTypes.elementTypes contains elementType) {
-      println("Yay*******************************")
-      Ok(data)
+      var responseData = ""
+      if (elementType == "Elevation") {
+        responseData = SeedList.getSeedForm(elementType)
+      }
+      Ok(responseData)
     } else BadRequest(data)
   }
 
@@ -51,8 +54,8 @@ object SCOUtService {
     val width = extractInt("width", data).getOrElse(0)
     (name, height, width) match {
       case ("", 0, 0) => BadRequest(data)
-      case (n, w, l)  => {
-        environment = buildEnvironment(n, l, w, DefaultSeedList.defaultSeedList)
+      case (n, w, h)  => {
+        environment = buildEnvironment(n, h, w, SeedList.defaultSeedList)
         Ok(encodeEnvironment(environment))
       }
     }

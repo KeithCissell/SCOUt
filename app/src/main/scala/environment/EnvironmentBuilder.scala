@@ -13,11 +13,11 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 
 object EnvironmentBuilder {
 
-  def buildEnvironment(name: String, height: Int, width: Int, seeds: List[ElementSeed] = Nil): Environment = {
+  def buildEnvironment(name: String, height: Int, width: Int, seeds: List[ElementSeed] = Nil, scale: Double = 10.0): Environment = {
     val grid = initializedGrid(height, width)
     val environment = new Environment(name, grid)
     for (seed <- seeds) {
-      val layer = seed.buildLayer(height, width)
+      val layer = seed.buildLayer(height, width, scale)
       environment.setLayer(layer)
     }
     return environment

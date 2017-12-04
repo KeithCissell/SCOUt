@@ -1,6 +1,7 @@
 import {getElementTypes, getElementSeedForm} from '../SCOUtAPI.js'
 import {loadEnvironmentBuilderPage, getBasicInputs} from './EnvironmentBuilder.js'
 import {BasicEnvironmentForm, ElementSelectionForm, ElementSeedForm} from './FormClasses.js'
+import {buildFormFields} from './FormBuilder.js'
 
 
 // Global DOM Elements
@@ -203,15 +204,23 @@ _____loadElementSeedForm_____
 Description
     Loads in the form for the element seed at the current index
 *******************************************************************************/
-function loadElementSeedForm() {
+async function loadElementSeedForm() {
   currentState = "ElementSeedForm"
   let elementType = elementSeedForms[elementSeedIndex]["element"]
 
   customInputs.innerHTML = `
-    <h3 id="quick-form"></h3>
+    <h3 id="custom-form-title"></h3>
   `
-  document.getElementById("quick-form").innerText = elementType
-  getElementSeedForm(elementType)
+  document.getElementById("custom-form-title").innerText = elementType
+  let formData = await getElementSeedForm(elementType)
+  await formData.json().then((json) => {
+    let formFields = buildFormFields(json)
+    for (let i in formFields) {
+      let field = formFields[i]
+      console.log(field)
+      customInputs.appendChild(field)
+    }
+  })
 }
 
 /*******************************************************************************

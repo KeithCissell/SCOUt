@@ -24,15 +24,14 @@ package seed {
     val elementName: String = "Latitude",
     val dynamic: Boolean = false,
     val rootValue: Double = 1.0,
-    val scale: Double = .000003 * 10.0//scale
   ) extends ElementSeed {
-    def buildLayer(height: Int, width: Int): Layer = {
+    def buildLayer(height: Int, width: Int, scale: Double): Layer = {
       val layer = new Layer(AB.fill(height)(AB.fill(width)(None)))
       for {
         x <- 0 until height
         y <- 0 until width
       } {
-        val value = rootValue + (y * scale)
+        val value = rootValue + (y * .000003 * scale)
         layer.setElement(x, y, new Latitude(value))
       }
       return layer

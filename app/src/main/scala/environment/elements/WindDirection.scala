@@ -31,7 +31,7 @@ package seed {
       val upperBound = mean + deviation
       randomRange(lowerBound, upperBound)
     }
-    def buildLayer(height: Int, width: Int): Layer = {
+    def buildLayer(height: Int, width: Int, scale: Double): Layer = {
       val layer = new Layer(AB.fill(height)(AB.fill(width)(None)))
       if (height > 0 && width > 0) layer.setElement(0, 0, new WindDirection(average))
       for {
