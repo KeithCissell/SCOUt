@@ -1,7 +1,10 @@
-import {getElementTypes, getElementSeedForm} from '../SCOUtAPI.js'
+import {getElementTypes, getElementSeedForm, buildCustomEnvironment} from '../SCOUtAPI.js'
 import {loadEnvironmentBuilderPage, getBasicInputs} from './EnvironmentBuilder.js'
 import {BasicEnvironmentForm, ElementSelectionForm, ElementSeedForm} from './FormClasses.js'
 import {buildFormFields} from './FormBuilder.js'
+import {checkBasicInputs, checkCustomInputs} from './FormValidators.js'
+import {formatEnvironment} from '../environment/EnvironmentFormatter.js'
+import {loadVisualizer} from '../visualizer/Visualizer.js'
 
 
 // Global DOM Elements
@@ -39,6 +42,7 @@ function loadCustomEnvironmentForm() {
   customInputs = document.getElementById("custom-inputs")
 
   // create submit buttons
+  elementSeedIndex = -1
   submitButtons.innerHTML = `
     <button class="submit-button" id="back-button">Back</button>
     <button class="submit-button" id="next-button">Next</button>
@@ -72,13 +76,17 @@ _____setupElementForms_____
 Description
     To do
 *******************************************************************************/
-function setupElementForms(elementTypes) {
-  elementSelectionForm = new ElementSelectionForm(elementTypes)
+async function setupElementForms(elementTypes) {
+  elementSelectionForm = await new ElementSelectionForm(elementTypes)
   for (let type in elementTypes) {
-    let seedForm = {}
-    seedForm["element"] = type
-    seedForm["selected"] = elementTypes[type]
-    elementSeedForms.push(seedForm)
+    let seedForm = await {}
+    seedForm["element"] = await type
+    seedForm["selected"] = await elementTypes[type]
+    let formData = await getElementSeedForm(type)
+    await formData.json().then((json) => {
+      seedForm["json"] = json
+    })
+    await elementSeedForms.push(seedForm)
   }
   console.log(elementSeedForms)
 }
@@ -95,9 +103,13 @@ function backButtonHandler() {
           loadEnvironmentBuilderPage(basicInputs.name, basicInputs.height, basicInputs.width)
           break;
     case "ElementSeedForm":
-          loadPreviousElementSeedForm()
+          if (checkCustomInputs()) {
+            saveElementSeedForm()
+            loadPreviousElementSeedForm()
+          }
           break;
     case "ReviewForm":
+          document.getElementById("next-button").innerText = "Next"
           loadPreviousElementSeedForm()
   }
 }
@@ -119,10 +131,13 @@ function nextButtonHandler() {
           loadNextElementSeedForm()
           break;
     case "ElementSeedForm":
-          loadNextElementSeedForm()
+          if (checkCustomInputs()) {
+            saveElementSeedForm()
+            loadNextElementSeedForm()
+          }
           break;
     case "ReviewForm":
-          alert("WE DONE HERE!!")
+          if (checkBasicInputs) submitCustomEnvironment()
   }
 }
 
@@ -204,7 +219,7 @@ _____loadElementSeedForm_____
 Description
     Loads in the form for the element seed at the current index
 *******************************************************************************/
-async function loadElementSeedForm() {
+function loadElementSeedForm() {
   currentState = "ElementSeedForm"
   let elementType = elementSeedForms[elementSeedIndex]["element"]
 
@@ -212,15 +227,23 @@ async function loadElementSeedForm() {
     <h3 id="custom-form-title"></h3>
   `
   document.getElementById("custom-form-title").innerText = elementType
-  let formData = await getElementSeedForm(elementType)
-  await formData.json().then((json) => {
-    let formFields = buildFormFields(json)
-    for (let i in formFields) {
-      let field = formFields[i]
-      console.log(field)
-      customInputs.appendChild(field)
-    }
-  })
+  let formData = elementSeedForms[elementSeedIndex]["json"]["fields"]
+  let formFields = buildFormFields(formData)
+  for (let i in formFields) {
+    let field = formFields[i]
+    customInputs.appendChild(field)
+  }
+}
+
+
+function saveElementSeedForm() {
+  let elementType = elementSeedForms[elementSeedIndex]["element"]
+  let formEntries = document.getElementById("custom-inputs").getElementsByClassName("custom-input")
+  for (let i = 0; i < formEntries.length; i++) {
+    let input = formEntries.item(i)
+    let fieldName = input.id
+    elementSeedForms[elementSeedIndex]["json"]["fields"][fieldName]["value"] = input.value
+  }
 }
 
 /*******************************************************************************
@@ -230,7 +253,35 @@ Description
 *******************************************************************************/
 function loadReviewPage() {
   currentState = "ReviewForm"
+  document.getElementById("next-button").innerText = "Build Environment"
   customInputs.innerHTML = `<h3>Review</h3>`
+
+}
+
+
+function submitCustomEnvironment() {
+  let basicInputs = getBasicInputs()
+  let elements = []
+  let elementSeeds = {}
+  for (let i = 0; i < elementSeedForms.length; i++) {
+    let seedForm = elementSeedForms[i]
+    let elementType = seedForm["element"]
+    if (seedForm["selected"]){
+      elements.push(elementType)
+      elementSeeds[elementType] = seedForm["json"]
+    }
+  }
+  loadCustomEnvironment(basicInputs.name, basicInputs.height, basicInputs.width, elements, elementSeeds)
+}
+
+
+async function loadCustomEnvironment(name, height, width, elements, elementSeeds) {
+  let customEnvironment = await buildCustomEnvironment(name, height, width, elements, elementSeeds)
+  customEnvironment.json().then((json) => {
+    let environment = formatEnvironment(json)
+    console.log(environment)
+    loadVisualizer(environment)
+  }).catch((err) => { console.log(err) })
 }
 
 export {loadCustomEnvironmentForm}

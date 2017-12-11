@@ -84,8 +84,8 @@ Parameters
 function newRandomEnvironment(name, height, width) {
   let reqBody = `{
     "name": "${name}",
-    "height": "${height}",
-    "width": "${width}"
+    "height": ${height},
+    "width": ${width}
   }`
   let reqSpecs = {  method: 'POST',
                     headers: reqHeaders,
@@ -99,4 +99,37 @@ function newRandomEnvironment(name, height, width) {
   })
 }
 
-export {pingServer, getElementTypes, getElementSeedForm, getCurrentState, newRandomEnvironment}
+
+/*******************************************************************************
+_____buildCustomEnvironment_____
+Description
+    Build a custom environment based on element seed data
+Parameters
+    name:     associated name for random Environment
+    height:   number of cells long the Environment will be
+    width:    number of cells wide the Environment will be
+    elements: list of all the element types used
+    seeds:    map of element types with their seed data
+*******************************************************************************/
+function buildCustomEnvironment(name, height, width, elements, seeds) {
+  let reqBody = `{
+    "name": "${name}",
+    "height": ${height},
+    "width": ${width},
+    "elements": ${JSON.stringify(elements)},
+    "seeds": ${JSON.stringify(seeds)}
+  }`
+  let reqSpecs = {  method: 'POST',
+                    headers: reqHeaders,
+                    mode: 'cors',
+                    cache: 'default',
+                    body: reqBody}
+  console.log(reqBody)
+  return new Promise((resolve, reject) => {
+    fetch(host + '/build_custom_environment', reqSpecs).then(function(resp) {
+      resolve(resp)
+    }).catch(error => reject(Response.error(error)))
+  })
+}
+
+export {pingServer, getElementTypes, getElementSeedForm, getCurrentState, newRandomEnvironment, buildCustomEnvironment}

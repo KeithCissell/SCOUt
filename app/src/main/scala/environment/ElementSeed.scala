@@ -6,7 +6,6 @@ import environment.element._
 
 import scala.math._
 import scala.util.Random
-import scala.collection.mutable.{ArrayBuffer => AB}
 
 
 // List of all seed defaults

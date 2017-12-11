@@ -4,7 +4,6 @@ function buildFormFields(json) {
   let formFields = []
   for (let key in json) {
     let item = json[key]
-    console.log(item)
     switch (item.type) {
       case "number":
         let div = document.createElement('div')
@@ -19,7 +18,7 @@ function buildFormFields(json) {
         formFields.push(div)
         break;
       default:
-        console.log("KEY: ", key, " not working")
+        console.log("KEY: ", key, " not found")
     }
   }
   return formFields
@@ -36,12 +35,12 @@ function buildLabel(forId, innerText) {
 
 function buildNumberField(id, numberInfo) {
   let numberField = document.createElement('input')
-  numberField.setAttribute("class", "basic-input")
+  numberField.setAttribute("class", "custom-input")
   numberField.setAttribute("type", "number")
   numberField.setAttribute("id", id)
   numberField.setAttribute("min", numberInfo.lowerBound)
   numberField.setAttribute("max", numberInfo.upperBound)
-  numberField.value = numberInfo.default
+  numberField.value = numberInfo.value
   return numberField
 }
 

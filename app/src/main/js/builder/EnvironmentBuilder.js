@@ -5,7 +5,7 @@ import {formatEnvironment} from '../environment/EnvironmentFormatter.js'
 import {BasicEnvironmentForm} from './FormClasses.js'
 import {loadVisualizer} from '../visualizer/Visualizer.js'
 import {loadCustomEnvironmentForm} from './CustomEnvironmentForm.js'
-import {checkBasicInputs, textValidation, numberValidation} from './FormValidators.js'
+import {checkBasicInputs} from './FormValidators.js'
 
 
 
