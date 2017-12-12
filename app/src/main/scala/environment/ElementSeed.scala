@@ -21,18 +21,20 @@ object SeedList {
   )
 
   def getSeedForm(elementType: String): String = elementType match {
-    // case "Decibel"        => DecibelSeed().formFields
+    case "Decibel"        => "{}"//DecibelSeed().formFields
     case "Elevation"      => ElevationSeed().formFields
-    // case "Latitude"       => LatitudeSeed().formFields
-    // case "Longitude"      => LongitudeSeed().formFields
-    // case "Temperature"    => TemperatureSeed().formFields
-    // case "Wind Direction" => WindDirectionSeed().formFields
-    // case "Wind Speed"     => WindSpeedSeed().formFields
+    case "Latitude"       => LatitudeSeed().formFields
+    case "Longitude"      => LongitudeSeed().formFields
+    case "Temperature"    => TemperatureSeed().formFields
+    case "Wind Direction" => WindDirectionSeed().formFields
+    case "Wind Speed"     => WindSpeedSeed().formFields
   }
 }
 
 trait ElementSeed {
   val elementName: String
   val dynamic: Boolean
+  // val formFields: String
+  // def this(seedData: Map[String, String])
   def buildLayer(height: Int, width: Int, scale: Double): Layer
 }

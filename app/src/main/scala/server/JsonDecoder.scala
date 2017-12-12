@@ -48,11 +48,11 @@ object Decoder {
       case Some(seedFields) => elementType match {
         // case "Decibel"        => Some(new DecibelSeed(seedFields))
         case "Elevation"      => Some(new ElevationSeed(seedFields))
-        // case "Latitude"       => Some(new LatitudeSeed(seedFields))
-        // case "Longitude"      => Some(new LongitudeSeed(seedFields))
-        // case "Temperature"    => Some(new TemperatureSeed(seedFields))
-        // case "Wind Direction" => Some(new WindDirectionSeed(seedFields))
-        // case "Wind Speed"     => Some(new WindSpeedSeed(seedFields))
+        case "Latitude"       => Some(new LatitudeSeed(seedFields))
+        case "Longitude"      => Some(new LongitudeSeed(seedFields))
+        case "Temperature"    => Some(new TemperatureSeed(seedFields))
+        case "Wind Direction" => Some(new WindDirectionSeed(seedFields))
+        case "Wind Speed"     => Some(new WindSpeedSeed(seedFields))
         case _ => None
       }
     }

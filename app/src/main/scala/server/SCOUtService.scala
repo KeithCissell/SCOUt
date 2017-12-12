@@ -40,11 +40,7 @@ object SCOUtService {
   def getElementSeedForm(req: Request): Task[Response] = req.decode[Json] { data =>
     val elementType = extractString("element-type", data).getOrElse("")
     if (ElementTypes.elementTypes contains elementType) {
-      var responseData = "{}"
-      if (elementType == "Elevation") {
-        responseData = SeedList.getSeedForm(elementType)
-      }
-      Ok(responseData)
+      Ok(SeedList.getSeedForm(elementType))
     } else BadRequest(data)
   }
 

@@ -49,14 +49,12 @@ package seed {
       }
     }"""
   ) extends ElementSeed {
-
     def this(seedData: Map[String, String]) {
       this(
         average = seedData("Average").toInt,
         deviation = seedData("Deviation").toDouble
       )
     }
-
     def randomDeviation(mean: Double, scale: Double): Double = {
       val lowerBound = mean - (deviation * scale)
       val upperBound = mean + (deviation * scale)

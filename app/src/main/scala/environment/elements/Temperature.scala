@@ -24,8 +24,36 @@ package seed {
     val elementName: String = "Temperature",
     val dynamic: Boolean = true,
     val average: Double = 70.0,
-    val deviation: Double = 0.2
+    val deviation: Double = 0.2,
+    val formFields: String = """{
+      "field-keys": [
+      "Average",
+      "Deviation"
+      ],
+      "fields": {
+        "Average": {
+          "type": "number",
+          "unit": "°F",
+          "value": 70,
+          "lowerBound": -200,
+          "upperBound": 200
+        },
+        "Deviation": {
+          "type": "number",
+          "unit": "°F",
+          "value": 0.2,
+          "lowerBound": 0,
+          "upperBound": 5
+        }
+      }
+    }"""
   ) extends ElementSeed {
+    def this(seedData: Map[String, String]) {
+      this(
+        average = seedData("Average").toInt,
+        deviation = seedData("Deviation").toDouble
+      )
+    }
     def randomDeviation(mean: Double, scale: Double): Double = {
       val lowerBound = mean - deviation
       val upperBound = mean + deviation
