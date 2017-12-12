@@ -258,7 +258,11 @@ function loadReviewPage() {
 
 }
 
-
+/*******************************************************************************
+_____submitCustomEnvironment_____
+Description
+    Grabs all user input data and submits it to build a custom environment
+*******************************************************************************/
 function submitCustomEnvironment() {
   let basicInputs = getBasicInputs()
   let elements = []
@@ -274,7 +278,17 @@ function submitCustomEnvironment() {
   loadCustomEnvironment(basicInputs.name, basicInputs.height, basicInputs.width, elements, elementSeeds)
 }
 
-
+/*******************************************************************************
+_____loadCustomEnvironment_____
+Description
+    Makes a server request for a custom environment and loads it into the visualizer
+Parameters
+    name:           associated name for random Environment
+    height:         number of cells hgih the Environment will be
+    width:          number of cells wide the Environment will be
+    elements:       list of all elements to be included in the environment
+    elementSeeds:   seed data for each element included
+*******************************************************************************/
 async function loadCustomEnvironment(name, height, width, elements, elementSeeds) {
   let customEnvironment = await buildCustomEnvironment(name, height, width, elements, elementSeeds)
   customEnvironment.json().then((json) => {

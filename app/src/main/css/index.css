@@ -154,6 +154,11 @@ button.submit-button {
   width: 96%;
   background-color: grey;
   border-radius: 6pt;
+  text-align: center;
+}
+
+#new-environment {
+  margin-top: 3%;
 }
 
 /*******************************************************************************

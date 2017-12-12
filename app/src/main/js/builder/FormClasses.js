@@ -19,10 +19,4 @@ class ElementSelectionForm {
   }
 }
 
-class ElementSeedForm {
-  constructor() {
-
-  }
-}
-
-export {BasicEnvironmentForm, ElementSelectionForm, ElementSeedForm}
+export {BasicEnvironmentForm, ElementSelectionForm}

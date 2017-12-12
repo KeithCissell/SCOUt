@@ -1,5 +1,11 @@
 
-
+/*******************************************************************************
+_____buildFormFields_____
+Description
+    Takes an element's seed parameters and builds HTML form fields
+Parameters
+    json:   json object holding fields and necessary data
+*******************************************************************************/
 function buildFormFields(json) {
   let formFields = []
   for (let key in json) {
@@ -24,7 +30,14 @@ function buildFormFields(json) {
   return formFields
 }
 
-
+/*******************************************************************************
+_____buildLabel_____
+Description
+    Builds a label DOM element
+Parameters
+    forId:        the Id for the labels corresponding input field
+    innerText:    the innerText for the label
+*******************************************************************************/
 function buildLabel(forId, innerText) {
   let label = document.createElement('label')
   label.setAttribute("for", forId)
@@ -32,7 +45,14 @@ function buildLabel(forId, innerText) {
   return label
 }
 
-
+/*******************************************************************************
+_____buildNumberField_____
+Description
+    Builds a "number" type input DOM element
+Parameters
+    id:           the Id to be given to the input field
+    numberInfo:   json object with field parameters
+*******************************************************************************/
 function buildNumberField(id, numberInfo) {
   let numberField = document.createElement('input')
   numberField.setAttribute("class", "custom-input")
