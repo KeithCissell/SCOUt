@@ -34,6 +34,7 @@ header h1 {
 
 main {
   height: 85%;
+  width: 100%;
   overflow: auto;
 }
 
@@ -52,6 +53,11 @@ h2.sidebar {
 footer {
   height: 5%;
   width: 100%;
+}
+
+div.scroll-box {
+  overflow: auto;
+  border: solid red 2px;
 }
 
 
@@ -83,10 +89,6 @@ footer {
   width: 96%;
   text-align: center;
   font-size: 18pt;
-}
-
-#basic-inputs {
-  margin-bottom: 3%;
 }
 
 input.basic-input {
@@ -131,12 +133,37 @@ button.submit-button {
 /*******************************************************************************
       CUSTOM INPUT FORM
 *******************************************************************************/
-#custom-inputs {
+#environment-form {
+  height: 100%;
+  width: 100%;
+}
 
+#basic-inputs {
+  height: 10%;
+  width: 100%;
+}
+
+#custom-inputs {
+  height: 90%;
+  width: 100%;
+}
+
+#custom-inputs-title {
+  margin: 0;
+  height: 12%;
+  width: 100%;
+  font-size: 30pt;
+}
+
+#custom-inputs-content {
+  margin: 0;
+  height: 72%;
+  width: 94%;
+  padding: 3%;
+  border-radius: 6pt;
 }
 
 #element-selection-list {
-  margin: 10pt;
   margin-left: 33%;
   list-style: none;
   vertical-align: baseline;
@@ -208,7 +235,6 @@ rect.display-cell:hover {
 
 #legend {
   height: 76%;
-  max-height: 76%;
   width: 21%;
   margin-left: 2%;
   margin-right: 2%;
@@ -220,9 +246,9 @@ rect.display-cell:hover {
   overflow: hidden;
 }
 
-#cell-table {
-  padding-bottom: 5%;
-  overflow: auto;
+#cell-table-holder {
+  height: 28%;
+  width: 100%;
 }
 
 table.legend-table {
@@ -233,26 +259,12 @@ table.legend-table {
   color: white;
 }
 
-
-tr.legend-cell-row {
-  max-width: 100%;
-}
-
 td.legend-table-name {
   color: #D6D6D6;
   font-weight: bold;
 }
 
 td.legend-table-value {
-  color: white;
-}
-
-table.legend-cell-table {
-  overflow: scroll;
-  margin: 0;
-  padding-left: 10pt;
-  padding-right: 10pt;
-  text-align: left;
   color: white;
 }
 

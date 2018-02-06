@@ -39,6 +39,10 @@ function loadEnvironmentBuilderPage(name = "My Environment", height = "10", widt
           <label for="width">Width</label>
           <input class="basic-input" type="number" id="width" min="10" max="100">
         </div>
+        <div id="custom-inputs">
+          <h3 id="custom-inputs-title"></h3>
+          <div id="custom-inputs-content" class="scroll-box"></div>
+        </div>
       </form>
     </div>
     <div id="submit-buttons">

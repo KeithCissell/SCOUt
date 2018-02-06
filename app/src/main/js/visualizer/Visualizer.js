@@ -41,7 +41,9 @@ function loadVisualizer(targetEnvironment) {
       <h2 class="sidebar" id="legend-layer-title"></h2>
       <table class="legend-table" id="legend-selected-layer-table"></table>
       <h2 class="sidebar" id="legend-cell-title"></h2>
-      <table class="legend-cell-table" id="legend-selected-cell-table"></table>
+      <div id="cell-table-holder" class="scroll-box">
+        <table class="legend-table" id="legend-selected-cell-table"></table>
+      </div>
     </div>
   `
 

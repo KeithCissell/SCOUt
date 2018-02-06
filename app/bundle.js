@@ -4460,7 +4460,7 @@ function loadEnvironmentBuilderPage() {
   var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "10";
 
   // Setup Environment Builder Page
-  main.innerHTML = '\n  <div id="home-page">\n    <h1 id="home-title">Environment Builder</h1>\n    <div id="home-content">\n      <form id="environment-form">\n        <div id="basic-inputs">\n          <label for="environment-name">Environment Name</label>\n          <input class="basic-input" type="text" id="environment-name">\n          <label for="height">Height</label>\n          <input class="basic-input" type="number" id="height" min="10" max="100">\n          <label for="width">Width</label>\n          <input class="basic-input" type="number" id="width" min="10" max="100">\n        </div>\n      </form>\n    </div>\n    <div id="submit-buttons">\n      <button class="submit-button" id="random-environment-button">Generate Random Environment</button>\n      <button class="submit-button" id="custom-environment-button">Build Custom Environment</button>\n    </div>\n  </div>\n  ';
+  main.innerHTML = '\n  <div id="home-page">\n    <h1 id="home-title">Environment Builder</h1>\n    <div id="home-content">\n      <form id="environment-form">\n        <div id="basic-inputs">\n          <label for="environment-name">Environment Name</label>\n          <input class="basic-input" type="text" id="environment-name">\n          <label for="height">Height</label>\n          <input class="basic-input" type="number" id="height" min="10" max="100">\n          <label for="width">Width</label>\n          <input class="basic-input" type="number" id="width" min="10" max="100">\n        </div>\n        <div id="custom-inputs">\n          <h3 id="custom-inputs-title"></h3>\n          <div id="custom-inputs-content" class="scroll-box"></div>\n        </div>\n      </form>\n    </div>\n    <div id="submit-buttons">\n      <button class="submit-button" id="random-environment-button">Generate Random Environment</button>\n      <button class="submit-button" id="custom-environment-button">Build Custom Environment</button>\n    </div>\n  </div>\n  ';
   // Set basic input values
   document.getElementById("environment-name").value = name;
   document.getElementById("height").value = height;
@@ -6994,7 +6994,7 @@ Parameters
 *******************************************************************************/
 function loadVisualizer(targetEnvironment) {
   // Load HTML
-  main.innerHTML = '\n    <div id="navigation">\n      <button class="submit-button" id="new-environment">New Environment</button>\n      <h1 id="message"></h1>\n      <p id="content"></p>\n    </div>\n    <div id="toolbar">\n      <h1 class="sidebar">Controls</h1>\n      <h2 class="sidebar" id="layer-toggles-header"></h2>\n      <div class="toolbar-container" id="layer-toggles"></div>\n      <h2 class="sidebar" id="layer-selector-header"></h2>\n      <div class="toolbar-container" id="layer-selector"></div>\n    </div>\n    <svg id="display"></svg>\n    <div id="legend">\n      <h1 class="sidebar">Legend</h1>\n      <h2 class="sidebar" id="legend-environment-title"></h2>\n      <table class="legend-table" id="legend-main-table"></table>\n      <h2 class="sidebar" id="legend-layer-title"></h2>\n      <table class="legend-table" id="legend-selected-layer-table"></table>\n      <h2 class="sidebar" id="legend-cell-title"></h2>\n      <table class="legend-cell-table" id="legend-selected-cell-table"></table>\n    </div>\n  ';
+  main.innerHTML = '\n    <div id="navigation">\n      <button class="submit-button" id="new-environment">New Environment</button>\n      <h1 id="message"></h1>\n      <p id="content"></p>\n    </div>\n    <div id="toolbar">\n      <h1 class="sidebar">Controls</h1>\n      <h2 class="sidebar" id="layer-toggles-header"></h2>\n      <div class="toolbar-container" id="layer-toggles"></div>\n      <h2 class="sidebar" id="layer-selector-header"></h2>\n      <div class="toolbar-container" id="layer-selector"></div>\n    </div>\n    <svg id="display"></svg>\n    <div id="legend">\n      <h1 class="sidebar">Legend</h1>\n      <h2 class="sidebar" id="legend-environment-title"></h2>\n      <table class="legend-table" id="legend-main-table"></table>\n      <h2 class="sidebar" id="legend-layer-title"></h2>\n      <table class="legend-table" id="legend-selected-layer-table"></table>\n      <h2 class="sidebar" id="legend-cell-title"></h2>\n      <div id="cell-table-holder" class="scroll-box">\n        <table class="legend-table" id="legend-selected-cell-table"></table>\n      </div>\n    </div>\n  ';
 
   // Set globals
   environment = targetEnvironment;
@@ -32065,7 +32065,6 @@ function addLegendCellItem(name, value) {
   var selectedCellTable = document.getElementById("legend-selected-cell-table");
 
   var newTableRow = document.createElement("tr");
-  newTableRow.setAttribute("class", "legend-cell-row");
   var newTableName = document.createElement("td");
   newTableName.setAttribute("class", "legend-table-name");
   newTableName.innerText = name;
@@ -32111,6 +32110,8 @@ var _Visualizer = __webpack_require__(34);
 var environmentForm = void 0;
 var basicInputs = void 0;
 var customInputs = void 0;
+var customInputsTitle = void 0;
+var customInputsContent = void 0;
 var submitButtons = void 0;
 var backButton = void 0;
 var nextButton = void 0;
@@ -32133,12 +32134,9 @@ function loadCustomEnvironmentForm() {
   environmentForm = document.getElementById("environment-form");
   basicInputs = document.getElementById("basic-inputs");
   submitButtons = document.getElementById("submit-buttons");
-
-  // build custom inputs section
-  var newCustomInputs = document.createElement("div");
-  newCustomInputs.setAttribute("id", "custom-inputs");
-  environmentForm.appendChild(newCustomInputs);
   customInputs = document.getElementById("custom-inputs");
+  customInputsTitle = document.getElementById("custom-inputs-title");
+  customInputsContent = document.getElementById("custom-inputs-content");
 
   // create submit buttons
   elementSeedIndex = -1;
@@ -32253,9 +32251,8 @@ Description
 *******************************************************************************/
 function loadElementSelectionForm() {
   currentState = "SelectElementTypes";
-  customInputs.innerHTML = "";
-  var listLabel = document.createElement("h3");
-  listLabel.innerText = "Select Element Types";
+  customInputsTitle.innerText = "Select Element Types";
+  customInputsContent.innerHTML = "";
   var elementSelectionList = document.createElement("ul");
   elementSelectionList.setAttribute("id", "element-selection-list");
   for (var type in elementSelectionForm.elementTypes) {
@@ -32284,8 +32281,7 @@ function loadElementSelectionForm() {
     newListItem.appendChild(newLabel);
     elementSelectionList.appendChild(newListItem);
   }
-  customInputs.appendChild(listLabel);
-  customInputs.appendChild(elementSelectionList);
+  customInputsContent.appendChild(elementSelectionList);
   // add event listeners
 
   var _loop2 = function _loop2(_type) {
@@ -32329,13 +32325,14 @@ function loadElementSeedForm() {
   currentState = "ElementSeedForm";
   var elementType = elementSeedForms[elementSeedIndex]["element"];
 
-  customInputs.innerHTML = '\n    <h3 id="custom-form-title"></h3>\n  ';
-  document.getElementById("custom-form-title").innerText = elementType;
+  customInputsTitle.innerText = elementType;
+  customInputsContent.innerHTML = "";
+
   var formData = elementSeedForms[elementSeedIndex]["json"]["fields"];
   var formFields = (0, _FormBuilder.buildFormFields)(formData);
   for (var i in formFields) {
     var field = formFields[i];
-    customInputs.appendChild(field);
+    customInputsContent.appendChild(field);
   }
 }
 
@@ -32356,8 +32353,10 @@ Description
 *******************************************************************************/
 function loadReviewPage() {
   currentState = "ReviewForm";
+  customInputsTitle.innerHTML = "Review";
+  customInputsContent.innerHTML = "";
   document.getElementById("next-button").innerText = "Build Environment";
-  customInputs.innerHTML = '<h3>Review</h3>';
+  customInputsContent.innerText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eleifend hendrerit magna, ac tristique nulla vestibulum id. Aenean aliquam vehicula nunc sit amet convallis. Mauris sit amet lectus a metus accumsan dignissim. Integer pharetra quam nec lectus mattis lobortis. Aliquam id risus vel ante ornare rhoncus ac quis lacus. Duis dignissim urna sed leo dictum fermentum. Vivamus id orci odio, in congue quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eleifend hendrerit magna, ac tristique nulla vestibulum id. Aenean aliquam vehicula nunc sit amet convallis. Mauris sit amet lectus a metus accumsan dignissim. Integer pharetra quam nec lectus mattis lobortis. Aliquam id risus vel ante ornare rhoncus ac quis lacus. Duis dignissim urna sed leo dictum fermentum. Vivamus id orci odio, in congue quam asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf";
 }
 
 /*******************************************************************************

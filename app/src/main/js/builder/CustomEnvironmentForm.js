@@ -11,6 +11,8 @@ import {loadVisualizer} from '../visualizer/Visualizer.js'
 let environmentForm
 let basicInputs
 let customInputs
+let customInputsTitle
+let customInputsContent
 let submitButtons
 let backButton
 let nextButton
@@ -34,12 +36,9 @@ function loadCustomEnvironmentForm() {
   environmentForm = document.getElementById("environment-form")
   basicInputs = document.getElementById("basic-inputs")
   submitButtons = document.getElementById("submit-buttons")
-
-  // build custom inputs section
-  let newCustomInputs = document.createElement("div")
-  newCustomInputs.setAttribute("id", "custom-inputs")
-  environmentForm.appendChild(newCustomInputs)
   customInputs = document.getElementById("custom-inputs")
+  customInputsTitle = document.getElementById("custom-inputs-title")
+  customInputsContent = document.getElementById("custom-inputs-content")
 
   // create submit buttons
   elementSeedIndex = -1
@@ -148,9 +147,8 @@ Description
 *******************************************************************************/
 function loadElementSelectionForm() {
   currentState = "SelectElementTypes"
-  customInputs.innerHTML = ""
-  let listLabel = document.createElement("h3")
-  listLabel.innerText = "Select Element Types"
+  customInputsTitle.innerText = "Select Element Types"
+  customInputsContent.innerHTML = ""
   let elementSelectionList = document.createElement("ul")
   elementSelectionList.setAttribute("id", "element-selection-list")
   for (let type in elementSelectionForm.elementTypes) {
@@ -179,8 +177,7 @@ function loadElementSelectionForm() {
     newListItem.appendChild(newLabel)
     elementSelectionList.appendChild(newListItem)
   }
-  customInputs.appendChild(listLabel)
-  customInputs.appendChild(elementSelectionList)
+  customInputsContent.appendChild(elementSelectionList)
   // add event listeners
   for (let type in elementSelectionForm.selectables) {
     let typeId = type + "-selection"
@@ -223,15 +220,14 @@ function loadElementSeedForm() {
   currentState = "ElementSeedForm"
   let elementType = elementSeedForms[elementSeedIndex]["element"]
 
-  customInputs.innerHTML = `
-    <h3 id="custom-form-title"></h3>
-  `
-  document.getElementById("custom-form-title").innerText = elementType
+  customInputsTitle.innerText = elementType
+  customInputsContent.innerHTML = ""
+
   let formData = elementSeedForms[elementSeedIndex]["json"]["fields"]
   let formFields = buildFormFields(formData)
   for (let i in formFields) {
     let field = formFields[i]
-    customInputs.appendChild(field)
+    customInputsContent.appendChild(field)
   }
 }
 
@@ -253,9 +249,10 @@ Description
 *******************************************************************************/
 function loadReviewPage() {
   currentState = "ReviewForm"
+  customInputsTitle.innerHTML = "Review"
+  customInputsContent.innerHTML = ""
   document.getElementById("next-button").innerText = "Build Environment"
-  customInputs.innerHTML = `<h3>Review</h3>`
-
+  customInputsContent.innerText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eleifend hendrerit magna, ac tristique nulla vestibulum id. Aenean aliquam vehicula nunc sit amet convallis. Mauris sit amet lectus a metus accumsan dignissim. Integer pharetra quam nec lectus mattis lobortis. Aliquam id risus vel ante ornare rhoncus ac quis lacus. Duis dignissim urna sed leo dictum fermentum. Vivamus id orci odio, in congue quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eleifend hendrerit magna, ac tristique nulla vestibulum id. Aenean aliquam vehicula nunc sit amet convallis. Mauris sit amet lectus a metus accumsan dignissim. Integer pharetra quam nec lectus mattis lobortis. Aliquam id risus vel ante ornare rhoncus ac quis lacus. Duis dignissim urna sed leo dictum fermentum. Vivamus id orci odio, in congue quam asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf"
 }
 
 /*******************************************************************************
