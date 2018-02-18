@@ -50,6 +50,22 @@ h2.sidebar {
   text-align: left;
 }
 
+h3.review {
+  margin: 0;
+  margin-bottom: 3%;
+  font-size: 20pt;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+}
+
+h4.review {
+  margin: 0;
+  margin-bottom: 2%;
+  font-size: 15pt;
+  color: white;
+}
+
 footer {
   height: 5%;
   width: 100%;
@@ -57,7 +73,6 @@ footer {
 
 div.scroll-box {
   overflow: auto;
-  border: solid red 2px;
 }
 
 

@@ -195,7 +195,7 @@ Description
 function loadPreviousElementSeedForm() {
   elementSeedIndex -= 1
   if (elementSeedIndex == -1) loadElementSelectionForm()
-  else if (elementSeedForms[elementSeedIndex]["selected"]) loadElementSeedForm()
+  else if (elementSeedForms[elementSeedIndex].selected) loadElementSeedForm()
   else loadPreviousElementSeedForm()
 }
 
@@ -207,7 +207,7 @@ Description
 function loadNextElementSeedForm() {
   elementSeedIndex += 1
   if (elementSeedIndex == elementSeedForms.length) loadReviewPage()
-  else if (elementSeedForms[elementSeedIndex]["selected"]) loadElementSeedForm()
+  else if (elementSeedForms[elementSeedIndex].selected) loadElementSeedForm()
   else loadNextElementSeedForm()
 }
 
@@ -252,7 +252,43 @@ function loadReviewPage() {
   customInputsTitle.innerHTML = "Review"
   customInputsContent.innerHTML = ""
   document.getElementById("next-button").innerText = "Build Environment"
-  customInputsContent.innerText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eleifend hendrerit magna, ac tristique nulla vestibulum id. Aenean aliquam vehicula nunc sit amet convallis. Mauris sit amet lectus a metus accumsan dignissim. Integer pharetra quam nec lectus mattis lobortis. Aliquam id risus vel ante ornare rhoncus ac quis lacus. Duis dignissim urna sed leo dictum fermentum. Vivamus id orci odio, in congue quam.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eleifend hendrerit magna, ac tristique nulla vestibulum id. Aenean aliquam vehicula nunc sit amet convallis. Mauris sit amet lectus a metus accumsan dignissim. Integer pharetra quam nec lectus mattis lobortis. Aliquam id risus vel ante ornare rhoncus ac quis lacus. Duis dignissim urna sed leo dictum fermentum. Vivamus id orci odio, in congue quam asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf"
+  for (let i = 0; i < elementSeedForms.length; i++) {
+    if (elementSeedForms[i].selected == true && elementSeedForms[i].json["field-keys"]){
+      let form = elementSeedForms[i]
+      let title = form.element
+      let titleId = title + "-review-header"
+      let newTitle = document.createElement("h3")
+      newTitle.setAttribute("id", titleId)
+      newTitle.setAttribute("class", "review")
+      newTitle.innerText = title
+      customInputsContent.appendChild(newTitle)
+      document.getElementById(titleId).addEventListener("click", () => goToFormPage(i))
+      let jsonData = form.json
+      for (let j = 0; j < jsonData["field-keys"].length; j++) {
+        let inputName = jsonData["field-keys"][j]
+        let inputValue = jsonData["fields"][inputName]["value"]
+        let inputUnit = jsonData["fields"][inputName]["unit"]
+        let newInput = document.createElement("h4")
+        newInput.setAttribute("class", "review")
+        newInput.innerText = `${inputName}: ${inputValue} ${inputUnit}`
+        customInputsContent.appendChild(newInput)
+      }
+    }
+  }
+}
+
+/*******************************************************************************
+_____goToFormPage_____
+Description
+    Goes to a designated form page
+Parameters
+    formIndex:  index of the form in elementSeedForm list
+*******************************************************************************/
+function goToFormPage(formIndex) {
+  if (formIndex < elementSeedForms.length && elementSeedForms[formIndex].selected) {
+    elementSeedIndex = formIndex
+    loadElementSeedForm()
+  }
 }
 
 /*******************************************************************************
