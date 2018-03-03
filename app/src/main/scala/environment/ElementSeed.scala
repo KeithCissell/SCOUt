@@ -8,8 +8,8 @@ import scala.math._
 import scala.util.Random
 
 
-// List of all seed defaults
 object SeedList {
+  // List of all seeds set to default
   val defaultSeedList: List[ElementSeed] = List(
     DecibelSeed(),
     ElevationSeed(),
@@ -20,6 +20,7 @@ object SeedList {
     WindSpeedSeed()
   )
 
+  // Returns the form field for the requested element type
   def getSeedForm(elementType: String): String = elementType match {
     case "Decibel"        => "{}"//DecibelSeed().formFields
     case "Elevation"      => ElevationSeed().formFields

@@ -8,13 +8,24 @@ import environment.element._
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
-class Environment(val name: String, private var grid: Grid[Cell]) {
+class Environment(
+    val name: String,
+    val height: Int,
+    val width: Int,
+    val scale: Double) {
 
-  val height = grid.length
-  val width = if (grid.isEmpty) 0 else grid(0).length
+  // Builds a grid of empty Cells
+  var grid: Grid[Cell] = AB.fill(height)(AB.fill(width)(None))
+  for {
+    x <- 0 until height
+    y <- 0 until width
+  } grid(x)(y) = Some(Cell(x, y))
 
   override def toString: String = {
     var str = name + "\n"
+    str += "Height: " + height.toString + "\n"
+    str += "Width: " + width.toString + "\n"
+    str += "Scale: " + scale.toString + "\n"
     for {
       x <- 0 until height
       y <- 0 until width
@@ -73,7 +84,7 @@ class Environment(val name: String, private var grid: Grid[Cell]) {
   // add a variable to a given point
   def setElement(x: Int, y: Int, element: Element) = getCell(x, y) match {
     case Some(e)  => grid(x)(y).get.setElement(element)
-    case None     => grid(x)(y) = Some(new Cell(x, y, Map(element.name -> element)))
+    case None     => grid(x)(y) = Some(new Cell(x = x, y = y, elements = Map(element.name -> element)))
   }
   // takes a layer of elements and adds it to the environment
   def setLayer(layer: Layer) = {

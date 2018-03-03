@@ -18,6 +18,7 @@ object ElementTypes {
   )
 }
 
+// Element Trait
 trait Element {
   var value: Option[Double]
   val name: String
@@ -31,7 +32,6 @@ trait Element {
     case Some(v)  => v.toString + " " + unit
     case None     => "NONE"
   }
-
   // Determines if element can be set
   def settable: Boolean = constant match {
     case true   => value == None

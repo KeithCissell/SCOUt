@@ -32360,7 +32360,6 @@ function loadReviewPage() {
   var _loop3 = function _loop3(i) {
     if (elementSeedForms[i].selected == true && elementSeedForms[i].json["field-keys"]) {
       var form = elementSeedForms[i];
-      console.log(form);
       var title = form.element;
       var titleId = title + "-review-header";
       var newTitle = document.createElement("h3");
@@ -32397,8 +32396,7 @@ Parameters
     formIndex:  index of the form in elementSeedForm list
 *******************************************************************************/
 function goToFormPage(formIndex) {
-  console.log("GO TO FORM PAGE: ", formIndex);
-  if (formIndex > 0 && formIndex < elementSeedForms.length && elementSeedForms[formIndex].selected) {
+  if (formIndex < elementSeedForms.length && elementSeedForms[formIndex].selected) {
     elementSeedIndex = formIndex;
     loadElementSeedForm();
   }

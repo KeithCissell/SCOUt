@@ -20,23 +20,23 @@ class Layer(val layer: Grid[Element]) {
     }
     return str
   }
-
+  // Checks if (x,y) coordinate is in the range
   def inLayer(x: Int, y: Int): Boolean = {
     x >= 0 && x < height && y >= 0 && y < width
   }
-
+  // Returns the element object at the (x,y) coordinate
   def getElement(x: Int, y: Int): Option[Element] = {
     if (inLayer(x, y)) {
       layer(x)(y)
     } else None
   }
-
+  // Sets (x,y) to the given element
   def setElement(x: Int, y: Int, e: Element) = {
     if (inLayer(x, y)) {
       layer(x)(y) = Some(e)
     }
   }
-
+  // Returns any elements in the given radius from a given origin
   def getCluster(originX: Int, originY: Int, range: Int): List[Element] = {
     (for {
       x <- (originX - range) to (originX + range)
@@ -45,7 +45,7 @@ class Layer(val layer: Grid[Element]) {
       if dist(x, y, originX, originY) <= range
     } yield getElement(x, y)).flatten.toList
   }
-
+  // Like getCluster, but returns the values instead of the entire object
   def getClusterValues(originX: Int, originY: Int, range: Int): List[Double] = {
     (for {
       x <- (originX - range) to (originX + range)
