@@ -5,7 +5,7 @@ import {formatEnvironment} from '../environment/EnvironmentFormatter.js'
 import {BasicEnvironmentForm} from './FormClasses.js'
 import {loadVisualizer} from '../visualizer/Visualizer.js'
 import {loadCustomEnvironmentForm} from './CustomEnvironmentForm.js'
-import {checkBasicInputs, textValidation, numberValidation} from './FormValidators.js'
+import {checkBasicInputs} from './FormValidators.js'
 
 
 
@@ -38,6 +38,10 @@ function loadEnvironmentBuilderPage(name = "My Environment", height = "10", widt
           <input class="basic-input" type="number" id="height" min="10" max="100">
           <label for="width">Width</label>
           <input class="basic-input" type="number" id="width" min="10" max="100">
+        </div>
+        <div id="custom-inputs">
+          <h3 id="custom-inputs-title"></h3>
+          <div id="custom-inputs-content" class="scroll-box"></div>
         </div>
       </form>
     </div>

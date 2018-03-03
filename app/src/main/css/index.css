@@ -34,6 +34,7 @@ header h1 {
 
 main {
   height: 85%;
+  width: 100%;
   overflow: auto;
 }
 
@@ -49,9 +50,29 @@ h2.sidebar {
   text-align: left;
 }
 
+h3.review {
+  margin: 0;
+  margin-bottom: 3%;
+  font-size: 20pt;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+}
+
+h4.review {
+  margin: 0;
+  margin-bottom: 2%;
+  font-size: 15pt;
+  color: white;
+}
+
 footer {
   height: 5%;
   width: 100%;
+}
+
+div.scroll-box {
+  overflow: auto;
 }
 
 
@@ -85,12 +106,17 @@ footer {
   font-size: 18pt;
 }
 
-#basic-inputs {
-  margin-bottom: 3%;
-}
-
 input.basic-input {
   margin-right: 2%;
+  padding: 2pt;
+  font-size: 14pt;
+  border: 2px solid black;
+  border-radius: 4px;
+}
+
+input.custom-input {
+  margin: 1%;
+  margin-top: 0%;
   padding: 2pt;
   font-size: 14pt;
   border: 2px solid black;
@@ -122,12 +148,37 @@ button.submit-button {
 /*******************************************************************************
       CUSTOM INPUT FORM
 *******************************************************************************/
-#custom-inputs {
+#environment-form {
+  height: 100%;
+  width: 100%;
+}
 
+#basic-inputs {
+  height: 10%;
+  width: 100%;
+}
+
+#custom-inputs {
+  height: 90%;
+  width: 100%;
+}
+
+#custom-inputs-title {
+  margin: 0;
+  height: 12%;
+  width: 100%;
+  font-size: 30pt;
+}
+
+#custom-inputs-content {
+  margin: 0;
+  height: 72%;
+  width: 94%;
+  padding: 3%;
+  border-radius: 6pt;
 }
 
 #element-selection-list {
-  margin: 10pt;
   margin-left: 33%;
   list-style: none;
   vertical-align: baseline;
@@ -145,6 +196,11 @@ button.submit-button {
   width: 96%;
   background-color: grey;
   border-radius: 6pt;
+  text-align: center;
+}
+
+#new-environment {
+  margin-top: 3%;
 }
 
 /*******************************************************************************
@@ -194,7 +250,6 @@ rect.display-cell:hover {
 
 #legend {
   height: 76%;
-  max-height: 76%;
   width: 21%;
   margin-left: 2%;
   margin-right: 2%;
@@ -206,9 +261,9 @@ rect.display-cell:hover {
   overflow: hidden;
 }
 
-#cell-table {
-  padding-bottom: 5%;
-  overflow: auto;
+#cell-table-holder {
+  height: 28%;
+  width: 100%;
 }
 
 table.legend-table {
@@ -219,26 +274,12 @@ table.legend-table {
   color: white;
 }
 
-
-tr.legend-cell-row {
-  max-width: 100%;
-}
-
 td.legend-table-name {
   color: #D6D6D6;
   font-weight: bold;
 }
 
 td.legend-table-value {
-  color: white;
-}
-
-table.legend-cell-table {
-  overflow: scroll;
-  margin: 0;
-  padding-left: 10pt;
-  padding-right: 10pt;
-  text-align: left;
   color: white;
 }
 

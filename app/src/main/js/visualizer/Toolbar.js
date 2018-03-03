@@ -28,6 +28,7 @@ function addToggle(layerName, toggleID) {
   newLable.appendChild(newSlider)
   newLable.appendChild(newSpan)
   layerToggles.appendChild(newLable)
+  layerToggles.appendChild(document.createElement("br"))
 }
 
 /*******************************************************************************
@@ -57,6 +58,7 @@ function addSelection(layerName, selectionID) {
   newLable.appendChild(newSelection)
   newLable.appendChild(newSpan)
   layerSelector.appendChild(newLable)
+  layerSelector.appendChild(document.createElement("br"))
 }
 
 export {addToggle, addSelection}

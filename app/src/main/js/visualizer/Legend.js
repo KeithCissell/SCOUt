@@ -33,7 +33,6 @@ function addLegendCellItem(name, value) {
   let selectedCellTable = document.getElementById("legend-selected-cell-table")
 
   let newTableRow = document.createElement("tr")
-  newTableRow.setAttribute("class", "legend-cell-row")
   let newTableName = document.createElement("td")
   newTableName.setAttribute("class", "legend-table-name")
   newTableName.innerText = name

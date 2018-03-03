@@ -1,12 +1,18 @@
-import {getElementTypes, getElementSeedForm} from '../SCOUtAPI.js'
+import {getElementTypes, getElementSeedForm, buildCustomEnvironment} from '../SCOUtAPI.js'
 import {loadEnvironmentBuilderPage, getBasicInputs} from './EnvironmentBuilder.js'
 import {BasicEnvironmentForm, ElementSelectionForm, ElementSeedForm} from './FormClasses.js'
+import {buildFormFields} from './FormBuilder.js'
+import {checkBasicInputs, checkCustomInputs} from './FormValidators.js'
+import {formatEnvironment} from '../environment/EnvironmentFormatter.js'
+import {loadVisualizer} from '../visualizer/Visualizer.js'
 
 
 // Global DOM Elements
 let environmentForm
 let basicInputs
 let customInputs
+let customInputsTitle
+let customInputsContent
 let submitButtons
 let backButton
 let nextButton
@@ -30,14 +36,12 @@ function loadCustomEnvironmentForm() {
   environmentForm = document.getElementById("environment-form")
   basicInputs = document.getElementById("basic-inputs")
   submitButtons = document.getElementById("submit-buttons")
-
-  // build custom inputs section
-  let newCustomInputs = document.createElement("div")
-  newCustomInputs.setAttribute("id", "custom-inputs")
-  environmentForm.appendChild(newCustomInputs)
   customInputs = document.getElementById("custom-inputs")
+  customInputsTitle = document.getElementById("custom-inputs-title")
+  customInputsContent = document.getElementById("custom-inputs-content")
 
   // create submit buttons
+  elementSeedIndex = -1
   submitButtons.innerHTML = `
     <button class="submit-button" id="back-button">Back</button>
     <button class="submit-button" id="next-button">Next</button>
@@ -71,13 +75,17 @@ _____setupElementForms_____
 Description
     To do
 *******************************************************************************/
-function setupElementForms(elementTypes) {
-  elementSelectionForm = new ElementSelectionForm(elementTypes)
+async function setupElementForms(elementTypes) {
+  elementSelectionForm = await new ElementSelectionForm(elementTypes)
   for (let type in elementTypes) {
-    let seedForm = {}
-    seedForm["element"] = type
-    seedForm["selected"] = elementTypes[type]
-    elementSeedForms.push(seedForm)
+    let seedForm = await {}
+    seedForm["element"] = await type
+    seedForm["selected"] = await elementTypes[type]
+    let formData = await getElementSeedForm(type)
+    await formData.json().then((json) => {
+      seedForm["json"] = json
+    })
+    await elementSeedForms.push(seedForm)
   }
   console.log(elementSeedForms)
 }
@@ -94,9 +102,13 @@ function backButtonHandler() {
           loadEnvironmentBuilderPage(basicInputs.name, basicInputs.height, basicInputs.width)
           break;
     case "ElementSeedForm":
-          loadPreviousElementSeedForm()
+          if (checkCustomInputs()) {
+            saveElementSeedForm()
+            loadPreviousElementSeedForm()
+          }
           break;
     case "ReviewForm":
+          document.getElementById("next-button").innerText = "Next"
           loadPreviousElementSeedForm()
   }
 }
@@ -118,10 +130,13 @@ function nextButtonHandler() {
           loadNextElementSeedForm()
           break;
     case "ElementSeedForm":
-          loadNextElementSeedForm()
+          if (checkCustomInputs()) {
+            saveElementSeedForm()
+            loadNextElementSeedForm()
+          }
           break;
     case "ReviewForm":
-          alert("WE DONE HERE!!")
+          if (checkBasicInputs) submitCustomEnvironment()
   }
 }
 
@@ -132,9 +147,8 @@ Description
 *******************************************************************************/
 function loadElementSelectionForm() {
   currentState = "SelectElementTypes"
-  customInputs.innerHTML = ""
-  let listLabel = document.createElement("h3")
-  listLabel.innerText = "Select Element Types"
+  customInputsTitle.innerText = "Select Element Types"
+  customInputsContent.innerHTML = ""
   let elementSelectionList = document.createElement("ul")
   elementSelectionList.setAttribute("id", "element-selection-list")
   for (let type in elementSelectionForm.elementTypes) {
@@ -163,8 +177,7 @@ function loadElementSelectionForm() {
     newListItem.appendChild(newLabel)
     elementSelectionList.appendChild(newListItem)
   }
-  customInputs.appendChild(listLabel)
-  customInputs.appendChild(elementSelectionList)
+  customInputsContent.appendChild(elementSelectionList)
   // add event listeners
   for (let type in elementSelectionForm.selectables) {
     let typeId = type + "-selection"
@@ -182,7 +195,7 @@ Description
 function loadPreviousElementSeedForm() {
   elementSeedIndex -= 1
   if (elementSeedIndex == -1) loadElementSelectionForm()
-  else if (elementSeedForms[elementSeedIndex]["selected"]) loadElementSeedForm()
+  else if (elementSeedForms[elementSeedIndex].selected) loadElementSeedForm()
   else loadPreviousElementSeedForm()
 }
 
@@ -194,7 +207,7 @@ Description
 function loadNextElementSeedForm() {
   elementSeedIndex += 1
   if (elementSeedIndex == elementSeedForms.length) loadReviewPage()
-  else if (elementSeedForms[elementSeedIndex]["selected"]) loadElementSeedForm()
+  else if (elementSeedForms[elementSeedIndex].selected) loadElementSeedForm()
   else loadNextElementSeedForm()
 }
 
@@ -207,11 +220,26 @@ function loadElementSeedForm() {
   currentState = "ElementSeedForm"
   let elementType = elementSeedForms[elementSeedIndex]["element"]
 
-  customInputs.innerHTML = `
-    <h3 id="quick-form"></h3>
-  `
-  document.getElementById("quick-form").innerText = elementType
-  getElementSeedForm(elementType)
+  customInputsTitle.innerText = elementType
+  customInputsContent.innerHTML = ""
+
+  let formData = elementSeedForms[elementSeedIndex]["json"]["fields"]
+  let formFields = buildFormFields(formData)
+  for (let i in formFields) {
+    let field = formFields[i]
+    customInputsContent.appendChild(field)
+  }
+}
+
+
+function saveElementSeedForm() {
+  let elementType = elementSeedForms[elementSeedIndex]["element"]
+  let formEntries = document.getElementById("custom-inputs").getElementsByClassName("custom-input")
+  for (let i = 0; i < formEntries.length; i++) {
+    let input = formEntries.item(i)
+    let fieldName = input.id
+    elementSeedForms[elementSeedIndex]["json"]["fields"][fieldName]["value"] = input.value
+  }
 }
 
 /*******************************************************************************
@@ -221,7 +249,86 @@ Description
 *******************************************************************************/
 function loadReviewPage() {
   currentState = "ReviewForm"
-  customInputs.innerHTML = `<h3>Review</h3>`
+  customInputsTitle.innerHTML = "Review"
+  customInputsContent.innerHTML = ""
+  document.getElementById("next-button").innerText = "Build Environment"
+  for (let i = 0; i < elementSeedForms.length; i++) {
+    if (elementSeedForms[i].selected == true && elementSeedForms[i].json["field-keys"]){
+      let form = elementSeedForms[i]
+      let title = form.element
+      let titleId = title + "-review-header"
+      let newTitle = document.createElement("h3")
+      newTitle.setAttribute("id", titleId)
+      newTitle.setAttribute("class", "review")
+      newTitle.innerText = title
+      customInputsContent.appendChild(newTitle)
+      document.getElementById(titleId).addEventListener("click", () => goToFormPage(i))
+      let jsonData = form.json
+      for (let j = 0; j < jsonData["field-keys"].length; j++) {
+        let inputName = jsonData["field-keys"][j]
+        let inputValue = jsonData["fields"][inputName]["value"]
+        let inputUnit = jsonData["fields"][inputName]["unit"]
+        let newInput = document.createElement("h4")
+        newInput.setAttribute("class", "review")
+        newInput.innerText = `${inputName}: ${inputValue} ${inputUnit}`
+        customInputsContent.appendChild(newInput)
+      }
+    }
+  }
+}
+
+/*******************************************************************************
+_____goToFormPage_____
+Description
+    Goes to a designated form page
+Parameters
+    formIndex:  index of the form in elementSeedForm list
+*******************************************************************************/
+function goToFormPage(formIndex) {
+  if (formIndex < elementSeedForms.length && elementSeedForms[formIndex].selected) {
+    elementSeedIndex = formIndex
+    loadElementSeedForm()
+  }
+}
+
+/*******************************************************************************
+_____submitCustomEnvironment_____
+Description
+    Grabs all user input data and submits it to build a custom environment
+*******************************************************************************/
+function submitCustomEnvironment() {
+  let basicInputs = getBasicInputs()
+  let elements = []
+  let elementSeeds = {}
+  for (let i = 0; i < elementSeedForms.length; i++) {
+    let seedForm = elementSeedForms[i]
+    let elementType = seedForm["element"]
+    if (seedForm["selected"]){
+      elements.push(elementType)
+      elementSeeds[elementType] = seedForm["json"]
+    }
+  }
+  loadCustomEnvironment(basicInputs.name, basicInputs.height, basicInputs.width, elements, elementSeeds)
+}
+
+/*******************************************************************************
+_____loadCustomEnvironment_____
+Description
+    Makes a server request for a custom environment and loads it into the visualizer
+Parameters
+    name:           associated name for random Environment
+    height:         number of cells hgih the Environment will be
+    width:          number of cells wide the Environment will be
+    elements:       list of all elements to be included in the environment
+    elementSeeds:   seed data for each element included
+*******************************************************************************/
+async function loadCustomEnvironment(name, height, width, elements, elementSeeds) {
+  let customEnvironment = await buildCustomEnvironment(name, height, width, elements, elementSeeds)
+  customEnvironment.json().then((json) => {
+    let environment = formatEnvironment(json)
+    console.log(environment)
+    loadVisualizer(environment)
+  }).catch((err) => { console.log(err) })
 }
 
 export {loadCustomEnvironmentForm}

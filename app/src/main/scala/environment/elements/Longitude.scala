@@ -24,15 +24,33 @@ package seed {
     val elementName: String = "Longitude",
     val dynamic: Boolean = false,
     val rootValue: Double = 1.0,
-    val scale: Double = .000003 * 10.0//scale
+    val formFields: String = """{
+      "field-keys": [
+      "Root Value"
+      ],
+      "fields": {
+        "Root Value": {
+          "type": "number",
+          "unit": "°",
+          "value": 1.0,
+          "lowerBound": 0,
+          "upperBound": 360
+        }
+      }
+    }"""
   ) extends ElementSeed {
-    def buildLayer(height: Int, width: Int): Layer = {
+    def this(seedData: Map[String, String]) {
+      this(
+        rootValue = seedData("Root Value").toDouble
+      )
+    }
+    def buildLayer(height: Int, width: Int, scale: Double): Layer = {
       val layer = new Layer(AB.fill(height)(AB.fill(width)(None)))
       for {
         x <- 0 until height
         y <- 0 until width
       } {
-        val value = rootValue + (x * scale)
+        val value = rootValue + (x * .000003 * scale)
         layer.setElement(x, y, new Longitude(value))
       }
       return layer

@@ -24,14 +24,42 @@ package seed {
     val elementName: String = "Wind Speed",
     val dynamic: Boolean = true,
     val average: Double = 3.0,
-    val deviation: Double = 0.2
+    val deviation: Double = 0.2,
+    val formFields: String = """{
+      "field-keys": [
+      "Average",
+      "Deviation"
+      ],
+      "fields": {
+        "Average": {
+          "type": "number",
+          "unit": "MPH",
+          "value": 3,
+          "lowerBound": 0,
+          "upperBound": 200
+        },
+        "Deviation": {
+          "type": "number",
+          "unit": "MPH",
+          "value": 0.2,
+          "lowerBound": 0,
+          "upperBound": 10
+        }
+      }
+    }"""
   ) extends ElementSeed {
+    def this(seedData: Map[String, String]) {
+      this(
+        average = seedData("Average").toInt,
+        deviation = seedData("Deviation").toDouble
+      )
+    }
     def randomDeviation(mean: Double): Double = {
       val lowerBound = mean - deviation
       val upperBound = mean + deviation
       randomRange(lowerBound, upperBound)
     }
-    def buildLayer(height: Int, width: Int): Layer = {
+    def buildLayer(height: Int, width: Int, scale: Double): Layer = {
       val layer = new Layer(AB.fill(height)(AB.fill(width)(None)))
       if (height > 0 && width > 0) layer.setElement(0, 0, new WindSpeed(average))
       for {

@@ -24,14 +24,42 @@ package seed {
     val elementName: String = "Temperature",
     val dynamic: Boolean = true,
     val average: Double = 70.0,
-    val deviation: Double = 0.2
+    val deviation: Double = 0.2,
+    val formFields: String = """{
+      "field-keys": [
+      "Average",
+      "Deviation"
+      ],
+      "fields": {
+        "Average": {
+          "type": "number",
+          "unit": "°F",
+          "value": 70,
+          "lowerBound": -200,
+          "upperBound": 200
+        },
+        "Deviation": {
+          "type": "number",
+          "unit": "°F",
+          "value": 0.2,
+          "lowerBound": 0,
+          "upperBound": 5
+        }
+      }
+    }"""
   ) extends ElementSeed {
-    def randomDeviation(mean: Double): Double = {
+    def this(seedData: Map[String, String]) {
+      this(
+        average = seedData("Average").toInt,
+        deviation = seedData("Deviation").toDouble
+      )
+    }
+    def randomDeviation(mean: Double, scale: Double): Double = {
       val lowerBound = mean - deviation
       val upperBound = mean + deviation
       randomRange(lowerBound, upperBound)
     }
-    def buildLayer(height: Int, width: Int): Layer = {
+    def buildLayer(height: Int, width: Int, scale: Double): Layer = {
       val layer = new Layer(AB.fill(height)(AB.fill(width)(None)))
       if (height > 0 && width > 0) layer.setElement(0, 0, new Temperature(average))
       for {
@@ -41,7 +69,7 @@ package seed {
       } {
         val cluster = layer.getClusterValues(x, y, 3)
         val mean = cluster.sum / cluster.length
-        val value = randomDeviation(mean)
+        val value = randomDeviation(mean, scale)
         layer.setElement(x, y, new Temperature(value))
       }
       // Smooth the layer
