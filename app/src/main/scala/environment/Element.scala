@@ -4,19 +4,6 @@ import scoututil.Util._
 
 import scala.math.BigDecimal
 
-// List of all elementTypes
-// "Element Type" -> required?
-object ElementTypes {
-  val elementTypes = Map(
-    "Elevation" -> true,
-    "Latitude" -> true,
-    "Longitude" -> true,
-    "Decibel" -> false,
-    "Temperature" -> false,
-    "Wind Direction" -> false,
-    "Wind Speed" -> false
-  )
-}
 
 // Element Trait
 trait Element {
@@ -24,9 +11,10 @@ trait Element {
   val name: String
   val unit: String
   val constant: Boolean
-  val circular: Boolean
+  val radial: Boolean
   val lowerBound: Double
   val upperBound: Double
+  val color: String = "#1BBA09" // Hex value for color in gui
 
   override def toString: String = value match {
     case Some(v)  => v.toString + " " + unit
@@ -39,22 +27,35 @@ trait Element {
   }
   // Set value
   def set(d: Double): Unit = {
-    if (settable && circular) d match {
+    if (radial) d match {
       case v if v < lowerBound  => set(v + (upperBound - lowerBound))
       case v if v > upperBound  => set(v - (upperBound - lowerBound))
-      case _                    => value = Some(d)
-    }
-    if (settable && !circular) d match {
+      case _                    => value = Some(roundDouble2(d))
+    } else d match {
       case v if v < lowerBound  => value = Some(lowerBound)
       case v if v > upperBound  => value = Some(upperBound)
-      case _                    => value = Some(d)
+      case _                    => value = Some(roundDouble2(d))
     }
   }
   // Assigns a random value based on predefined uper and lower bounds
   def setRandom = {
     if (settable) {
-      val v = randomRange(lowerBound, upperBound)
-      value = Some(v)
+      val v = randomDouble(lowerBound, upperBound)
+      value = Some(roundDouble2(v))
     }
   }
+}
+
+// List of all elementTypes
+// "Element Type" -> required?
+object ElementTypes {
+  val elementTypes = Map(
+    // "Elevation" -> true,
+    "Latitude" -> true,
+    "Longitude" -> true,
+    "Decibel" -> false,
+    "Temperature" -> false,
+    "Wind Direction" -> false,
+    "Wind Speed" -> false
+  )
 }

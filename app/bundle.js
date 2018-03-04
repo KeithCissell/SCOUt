@@ -6911,9 +6911,9 @@ function formatEnvironment(json) {
       var eName = jElement.name;
       var unit = jElement.unit;
       var constant = jElement.constant;
-      var circular = jElement.circular;
+      var radial = jElement.radial;
       if (!envElementTypes.includes(eName)) envElementTypes.push(eName);
-      elements.set(eName, new _Element.Element(value, eName, unit, constant, circular));
+      elements.set(eName, new _Element.Element(value, eName, unit, constant, radial));
     }
     envGrid[x][y] = new _Cell.Cell(x, y, elements);
   }
@@ -13762,14 +13762,14 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Element = function Element(value, name, unit, constant, circular) {
+var Element = function Element(value, name, unit, constant, radial) {
   _classCallCheck(this, Element);
 
   this.value = value;
   this.name = name;
   this.unit = unit;
   this.constant = constant;
-  this.circular = circular;
+  this.radial = radial;
 };
 
 exports.Element = Element;

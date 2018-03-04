@@ -39,7 +39,7 @@ object Encoder {
             ("value" -> e.value) ~
             ("unit" -> e.unit) ~
             ("constant" -> e.constant) ~
-            ("circular" -> e.circular)
+            ("radial" -> e.radial)
           })
         )
     return compact(render(json))
@@ -61,7 +61,7 @@ object Encoder {
                 ("name" -> e.name) ~
                 ("unit" -> e.unit) ~
                 ("constant" -> e.constant) ~
-                ("circular" -> e.circular)
+                ("radial" -> e.radial)
             })
         })
       )

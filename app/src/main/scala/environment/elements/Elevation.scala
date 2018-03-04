@@ -13,7 +13,7 @@ class Elevation(var value: Option[Double]) extends Element {
   val name = "Elevation"
   val unit = "ft"
   val constant = true
-  val circular = false
+  val radial = false
   val lowerBound = -1500.0
   val upperBound = 1500.0
   def this(d: Double) = this(Some(d))
@@ -58,7 +58,7 @@ package seed {
     def randomDeviation(mean: Double, scale: Double): Double = {
       val lowerBound = mean - (deviation * scale)
       val upperBound = mean + (deviation * scale)
-      randomRange(lowerBound, upperBound)
+      randomDouble(lowerBound, upperBound)
     }
     def buildLayer(height: Int, width: Int, scale: Double): Layer = {
       val layer = new Layer(AB.fill(height)(AB.fill(width)(None)))

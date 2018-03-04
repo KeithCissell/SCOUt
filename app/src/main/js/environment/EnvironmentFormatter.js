@@ -29,9 +29,9 @@ function formatEnvironment(json) {
       let eName = jElement.name
       let unit = jElement.unit
       let constant = jElement.constant
-      let circular = jElement.circular
+      let radial = jElement.radial
       if (!envElementTypes.includes(eName)) envElementTypes.push(eName)
-      elements.set(eName, new Element(value, eName, unit, constant, circular))
+      elements.set(eName, new Element(value, eName, unit, constant, radial))
     }
     envGrid[x][y] = new Cell(x, y, elements)
   }

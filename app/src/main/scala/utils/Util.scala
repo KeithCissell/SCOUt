@@ -17,9 +17,12 @@ object Util {
   def log2(x: Double): Double = {
     log(x) / log(2)
   }
-  def randomRange(lowerBound: Double, upperBound: Double): Double = {
-    val d = lowerBound + (upperBound - lowerBound) * Random.nextDouble
-    roundDouble2(d)
+  def randomInt(lowerBound: Int, upperBound: Int): Int = {
+    val r = lowerBound + (upperBound - lowerBound) * Random.nextDouble
+    Math.round(r.toFloat)
+  }
+  def randomDouble(lowerBound: Double, upperBound: Double): Double = {
+    lowerBound + (upperBound - lowerBound) * Random.nextDouble
   }
   def roundDouble2(d: Double): Double = {
     BigDecimal(d).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
