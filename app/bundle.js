@@ -7130,6 +7130,16 @@ Description
     Loads toolbar for manipulating the display
 *******************************************************************************/
 function loadToolbar() {
+  // Loads toggle button for Grid Display
+  var toggleID = "Grid-Toggle";
+  (0, _Toolbar.addToggle)("Grid", toggleID);
+  var toggle = document.getElementById(toggleID);
+  toggle.addEventListener("click", function () {
+    var cells = document.getElementsByClassName("display-cell");
+    for (var i = 0; i < cells.length; i++) {
+      if (toggle.checked) cells[i].setAttribute("stroke-width", 1);else cells[i].setAttribute("stroke-width", 0);
+    }
+  });
   // Load radio buttons for selectable layers
   for (var i = 0; i < elementSelections.length; i++) {
     var elementType = elementSelections[i];
@@ -31958,12 +31968,12 @@ Object.defineProperty(exports, "__esModule", {
 /*******************************************************************************
 _____addToggle_____
 Description
-    Adds a toggle button to allow turning display of a layer on/off
+    Adds a toggle button to the toolbar
 Parameters
-    layerName:    element type of the layer
+    label:        label for the toggle
     toggleID:     associated ID that will be given to the DOM element
 *******************************************************************************/
-function addToggle(layerName, toggleID) {
+function addToggle(label, toggleID) {
   var layerTogglesHeader = document.getElementById("layer-toggles-header");
   var layerToggles = document.getElementById("layer-toggles");
 
@@ -31978,7 +31988,7 @@ function addToggle(layerName, toggleID) {
   newSlider.setAttribute("class", "slider round");
   var newSpan = document.createElement("span");
   newSpan.setAttribute("class", "toggle-text");
-  newSpan.innerText = layerName;
+  newSpan.innerText = label;
   // Add into DOM
   newLable.appendChild(newToggle);
   newLable.appendChild(newSlider);

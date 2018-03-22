@@ -2,12 +2,12 @@
 /*******************************************************************************
 _____addToggle_____
 Description
-    Adds a toggle button to allow turning display of a layer on/off
+    Adds a toggle button to the toolbar
 Parameters
-    layerName:    element type of the layer
+    label:        label for the toggle
     toggleID:     associated ID that will be given to the DOM element
 *******************************************************************************/
-function addToggle(layerName, toggleID) {
+function addToggle(label, toggleID) {
   let layerTogglesHeader = document.getElementById("layer-toggles-header")
   let layerToggles = document.getElementById("layer-toggles")
 
@@ -22,7 +22,7 @@ function addToggle(layerName, toggleID) {
   newSlider.setAttribute("class", "slider round")
   let newSpan = document.createElement("span")
   newSpan.setAttribute("class", "toggle-text")
-  newSpan.innerText = layerName
+  newSpan.innerText = label
   // Add into DOM
   newLable.appendChild(newToggle)
   newLable.appendChild(newSlider)

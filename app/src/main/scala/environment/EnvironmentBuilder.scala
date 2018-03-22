@@ -44,11 +44,11 @@ object EnvironmentBuilder {
 
   def generateTerrain(height: Int, width: Int, scale: Double): Layer = {
     // params TEMP
-    //
+    //------------------------------------------------------------------------
     val rootValue = 0.0
     val deviation = 3.0
     // val smoothness = 0.8
-    //
+    //------------------------------------------------------------------------
 
     // Variables
     val cellCount = height * width
@@ -81,11 +81,13 @@ object EnvironmentBuilder {
     }
 
 
-    // shape mountains/hills/valleys (smooth along way)
+    // shape mountains/hills/valleys (smooth along the way)
+    //------------------------------------------------------------------------
     val modifications: List[TerrainModification] = List(
-      TerrainModification(modification = 50.0, coverage = 0.3, slope = 30.0),
+      TerrainModification(modification = 50.0, coverage = 0.7, slope = 30.0),
       TerrainModification(modification = -30.0, coverage = 0.15, slope = 10.0)
     )
+    //------------------------------------------------------------------------
 
     var unmodifiedCells: AB[(Int,Int)] = elevation.coordinatePool.clone()
     var modifiedCells: AB[(Int,Int,Double)] = AB()
