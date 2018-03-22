@@ -10,7 +10,7 @@ class Layer(val layer: Grid[Element]) {
   val height: Int = layer.length
   val width: Int = if (layer.isEmpty) 0 else layer(0).length
 
-  var coordinatePool: AB[(Int,Int)] = (
+  val coordinatePool: AB[(Int,Int)] = (
     for {
       x <- 0 until height
       y <- 0 until width
@@ -82,7 +82,7 @@ class Layer(val layer: Grid[Element]) {
   def smooth(x: Int, y: Int, radius: Int, originWeight: Double) = getElementValue(x,y) match {
     case Some(currentValue) => {
       val cluster = getClusterValues(x, y, radius)
-      val newValue = (currentValue * originWeight + cluster.sum) / (originWeight * cluster.length)
+      val newValue = (currentValue * originWeight + cluster.sum) / (originWeight + cluster.length)
       setElementValue(x, y, newValue)
     }
     case None => // Nothing to do

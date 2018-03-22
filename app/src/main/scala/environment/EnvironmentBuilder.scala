@@ -44,9 +44,11 @@ object EnvironmentBuilder {
 
   def generateTerrain(height: Int, width: Int, scale: Double): Layer = {
     // params TEMP
+    //
     val rootValue = 0.0
     val deviation = 3.0
-    val smoothness = 0.8
+    // val smoothness = 0.8
+    //
 
     // Variables
     val cellCount = height * width
@@ -81,7 +83,7 @@ object EnvironmentBuilder {
 
     // shape mountains/hills/valleys (smooth along way)
     val modifications: List[TerrainModification] = List(
-      TerrainModification(modification = 50.0, coverage = 0.3, slope = -30.0),
+      TerrainModification(modification = 50.0, coverage = 0.3, slope = 30.0),
       TerrainModification(modification = -30.0, coverage = 0.15, slope = 10.0)
     )
 
@@ -116,17 +118,18 @@ object EnvironmentBuilder {
       }
 
       // Apply sloping factor to surrounding, unmodifiedCells
-      val effectedRadius = Math.round(mod.modification / mod.slope).toInt
+      val effectedRadius = Math.abs(Math.round(mod.modification / mod.slope).toInt)
       for (c <- modifiedCells) {
         val originX = c._1
         val originY = c._2
         for {
           x <- (originX - effectedRadius) to (originX + effectedRadius)
           y <- (originY - effectedRadius) to (originY + effectedRadius)
-          if unmodifiedCells.contains((x,y))
           if dist(x, y, originX, originY) != 0
           if dist(x, y, originX, originY) <= effectedRadius
-        } elevation.smooth(x, y, 2, dist(originX, originY, x, y))
+        } {
+          elevation.smooth(x, y, 2, dist(originX, originY, x, y))
+        }
       }
       modifiedCells = AB() // clear array
     }
