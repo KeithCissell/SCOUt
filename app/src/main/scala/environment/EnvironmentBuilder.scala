@@ -54,8 +54,9 @@ object EnvironmentBuilder {
     val cellCount = height * width
 
     // Initialize layers
-    val terrain: Grid[Terrain] = AB.fill(height)(AB.fill(width)(None))
     val elevation: Layer = new Layer(AB.fill(height)(AB.fill(width)(None)))
+    val waterDepth: Layer = new Layer(AB.fill(height)(AB.fill(width)(None)))
+    // val navigability: Layer = new Layer(AB.fill(height)(AB.fill(width)(None)))
 
     // randomize landscape
     for {
@@ -83,7 +84,7 @@ object EnvironmentBuilder {
 
     // shape mountains/hills/valleys (smooth along the way)
     //------------------------------------------------------------------------
-    val modifications: List[TerrainModification] = List(
+    val terrainModifications: List[TerrainModification] = List(
       TerrainModification(modification = 50.0, coverage = 0.7, slope = 30.0),
       TerrainModification(modification = -30.0, coverage = 0.15, slope = 10.0)
     )
@@ -92,7 +93,7 @@ object EnvironmentBuilder {
     var unmodifiedCells: AB[(Int,Int)] = elevation.coordinatePool.clone()
     var modifiedCells: AB[(Int,Int,Double)] = AB()
 
-    for (mod <- modifications) {
+    for (mod <- terrainModifications) {
       val randomIndex = randomInt(0, unmodifiedCells.length - 1)
       val cellCoordinates = unmodifiedCells.remove(randomIndex)
       var currentX = cellCoordinates._1
@@ -112,7 +113,7 @@ object EnvironmentBuilder {
         currentValue = elevation.getElementValue(currentX, currentY).getOrElse(0.0)
         // ensure modifications don't overlap
         if (unmodifiedCells.contains((currentX,currentY))) {
-          val newValue = randomDouble((mod.modification - deviation), (mod.modification + deviation))
+          val newValue = currentValue + randomDouble((mod.modification - deviation), (mod.modification + deviation))
           elevation.setElementValue(currentX, currentY, newValue)
           unmodifiedCells -= ((currentX, currentY))
           modifiedCells.append((currentX, currentY, mod.slope))
@@ -137,6 +138,13 @@ object EnvironmentBuilder {
     }
 
     // erode areas for water
+
+    //------------------------------------------------------------------------
+    val waterModifications: List[WaterModification] = List(
+      WaterPoolModification(maxDepth = 10.0, coverage = 0.15, slope = 3.0),
+      WaterFlowModification(depth = 5.0, width = 15.0, momentum = 10.0)
+    )
+    //------------------------------------------------------------------------
 
 
 

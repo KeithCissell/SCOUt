@@ -7007,6 +7007,7 @@ function loadVisualizer(targetEnvironment) {
   loadLegend();
 
   document.getElementById("Elevation-Toggle").click();
+  document.getElementById("Grid-Toggle").click();
 }
 
 /*******************************************************************************
