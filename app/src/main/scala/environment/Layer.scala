@@ -6,9 +6,10 @@ import environment.element._
 import scala.math._
 import scala.collection.mutable.{ArrayBuffer => AB}
 
+
 class Layer(val layer: Grid[Element]) {
   val height: Int = layer.length
-  val width: Int = if (layer.isEmpty) 0 else layer(0).length
+  val width:  Int = if (layer.isEmpty) 0 else layer(0).length
 
   val coordinatePool: AB[(Int,Int)] = (
     for {
@@ -61,25 +62,25 @@ class Layer(val layer: Grid[Element]) {
     }
   }
   // Returns any elements in the given radius from a given origin
-  def getCluster(originX: Int, originY: Int, radius: Int): List[Element] = {
+  def getCluster(originX: Int, originY: Int, radius: Double): List[Element] = {
     (for {
-      x <- (originX - radius) to (originX + radius)
-      y <- (originY - radius) to (originY + radius)
+      x <- (originX - Math.round(radius).toInt) to (originX + Math.round(radius).toInt)
+      y <- (originY - Math.round(radius).toInt) to (originY + Math.round(radius).toInt)
       if dist(x, y, originX, originY) != 0
       if dist(x, y, originX, originY) <= radius
     } yield getElement(x, y)).flatten.toList
   }
   // Like getCluster, but returns the values instead of the entire object
-  def getClusterValues(originX: Int, originY: Int, radius: Int): List[Double] = {
+  def getClusterValues(originX: Int, originY: Int, radius: Double): List[Double] = {
     (for {
-      x <- (originX - radius) to (originX + radius)
-      y <- (originY - radius) to (originY + radius)
+      x <- (originX - Math.round(radius).toInt) to (originX + Math.round(radius).toInt)
+      y <- (originY - Math.round(radius).toInt) to (originY + Math.round(radius).toInt)
       if dist(x, y, originX, originY) != 0
       if dist(x, y, originX, originY) <= radius
     } yield getElement(x, y).flatMap(_.value)).flatten.toList
   }
   // Adjust value at (x,y) by a weighted average of neighboring cells
-  def smooth(x: Int, y: Int, radius: Int, originWeight: Double) = getElementValue(x,y) match {
+  def smooth(x: Int, y: Int, radius: Double, originWeight: Double) = getElementValue(x,y) match {
     case Some(currentValue) => {
       val cluster = getClusterValues(x, y, radius)
       val newValue = (currentValue * originWeight + cluster.sum) / (originWeight + cluster.length)
@@ -87,5 +88,20 @@ class Layer(val layer: Grid[Element]) {
     }
     case None => // Nothing to do
   }
-
+  // Smooth a list of given cells
+  def smoothArea(cells: AB[(Int,Int)], radius: Double, originWeight: Double) = {
+    var pool = cells.clone()
+    for (i <- 0 until pool.length) {
+      // Randomly select a cell from list smooth
+      val randomIndex = randomInt(0, pool.length - 1)
+      val cellCoordinates = pool.remove(randomIndex)
+      val x = cellCoordinates._1
+      val y = cellCoordinates._2
+      smooth(x, y, radius, originWeight)
+    }
+  }
+  // Smooth all cells in layer
+  def smoothLayer(radius: Double, originWeight: Double) = {
+    smoothArea(coordinatePool, radius, originWeight)
+  }
 }

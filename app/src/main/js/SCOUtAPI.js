@@ -82,11 +82,8 @@ Parameters
     width:    number of cells wide the Environment will be
 *******************************************************************************/
 function newRandomEnvironment(name, height, width) {
-  let reqBody = `{
-    "name": "${name}",
-    "height": ${height},
-    "width": ${width}
-  }`
+  let reqBody = `{"name": "${name}", "height": ${height}, "width": ${width}}`
+  console.log(reqBody)
   let reqSpecs = {  method: 'POST',
                     headers: reqHeaders,
                     mode: 'cors',

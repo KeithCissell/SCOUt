@@ -46,6 +46,7 @@ object SCOUtService {
 
   // Sets environment to the default environment
   def newRandomEnvironment(req: Request): Task[Response] = req.decode[Json] { data =>
+    println(data.toString)
     val name = extractString("name", data).getOrElse("")
     val height = extractInt("height", data).getOrElse(0)
     val width = extractInt("width", data).getOrElse(0)
