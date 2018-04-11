@@ -23,7 +23,7 @@ object SCOUtService {
   var environment = buildEnvironment("Empty", 2, 2)
 
   // Mutable list of seeds initialized to default
-  var seedList: List[ElementSeed] = SeedList.defaultSeedList
+  var seedList: List[ElementSeed] = SeedList.defaultSeedList()
 
   // Server request handler
   val service = HttpService {
@@ -46,15 +46,17 @@ object SCOUtService {
 
   // Sets environment to the default environment
   def newRandomEnvironment(req: Request): Task[Response] = req.decode[Json] { data =>
+    println(data.toString)
     val name = extractString("name", data).getOrElse("")
     val height = extractInt("height", data).getOrElse(0)
     val width = extractInt("width", data).getOrElse(0)
+    val scale = extractDouble("scale", data).getOrElse(10.0)
     (name, height, width) match {
       case ("", _, _) => BadRequest("Bad name")
       case (_, 0, _)  => BadRequest("Bad height")
       case (_, _, 0)  => BadRequest("Bad width")
       case (n, w, h)  => {
-        environment = buildEnvironment(n, h, w, SeedList.defaultSeedList)
+        environment = buildEnvironment(n, h, w, scale, SeedList.defaultSeedList())
         Ok(encodeEnvironment(environment))
       }
     }
@@ -65,6 +67,7 @@ object SCOUtService {
     val name = extractString("name", data).getOrElse("")
     val height = extractInt("height", data).getOrElse(0)
     val width = extractInt("width", data).getOrElse(0)
+    val scale = extractDouble("scale", data).getOrElse(10.0)
     val seeds = extractElementSeeds(data).getOrElse(Nil)
     (name, height, width, seeds) match {
       case ("", _, _, _) => BadRequest("Bad name")
@@ -73,7 +76,7 @@ object SCOUtService {
       case (_, _, _, Nil)  => BadRequest("Bad element seed data")
       case (n, w, h, s)  => {
         seedList = s
-        environment = buildEnvironment(n, h, w, s)
+        environment = buildEnvironment(n, h, w, scale, s)
         Ok(encodeEnvironment(environment))
       }
     }

@@ -13,7 +13,7 @@ class Decibel(var value: Option[Double]) extends Element {
   val name = "Decibel"
   val unit = "dB"
   val constant = false
-  val circular = false
+  val radial = false
   val lowerBound = 0.0
   val upperBound = 120.0
   def this(d: Double) = this(Some(d))
@@ -50,9 +50,9 @@ package seed {
       pow(2, source.value / 6)
     }
     def createRandomSource(height: Int, width: Int) = {
-      val randX = round(randomRange(0, height-1)).toInt
-      val randY = round(randomRange(0, width-1)).toInt
-      val randValue = randomRange(upperBound, lowerBound)
+      val randX = round(randomDouble(0, height-1)).toInt
+      val randY = round(randomDouble(0, width-1)).toInt
+      val randValue = randomDouble(upperBound, lowerBound)
       sources += NoiseSource(randX, randY, randValue)
     }
     def buildLayer(height: Int, width: Int, scale: Double): Layer = {

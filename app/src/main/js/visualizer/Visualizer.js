@@ -58,6 +58,7 @@ function loadVisualizer(targetEnvironment) {
   loadLegend()
 
   document.getElementById("Elevation-Toggle").click()
+  document.getElementById("Grid-Toggle").click()
 }
 
 /*******************************************************************************
@@ -183,6 +184,17 @@ Description
     Loads toolbar for manipulating the display
 *******************************************************************************/
 function loadToolbar() {
+  // Loads toggle button for Grid Display
+  let toggleID = "Grid-Toggle"
+  addToggle("Grid", toggleID)
+  let toggle = document.getElementById(toggleID)
+  toggle.addEventListener("click", function() {
+    let cells = document.getElementsByClassName("display-cell")
+    for (let i = 0; i < cells.length; i++) {
+      if (toggle.checked) cells[i].setAttribute("stroke-width", 1)
+      else cells[i].setAttribute("stroke-width", 0)
+    }
+  })
   // Load radio buttons for selectable layers
   for (let i = 0; i < elementSelections.length; i++) {
     let elementType = elementSelections[i]

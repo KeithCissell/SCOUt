@@ -24,7 +24,7 @@ Parameters
     height:   number of cells hgih the Environment will be
     width:    number of cells wide the Environment will be
 *******************************************************************************/
-function loadEnvironmentBuilderPage(name = "My Environment", height = "10", width = "10") {
+function loadEnvironmentBuilderPage(name = "My Environment", height = "50", width = "50") {
   // Setup Environment Builder Page
   main.innerHTML = `
   <div id="home-page">

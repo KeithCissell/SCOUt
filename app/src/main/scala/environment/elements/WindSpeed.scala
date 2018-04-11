@@ -12,7 +12,7 @@ class WindSpeed(var value: Option[Double]) extends Element {
   val name = "Wind Speed"
   val unit = "MPH"
   val constant = false
-  val circular = false
+  val radial = false
   val lowerBound = 0.0
   val upperBound = 200.0
   def this(d: Double) = this(Some(d))
@@ -57,7 +57,7 @@ package seed {
     def randomDeviation(mean: Double): Double = {
       val lowerBound = mean - deviation
       val upperBound = mean + deviation
-      randomRange(lowerBound, upperBound)
+      randomDouble(lowerBound, upperBound)
     }
     def buildLayer(height: Int, width: Int, scale: Double): Layer = {
       val layer = new Layer(AB.fill(height)(AB.fill(width)(None)))

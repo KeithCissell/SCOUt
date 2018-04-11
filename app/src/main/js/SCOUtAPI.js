@@ -87,6 +87,7 @@ function newRandomEnvironment(name, height, width) {
     "height": ${height},
     "width": ${width}
   }`
+  console.log(reqBody)
   let reqSpecs = {  method: 'POST',
                     headers: reqHeaders,
                     mode: 'cors',

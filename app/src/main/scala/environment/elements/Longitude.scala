@@ -12,7 +12,7 @@ class Longitude(var value: Option[Double]) extends Element {
   val name = "Longitude"
   val unit = "°"
   val constant = true
-  val circular = true
+  val radial = true
   val lowerBound = -180.0
   val upperBound = 180.0
   def this(d: Double) = this(Some(d))

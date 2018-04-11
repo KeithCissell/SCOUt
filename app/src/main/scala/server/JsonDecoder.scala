@@ -23,6 +23,14 @@ object Decoder {
     }
   }
 
+  def extractDouble(field: String, data: Json): Option[Double] = {
+    val cursor: HCursor = data.hcursor
+    cursor.downField(field).as[Double] match {
+      case Left(_)  => None
+      case Right(i) => Some(i)
+    }
+  }
+
   def extractElementSeeds(data: Json): Option[List[ElementSeed]] = {
     val cursor: HCursor = data.hcursor
     val seedsData = cursor.downField("seeds")

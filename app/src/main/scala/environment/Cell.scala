@@ -6,7 +6,9 @@ import scala.math._
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
-case class Cell(val x: Int, val y: Int,
+case class Cell(
+    val x: Int,
+    val y: Int,
     private var elements: Map[String,Element] = Map.empty) {
 
   override def toString: String = {
