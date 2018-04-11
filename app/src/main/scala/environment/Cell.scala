@@ -9,11 +9,10 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 case class Cell(
     val x: Int,
     val y: Int,
-    var z: Double = 0.0,
     private var elements: Map[String,Element] = Map.empty) {
 
   override def toString: String = {
-    var str = s"\nCell ($x, $y, $z)"
+    var str = s"\nCell ($x, $y)"
     for (e <- elements.values) e.value match {
       case Some(v)  => str += s"\n\t${e.name}: $v ${e.unit}"
       case None     => str += s"\n\t${e.name}: NONE"
@@ -23,7 +22,6 @@ case class Cell(
 
   def getX: Int = x
   def getY: Int = y
-  def getZ: Double = z
   def dist(p2: Cell): Double = {
     val x1 = x.toDouble
     val y1 = y.toDouble

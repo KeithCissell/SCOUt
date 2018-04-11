@@ -14,7 +14,7 @@ trait Element {
   val radial: Boolean
   val lowerBound: Double
   val upperBound: Double
-  val color: String = "#1BBA09" // Hex value for color in gui
+  // val color: String = "#1BBA09" // Hex value for color in gui
 
   override def toString: String = value match {
     case Some(v)  => v.toString + " " + unit

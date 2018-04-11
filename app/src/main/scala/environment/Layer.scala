@@ -63,18 +63,20 @@ class Layer(val layer: Grid[Element]) {
   }
   // Returns any elements in the given radius from a given origin
   def getCluster(originX: Int, originY: Int, radius: Double): List[Element] = {
+    val cellBlockSize = Math.round(Math.abs(radius)).toInt
     (for {
-      x <- (originX - Math.round(radius).toInt) to (originX + Math.round(radius).toInt)
-      y <- (originY - Math.round(radius).toInt) to (originY + Math.round(radius).toInt)
+      x <- (originX - cellBlockSize) to (originX + cellBlockSize)
+      y <- (originY - cellBlockSize) to (originY + cellBlockSize)
       if dist(x, y, originX, originY) != 0
       if dist(x, y, originX, originY) <= radius
     } yield getElement(x, y)).flatten.toList
   }
   // Like getCluster, but returns the values instead of the entire object
   def getClusterValues(originX: Int, originY: Int, radius: Double): List[Double] = {
+    val cellBlockSize = Math.round(Math.abs(radius)).toInt
     (for {
-      x <- (originX - Math.round(radius).toInt) to (originX + Math.round(radius).toInt)
-      y <- (originY - Math.round(radius).toInt) to (originY + Math.round(radius).toInt)
+      x <- (originX - cellBlockSize) to (originX + cellBlockSize)
+      y <- (originY - cellBlockSize) to (originY + cellBlockSize)
       if dist(x, y, originX, originY) != 0
       if dist(x, y, originX, originY) <= radius
     } yield getElement(x, y).flatMap(_.value)).flatten.toList
