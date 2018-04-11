@@ -18,7 +18,6 @@ class ConstructionLayer(
   val width:  Int) {
 
   val layer: AB[AB[ConstructionCell]] = AB.fill(height)(AB.fill(width)(new ConstructionCell()))
-
   val coordinatePool: AB[(Int,Int)] = (
     for {
       x <- 0 until height
@@ -41,24 +40,29 @@ class ConstructionLayer(
   }
   // Checks if cell has been modified
   def isModified(x: Int, y: Int): Boolean = {
-    if (inLayer(x,y)) layer(x)(y).modified
+    if (inLayer(x, y)) layer(x)(y).modified
     else true
   }
   // Checks cell is a border cell (has unmodified neighbors)
   def isBorder(x: Int, y: Int): Boolean = {
     // checks 8 adjacent neighbors
-    if (inLayer(x,y)) getClusterUnmodified(x, y, 1.5).length match {
+    if (inLayer(x, y)) getClusterUnmodified(x, y, 1.5).length match {
       case 0 => false
       case _ => true
     } else false
   }
   // Sets a cells status to modified = true
   def setToModified(x: Int, y: Int) = {
-    if (inLayer(x,y)) layer(x)(y).modified = true
+    if (inLayer(x, y)) layer(x)(y).modified = true
   }
   // Returns a random unmodified cell (if any)
   def getRandomUnmodified(): Option[(Int,Int)] = {
-    for (c <- coordinatePool) if (!isModified(c._1, c._2)) return Some(c)
+    var pool = coordinatePool.clone()
+    for (i <- 0 until pool.length) {
+      val randomIndex = randomInt(0, pool.length - 1)
+      val c = pool.remove(randomIndex)
+      if (!isModified(c._1, c._2)) return Some(c)
+    }
     return None
   }
   // Returns constructionCells in the given radius from a given origin

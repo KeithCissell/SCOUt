@@ -26,8 +26,8 @@ object EnvironmentBuilder {
     val environment = new Environment(name, height, width, scale)
 
     // Generate Terrain
-    val elevation = generateTerrain(height, width, scale)
-    environment.setLayer(elevation)
+    val terrainLayers: List[Layer] = generateTerrain(height, width, scale)
+    for (layer <- terrainLayers) environment.setLayer(layer)
 
     // Place Anomolies
 
@@ -42,7 +42,7 @@ object EnvironmentBuilder {
   }
 
 
-  def generateTerrain(height: Int, width: Int, scale: Double): Layer = {
+  def generateTerrain(height: Int, width: Int, scale: Double): List[Layer] = {
     // params TEMP
     //------------------------------------------------------------------------
     val rootValue = 0.0
@@ -54,14 +54,16 @@ object EnvironmentBuilder {
     val cellCount = height * width
     val envArea = cellCount * Math.pow(scale, 2)
     val constructionLayer = new ConstructionLayer(height, width)
-    // var unmodifiedCells: AB[(Int,Int)] = (
-    //   for {
-    //     x <- 0 until height
-    //     y <- 0 until width
-    //   } yield (x, y)).to[AB]
 
-    // INITIALIZE LAYERS
-    // Initialize Elevation layer
+    // ELEVATION LAYER
+    // shape mountains/hills/valleys (smooth along the way)
+    //------------------------------------------------------------------------
+    val elevationModifications: List[ElevationModification] = List(
+      ElevationModification(modification = 150.0, coverage = 0.3, slope = 6.0),
+      ElevationModification(modification = -30.0, coverage = 0.17, slope = 10.0)
+    )
+    //------------------------------------------------------------------------
+    // Initialize Elevation Layer
     val elevation: Layer = new Layer(AB.fill(height)(AB.fill(width)(None)))
     for {
       x <- 0 until height
@@ -74,30 +76,7 @@ object EnvironmentBuilder {
     val neighborhoodRadius = 3
     val originWeight = 3
     elevation.smoothLayer(neighborhoodRadius, originWeight)
-    // var pool: AB[(Int,Int)] = elevation.coordinatePool.clone()
-    // for (i <- 0 to cellCount) {
-    //   // Randomly select an origin to smooth from
-    //   val randomIndex = randomInt(0, pool.length - 1)
-    //   val cellCoordinates = pool.remove(randomIndex)
-    //   val x = cellCoordinates._1
-    //   val y = cellCoordinates._2
-    //   elevation.smooth(x, y, neighborhoodRadius, originWeight)
-    // }
-
-    // Initialize WaterDepth layer
-    val waterDepth: Layer = new Layer(AB.fill(height)(AB.fill(width)(Some(new WaterDepth(0.0)))))
-
-    // Initialize Navigability layer
-    // val navigability: Layer = new Layer(AB.fill(height)(AB.fill(width)(None)))
-
-    // ELEVATION MODIFICATIONS
-    // shape mountains/hills/valleys (smooth along the way)
-    //------------------------------------------------------------------------
-    val elevationModifications: List[ElevationModification] = List(
-      ElevationModification(modification = 50.0, coverage = 0.4, slope = 30.0),
-      ElevationModification(modification = -30.0, coverage = 0.15, slope = 10.0)
-    )
-    //------------------------------------------------------------------------
+    // Apply Elivation Modifications
     for (mod <- elevationModifications) {
       var modifiedCells: AB[(Int,Int)] = AB()
       val numCellsToMod = Math.round(mod.coverage * cellCount).toInt
@@ -124,22 +103,12 @@ object EnvironmentBuilder {
           modifiedCells.append((x, y))
         }
         case None => // No neighbor cells to modify
-        // Select a new, unmodified neighbor
-        // currentX = randomInt(Math.max(0, currentX - 1), Math.min(currentX + 1, height - 1))
-        // currentY = randomInt(Math.max(0, currentY - 1), Math.min(currentY + 1, width - 1))
-        // currentValue = elevation.getElementValue(currentX, currentY).getOrElse(0.0)
-        // ensure modifications don't overlap
-        // if (unmodifiedCells.contains((currentX,currentY))) {
-        //   val newValue = currentValue + randomDouble((mod.modification - deviation), (mod.modification + deviation))
-        //   elevation.setElementValue(currentX, currentY, newValue)
-        //   unmodifiedCells -= ((currentX, currentY))
-        //   modifiedCells.append((currentX, currentY))
-        // }
       }
       // Smooth modified area multiple times (to avoid initial averaging flaws)
+      // val smooth = 2
       // val radius = 2
       // val weight = 2
-      // for (x <- 0 until 2) elevation.smoothArea(modifiedCells, radius, weight)
+      // for (x <- 0 until smooth) elevation.smoothArea(modifiedCells, radius, weight)
       // Apply sloping factor to modified area through smoothing
       val effectedRadius = Math.abs(Math.round(mod.modification / mod.slope).toInt)
       for (c <- modifiedCells) {
@@ -154,7 +123,7 @@ object EnvironmentBuilder {
       }
     }
 
-    // WATER MODIFICATIONS
+    // WATERDEPTH LAYER
     // Form pools and streams of water
     //------------------------------------------------------------------------
     val waterModifications: List[WaterModification] = List(
@@ -162,6 +131,8 @@ object EnvironmentBuilder {
       WaterStreamModification(depth = 5.0, width = 15.0, momentum = 10.0)
     )
     //------------------------------------------------------------------------
+    // Initialize WaterDepth Layer
+    val waterDepth: Layer = new Layer(AB.fill(height)(AB.fill(width)(Some(new WaterDepth(0.0)))))
     // Create list of valid starting points for streams
     // var streamStartPoints: AB[(Int,Int)] = AB()
     // for (unmodified <- unmodifiedCells) unmodified match {
@@ -170,7 +141,7 @@ object EnvironmentBuilder {
     //   case (_, 0)       => streamStartPoints.append(unmodified)
     //   case (_, width)   => streamStartPoints.append(unmodified)
     // }
-    // Apply each modification
+    // Apply Water Modifications
     for (mod <- waterModifications) mod match {
       // Water Pool Modification
       // Erodes area in a "step-down" erosion approach based on the given slope and maxDepth
@@ -200,16 +171,6 @@ object EnvironmentBuilder {
             modifiedCells.append((x, y))
           }
           case None => // No neighbor cells to modify {
-          // Select a new, unmodified neighbor
-          // currentX = randomInt(Math.max(0, currentX - 1), Math.min(currentX + 1, height - 1))
-          // currentY = randomInt(Math.max(0, currentY - 1), Math.min(currentY + 1, width - 1))
-          // // ensure modifications don't overlap
-          // if (unmodifiedCells.contains((currentX,currentY))) {
-          //   val newValue = randomDouble((steps(0) - deviation), (steps(0) + deviation))
-          //   waterDepth.setElementValue(currentX, currentY, newValue)
-          //   unmodifiedCells -= ((currentX, currentY))
-          //   modifiedCells.append((currentX, currentY))
-          // }
         }
         // Erode each step
         for (i <- 1 until numSteps) {
@@ -234,11 +195,13 @@ object EnvironmentBuilder {
             }
           }
         }
-        // Smooth modifiedCells
+        // Smooth modified area
         val radius = 3
         val weight = 3
         waterDepth.smoothArea(modifiedCells, radius, weight)
       }
+      // Water Stream Modification
+      // Erode channels of water with a directional influence
       case mod: WaterStreamModification => {
 
       }
@@ -248,7 +211,7 @@ object EnvironmentBuilder {
 
 
 
-    return elevation
+    return List(elevation, waterDepth)
   }
 
 }

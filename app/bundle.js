@@ -6201,8 +6201,8 @@ Parameters
 *******************************************************************************/
 function loadEnvironmentBuilderPage() {
   var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "My Environment";
-  var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "10";
-  var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "10";
+  var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "50";
+  var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "50";
 
   // Setup Environment Builder Page
   main.innerHTML = '\n  <div id="home-page">\n    <h1 id="home-title">Environment Builder</h1>\n    <div id="home-content">\n      <form id="environment-form">\n        <div id="basic-inputs">\n          <label for="environment-name">Environment Name</label>\n          <input class="basic-input" type="text" id="environment-name">\n          <label for="height">Height</label>\n          <input class="basic-input" type="number" id="height" min="10" max="100">\n          <label for="width">Width</label>\n          <input class="basic-input" type="number" id="width" min="10" max="100">\n        </div>\n        <div id="custom-inputs">\n          <h3 id="custom-inputs-title"></h3>\n          <div id="custom-inputs-content" class="scroll-box"></div>\n        </div>\n      </form>\n    </div>\n    <div id="submit-buttons">\n      <button class="submit-button" id="random-environment-button">Generate Random Environment</button>\n      <button class="submit-button" id="custom-environment-button">Build Custom Environment</button>\n    </div>\n  </div>\n  ';

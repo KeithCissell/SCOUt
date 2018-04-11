@@ -19,14 +19,14 @@ trait ElementSeed {
 // Gives access to all the avialable element types that can be seed generated
 object SeedList {
   // List of all seeds set to default
-  val defaultSeedList: List[ElementSeed] = List(
-    DecibelSeed(),
+  def defaultSeedList(): List[ElementSeed] = List(
+    new DecibelSeed(),
     // ElevationSeed(),
-    LatitudeSeed(),
-    LongitudeSeed(),
-    TemperatureSeed(),
-    WindDirectionSeed(),
-    WindSpeedSeed()
+    new LatitudeSeed(),
+    new LongitudeSeed(),
+    new TemperatureSeed(),
+    new WindDirectionSeed(),
+    new WindSpeedSeed()
   )
 
   // Returns the form field for the requested element type

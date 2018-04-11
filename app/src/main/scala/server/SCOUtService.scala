@@ -23,7 +23,7 @@ object SCOUtService {
   var environment = buildEnvironment("Empty", 2, 2)
 
   // Mutable list of seeds initialized to default
-  var seedList: List[ElementSeed] = SeedList.defaultSeedList
+  var seedList: List[ElementSeed] = SeedList.defaultSeedList()
 
   // Server request handler
   val service = HttpService {
@@ -56,7 +56,7 @@ object SCOUtService {
       case (_, 0, _)  => BadRequest("Bad height")
       case (_, _, 0)  => BadRequest("Bad width")
       case (n, w, h)  => {
-        environment = buildEnvironment(n, h, w, scale, SeedList.defaultSeedList)
+        environment = buildEnvironment(n, h, w, scale, SeedList.defaultSeedList())
         Ok(encodeEnvironment(environment))
       }
     }
