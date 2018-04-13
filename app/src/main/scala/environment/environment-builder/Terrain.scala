@@ -19,20 +19,23 @@ class Terrain(
 // Modification Classes
 case class ElevationModification(
   val modification: Double,
+  val deviation: Double,
   val coverage: Double,
   val slope: Double
 )
 
-trait WaterModification {}
+trait WaterModification
 
 case class WaterPoolModification(
   val maxDepth: Double,
+  val deviation: Double,
   val coverage: Double,
   val slope: Double
 ) extends WaterModification
 
 case class WaterStreamModification(
   val depth: Double,
+  val deviation: Double,
   val width: Double,
   val momentum: Double
 ) extends WaterModification
