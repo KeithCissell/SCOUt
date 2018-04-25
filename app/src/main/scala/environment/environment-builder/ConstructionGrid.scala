@@ -5,10 +5,12 @@ import environment.element._
 
 import scala.math._
 import scala.collection.mutable.{ArrayBuffer => AB}
+import scala.collection.mutable.{Set => MutableSet}
 
 
 class ConstructionCell(
-  var modified: Boolean = false
+  var modified: Boolean = false,
+  var elements: MutableSet[String] = MutableSet()
   // var border: Boolean = false,
   // var unmodifiedNeighbor: Boolean = true
 )
@@ -51,9 +53,20 @@ class ConstructionLayer(
       case _ => true
     } else false
   }
+  // Checks cell is a border cell of a specific element type (has unmodified neighbors)
+  def isBorder(x: Int, y: Int, element: String): Boolean = {
+    // checks 8 adjacent neighbors
+    if (inLayer(x, y)) getClusterUnmodified(x, y, 1.5, element).length match {
+      case 0 => false
+      case _ => true
+    } else false
+  }
   // Sets a cells status to modified = true
-  def setToModified(x: Int, y: Int) = {
-    if (inLayer(x, y)) layer(x)(y).modified = true
+  def setToModified(x: Int, y: Int, element: String) = {
+    if (inLayer(x, y)) {
+      layer(x)(y).modified = true
+      layer(x)(y).elements ++ element
+    }
   }
   // Returns a random unmodified cell (if any)
   def getRandomUnmodified(): Option[(Int,Int)] = {
@@ -75,6 +88,17 @@ class ConstructionLayer(
       if dist(x, y, originX, originY) <= radius
     } yield layer(x)(y)).toList
   }
+  // Returns constructionCells in the given radius from a given origin of a specific element type
+  def getCluster(originX: Int, originY: Int, radius: Double, element: String): List[ConstructionCell] = {
+    val cellBlockSize = Math.round(Math.abs(radius)).toInt
+    (for {
+      x <- (originX - cellBlockSize) to (originX + cellBlockSize)
+      y <- (originY - cellBlockSize) to (originY + cellBlockSize)
+      if dist(x, y, originX, originY) != 0
+      if dist(x, y, originX, originY) <= radius
+      if layer(x)(y).elements.contains(element)
+    } yield layer(x)(y)).toList
+  }
   // Like getCluster, but returns the values instead of the entire object
   def getClusterUnmodified(originX: Int, originY: Int, radius: Double): List[(Int,Int)] = {
     val cellBlockSize = Math.round(Math.abs(radius)).toInt
@@ -85,6 +109,19 @@ class ConstructionLayer(
       if dist(x, y, originX, originY) != 0
       if dist(x, y, originX, originY) <= radius
       if !layer(x)(y).modified
+    } yield (x, y)).toList
+  }
+  // Like getCluster, but returns the values instead of the entire object
+  def getClusterUnmodified(originX: Int, originY: Int, radius: Double, element: String): List[(Int,Int)] = {
+    val cellBlockSize = Math.round(Math.abs(radius)).toInt
+    (for {
+      x <- (originX - cellBlockSize) to (originX + cellBlockSize)
+      y <- (originY - cellBlockSize) to (originY + cellBlockSize)
+      if inLayer(x, y)
+      if dist(x, y, originX, originY) != 0
+      if dist(x, y, originX, originY) <= radius
+      if !layer(x)(y).modified
+      if layer(x)(y).elements.contains(element)
     } yield (x, y)).toList
   }
   // Get a random unmodified neighbor (if any)
@@ -104,6 +141,35 @@ class ConstructionLayer(
         case Some(c) => return Some(c)
         case None => // Check next cell
       }
+    }
+    return None
+  }
+  // Gets an unmodified neighbor with a directional influence (if any)
+  def getUnmodifiedNeighborDirectional(originX: Int, originY: Int, direction: Double): Option[(Int,Int)] = {
+    var directionalMatch: Option[(Int,Int)] = None
+    var matchDifference: Double = 181.0
+    for {
+      x <- (originX - 1) to (originX + 1)
+      y <- (originY - 1) to (originY + 1)
+      if inLayer(x, y)
+      if dist(x, y, originX, originY) != 0
+    } angleBetweenPoints(x, y, originX, originY) match {
+      case dd if dd <= 45 => return Some(x, y)
+      case dd if dd < matchDifference => {
+        directionalMatch = Some((x, y))
+        matchDifference = dd
+      }
+      case _ => // ignore
+    }
+    return directionalMatch
+  }
+  // Finds the next unmodified neighbor of a given element type (if any)
+  def getRandomBorder(element: String): Option[(Int,Int)] = {
+    var cells = coordinatePool.clone()
+    for (i <- 0 until cells.length) {
+      val randomIndex = randomInt(0, cells.length - 1)
+      val cell = cells(randomIndex)
+      if (isBorder(cell._1, cell._2, element)) return Some(cell)
     }
     return None
   }
