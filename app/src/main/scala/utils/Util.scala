@@ -50,5 +50,15 @@ object Util {
   def angleBetweenPoints(x1: Int, y1: Int, x2: Int, y2: Int): Double = {
     toDegrees(atan2(y2 - y1, x2 - x1))
   }
+  def inRangeDegrees(target: Double, lowerBound: Double, upperBound: Double): Boolean = {
+    var t = normalizeDegrees(target)
+    var lb = normalizeDegrees(lowerBound)
+    var ub = normalizeDegrees(upperBound)
+    if (lb > ub) {
+      t += 360
+      ub += 360
+    }
+    return (t >= lb && t <= ub)
+  }
 
 }

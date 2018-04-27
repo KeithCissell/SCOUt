@@ -13,29 +13,32 @@ class Terrain(
 
 }
 
-// TerrainForm with default values set
-// def defaultTerrainForm(): Terrain = TerrainForm()
+// Terrain Modifications
+trait TerrainModification
 
 // Modification Classes
+
+// Elevation modification
 case class ElevationModification(
   val modification: Double,
   val deviation: Double,
   val coverage: Double,
   val slope: Double
-)
+) extends TerrainModification
 
-trait WaterModification
+// Water Modifications
+// trait WaterModification extends TerrainModification
 
 case class WaterPoolModification(
   val maxDepth: Double,
   val deviation: Double,
   val coverage: Double,
   val slope: Double
-) extends WaterModification
+) extends TerrainModification
 
 case class WaterStreamModification(
   val depth: Double,
   val deviation: Double,
   val width: Double,
-  val momentum: Double
-) extends WaterModification
+  val length: Double
+) extends TerrainModification

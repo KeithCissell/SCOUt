@@ -6,7 +6,7 @@
   "scripts": {
     "full-start": "webpack && start sbt \"run-main server.SCOUtServer\" && start electron .",
     "start": "start electron .",
-    "scout-server": "start sbt \"run-main server.SCOUtServer\"",
+    "start-server": "start sbt \"run-main server.SCOUtServer\"",
     "build": "webpack",
     "build-start": "webpack && start electron ."
   },

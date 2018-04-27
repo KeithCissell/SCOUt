@@ -17,9 +17,11 @@ class ConstructionCell(
 
 class ConstructionLayer(
   val height: Int,
-  val width:  Int) {
+  val width:  Int,
+  val scale: Double) {
 
   val layer: AB[AB[ConstructionCell]] = AB.fill(height)(AB.fill(width)(new ConstructionCell()))
+  val cellCount = height * width
   val coordinatePool: AB[(Int,Int)] = (
     for {
       x <- 0 until height
@@ -44,6 +46,11 @@ class ConstructionLayer(
   def isModified(x: Int, y: Int): Boolean = {
     if (inLayer(x, y)) layer(x)(y).modified
     else true
+  }
+  // Checks if cell contains a certain type
+  def isElement(x: Int, y: Int, element: String): Boolean = {
+    if (inLayer(x, y)) layer(x)(y).elements.contains(element)
+    else false
   }
   // Checks cell is a border cell (has unmodified neighbors)
   def isBorder(x: Int, y: Int): Boolean = {
@@ -70,10 +77,10 @@ class ConstructionLayer(
   }
   // Returns a random unmodified cell (if any)
   def getRandomUnmodified(): Option[(Int,Int)] = {
-    var pool = coordinatePool.clone()
-    for (i <- 0 until pool.length) {
-      val randomIndex = randomInt(0, pool.length - 1)
-      val c = pool.remove(randomIndex)
+    var cells = coordinatePool.clone()
+    for (i <- 0 until cells.length) {
+      val randomIndex = randomInt(0, cells.length - 1)
+      val c = cells.remove(randomIndex)
       if (!isModified(c._1, c._2)) return Some(c)
     }
     return None
@@ -134,9 +141,10 @@ class ConstructionLayer(
   }
   // Finds the next unmodified neighbor in a group of cells (if any)
   def getNextUnmodifiedNeighbor(cells: AB[(Int,Int)]): Option[(Int,Int)] = {
+    var cellsClone = cells.clone()
     for (i <- 0 until cells.length) {
-      val randomIndex = randomInt(0, cells.length - 1)
-      val cell = cells(randomIndex)
+      val randomIndex = randomInt(0, cellsClone.length - 1)
+      val cell = cellsClone.remove(randomIndex)
       getUnmodifiedNeighbor(cell._1, cell._2) match {
         case Some(c) => return Some(c)
         case None => // Check next cell
@@ -144,32 +152,34 @@ class ConstructionLayer(
     }
     return None
   }
+  // Finds an unmodified neighbor and returns the direction towards it (if any)
+  def getDirectionToUnmodified(x: Int, y: Int): Option[Double] = getUnmodifiedNeighbor(x, y) match {
+    case Some(c) => Some(directionDegrees(x, y, c._1, c._2))
+    case None => None
+  }
   // Gets an unmodified neighbor with a directional influence (if any)
-  def getUnmodifiedNeighborDirectional(originX: Int, originY: Int, direction: Double): Option[(Int,Int)] = {
-    var directionalMatch: Option[(Int,Int)] = None
-    var matchDifference: Double = 181.0
-    for {
-      x <- (originX - 1) to (originX + 1)
-      y <- (originY - 1) to (originY + 1)
-      if inLayer(x, y)
-      if dist(x, y, originX, originY) != 0
-    } angleBetweenPoints(x, y, originX, originY) match {
-      case dd if dd <= 45 => return Some(x, y)
-      case dd if dd < matchDifference => {
-        directionalMatch = Some((x, y))
-        matchDifference = dd
-      }
-      case _ => // ignore
+  def getUnmodifiedNeighborDirectional(originX: Int, originY: Int, direction: Double, directionalConstraint: Double): Option[(Int,Int)] = {
+    val lowerBound = normalizeDegrees(direction - (directionalConstraint / 2))
+    val upperBound = normalizeDegrees(direction + (directionalConstraint / 2))
+    val unmodifiedNeighbors = getClusterUnmodified(originX, originY, 1.5) // 8 neighboring cells
+    var cells: AB[(Int,Int)] = (unmodifiedNeighbors).to[AB]
+    for (i <- 0 until unmodifiedNeighbors.length) {
+      val randomIndex = randomInt(0, cells.length - 1)
+      val c = cells.remove(randomIndex)
+      val dir = directionDegrees(originX, originY, c._1, c._2)
+      if (inRangeDegrees(dir, lowerBound, upperBound)) return Some(c)
     }
-    return directionalMatch
+    return None
   }
   // Finds the next unmodified neighbor of a given element type (if any)
   def getRandomBorder(element: String): Option[(Int,Int)] = {
     var cells = coordinatePool.clone()
-    for (i <- 0 until cells.length) {
+    for (i <- 0 until coordinatePool.length) {
       val randomIndex = randomInt(0, cells.length - 1)
-      val cell = cells(randomIndex)
-      if (isBorder(cell._1, cell._2, element)) return Some(cell)
+      val cell = cells.remove(randomIndex)
+      // if (cell._1 == 0 | cell._1 == height) return Some(cell)
+      // if (cell._2 == 0 | cell._2 == width) return Some(cell)
+      if (isElement(cell._1, cell._2, element) && isBorder(cell._1, cell._2)) return Some(cell)
     }
     return None
   }
