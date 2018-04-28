@@ -83,23 +83,43 @@ class Layer(val layer: Grid[Element]) {
   }
   // Adjust value at (x,y) by a weighted average of neighboring cells
   def smooth(x: Int, y: Int, radius: Double, originWeight: Double) = getElementValue(x,y) match {
+    case None => // Nothing to do
     case Some(currentValue) => {
       val cluster = getClusterValues(x, y, radius)
       val newValue = (currentValue * originWeight + cluster.sum) / (originWeight + cluster.length)
       setElementValue(x, y, newValue)
     }
-    case None => // Nothing to do
+  }
+  // Smooth cells directly adjacent to (x,y)
+  def smoothNeighbors(originX: Int, originY: Int, radius: Double, originWeight: Double) = {
+    smooth(originX + 1, originY, radius, originWeight)
+    smooth(originX - 1, originY, radius, originWeight)
+    smooth(originX, originY + 1, radius, originWeight)
+    smooth(originX, originY - 1, radius, originWeight)
   }
   // Smooth a list of given cells
   def smoothArea(cells: AB[(Int,Int)], radius: Double, originWeight: Double) = {
     var pool = cells.clone()
-    for (i <- 0 until pool.length) {
+    for (i <- 0 until cells.length) {
       // Randomly select a cell from list smooth
       val randomIndex = randomInt(0, pool.length - 1)
       val cellCoordinates = pool.remove(randomIndex)
       val x = cellCoordinates._1
       val y = cellCoordinates._2
       smooth(x, y, radius, originWeight)
+    }
+  }
+  // Smooth a list of given cells and their neighboring cells
+  def smoothAreaNeighbors(cells: AB[(Int,Int)], radius: Double, originWeight: Double) = {
+    var pool = cells.clone()
+    for (i <- 0 until cells.length) {
+      // Randomly select a cell from list smooth
+      val randomIndex = randomInt(0, pool.length - 1)
+      val cellCoordinates = pool.remove(randomIndex)
+      val x = cellCoordinates._1
+      val y = cellCoordinates._2
+      smooth(x, y, radius, originWeight)
+      smoothNeighbors(x, y, radius, originWeight)
     }
   }
   // Smooth all cells in layer
