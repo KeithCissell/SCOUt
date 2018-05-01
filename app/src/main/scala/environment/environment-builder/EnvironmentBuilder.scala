@@ -1,11 +1,12 @@
 package environment
 
 import environment._
+import environment.anomaly._
 import environment.cell._
+import environment.effect._
 import environment.element._
 import environment.element.seed._
 import environment.layer._
-import environment.anomalies._
 import environment.modifications._
 
 import scoututil.Util._
@@ -29,11 +30,11 @@ object EnvironmentBuilder {
 
     // INITIALIZE LAYERS
     val layers: MutableMap[String,Layer] = MutableMap()
-    
+
     for (seed <- seeds) {
       val elementType = seed.elementName
       val layer = seed.buildLayer(height, width, scale)
-      layers += elementType -> layer
+      layers += (elementType -> layer)
     }
 
     // APPLY TERRAIN MODIFICATIONS
@@ -48,11 +49,19 @@ object EnvironmentBuilder {
     val terrainConstructionLayer = new ConstructionLayer(height, width, scale)
 
     for (mod <- terrainModifications) layers.get(mod.elementType) match {
-      case None => // Layer not found
       case Some(layer) => mod.modify(layer, terrainConstructionLayer)
+      case None => // Layer not found
     }
 
     // PLACE ANOMALIES
+    //------------------------------------------------------------------------
+    val anomalies: List[Anomaly] = List(
+
+    )
+    //------------------------------------------------------------------------
+    for (anomaly <- anomalies) {
+
+    }
 
 
     // CALCULATE MEASUREMENTS

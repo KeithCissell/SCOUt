@@ -6,6 +6,7 @@ import environment.layer._
 import environment.element._
 
 import scala.collection.mutable.{ArrayBuffer => AB}
+import scala.collection.mutable.{Map => MutableMap}
 
 
 class Environment(
@@ -84,7 +85,7 @@ class Environment(
   // add a variable to a given point
   def setElement(x: Int, y: Int, element: Element) = getCell(x, y) match {
     case Some(e)  => grid(x)(y).get.setElement(element)
-    case None     => grid(x)(y) = Some(new Cell(x = x, y = y, elements = Map(element.name -> element)))
+    case None     => grid(x)(y) = Some(new Cell(x = x, y = y, elements = MutableMap(element.name -> element)))
   }
   // takes a layer of elements and adds it to the environment
   def setLayer(layer: Layer) = {

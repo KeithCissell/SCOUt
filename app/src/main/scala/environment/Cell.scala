@@ -4,12 +4,15 @@ import environment.element._
 
 import scala.math._
 import scala.collection.mutable.{ArrayBuffer => AB}
+import scala.collection.mutable.{Map => MutableMap}
+import scala.collection.mutable.{Set => MutableSet}
 
 
 case class Cell(
     val x: Int,
     val y: Int,
-    private var elements: Map[String,Element] = Map.empty) {
+    var elements: MutableMap[String,Element] = MutableMap(),
+    var anomalies: MutableSet[String] = MutableSet()) {
 
   override def toString: String = {
     var str = s"\nCell ($x, $y)"
@@ -42,10 +45,13 @@ case class Cell(
   def getElements: List[Element] = elements.values.toList
   def getElementNames: Set[String] = elements.keys.toSet
   def setElement(element: Element) = elements.get(element.name) match {
-    case None     => elements = elements + (element.name -> element)
+    case None     => elements += (element.name -> element)
     case Some(e)  => element.value match {
       case Some(v)  => e.set(v)
       case None     => // Nothing to do
     }
   }
+  def getAnomalies: List[String] = anomalies.toList
+  def containsAnomaly(anomaly: String) = anomalies.contains(anomaly)
+  def setAnomaly(anomaly: String) = anomalies += anomaly
 }

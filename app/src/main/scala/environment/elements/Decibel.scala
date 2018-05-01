@@ -28,7 +28,6 @@ package seed {
     val dynamic: Boolean = true,
     val lowerBound: Double = 0.0,
     val upperBound: Double = 120.0,
-    // val randomSources: Int = 5,
     // val sources: AB[NoiseSource] = AB.empty,
     val formFields: String = """{
       "field-keys": [
@@ -48,12 +47,6 @@ package seed {
     // }
     // def soundRange(source: NoiseSource): Double = {
     //   pow(2, source.value / 6)
-    // }
-    // def createRandomSource(height: Int, width: Int) = {
-    //   val randX = round(randomDouble(0, height-1)).toInt
-    //   val randY = round(randomDouble(0, width-1)).toInt
-    //   val randValue = randomDouble(upperBound, lowerBound)
-    //   sources += NoiseSource(randX, randY, randValue)
     // }
     def buildLayer(height: Int, width: Int, scale: Double): Layer = {
       val layer = new Layer(AB.fill(height)(AB.fill(width)(Some(new Decibel(0.0)))))

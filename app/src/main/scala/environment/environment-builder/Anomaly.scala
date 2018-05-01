@@ -1,6 +1,6 @@
-package environment.anomalies
+package environment.anomaly
 
-import environment.element._
+import environment.effect._
 
 
 // Anomaly
@@ -9,9 +9,3 @@ trait Anomaly {
   val size: Double
   val effects: List[Effect]
 }
-
-
-class Effect(
-  val seed: Element,
-  val radiation: Double
-)
