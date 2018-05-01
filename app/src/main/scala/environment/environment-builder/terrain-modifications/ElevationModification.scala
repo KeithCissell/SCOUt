@@ -14,6 +14,7 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 
 // Elevation Modification
 case class ElevationModification(
+  val elementType: String = "Elevation",
   val modification: Double,
   val deviation: Double,
   val coverage: Double,

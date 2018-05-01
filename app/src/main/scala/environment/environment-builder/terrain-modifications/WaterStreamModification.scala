@@ -15,6 +15,7 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 
 // Water Stream Modification
 case class WaterStreamModification(
+  val elementType: String = "Water Depth",
   val depth: Double,
   val deviation: Double,
   val width: Double,

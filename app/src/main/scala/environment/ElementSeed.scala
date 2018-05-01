@@ -11,7 +11,7 @@ import scala.util.Random
 trait ElementSeed {
   val elementName: String
   val dynamic: Boolean
-  // val formFields: String
+  val formFields: String
   // def this(seedData: Map[String, String])
   def buildLayer(height: Int, width: Int, scale: Double): Layer
 }
@@ -21,10 +21,11 @@ object SeedList {
   // List of all seeds set to default
   def defaultSeedList(): List[ElementSeed] = List(
     new DecibelSeed(),
-    // ElevationSeed(),
+    new ElevationSeed(),
     new LatitudeSeed(),
     new LongitudeSeed(),
     new TemperatureSeed(),
+    new WaterDepthSeed(),
     new WindDirectionSeed(),
     new WindSpeedSeed()
   )
@@ -32,10 +33,11 @@ object SeedList {
   // Returns the form field for the requested element type
   def getSeedForm(elementType: String): String = elementType match {
     case "Decibel"        => "{}"//DecibelSeed().formFields
-    // case "Elevation"      => ElevationSeed().formFields
+    case "Elevation"      => ElevationSeed().formFields
     case "Latitude"       => LatitudeSeed().formFields
     case "Longitude"      => LongitudeSeed().formFields
     case "Temperature"    => TemperatureSeed().formFields
+    case "Water Depth"    => WaterDepthSeed().formFields
     case "Wind Direction" => WindDirectionSeed().formFields
     case "Wind Speed"     => WindSpeedSeed().formFields
   }
