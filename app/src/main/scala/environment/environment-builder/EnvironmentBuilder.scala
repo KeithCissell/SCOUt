@@ -56,12 +56,13 @@ object EnvironmentBuilder {
     // PLACE ANOMALIES
     //------------------------------------------------------------------------
     val anomalies: List[Anomaly] = List(
-
+      new SoundMaker(),
+      new SoundMaker()
     )
     //------------------------------------------------------------------------
-    for (anomaly <- anomalies) {
+    val anomalyConstructionLayer = new ConstructionLayer(height, width, scale)
 
-    }
+    for (anomaly <- anomalies) anomaly.place(environment, layers, anomalyConstructionLayer, scale)
 
 
     // CALCULATE MEASUREMENTS

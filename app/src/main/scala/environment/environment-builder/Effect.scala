@@ -5,7 +5,7 @@ import environment.layer._
 
 
 trait Effect {
-  val source: Element
+  val seed: Element
   val range: Double
   def calculate(dist: Double): Double
   def radiate(sourceX: Int, sourceY: Int, layer: Layer, scale: Double): Unit

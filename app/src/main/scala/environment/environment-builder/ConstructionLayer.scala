@@ -69,6 +69,10 @@ class ConstructionLayer(
     } else false
   }
   // Sets a cells status to modified = true
+  def setToModified(x: Int, y: Int) = {
+    if (inLayer(x, y)) layer(x)(y).modified = true
+  }
+  // Sets a cells status to modified = true
   def setToModified(x: Int, y: Int, element: String) = {
     if (inLayer(x, y)) {
       layer(x)(y).modified = true
