@@ -11342,6 +11342,7 @@ var environment = void 0;
 var elementSelections = void 0;
 var anomalies = void 0;
 var selectedLayer = "None"; // initialize as "None" to display no layer
+var selectedAnomalyType = "None";
 var selectedCell = "None";
 
 /*******************************************************************************
@@ -11438,13 +11439,18 @@ Parameters
 *******************************************************************************/
 function selectCell(cell) {
   cell.selected = "true";
-  // cell.setAttribute("stroke", "forestGreen")
   cell.setAttribute("stroke-width", 3);
   cell.setAttribute("fill-opacity", .6);
   if (selectedCell != "None") deSelectCell(selectedCell);
   selectedCell = cell;
   var cellData = environment.grid[cell.xValue][cell.yValue];
   loadLegendCell(cellData);
+  // update layer legend
+  if (selectedLayer != "None") {
+    var cellValue = document.getElementById(selectedLayer + "-value").innerText;
+    var selected = document.getElementById("legend-layer-Selected-value");
+    selected.innerText = cellValue;
+  }
 }
 
 /*******************************************************************************
@@ -11455,12 +11461,17 @@ Parameters
     DOM object for the cell de-selected
 *******************************************************************************/
 function deSelectCell(cell) {
+  var toggle = document.getElementById("Grid-Toggle");
+  var strokeWeight = 0;
+  if (toggle.checked) strokeWeight = 1;
   cell.selected = "false";
   cell.setAttribute("stroke", "black");
-  cell.setAttribute("stroke-width", 1);
+  cell.setAttribute("stroke-width", strokeWeight);
   cell.setAttribute("fill-opacity", 0);
   selectedCell = "None";
   loadLegendCell("None");
+  var selected = document.getElementById("legend-layer-Selected-value");
+  selected.innerText = "-";
 }
 
 /*******************************************************************************
@@ -11522,12 +11533,11 @@ function loadToolbar() {
   // Load radio buttons for selectable anomalies
   for (var _i = 0; _i < anomalies.length; _i++) {
     var anomalyType = anomalies[_i];
-    var _selectionID = anomalyType + "-Selection";
+    var _selectionID = anomalyType + "-Anomaly";
     (0, _Toolbar.addAnomaly)(anomalyType, _selectionID);
     var anomaly = document.getElementById(_selectionID);
     anomaly.addEventListener("click", function () {
-      // displayLayer(this.value)
-      // loadLegendLayer(this.value)
+      displayAnomalyType(this.value);
     });
   }
   var noneAnomaly = document.getElementById("None-Anomaly");
@@ -11548,6 +11558,21 @@ function displayLayer(elementType) {
     var layer = environment.extractLayer(elementType);
     (0, _Display.drawLayer)(layer, 4, 100, .5, 0.3, false);
   }
+}
+
+/*******************************************************************************
+_____displayAnomalyType_____
+Description
+    Displays cells holding given anomaly type
+Parameters
+    anomalyType:   anomaly type to be displayed
+*******************************************************************************/
+function displayAnomalyType(anomalyType) {
+  selectedAnomalyType = anomalyType;
+  if (anomalyType != "None") {
+    var anomalyCells = environment.extractAnomalyType(anomalyType);
+    (0, _Display.highlightAnomalies)(anomalyCells);
+  } else (0, _Display.highlightAnomalies)([]);
 }
 
 /*******************************************************************************
@@ -11582,12 +11607,11 @@ Parameters
 function loadLegendLayer(layerName) {
   var legendLayerTitle = document.getElementById("legend-layer-title");
   var legendSelectedLayerTable = document.getElementById("legend-selected-layer-table");
-
   legendSelectedLayerTable.innerHTML = "";
   var unit = "";
   var min = "-";
   var max = "-";
-  // let selected = "-"
+  var selected = "-";
   // let average = "-"
   if (layerName != "None") {
     legendLayerTitle.innerText = layerName;
@@ -11596,15 +11620,15 @@ function loadLegendLayer(layerName) {
     unit = layerJson.unit;
     min = (0, _Utils.roundDecimalX)(Math.min.apply(null, layerJson.values), 3);
     max = (0, _Utils.roundDecimalX)(Math.max.apply(null, layerJson.values), 3);
-    // let selectedValue = document.getElementById(layerName + "-value")
-    // if (selectedValue != null) current = selectedValue.text
+    var selectedValue = document.getElementById(layerName + "-value");
+    if (selectedValue != null) selected = selectedValue.innerText;
     // average =
   } else {
     legendLayerTitle.innerText = "No Layer Selected";
   }
   (0, _Legend.addLegendLayerItem)("Min", min + " " + unit);
   (0, _Legend.addLegendLayerItem)("Max", max + " " + unit);
-  // addLegendLayerItem("Selected", selected + " " + unit)
+  (0, _Legend.addLegendLayerItem)("Selected", selected);
   // addLegendLayerItem("Average", average)
 }
 
@@ -19032,19 +19056,16 @@ var Environment = function () {
     key: 'extractAnomalyType',
     value: function extractAnomalyType(anomalyType) {
       if (this.anomalyTypes.includes(anomalyType)) {
-        // let unit = ""
-        // let layer = empty2D(this.height, this.width)
-        // for (let x in this.grid) {
-        //   for (let y in this.grid[x]) {
-        //     let cell = this.grid[x][y]
-        //     if (cell.elements.has(anomalyType)) {
-        //       let element = cell.elements.get(anomalyType)
-        //       layer[x][y] = element
-        //       if (unit == "") { unit = element.unit }
-        //     }
-        //   }
-        // }
-        // return new Layer(anomalyType, unit, layer, this.height, this.width)
+        var anomalyCells = [];
+        for (var x in this.grid) {
+          for (var y in this.grid[x]) {
+            var cell = this.grid[x][y];
+            if (cell.anomalies.includes(anomalyType)) {
+              anomalyCells.push(cell);
+            }
+          }
+        }
+        return anomalyCells;
       } else throw new Error("Anomaly " + anomalyType + " not found.");
     }
   }]);
@@ -19225,9 +19246,38 @@ function eraseLayer(layerName) {
   }
 }
 
+/*******************************************************************************
+_____highlightAnomalies_____
+Description
+    Highlights cells that contain anomalies
+Parameters
+    cells:    list of cells that contain anomalyType
+*******************************************************************************/
+function highlightAnomalies(cells) {
+  // Reset cells
+  var children = display.children;
+  for (var i = 0; i < children.length; i++) {
+    var child = children[i];
+    var cellData = child.id.split("-");
+    if (cellData[0] === "cell") {
+      child.setAttribute("fill-opacity", 0);
+      child.setAttribute("fill", "");
+    }
+  }
+  // Highlight cells
+  for (var _i in cells) {
+    var c = cells[_i];
+    var cellId = "cell-" + c.x + "-" + c.y;
+    var cell = document.getElementById(cellId);
+    cell.setAttribute("fill-opacity", 1);
+    cell.setAttribute("fill", "red");
+  }
+}
+
 exports.drawLayer = drawLayer;
 exports.drawCell = drawCell;
 exports.eraseLayer = eraseLayer;
+exports.highlightAnomalies = highlightAnomalies;
 
 /***/ }),
 /* 223 */
@@ -33286,6 +33336,7 @@ function addLegendLayerItem(name, value) {
   newTableName.innerText = name;
   newTableRow.appendChild(newTableName);
   var newTableValue = document.createElement("td");
+  newTableValue.setAttribute("id", "legend-layer-" + name + "-value");
   newTableValue.setAttribute("class", "legend-table-value");
   newTableValue.innerText = value;
   newTableRow.appendChild(newTableValue);

@@ -45,19 +45,16 @@ class Environment {
   *******************************************************************************/
   extractAnomalyType(anomalyType) {
     if (this.anomalyTypes.includes(anomalyType)) {
-      // let unit = ""
-      // let layer = empty2D(this.height, this.width)
-      // for (let x in this.grid) {
-      //   for (let y in this.grid[x]) {
-      //     let cell = this.grid[x][y]
-      //     if (cell.elements.has(anomalyType)) {
-      //       let element = cell.elements.get(anomalyType)
-      //       layer[x][y] = element
-      //       if (unit == "") { unit = element.unit }
-      //     }
-      //   }
-      // }
-      // return new Layer(anomalyType, unit, layer, this.height, this.width)
+      let anomalyCells = []
+      for (let x in this.grid) {
+        for (let y in this.grid[x]) {
+          let cell = this.grid[x][y]
+          if (cell.anomalies.includes(anomalyType)) {
+            anomalyCells.push(cell)
+          }
+        }
+      }
+      return anomalyCells
     } else throw new Error("Anomaly " + anomalyType + " not found.")
   }
 

@@ -1,5 +1,5 @@
 import {roundDecimalX} from '../Utils.js'
-import {drawLayer, drawCell, eraseLayer} from './Display.js'
+import {drawLayer, drawCell, eraseLayer, highlightAnomalies} from './Display.js'
 import {addToggle, addSelection, addAnomaly} from './Toolbar.js'
 import {addLegendMainItem, addLegendLayerItem, addLegendCellItem} from './Legend.js'
 import {loadEnvironmentBuilderPage} from '../builder/EnvironmentBuilder.js'
@@ -10,6 +10,7 @@ let environment
 let elementSelections
 let anomalies
 let selectedLayer = "None" // initialize as "None" to display no layer
+let selectedAnomalyType = "None"
 let selectedCell = "None"
 
 /*******************************************************************************
@@ -135,13 +136,18 @@ Parameters
 *******************************************************************************/
 function selectCell(cell) {
   cell.selected = "true"
-  // cell.setAttribute("stroke", "forestGreen")
   cell.setAttribute("stroke-width", 3)
   cell.setAttribute("fill-opacity", .6)
   if (selectedCell != "None") deSelectCell(selectedCell)
   selectedCell = cell
   let cellData = environment.grid[cell.xValue][cell.yValue]
   loadLegendCell(cellData)
+  // update layer legend
+  if (selectedLayer != "None") {
+    let cellValue = document.getElementById(selectedLayer + "-value").innerText
+    let selected = document.getElementById("legend-layer-Selected-value")
+    selected.innerText = cellValue
+  }
 }
 
 /*******************************************************************************
@@ -152,12 +158,17 @@ Parameters
     DOM object for the cell de-selected
 *******************************************************************************/
 function deSelectCell(cell) {
+  let toggle = document.getElementById("Grid-Toggle")
+  let strokeWeight = 0
+  if (toggle.checked) strokeWeight = 1
   cell.selected = "false"
   cell.setAttribute("stroke", "black")
-  cell.setAttribute("stroke-width", 1)
+  cell.setAttribute("stroke-width", strokeWeight)
   cell.setAttribute("fill-opacity", 0)
   selectedCell = "None"
   loadLegendCell("None")
+  let selected = document.getElementById("legend-layer-Selected-value")
+  selected.innerText = "-"
 }
 
 /*******************************************************************************
@@ -221,12 +232,11 @@ function loadToolbar() {
   // Load radio buttons for selectable anomalies
   for (let i = 0; i < anomalies.length; i++) {
     let anomalyType = anomalies[i]
-    let selectionID = anomalyType + "-Selection"
+    let selectionID = anomalyType + "-Anomaly"
     addAnomaly(anomalyType, selectionID)
     let anomaly = document.getElementById(selectionID)
     anomaly.addEventListener("click", function() {
-      // displayLayer(this.value)
-      // loadLegendLayer(this.value)
+      displayAnomalyType(this.value)
     })
   }
   let noneAnomaly = document.getElementById("None-Anomaly")
@@ -247,6 +257,21 @@ function displayLayer(elementType) {
     let layer = environment.extractLayer(elementType)
     drawLayer(layer, 4, 100, .5, 0.3, false)
   }
+}
+
+/*******************************************************************************
+_____displayAnomalyType_____
+Description
+    Displays cells holding given anomaly type
+Parameters
+    anomalyType:   anomaly type to be displayed
+*******************************************************************************/
+function displayAnomalyType(anomalyType) {
+  selectedAnomalyType = anomalyType
+  if (anomalyType != "None") {
+    let anomalyCells = environment.extractAnomalyType(anomalyType)
+    highlightAnomalies(anomalyCells)
+  } else highlightAnomalies([])
 }
 
 /*******************************************************************************
@@ -281,12 +306,11 @@ Parameters
 function loadLegendLayer(layerName) {
   let legendLayerTitle = document.getElementById("legend-layer-title")
   let legendSelectedLayerTable = document.getElementById("legend-selected-layer-table")
-
   legendSelectedLayerTable.innerHTML = ""
   let unit = ""
   let min = "-"
   let max = "-"
-  // let selected = "-"
+  let selected = "-"
   // let average = "-"
   if (layerName != "None") {
     legendLayerTitle.innerText = layerName
@@ -295,15 +319,15 @@ function loadLegendLayer(layerName) {
     unit = layerJson.unit
     min = roundDecimalX(Math.min.apply(null, layerJson.values), 3)
     max = roundDecimalX(Math.max.apply(null, layerJson.values), 3)
-    // let selectedValue = document.getElementById(layerName + "-value")
-    // if (selectedValue != null) current = selectedValue.text
+    let selectedValue = document.getElementById(layerName + "-value")
+    if (selectedValue != null) selected = selectedValue.innerText
     // average =
   } else {
     legendLayerTitle.innerText = "No Layer Selected"
   }
   addLegendLayerItem("Min", min + " " + unit)
   addLegendLayerItem("Max", max + " " + unit)
-  // addLegendLayerItem("Selected", selected + " " + unit)
+  addLegendLayerItem("Selected", selected)
   // addLegendLayerItem("Average", average)
 }
 
