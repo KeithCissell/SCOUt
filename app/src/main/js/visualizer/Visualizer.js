@@ -9,9 +9,9 @@ import {loadEnvironmentBuilderPage} from '../builder/EnvironmentBuilder.js'
 let environment
 let elementSelections
 let anomalies
-let selectedLayer = "None" // initialize as "None" to display no layer
-let selectedAnomalyType = "None"
-let selectedCell = "None"
+let selectedLayer
+let selectedAnomalyType
+let selectedCell
 
 /*******************************************************************************
 _____loadVisualizer_____
@@ -58,6 +58,9 @@ function loadVisualizer(targetEnvironment) {
   if (elementSelections.length > 0) elementSelections.unshift("None") // adds "None" to the front of array
   anomalies = environment.anomalyTypes.slice(0)
   if (anomalies.length > 0) anomalies.unshift("None") // adds "None" to the front of array
+  selectedLayer = "None"
+  selectedAnomalyType = "None"
+  selectedCell = "None"
 
   loadNavigation()
   loadDisplay()
@@ -158,13 +161,15 @@ Parameters
     DOM object for the cell de-selected
 *******************************************************************************/
 function deSelectCell(cell) {
-  let toggle = document.getElementById("Grid-Toggle")
   let strokeWeight = 0
+  let fillOpacity = 0
+  let toggle = document.getElementById("Grid-Toggle")
   if (toggle.checked) strokeWeight = 1
+  if (cell.getAttribute("fill") != "") fillOpacity = 1
   cell.selected = "false"
   cell.setAttribute("stroke", "black")
   cell.setAttribute("stroke-width", strokeWeight)
-  cell.setAttribute("fill-opacity", 0)
+  cell.setAttribute("fill-opacity", fillOpacity)
   selectedCell = "None"
   loadLegendCell("None")
   let selected = document.getElementById("legend-layer-Selected-value")
@@ -237,6 +242,7 @@ function loadToolbar() {
     let anomaly = document.getElementById(selectionID)
     anomaly.addEventListener("click", function() {
       displayAnomalyType(this.value)
+      if (selectedCell != "None") selectCell(selectedCell)
     })
   }
   let noneAnomaly = document.getElementById("None-Anomaly")
