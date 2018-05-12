@@ -11249,6 +11249,7 @@ function formatEnvironment(json) {
   var width = json.environment.width;
   var envGrid = (0, _Utils.empty2D)(height, width);
   var envElementTypes = [];
+  var envAnomalyTypes = [];
   var jGrid = json.environment.grid;
   for (var key in jGrid) {
     var jCell = jGrid[key];
@@ -11266,9 +11267,15 @@ function formatEnvironment(json) {
       if (!envElementTypes.includes(eName)) envElementTypes.push(eName);
       elements.set(eName, new _Element.Element(value, eName, unit, constant, radial));
     }
-    envGrid[x][y] = new _Cell.Cell(x, y, elements);
+    var anomalies = [];
+    var jAnomalies = jCell.anomalies;
+    for (var i in jAnomalies) {
+      if (!envAnomalyTypes.includes(jAnomalies[i])) envAnomalyTypes.push(jAnomalies[i]);
+      anomalies.push(jAnomalies[i]);
+    }
+    envGrid[x][y] = new _Cell.Cell(x, y, elements, anomalies);
   }
-  return new _Environment.Environment(envName, height, width, envGrid, envElementTypes);
+  return new _Environment.Environment(envName, height, width, envGrid, envElementTypes, envAnomalyTypes);
 }
 
 exports.formatEnvironment = formatEnvironment;
@@ -11333,6 +11340,7 @@ var _EnvironmentBuilder = __webpack_require__(63);
 // Globals
 var environment = void 0;
 var elementSelections = void 0;
+var anomalies = void 0;
 var selectedLayer = "None"; // initialize as "None" to display no layer
 var selectedCell = "None";
 
@@ -11345,12 +11353,14 @@ Parameters
 *******************************************************************************/
 function loadVisualizer(targetEnvironment) {
   // Load HTML
-  main.innerHTML = '\n    <div id="navigation">\n      <button class="submit-button" id="new-environment">New Environment</button>\n      <h1 id="message"></h1>\n      <p id="content"></p>\n    </div>\n    <div id="toolbar">\n      <h1 class="sidebar">Controls</h1>\n      <h2 class="sidebar" id="layer-toggles-header"></h2>\n      <div class="toolbar-container" id="layer-toggles"></div>\n      <h2 class="sidebar" id="layer-selector-header"></h2>\n      <div class="toolbar-container" id="layer-selector"></div>\n    </div>\n    <svg id="display"></svg>\n    <div id="legend">\n      <h1 class="sidebar">Legend</h1>\n      <h2 class="sidebar" id="legend-environment-title"></h2>\n      <table class="legend-table" id="legend-main-table"></table>\n      <h2 class="sidebar" id="legend-layer-title"></h2>\n      <table class="legend-table" id="legend-selected-layer-table"></table>\n      <h2 class="sidebar" id="legend-cell-title"></h2>\n      <div id="cell-table-holder" class="scroll-box">\n        <table class="legend-table" id="legend-selected-cell-table"></table>\n      </div>\n    </div>\n  ';
+  main.innerHTML = '\n    <div id="navigation">\n      <button class="submit-button" id="new-environment">New Environment</button>\n      <button class="submit-button" id="regenerate-environment">Regenerate Environment</button>\n      <h1 id="message"></h1>\n      <p id="content"></p>\n    </div>\n    <div id="toolbar">\n      <h1 class="sidebar">Controls</h1>\n      <h2 class="sidebar" id="layer-toggles-header"></h2>\n      <div class="toolbar-container scroll-box" id="layer-toggles"></div>\n      <h2 class="sidebar" id="layer-selector-header"></h2>\n      <div class="toolbar-container scroll-box" id="layer-selector"></div>\n      <h2 class="sidebar" id="anomaly-selector-header"></h2>\n      <div class="toolbar-container scroll-box" id="anomaly-selector"></div>\n    </div>\n    <svg id="display"></svg>\n    <div id="legend">\n      <h1 class="sidebar">Legend</h1>\n      <h2 class="sidebar" id="legend-environment-title"></h2>\n      <table class="legend-table" id="legend-main-table"></table>\n      <h2 class="sidebar" id="legend-layer-title"></h2>\n      <table class="legend-table" id="legend-selected-layer-table"></table>\n      <h2 class="sidebar" id="legend-cell-title"></h2>\n      <div class="scroll-box" id="cell-table-holder">\n        <table class="legend-table" id="legend-selected-cell-table"></table>\n      </div>\n    </div>\n  ';
 
   // Set globals
   environment = targetEnvironment;
   elementSelections = environment.elementTypes.slice(0);
-  elementSelections.unshift("None"); // adds "None" to the front of array
+  if (elementSelections.length > 0) elementSelections.unshift("None"); // adds "None" to the front of array
+  anomalies = environment.anomalyTypes.slice(0);
+  if (anomalies.length > 0) anomalies.unshift("None"); // adds "None" to the front of array
 
   loadNavigation();
   loadDisplay();
@@ -11370,6 +11380,10 @@ function loadNavigation() {
   var newEnvironmentButton = document.getElementById("new-environment");
   newEnvironmentButton.addEventListener("click", function () {
     (0, _EnvironmentBuilder.loadEnvironmentBuilderPage)();
+  });
+  var regenerateEnvironmentButton = document.getElementById("regenerate-environment");
+  regenerateEnvironmentButton.addEventListener("click", function () {
+    console.log("Regenerate Environment");
   });
 }
 
@@ -11504,7 +11518,20 @@ function loadToolbar() {
     });
   }
   var noneSelection = document.getElementById("None-Selection");
-  noneSelection.checked = true;
+  if (noneSelection != null) noneSelection.checked = true;
+  // Load radio buttons for selectable anomalies
+  for (var _i = 0; _i < anomalies.length; _i++) {
+    var anomalyType = anomalies[_i];
+    var _selectionID = anomalyType + "-Selection";
+    (0, _Toolbar.addAnomaly)(anomalyType, _selectionID);
+    var anomaly = document.getElementById(_selectionID);
+    anomaly.addEventListener("click", function () {
+      // displayLayer(this.value)
+      // loadLegendLayer(this.value)
+    });
+  }
+  var noneAnomaly = document.getElementById("None-Anomaly");
+  if (noneAnomaly != null) noneAnomaly.checked = true;
 }
 
 /*******************************************************************************
@@ -11560,6 +11587,7 @@ function loadLegendLayer(layerName) {
   var unit = "";
   var min = "-";
   var max = "-";
+  // let selected = "-"
   // let average = "-"
   if (layerName != "None") {
     legendLayerTitle.innerText = layerName;
@@ -11568,12 +11596,15 @@ function loadLegendLayer(layerName) {
     unit = layerJson.unit;
     min = (0, _Utils.roundDecimalX)(Math.min.apply(null, layerJson.values), 3);
     max = (0, _Utils.roundDecimalX)(Math.max.apply(null, layerJson.values), 3);
+    // let selectedValue = document.getElementById(layerName + "-value")
+    // if (selectedValue != null) current = selectedValue.text
     // average =
   } else {
     legendLayerTitle.innerText = "No Layer Selected";
   }
   (0, _Legend.addLegendLayerItem)("Min", min + " " + unit);
   (0, _Legend.addLegendLayerItem)("Max", max + " " + unit);
+  // addLegendLayerItem("Selected", selected + " " + unit)
   // addLegendLayerItem("Average", average)
 }
 
@@ -18915,12 +18946,13 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Cell = function Cell(x, y, elements) {
+var Cell = function Cell(x, y, elements, anomalies) {
   _classCallCheck(this, Cell);
 
   this.x = x;
   this.y = y;
   this.elements = elements;
+  this.anomalies = anomalies;
 };
 
 exports.Cell = Cell;
@@ -18946,7 +18978,7 @@ var _Utils = __webpack_require__(64);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Environment = function () {
-  function Environment(name, height, width, grid, elementTypes) {
+  function Environment(name, height, width, grid, elementTypes, anomalyTypes) {
     _classCallCheck(this, Environment);
 
     this.name = name;
@@ -18954,6 +18986,7 @@ var Environment = function () {
     this.width = width;
     this.grid = grid;
     this.elementTypes = elementTypes;
+    this.anomalyTypes = anomalyTypes;
   }
 
   /*******************************************************************************
@@ -18985,6 +19018,34 @@ var Environment = function () {
         }
         return new _Layer.Layer(elementType, unit, layer, this.height, this.width);
       } else throw new Error("Element " + elementType + " not found.");
+    }
+
+    /*******************************************************************************
+    _____extractAnomlyType_____
+    Description
+        Creates a Layer object of a given anomaly type
+    Parameters
+        anomalyType:    name of anomaly type to extract
+    *******************************************************************************/
+
+  }, {
+    key: 'extractAnomalyType',
+    value: function extractAnomalyType(anomalyType) {
+      if (this.anomalyTypes.includes(anomalyType)) {
+        // let unit = ""
+        // let layer = empty2D(this.height, this.width)
+        // for (let x in this.grid) {
+        //   for (let y in this.grid[x]) {
+        //     let cell = this.grid[x][y]
+        //     if (cell.elements.has(anomalyType)) {
+        //       let element = cell.elements.get(anomalyType)
+        //       layer[x][y] = element
+        //       if (unit == "") { unit = element.unit }
+        //     }
+        //   }
+        // }
+        // return new Layer(anomalyType, unit, layer, this.height, this.width)
+      } else throw new Error("Anomaly " + anomalyType + " not found.");
     }
   }]);
 
@@ -33156,8 +33217,39 @@ function addSelection(layerName, selectionID) {
   layerSelector.appendChild(document.createElement("br"));
 }
 
+/*******************************************************************************
+_____addAnomaly_____
+Description
+    Adds a radio button to allow selection of a given anomaly type
+Parameters
+    anomalyName:    type of the anomaly
+    selectionID:    associated ID that will be given to the DOM element
+*******************************************************************************/
+function addAnomaly(anomalyName, selectionID) {
+  var anomalySelectorHeader = document.getElementById("anomaly-selector-header");
+  var anomalySelector = document.getElementById("anomaly-selector");
+
+  if (anomalySelectorHeader.innerText == "") anomalySelectorHeader.innerText = "Current Anomaly";
+  var newLable = document.createElement("label");
+  newLable.setAttribute("class", "radio inline");
+  newLable.setAttribute("for", selectionID);
+  var newSelection = document.createElement("input");
+  newSelection.setAttribute("type", "radio");
+  newSelection.setAttribute("id", selectionID);
+  newSelection.setAttribute("name", "Anomaly");
+  newSelection.setAttribute("value", anomalyName);
+  var newSpan = document.createElement("span");
+  newSpan.innerText = anomalyName;
+  // Add into DOM
+  newLable.appendChild(newSelection);
+  newLable.appendChild(newSpan);
+  anomalySelector.appendChild(newLable);
+  anomalySelector.appendChild(document.createElement("br"));
+}
+
 exports.addToggle = addToggle;
 exports.addSelection = addSelection;
+exports.addAnomaly = addAnomaly;
 
 /***/ }),
 /* 527 */
@@ -33209,6 +33301,7 @@ function addLegendCellItem(name, value) {
   newTableName.innerText = name;
   newTableRow.appendChild(newTableName);
   var newTableValue = document.createElement("td");
+  newTableValue.setAttribute("id", name + "-value");
   newTableValue.setAttribute("class", "legend-table-value");
   newTableValue.innerText = value;
   newTableRow.appendChild(newTableValue);

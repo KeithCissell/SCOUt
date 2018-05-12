@@ -16,6 +16,7 @@ function formatEnvironment(json) {
   let width = json.environment.width
   let envGrid = empty2D(height, width)
   let envElementTypes = []
+  let envAnomalyTypes = []
   let jGrid = json.environment.grid
   for (let key in jGrid) {
     let jCell = jGrid[key]
@@ -33,9 +34,15 @@ function formatEnvironment(json) {
       if (!envElementTypes.includes(eName)) envElementTypes.push(eName)
       elements.set(eName, new Element(value, eName, unit, constant, radial))
     }
-    envGrid[x][y] = new Cell(x, y, elements)
+    let anomalies = []
+    let jAnomalies = jCell.anomalies
+    for(let i in jAnomalies) {
+      if (!envAnomalyTypes.includes(jAnomalies[i])) envAnomalyTypes.push(jAnomalies[i])
+      anomalies.push(jAnomalies[i])
+    }
+    envGrid[x][y] = new Cell(x, y, elements, anomalies)
   }
-  return new Environment(envName, height, width, envGrid, envElementTypes)
+  return new Environment(envName, height, width, envGrid, envElementTypes, envAnomalyTypes)
 }
 
 export {formatEnvironment}

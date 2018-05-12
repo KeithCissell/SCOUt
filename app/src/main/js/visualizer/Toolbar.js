@@ -61,4 +61,34 @@ function addSelection(layerName, selectionID) {
   layerSelector.appendChild(document.createElement("br"))
 }
 
-export {addToggle, addSelection}
+/*******************************************************************************
+_____addAnomaly_____
+Description
+    Adds a radio button to allow selection of a given anomaly type
+Parameters
+    anomalyName:    type of the anomaly
+    selectionID:    associated ID that will be given to the DOM element
+*******************************************************************************/
+function addAnomaly(anomalyName, selectionID) {
+  let anomalySelectorHeader = document.getElementById("anomaly-selector-header")
+  let anomalySelector = document.getElementById("anomaly-selector")
+
+  if (anomalySelectorHeader.innerText == "") anomalySelectorHeader.innerText = "Current Anomaly"
+  let newLable = document.createElement("label")
+  newLable.setAttribute("class", "radio inline")
+  newLable.setAttribute("for", selectionID)
+  let newSelection = document.createElement("input")
+  newSelection.setAttribute("type", "radio")
+  newSelection.setAttribute("id", selectionID)
+  newSelection.setAttribute("name", "Anomaly")
+  newSelection.setAttribute("value", anomalyName)
+  let newSpan = document.createElement("span")
+  newSpan.innerText = anomalyName
+  // Add into DOM
+  newLable.appendChild(newSelection)
+  newLable.appendChild(newSpan)
+  anomalySelector.appendChild(newLable)
+  anomalySelector.appendChild(document.createElement("br"))
+}
+
+export {addToggle, addSelection, addAnomaly}
