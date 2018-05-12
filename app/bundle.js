@@ -11341,9 +11341,9 @@ var _EnvironmentBuilder = __webpack_require__(63);
 var environment = void 0;
 var elementSelections = void 0;
 var anomalies = void 0;
-var selectedLayer = "None"; // initialize as "None" to display no layer
-var selectedAnomalyType = "None";
-var selectedCell = "None";
+var selectedLayer = void 0;
+var selectedAnomalyType = void 0;
+var selectedCell = void 0;
 
 /*******************************************************************************
 _____loadVisualizer_____
@@ -11362,6 +11362,9 @@ function loadVisualizer(targetEnvironment) {
   if (elementSelections.length > 0) elementSelections.unshift("None"); // adds "None" to the front of array
   anomalies = environment.anomalyTypes.slice(0);
   if (anomalies.length > 0) anomalies.unshift("None"); // adds "None" to the front of array
+  selectedLayer = "None";
+  selectedAnomalyType = "None";
+  selectedCell = "None";
 
   loadNavigation();
   loadDisplay();
@@ -11461,13 +11464,15 @@ Parameters
     DOM object for the cell de-selected
 *******************************************************************************/
 function deSelectCell(cell) {
-  var toggle = document.getElementById("Grid-Toggle");
   var strokeWeight = 0;
+  var fillOpacity = 0;
+  var toggle = document.getElementById("Grid-Toggle");
   if (toggle.checked) strokeWeight = 1;
+  if (cell.getAttribute("fill") != "") fillOpacity = 1;
   cell.selected = "false";
   cell.setAttribute("stroke", "black");
   cell.setAttribute("stroke-width", strokeWeight);
-  cell.setAttribute("fill-opacity", 0);
+  cell.setAttribute("fill-opacity", fillOpacity);
   selectedCell = "None";
   loadLegendCell("None");
   var selected = document.getElementById("legend-layer-Selected-value");
@@ -11538,6 +11543,7 @@ function loadToolbar() {
     var anomaly = document.getElementById(_selectionID);
     anomaly.addEventListener("click", function () {
       displayAnomalyType(this.value);
+      if (selectedCell != "None") selectCell(selectedCell);
     });
   }
   var noneAnomaly = document.getElementById("None-Anomaly");
