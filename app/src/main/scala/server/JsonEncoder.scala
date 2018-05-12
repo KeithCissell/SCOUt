@@ -40,8 +40,9 @@ object Encoder {
             ("unit" -> e.unit) ~
             ("constant" -> e.constant) ~
             ("radial" -> e.radial)
-          })
-        )
+          }) ~
+        ("anomalies" -> c.getAnomalies)
+      )
     return compact(render(json))
   }
 
@@ -62,7 +63,8 @@ object Encoder {
                 ("unit" -> e.unit) ~
                 ("constant" -> e.constant) ~
                 ("radial" -> e.radial)
-            })
+              }) ~
+            ("anomalies" -> c.getAnomalies)
         })
       )
     return compact(render(json))

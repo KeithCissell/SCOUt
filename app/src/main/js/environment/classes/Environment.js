@@ -2,12 +2,13 @@ import {Layer} from './Layer.js'
 import {empty2D} from '../../Utils.js'
 
 class Environment {
-  constructor(name, height, width, grid, elementTypes) {
+  constructor(name, height, width, grid, elementTypes, anomalyTypes) {
     this.name = name
     this.height = height
     this.width = width
     this.grid = grid
     this.elementTypes = elementTypes
+    this.anomalyTypes = anomalyTypes
   }
 
   /*******************************************************************************
@@ -33,6 +34,28 @@ class Environment {
       }
       return new Layer(elementType, unit, layer, this.height, this.width)
     } else throw new Error("Element " + elementType + " not found.")
+  }
+
+  /*******************************************************************************
+  _____extractAnomlyType_____
+  Description
+      Creates a Layer object of a given anomaly type
+  Parameters
+      anomalyType:    name of anomaly type to extract
+  *******************************************************************************/
+  extractAnomalyType(anomalyType) {
+    if (this.anomalyTypes.includes(anomalyType)) {
+      let anomalyCells = []
+      for (let x in this.grid) {
+        for (let y in this.grid[x]) {
+          let cell = this.grid[x][y]
+          if (cell.anomalies.includes(anomalyType)) {
+            anomalyCells.push(cell)
+          }
+        }
+      }
+      return anomalyCells
+    } else throw new Error("Anomaly " + anomalyType + " not found.")
   }
 
 }

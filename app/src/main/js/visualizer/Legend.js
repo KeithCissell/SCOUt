@@ -23,6 +23,7 @@ function addLegendLayerItem(name, value) {
   newTableName.innerText = name
   newTableRow.appendChild(newTableName)
   let newTableValue = document.createElement("td")
+  newTableValue.setAttribute("id", "legend-layer-" + name + "-value")
   newTableValue.setAttribute("class", "legend-table-value")
   newTableValue.innerText = value
   newTableRow.appendChild(newTableValue)
@@ -38,6 +39,7 @@ function addLegendCellItem(name, value) {
   newTableName.innerText = name
   newTableRow.appendChild(newTableName)
   let newTableValue = document.createElement("td")
+  newTableValue.setAttribute("id", name + "-value")
   newTableValue.setAttribute("class", "legend-table-value")
   newTableValue.innerText = value
   newTableRow.appendChild(newTableValue)

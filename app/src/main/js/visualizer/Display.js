@@ -102,5 +102,33 @@ function eraseLayer(layerName) {
   }
 }
 
+/*******************************************************************************
+_____highlightAnomalies_____
+Description
+    Highlights cells that contain anomalies
+Parameters
+    cells:    list of cells that contain anomalyType
+*******************************************************************************/
+function highlightAnomalies(cells) {
+  // Reset cells
+  let children = display.children
+  for (let i = 0; i < children.length; i++) {
+    let child = children[i]
+    let cellData = child.id.split("-")
+    if (cellData[0] === "cell") {
+      child.setAttribute("fill-opacity", 0)
+      child.setAttribute("fill", "")
+    }
+  }
+  // Highlight cells
+  for (let i in cells) {
+    let c = cells[i]
+    let cellId = "cell-" + c.x + "-" + c.y
+    let cell = document.getElementById(cellId)
+    cell.setAttribute("fill-opacity", 1)
+    cell.setAttribute("fill", "red")
+  }
+}
 
-export {drawLayer, drawCell, eraseLayer}
+
+export {drawLayer, drawCell, eraseLayer, highlightAnomalies}

@@ -60,27 +60,15 @@ package seed {
       randomDouble(lowerBound, upperBound)
     }
     def buildLayer(height: Int, width: Int, scale: Double): Layer = {
-      val layer = new Layer(AB.fill(height)(AB.fill(width)(None)))
-      if (height > 0 && width > 0) layer.setElement(0, 0, new WindDirection(average))
+      val layer: Layer = new Layer(AB.fill(height)(AB.fill(width)(None)))
       for {
         x <- 0 until height
         y <- 0 until width
-        if (x,y) != (0,0)
       } {
-        val cluster = layer.getClusterValues(x, y, 3)
-        val mean = cluster.sum / cluster.length
-        val value = randomDeviation(mean)
+        val value = randomDeviation(average)
         layer.setElement(x, y, new WindDirection(value))
       }
-      // Smooth the layer
-      for {
-        x <- 0 until height
-        y <- 0 until width
-      } {
-        val cluster = layer.getClusterValues(x, y, 3)
-        val mean = cluster.sum / cluster.length
-        layer.setElement(x, y, new WindDirection(mean))
-      }
+      layer.smoothLayer(3, 3)
       return layer
     }
   }

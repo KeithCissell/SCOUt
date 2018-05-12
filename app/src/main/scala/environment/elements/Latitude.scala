@@ -50,7 +50,7 @@ package seed {
         x <- 0 until height
         y <- 0 until width
       } {
-        val value = rootValue + (y * .000003 * scale)
+        val value = rootValue + (y * 0.000003 * scale)
         layer.setElement(x, y, new Latitude(value))
       }
       return layer

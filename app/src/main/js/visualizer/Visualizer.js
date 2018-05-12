@@ -1,6 +1,6 @@
 import {roundDecimalX} from '../Utils.js'
-import {drawLayer, drawCell, eraseLayer} from './Display.js'
-import {addToggle, addSelection} from './Toolbar.js'
+import {drawLayer, drawCell, eraseLayer, highlightAnomalies} from './Display.js'
+import {addToggle, addSelection, addAnomaly} from './Toolbar.js'
 import {addLegendMainItem, addLegendLayerItem, addLegendCellItem} from './Legend.js'
 import {loadEnvironmentBuilderPage} from '../builder/EnvironmentBuilder.js'
 
@@ -8,7 +8,9 @@ import {loadEnvironmentBuilderPage} from '../builder/EnvironmentBuilder.js'
 // Globals
 let environment
 let elementSelections
+let anomalies
 let selectedLayer = "None" // initialize as "None" to display no layer
+let selectedAnomalyType = "None"
 let selectedCell = "None"
 
 /*******************************************************************************
@@ -23,15 +25,18 @@ function loadVisualizer(targetEnvironment) {
   main.innerHTML = `
     <div id="navigation">
       <button class="submit-button" id="new-environment">New Environment</button>
+      <button class="submit-button" id="regenerate-environment">Regenerate Environment</button>
       <h1 id="message"></h1>
       <p id="content"></p>
     </div>
     <div id="toolbar">
       <h1 class="sidebar">Controls</h1>
       <h2 class="sidebar" id="layer-toggles-header"></h2>
-      <div class="toolbar-container" id="layer-toggles"></div>
+      <div class="toolbar-container scroll-box" id="layer-toggles"></div>
       <h2 class="sidebar" id="layer-selector-header"></h2>
-      <div class="toolbar-container" id="layer-selector"></div>
+      <div class="toolbar-container scroll-box" id="layer-selector"></div>
+      <h2 class="sidebar" id="anomaly-selector-header"></h2>
+      <div class="toolbar-container scroll-box" id="anomaly-selector"></div>
     </div>
     <svg id="display"></svg>
     <div id="legend">
@@ -41,7 +46,7 @@ function loadVisualizer(targetEnvironment) {
       <h2 class="sidebar" id="legend-layer-title"></h2>
       <table class="legend-table" id="legend-selected-layer-table"></table>
       <h2 class="sidebar" id="legend-cell-title"></h2>
-      <div id="cell-table-holder" class="scroll-box">
+      <div class="scroll-box" id="cell-table-holder">
         <table class="legend-table" id="legend-selected-cell-table"></table>
       </div>
     </div>
@@ -50,7 +55,9 @@ function loadVisualizer(targetEnvironment) {
   // Set globals
   environment = targetEnvironment
   elementSelections = environment.elementTypes.slice(0)
-  elementSelections.unshift("None") // adds "None" to the front of array
+  if (elementSelections.length > 0) elementSelections.unshift("None") // adds "None" to the front of array
+  anomalies = environment.anomalyTypes.slice(0)
+  if (anomalies.length > 0) anomalies.unshift("None") // adds "None" to the front of array
 
   loadNavigation()
   loadDisplay()
@@ -70,6 +77,10 @@ function loadNavigation() {
   let newEnvironmentButton = document.getElementById("new-environment")
   newEnvironmentButton.addEventListener("click", () => {
     loadEnvironmentBuilderPage()
+  })
+  let regenerateEnvironmentButton = document.getElementById("regenerate-environment")
+  regenerateEnvironmentButton.addEventListener("click", () => {
+    console.log("Regenerate Environment")
   })
 }
 
@@ -125,13 +136,18 @@ Parameters
 *******************************************************************************/
 function selectCell(cell) {
   cell.selected = "true"
-  // cell.setAttribute("stroke", "forestGreen")
   cell.setAttribute("stroke-width", 3)
   cell.setAttribute("fill-opacity", .6)
   if (selectedCell != "None") deSelectCell(selectedCell)
   selectedCell = cell
   let cellData = environment.grid[cell.xValue][cell.yValue]
   loadLegendCell(cellData)
+  // update layer legend
+  if (selectedLayer != "None") {
+    let cellValue = document.getElementById(selectedLayer + "-value").innerText
+    let selected = document.getElementById("legend-layer-Selected-value")
+    selected.innerText = cellValue
+  }
 }
 
 /*******************************************************************************
@@ -142,12 +158,17 @@ Parameters
     DOM object for the cell de-selected
 *******************************************************************************/
 function deSelectCell(cell) {
+  let toggle = document.getElementById("Grid-Toggle")
+  let strokeWeight = 0
+  if (toggle.checked) strokeWeight = 1
   cell.selected = "false"
   cell.setAttribute("stroke", "black")
-  cell.setAttribute("stroke-width", 1)
+  cell.setAttribute("stroke-width", strokeWeight)
   cell.setAttribute("fill-opacity", 0)
   selectedCell = "None"
   loadLegendCell("None")
+  let selected = document.getElementById("legend-layer-Selected-value")
+  selected.innerText = "-"
 }
 
 /*******************************************************************************
@@ -207,7 +228,19 @@ function loadToolbar() {
     })
   }
   let noneSelection = document.getElementById("None-Selection")
-  noneSelection.checked = true
+  if (noneSelection != null) noneSelection.checked = true
+  // Load radio buttons for selectable anomalies
+  for (let i = 0; i < anomalies.length; i++) {
+    let anomalyType = anomalies[i]
+    let selectionID = anomalyType + "-Anomaly"
+    addAnomaly(anomalyType, selectionID)
+    let anomaly = document.getElementById(selectionID)
+    anomaly.addEventListener("click", function() {
+      displayAnomalyType(this.value)
+    })
+  }
+  let noneAnomaly = document.getElementById("None-Anomaly")
+  if (noneAnomaly != null) noneAnomaly.checked = true
 }
 
 /*******************************************************************************
@@ -224,6 +257,21 @@ function displayLayer(elementType) {
     let layer = environment.extractLayer(elementType)
     drawLayer(layer, 4, 100, .5, 0.3, false)
   }
+}
+
+/*******************************************************************************
+_____displayAnomalyType_____
+Description
+    Displays cells holding given anomaly type
+Parameters
+    anomalyType:   anomaly type to be displayed
+*******************************************************************************/
+function displayAnomalyType(anomalyType) {
+  selectedAnomalyType = anomalyType
+  if (anomalyType != "None") {
+    let anomalyCells = environment.extractAnomalyType(anomalyType)
+    highlightAnomalies(anomalyCells)
+  } else highlightAnomalies([])
 }
 
 /*******************************************************************************
@@ -258,11 +306,11 @@ Parameters
 function loadLegendLayer(layerName) {
   let legendLayerTitle = document.getElementById("legend-layer-title")
   let legendSelectedLayerTable = document.getElementById("legend-selected-layer-table")
-
   legendSelectedLayerTable.innerHTML = ""
   let unit = ""
   let min = "-"
   let max = "-"
+  let selected = "-"
   // let average = "-"
   if (layerName != "None") {
     legendLayerTitle.innerText = layerName
@@ -271,12 +319,15 @@ function loadLegendLayer(layerName) {
     unit = layerJson.unit
     min = roundDecimalX(Math.min.apply(null, layerJson.values), 3)
     max = roundDecimalX(Math.max.apply(null, layerJson.values), 3)
+    let selectedValue = document.getElementById(layerName + "-value")
+    if (selectedValue != null) selected = selectedValue.innerText
     // average =
   } else {
     legendLayerTitle.innerText = "No Layer Selected"
   }
   addLegendLayerItem("Min", min + " " + unit)
   addLegendLayerItem("Max", max + " " + unit)
+  addLegendLayerItem("Selected", selected)
   // addLegendLayerItem("Average", average)
 }
 
