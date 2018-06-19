@@ -80,6 +80,7 @@ function drawCell(width, height, cellID, x, y, cellData) {
   newCell.setAttribute("stroke", "black")
   newCell.setAttribute("stroke-width", 1)
   newCell.setAttribute("fill-opacity", 0)
+  newCell.setAttribute("fill", "")
   newCell.selected = "false"
   newCell.xValue = x
   newCell.yValue = y
