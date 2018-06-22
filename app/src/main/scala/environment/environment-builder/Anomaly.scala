@@ -41,3 +41,10 @@ trait Anomaly {
   }
 
 }
+
+// List of all anomalyTypes
+object AnomalyTypes {
+  val anomalyTypes = List(
+    "Sound Maker"
+  )
+}

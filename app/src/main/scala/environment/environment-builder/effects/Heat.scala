@@ -9,14 +9,13 @@ import scoututil.Util._
 import scala.math._
 
 
-class Sound(
-  val seed: Decibel
+class Heat(
+  val seed: Temperature
 ) extends Effect {
-  // NOTE: using noise ruduction of -6 dB every doubling of distance
-  // http://www.sengpielaudio.com/calculator-distance.htm
-  val range = pow(2, seed.value.getOrElse(0.0) / 6)
-  
-  def calculate(dist: Double): Double = roundDouble2(seed.value.getOrElse(0.0) - (abs(log2(dist)) * 6))
+  // NOTE: not propagating heat outside of the source
+  val range = 0.0
+
+  def calculate(dist: Double): Double = seed.value.getOrElse(0.0)
 
   def radiate(sourceX: Int, sourceY: Int, layer: Layer, scale: Double) = {
     layer.setElementValue(sourceX, sourceY, seed.value.getOrElse(0.0))

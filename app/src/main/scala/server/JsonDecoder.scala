@@ -2,6 +2,7 @@ package jsonhandler
 
 import io.circe._
 import environment.element.seed._
+import environment.anomaly.seed._
 import scala.collection.mutable
 
 
@@ -65,6 +66,41 @@ object Decoder {
       }
     }
   }
+
+  def extractAnomalySeeds(data: Json): Option[List[AnomalySeed]] = None //{
+  //   val cursor: HCursor = data.hcursor
+  //   val seedsData = cursor.downField("anomalySeeds")
+  //   val anomaliesData = cursor.downField("anomalies").as[List[String]]
+  //   val seeds: mutable.ListBuffer[AnomalySeed] = mutable.ListBuffer()
+  //   anomaliesData match {
+  //     case Left(_) => None
+  //     case Right(anomalyTypes) => {
+  //       for (anomalyType <- anomalyTypes) createAnomalySeed(anomalyType, seedsData) match {
+  //         case Some(seed) => seeds += seed
+  //         case None =>
+  //       }
+  //     }
+  //   }
+  //   return Some(seeds.toList)
+  // }
+
+  // def createAnomalySeed(elementType: String, seedsData: ACursor): Option[ElementSeed] = {
+  //   val seedData = seedsData.downField(elementType)
+  //   val seedFields = extractSeedFields(seedData)
+  //   seedFields match {
+  //     case None => None
+  //     case Some(seedFields) => elementType match {
+  //       // case "Decibel"        => Some(new DecibelSeed(seedFields))
+  //       case "Elevation"      => Some(new ElevationSeed(seedFields))
+  //       case "Latitude"       => Some(new LatitudeSeed(seedFields))
+  //       case "Longitude"      => Some(new LongitudeSeed(seedFields))
+  //       case "Temperature"    => Some(new TemperatureSeed(seedFields))
+  //       case "Wind Direction" => Some(new WindDirectionSeed(seedFields))
+  //       case "Wind Speed"     => Some(new WindSpeedSeed(seedFields))
+  //       case _ => None
+  //     }
+  //   }
+  // }
 
   def extractSeedFields(data: ACursor): Option[Map[String,String]] = data.downField("field-keys").as[List[String]] match {
     case Left(_) => None

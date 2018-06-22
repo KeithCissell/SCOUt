@@ -60,6 +60,29 @@ function getElementSeedForm(elementType) {
 }
 
 /*******************************************************************************
+_____getAnomalySeedForm_____
+Description
+    Get the required form data for an anomaly seed form
+Parameters
+    anomalyType: the anomaly type of the requested seed form data
+*******************************************************************************/
+function getAnomalySeedForm(anomalyType) {
+  let reqBody = `{
+    "anomaly-type": "${anomalyType}"
+  }`
+  let reqSpecs = {  method: 'POST',
+                    headers: reqHeaders,
+                    mode: 'cors',
+                    cache: 'default',
+                    body: reqBody}
+  return new Promise((resolve, reject) => {
+    fetch(host + '/anomaly_seed_form', reqSpecs).then(function(resp) {
+      resolve(resp)
+    }).catch(error => reject(Response.error(error)))
+  })
+}
+
+/*******************************************************************************
 _____getCurrentState_____
 Description
     Gets the current state of the environment
@@ -133,4 +156,4 @@ function buildCustomEnvironment(name, height, width, elements, seeds) {
   })
 }
 
-export {pingServer, getElementTypes, getElementSeedForm, getCurrentState, newRandomEnvironment, buildCustomEnvironment}
+export {pingServer, getElementTypes, getElementSeedForm, getAnomalySeedForm, getCurrentState, newRandomEnvironment, buildCustomEnvironment}

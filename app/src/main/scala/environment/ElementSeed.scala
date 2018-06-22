@@ -12,12 +12,14 @@ trait ElementSeed {
   val elementName: String
   val dynamic: Boolean
   val formFields: String
+
   // def this(seedData: Map[String, String])
+
   def buildLayer(height: Int, width: Int, scale: Double): Layer
 }
 
 // Gives access to all the avialable element types that can be seed generated
-object SeedList {
+object ElementSeedList {
   // List of all seeds set to default
   def defaultSeedList(): List[ElementSeed] = List(
     new DecibelSeed(),

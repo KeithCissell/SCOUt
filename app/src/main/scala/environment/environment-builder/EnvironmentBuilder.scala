@@ -2,6 +2,7 @@ package environment
 
 import environment._
 import environment.anomaly._
+import environment.anomaly.seed._
 import environment.cell._
 import environment.effect._
 import environment.element._
@@ -23,7 +24,8 @@ object EnvironmentBuilder {
       height: Int,
       width: Int,
       scale: Double = 1.0,
-      seeds: List[ElementSeed] = Nil): Environment = {
+      elementSeeds: List[ElementSeed] = Nil,
+      anomalySeeds: List[AnomalySeed] = Nil): Environment = {
 
     // INITIALIZE ENVIRONMENT
     val environment = new Environment(name, height, width, scale)
@@ -31,7 +33,7 @@ object EnvironmentBuilder {
     // INITIALIZE LAYERS
     val layers: MutableMap[String,Layer] = MutableMap()
 
-    for (seed <- seeds) {
+    for (seed <- elementSeeds) {
       val elementType = seed.elementName
       val layer = seed.buildLayer(height, width, scale)
       layers += (elementType -> layer)
@@ -54,16 +56,12 @@ object EnvironmentBuilder {
     }
 
     // PLACE ANOMALIES
-    //------------------------------------------------------------------------
-    val anomalies: List[Anomaly] = List(
-      new SoundMaker(),
-      new SoundMaker()
-    )
-    //------------------------------------------------------------------------
     val anomalyConstructionLayer = new ConstructionLayer(height, width, scale)
 
-    for (anomaly <- anomalies) anomaly.place(environment, layers, anomalyConstructionLayer, scale)
-
+    for (seed <- anomalySeeds) {
+      val anomaly = seed.getAnomaly()
+      anomaly.place(environment, layers, anomalyConstructionLayer, scale)
+    }
 
     // CALCULATE MEASUREMENTS
 
