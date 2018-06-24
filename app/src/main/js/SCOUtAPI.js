@@ -60,13 +60,36 @@ function getElementSeedForm(elementType) {
 }
 
 /*******************************************************************************
-_____getAnomalySeedForm_____
+_____getTerrainModificationForm_____
 Description
-    Get the required form data for an anomaly seed form
+    Get the required form data for a terrain modification form
+Parameters
+    terrainModificationType: the terrain modification type of the requested seed form data
+*******************************************************************************/
+function getTerrainModificationForm(terrainModificationType) {
+  let reqBody = `{
+    "terrain-modification-type": "${terrainModificationType}"
+  }`
+  let reqSpecs = {  method: 'POST',
+                    headers: reqHeaders,
+                    mode: 'cors',
+                    cache: 'default',
+                    body: reqBody}
+  return new Promise((resolve, reject) => {
+    fetch(host + '/terrain_modification_form', reqSpecs).then(function(resp) {
+      resolve(resp)
+    }).catch(error => reject(Response.error(error)))
+  })
+}
+
+/*******************************************************************************
+_____getAnomalyForm_____
+Description
+    Get the required form data for an anomaly form
 Parameters
     anomalyType: the anomaly type of the requested seed form data
 *******************************************************************************/
-function getAnomalySeedForm(anomalyType) {
+function getAnomalyForm(anomalyType) {
   let reqBody = `{
     "anomaly-type": "${anomalyType}"
   }`
@@ -76,7 +99,7 @@ function getAnomalySeedForm(anomalyType) {
                     cache: 'default',
                     body: reqBody}
   return new Promise((resolve, reject) => {
-    fetch(host + '/anomaly_seed_form', reqSpecs).then(function(resp) {
+    fetch(host + '/anomaly_form', reqSpecs).then(function(resp) {
       resolve(resp)
     }).catch(error => reject(Response.error(error)))
   })
@@ -156,4 +179,4 @@ function buildCustomEnvironment(name, height, width, elements, seeds) {
   })
 }
 
-export {pingServer, getElementTypes, getElementSeedForm, getAnomalySeedForm, getCurrentState, newRandomEnvironment, buildCustomEnvironment}
+export {pingServer, getElementTypes, getElementSeedForm, getAnomalyForm, getTerrainModificationForm, getCurrentState, newRandomEnvironment, buildCustomEnvironment}

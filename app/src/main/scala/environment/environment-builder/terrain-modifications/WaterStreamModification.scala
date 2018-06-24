@@ -1,11 +1,11 @@
-package environment.modifications
+package environment.terrainmodification
 
 import environment._
 import environment.cell._
 import environment.element._
 import environment.element.seed._
 import environment.layer._
-import environment.modifications._
+import environment.terrainmodification._
 
 import scoututil.Util._
 
@@ -14,7 +14,8 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 
 
 // Water Stream Modification
-case class WaterStreamModification(
+class WaterStreamModification(
+  val name: String = "Water Stream Modification",
   val elementType: String = "Water Depth",
   val depth: Double,
   val deviation: Double,
@@ -99,4 +100,8 @@ case class WaterStreamModification(
     }
   }
 
+}
+
+object WaterStreamModificationForm {
+  def formFields(): String = ""
 }

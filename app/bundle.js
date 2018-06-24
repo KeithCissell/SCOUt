@@ -6085,6 +6085,52 @@ function getElementSeedForm(elementType) {
 }
 
 /*******************************************************************************
+_____getTerrainModificationForm_____
+Description
+    Get the required form data for a terrain modification form
+Parameters
+    terrainModificationType: the terrain modification type of the requested seed form data
+*******************************************************************************/
+function getTerrainModificationForm(terrainModificationType) {
+  var reqBody = '{\n    "terrain-modification-type": "' + terrainModificationType + '"\n  }';
+  var reqSpecs = { method: 'POST',
+    headers: reqHeaders,
+    mode: 'cors',
+    cache: 'default',
+    body: reqBody };
+  return new Promise(function (resolve, reject) {
+    fetch(host + '/terrain_modification_form', reqSpecs).then(function (resp) {
+      resolve(resp);
+    }).catch(function (error) {
+      return reject(Response.error(error));
+    });
+  });
+}
+
+/*******************************************************************************
+_____getAnomalyForm_____
+Description
+    Get the required form data for an anomaly form
+Parameters
+    anomalyType: the anomaly type of the requested seed form data
+*******************************************************************************/
+function getAnomalyForm(anomalyType) {
+  var reqBody = '{\n    "anomaly-type": "' + anomalyType + '"\n  }';
+  var reqSpecs = { method: 'POST',
+    headers: reqHeaders,
+    mode: 'cors',
+    cache: 'default',
+    body: reqBody };
+  return new Promise(function (resolve, reject) {
+    fetch(host + '/anomaly_form', reqSpecs).then(function (resp) {
+      resolve(resp);
+    }).catch(function (error) {
+      return reject(Response.error(error));
+    });
+  });
+}
+
+/*******************************************************************************
 _____getCurrentState_____
 Description
     Gets the current state of the environment
@@ -6156,6 +6202,8 @@ function buildCustomEnvironment(name, height, width, elements, seeds) {
 exports.pingServer = pingServer;
 exports.getElementTypes = getElementTypes;
 exports.getElementSeedForm = getElementSeedForm;
+exports.getAnomalyForm = getAnomalyForm;
+exports.getTerrainModificationForm = getTerrainModificationForm;
 exports.getCurrentState = getCurrentState;
 exports.newRandomEnvironment = newRandomEnvironment;
 exports.buildCustomEnvironment = buildCustomEnvironment;

@@ -2,7 +2,8 @@ package jsonhandler
 
 import io.circe._
 import environment.element.seed._
-import environment.anomaly.seed._
+import environment.anomaly._
+import environment.terrainmodification._
 import scala.collection.mutable
 
 
@@ -67,7 +68,9 @@ object Decoder {
     }
   }
 
-  def extractAnomalySeeds(data: Json): Option[List[AnomalySeed]] = None //{
+  def extractTerrainModifications(data: Json): Option[List[TerrainModification]] = None
+
+  def extractAnomalies(data: Json): Option[List[Anomaly]] = None //{
   //   val cursor: HCursor = data.hcursor
   //   val seedsData = cursor.downField("anomalySeeds")
   //   val anomaliesData = cursor.downField("anomalies").as[List[String]]
