@@ -103,5 +103,42 @@ class WaterStreamModification(
 }
 
 object WaterStreamModificationForm {
-  def formFields(): String = ""
+  def formFields(): String = """{
+    "field-keys": [
+      "Depth",
+      "Deviation",
+      "Width",
+      "Length"
+    ],
+    "fields": {
+      "Depth": {
+        "type": "number",
+        "unit": "ft",
+        "value": 50,
+        "lowerBound": 0,
+        "upperBound": 500
+      },
+      "Deviation": {
+        "type": "number",
+        "unit": "ft",
+        "value": 5,
+        "lowerBound": 0,
+        "upperBound": 50
+      },
+      "Width": {
+        "type": "number",
+        "unit": "ft",
+        "value": 25,
+        "lowerBound": 0,
+        "upperBound": 200
+      },
+      "Length": {
+        "type": "number",
+        "unit": "ft",
+        "value": 250,
+        "lowerBound": 0,
+        "upperBound": 1000
+      }
+    }
+  }"""
 }

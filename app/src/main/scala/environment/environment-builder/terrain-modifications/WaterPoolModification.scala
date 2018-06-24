@@ -78,5 +78,42 @@ class WaterPoolModification(
 }
 
 object WaterPoolModificationForm {
-  def formFields(): String = ""
+  def formFields(): String = """{
+    "field-keys": [
+      "Max Depth",
+      "Deviation",
+      "Coverage",
+      "Slope"
+    ],
+    "fields": {
+      "Max Depth": {
+        "type": "number",
+        "unit": "ft",
+        "value": 100,
+        "lowerBound": 0,
+        "upperBound": 500
+      },
+      "Deviation": {
+        "type": "number",
+        "unit": "ft",
+        "value": 5,
+        "lowerBound": 0,
+        "upperBound": 50
+      },
+      "Coverage": {
+        "type": "number",
+        "unit": "% of the environment",
+        "value": 10,
+        "lowerBound": 0,
+        "upperBound": 100
+      },
+      "Slope": {
+        "type": "number",
+        "unit": "% of the modification area",
+        "value": 70,
+        "lowerBound": 0,
+        "upperBound": 100
+      }
+    }
+  }"""
 }

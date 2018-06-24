@@ -76,10 +76,10 @@ class ElevationModification(
 object ElevationModificationForm {
   def formFields(): String = """{
     "field-keys": [
-    "Modification",
-    "Deviation",
-    "Coverage",
-    "Slope"
+      "Modification",
+      "Deviation",
+      "Coverage",
+      "Slope"
     ],
     "fields": {
       "Modification": {
@@ -93,7 +93,7 @@ object ElevationModificationForm {
         "type": "number",
         "unit": "ft",
         "value": 5,
-        "lowerBound": 50,
+        "lowerBound": 0,
         "upperBound": 50
       },
       "Coverage": {
