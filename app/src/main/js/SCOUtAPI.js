@@ -37,6 +37,32 @@ function getElementTypes() {
 }
 
 /*******************************************************************************
+_____getTerrainModificationTypes_____
+Description
+    Gets the different terrain modification types that can be applied to an environment
+*******************************************************************************/
+function getTerrainModificationTypes() {
+  return new Promise(resolve => {
+    fetch(host + '/terrain_modification_types', getSpecs).then(function(resp) {
+      resolve(resp)
+    }).catch(error => resolve(Response.error(error)))
+  })
+}
+
+/*******************************************************************************
+_____getAnomalyTypes_____
+Description
+    Gets the different anomaly types that can be used in an environment
+*******************************************************************************/
+function getAnomalyTypes() {
+  return new Promise(resolve => {
+    fetch(host + '/anomaly_types', getSpecs).then(function(resp) {
+      resolve(resp)
+    }).catch(error => resolve(Response.error(error)))
+  })
+}
+
+/*******************************************************************************
 _____getElementSeedForm_____
 Description
     Get the required form data for an element seed form
@@ -179,4 +205,4 @@ function buildCustomEnvironment(name, height, width, elements, seeds) {
   })
 }
 
-export {pingServer, getElementTypes, getElementSeedForm, getAnomalyForm, getTerrainModificationForm, getCurrentState, newRandomEnvironment, buildCustomEnvironment}
+export {pingServer, getElementTypes, getAnomalyTypes, getTerrainModificationTypes, getElementSeedForm, getAnomalyForm, getTerrainModificationForm, getCurrentState, newRandomEnvironment, buildCustomEnvironment}

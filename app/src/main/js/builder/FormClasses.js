@@ -7,6 +7,17 @@ class BasicEnvironmentForm {
   }
 }
 
+class AnomalySelectionForm {
+  constructor(anomalyTypes) {
+    this.anomalyTypes = anomalyTypes
+    this.counts = {}
+    for (let i in anomalyTypes) {
+      let type = anomalyTypes[i]
+      this.counts[type] = 0
+    }
+  }
+}
+
 class ElementSelectionForm {
   constructor(elementTypes) {
     this.elementTypes = elementTypes
@@ -19,4 +30,15 @@ class ElementSelectionForm {
   }
 }
 
-export {BasicEnvironmentForm, ElementSelectionForm}
+class TerrainModificationSelectionForm {
+  constructor(terrainModificationTypes) {
+    this.terrainModificationTypes = terrainModificationTypes
+    this.counts = {}
+    for (let i in terrainModificationTypes) {
+      let type = terrainModificationTypes[i]
+      this.counts[type] = 0
+    }
+  }
+}
+
+export {BasicEnvironmentForm, AnomalySelectionForm, ElementSelectionForm, TerrainModificationSelectionForm}

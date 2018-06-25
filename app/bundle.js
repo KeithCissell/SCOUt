@@ -6062,6 +6062,36 @@ function getElementTypes() {
 }
 
 /*******************************************************************************
+_____getTerrainModificationTypes_____
+Description
+    Gets the different terrain modification types that can be applied to an environment
+*******************************************************************************/
+function getTerrainModificationTypes() {
+  return new Promise(function (resolve) {
+    fetch(host + '/terrain_modification_types', getSpecs).then(function (resp) {
+      resolve(resp);
+    }).catch(function (error) {
+      return resolve(Response.error(error));
+    });
+  });
+}
+
+/*******************************************************************************
+_____getAnomalyTypes_____
+Description
+    Gets the different anomaly types that can be used in an environment
+*******************************************************************************/
+function getAnomalyTypes() {
+  return new Promise(function (resolve) {
+    fetch(host + '/anomaly_types', getSpecs).then(function (resp) {
+      resolve(resp);
+    }).catch(function (error) {
+      return resolve(Response.error(error));
+    });
+  });
+}
+
+/*******************************************************************************
 _____getElementSeedForm_____
 Description
     Get the required form data for an element seed form
@@ -6201,6 +6231,8 @@ function buildCustomEnvironment(name, height, width, elements, seeds) {
 
 exports.pingServer = pingServer;
 exports.getElementTypes = getElementTypes;
+exports.getAnomalyTypes = getAnomalyTypes;
+exports.getTerrainModificationTypes = getTerrainModificationTypes;
 exports.getElementSeedForm = getElementSeedForm;
 exports.getAnomalyForm = getAnomalyForm;
 exports.getTerrainModificationForm = getTerrainModificationForm;
@@ -6253,8 +6285,8 @@ function loadEnvironmentBuilderPage() {
   var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "50";
 
   // Setup Environment Builder Page
-  main.innerHTML = '\n  <div id="home-page">\n    <h1 id="home-title">Environment Builder</h1>\n    <div id="home-content">\n      <form id="environment-form">\n        <div id="basic-inputs">\n          <label for="environment-name">Environment Name</label>\n          <input class="basic-input" type="text" id="environment-name">\n          <label for="height">Height</label>\n          <input class="basic-input" type="number" id="height" min="10" max="100">\n          <label for="width">Width</label>\n          <input class="basic-input" type="number" id="width" min="10" max="100">\n        </div>\n        <div id="custom-inputs">\n          <h3 id="custom-inputs-title"></h3>\n          <div id="custom-inputs-content" class="scroll-box"></div>\n        </div>\n      </form>\n    </div>\n    <div id="submit-buttons">\n      <button class="submit-button" id="random-environment-button">Generate Random Environment</button>\n      <button class="submit-button" id="custom-environment-button">Build Custom Environment</button>\n    </div>\n  </div>\n  ';
-  // Set basic input values
+  main.innerHTML = '\n  <div id="home-page">\n    <h1 id="home-title">Environment Builder</h1>\n    <div id="home-content">\n      <form id="environment-form">\n        <div id="basic-inputs">\n          <label for="environment-name">Environment Name</label>\n          <input class="basic-input" type="text" id="environment-name">\n          <label for="height">Height</label>\n          <input class="basic-input" type="number" id="height" min="10" max="100">\n          <label for="width">Width</label>\n          <input class="basic-input" type="number" id="width" min="10" max="100">\n        </div>\n        <div id="custom-inputs">\n          <h3 id="custom-inputs-title"></h3>\n          <div id="custom-inputs-content" class="scroll-box"></div>\n        </div>\n      </form>\n    </div>\n    <div id="submit-buttons">\n      <button class="submit-button" id="random-environment-button">Random</button>\n      <button class="submit-button" id="custom-environment-button">Custom</button>\n      <button class="submit-button" id="load-environment-button">Load</button>\n    </div>\n  </div>\n  ';
+  // Set default input values
   document.getElementById("environment-name").value = name;
   document.getElementById("height").value = height;
   document.getElementById("width").value = width;
@@ -6267,6 +6299,10 @@ function loadEnvironmentBuilderPage() {
   });
   document.getElementById("custom-environment-button").addEventListener("click", function () {
     (0, _CustomEnvironmentForm.loadCustomEnvironmentForm)();
+  });
+  document.getElementById("load-environment-button").addEventListener("click", function () {
+    console.log("Load Saved Environment");
+    //todo
   });
 }
 
@@ -11349,6 +11385,17 @@ var BasicEnvironmentForm = function BasicEnvironmentForm(name, height, width) {
   this.width = width;
 };
 
+var AnomalySelectionForm = function AnomalySelectionForm(anomalyTypes) {
+  _classCallCheck(this, AnomalySelectionForm);
+
+  this.anomalyTypes = anomalyTypes;
+  this.counts = {};
+  for (var i in anomalyTypes) {
+    var type = anomalyTypes[i];
+    this.counts[type] = 0;
+  }
+};
+
 var ElementSelectionForm = function ElementSelectionForm(elementTypes) {
   _classCallCheck(this, ElementSelectionForm);
 
@@ -11360,8 +11407,21 @@ var ElementSelectionForm = function ElementSelectionForm(elementTypes) {
   }
 };
 
+var TerrainModificationSelectionForm = function TerrainModificationSelectionForm(terrainModificationTypes) {
+  _classCallCheck(this, TerrainModificationSelectionForm);
+
+  this.terrainModificationTypes = terrainModificationTypes;
+  this.counts = {};
+  for (var i in terrainModificationTypes) {
+    var type = terrainModificationTypes[i];
+    this.counts[type] = 0;
+  }
+};
+
 exports.BasicEnvironmentForm = BasicEnvironmentForm;
+exports.AnomalySelectionForm = AnomalySelectionForm;
 exports.ElementSelectionForm = ElementSelectionForm;
+exports.TerrainModificationSelectionForm = TerrainModificationSelectionForm;
 
 /***/ }),
 /* 116 */
@@ -33444,6 +33504,30 @@ var _EnvironmentFormatter = __webpack_require__(114);
 
 var _Visualizer = __webpack_require__(116);
 
+/*******************************************************************************
+_____WORKFLOW_____
+Description
+    User selects Environment load option:
+        A. Load random environment
+        B. Create a custom environment
+        D. Load a previously saved environment
+    A. Load Random
+        1. Request is sent off, no further action required
+    B. Build Custom
+      a) Select types/presence
+        1. Select anomaly presence (number of occurances for each type)
+        2. Select element types present (some required, some not)
+        3. Select number of terrain modifications to make
+      b) Fill out forms
+        1. Fill out all Element Seed forms
+        2. Fill out all anomaly forms
+        3. Fill out all terrain modifications
+      c) Review and submit
+    C. Load previously saved environment
+      1. Select a file (setup data or environment itself)
+
+*******************************************************************************/
+
 // Global DOM Elements
 var environmentForm = void 0;
 var basicInputs = void 0;
@@ -33455,10 +33539,20 @@ var backButton = void 0;
 var nextButton = void 0;
 
 // Globals
-var currentState = "SelectElementTypes";
+var currentState = "SelectAnomalyTypes";
+var maxAnomalies = 20;
+var maxTerrainModifications = 10;
+var anomalySelectionForm = null;
 var elementSelectionForm = null;
+var terrainModificationSelectionForm = null;
 var elementSeedForms = [];
 var elementSeedIndex = -1;
+var anomalyTypeIndexes = {};
+var anomalyForms = [];
+var anomalyIndex = -1;
+var terrainModificationTypeIndexes = {};
+var terrainModificationForms = [];
+var terrainModificationIndex = -1;
 
 /*******************************************************************************
 _____loadCustomEnvironmentForm_____
@@ -33488,23 +33582,71 @@ function loadCustomEnvironmentForm() {
     return nextButtonHandler();
   });
 
-  loadElementTypes();
+  setupEnvironmentFormData();
 }
 
 /*******************************************************************************
-_____loadElementTypes_____
+_____setupEnvironmentFormData_____
 Description
-    Checks if element types have been grabed form the backend
-    Calls to load the "Select Element Types" form
+    Sets up all the local structures for forms
+    Calls 'loadAnomalySelectionForm' to kick off the form page process
 *******************************************************************************/
-async function loadElementTypes() {
+async function setupEnvironmentFormData() {
+  // Load anomaly selection types
+  if (anomalySelectionForm == null) {
+    var anomalyTypes = await (0, _SCOUtAPI.getAnomalyTypes)();
+    await anomalyTypes.json().then(function (json) {
+      anomalySelectionForm = new _FormClasses.AnomalySelectionForm(json["Anomaly Types"]);
+      setupAnomalyForms(json["Anomaly Types"]);
+    });
+  }
+  // Load element selection types
   if (elementSelectionForm == null) {
     var elementTypes = await (0, _SCOUtAPI.getElementTypes)();
     await elementTypes.json().then(function (json) {
+      elementSelectionForm = new _FormClasses.ElementSelectionForm(json["Element Types"]);
       setupElementForms(json["Element Types"]);
     });
   }
-  loadElementSelectionForm();
+  // Load terrain modification selection types
+  if (terrainModificationSelectionForm == null) {
+    var terrainModificationTypes = await (0, _SCOUtAPI.getTerrainModificationTypes)();
+    await terrainModificationTypes.json().then(function (json) {
+      terrainModificationSelectionForm = new _FormClasses.TerrainModificationSelectionForm(json["Terrain Modification Types"]);
+      setupTerrainModificationForms(json["Terrain Modification Types"]);
+    });
+  }
+  loadAnomalySelectionForm();
+}
+
+/*******************************************************************************
+_____setupAnomalyForms_____
+Description
+    Sets up a mapping of anomaly type to form data
+*******************************************************************************/
+async function setupAnomalyForms(anomalyTypes) {
+  var indexCounter = 0;
+
+  var _loop = async function _loop(i) {
+    var type = anomalyTypes[i];
+    var form = await {};
+    form["anomaly"] = await type;
+    form["selected"] = await false;
+    var formData = await (0, _SCOUtAPI.getAnomalyForm)(type);
+    await formData.json().then(function (json) {
+      form["json"] = json;
+    });
+    for (var _i = 0; _i < maxAnomalies; _i++) {
+      await anomalyForms.push(form);
+    }
+    anomalyTypeIndexes[type] = await indexCounter;
+    indexCounter += await maxAnomalies;
+  };
+
+  for (var i in anomalyTypes) {
+    await _loop(i);
+  }
+  console.log(anomalyForms);
 }
 
 /*******************************************************************************
@@ -33513,9 +33655,7 @@ Description
     To do
 *******************************************************************************/
 async function setupElementForms(elementTypes) {
-  elementSelectionForm = await new _FormClasses.ElementSelectionForm(elementTypes);
-
-  var _loop = async function _loop(type) {
+  var _loop2 = async function _loop2(type) {
     var seedForm = await {};
     seedForm["element"] = await type;
     seedForm["selected"] = await elementTypes[type];
@@ -33527,9 +33667,39 @@ async function setupElementForms(elementTypes) {
   };
 
   for (var type in elementTypes) {
-    await _loop(type);
+    await _loop2(type);
   }
   console.log(elementSeedForms);
+}
+
+/*******************************************************************************
+_____setupTerrainModificationForms_____
+Description
+    Sets up a mapping of terrain modification type to form data
+*******************************************************************************/
+async function setupTerrainModificationForms(terrainModificationTypes) {
+  var indexCounter = 0;
+
+  var _loop3 = async function _loop3(i) {
+    var type = terrainModificationTypes[i];
+    var form = await {};
+    form["terrain-modification"] = await type;
+    form["selected"] = await false;
+    var formData = await (0, _SCOUtAPI.getTerrainModificationForm)(type);
+    await formData.json().then(function (json) {
+      form["json"] = json;
+    });
+    for (var _i2 = 0; _i2 < maxTerrainModifications; _i2++) {
+      await terrainModificationForms.push(form);
+    }
+    terrainModificationTypeIndexes[type] = await indexCounter;
+    indexCounter += await maxTerrainModifications;
+  };
+
+  for (var i in terrainModificationTypes) {
+    await _loop3(i);
+  }
+  console.log(terrainModificationForms);
 }
 
 /*******************************************************************************
@@ -33539,14 +33709,39 @@ Description
 *******************************************************************************/
 function backButtonHandler() {
   switch (currentState) {
-    case "SelectElementTypes":
+    case "SelectAnomalyTypes":
+      saveAnomalyTypesForm();
       basicInputs = (0, _EnvironmentBuilder.getBasicInputs)();
       (0, _EnvironmentBuilder.loadEnvironmentBuilderPage)(basicInputs.name, basicInputs.height, basicInputs.width);
+      break;
+    case "SelectElementTypes":
+      if ((0, _FormValidators.checkCustomInputs)()) {
+        saveElementTypesForm();
+        loadAnomalySelectionForm();
+      }
+      break;
+    case "SelectTerrainModificationTypes":
+      if ((0, _FormValidators.checkCustomInputs)()) {
+        saveTerrainModificationTypesForm();
+        loadElementSelectionForm();
+      }
       break;
     case "ElementSeedForm":
       if ((0, _FormValidators.checkCustomInputs)()) {
         saveElementSeedForm();
         loadPreviousElementSeedForm();
+      }
+      break;
+    case "TerrainModificationForm":
+      if ((0, _FormValidators.checkCustomInputs)()) {
+        saveTerrainModificationForm();
+        loadPreviousTerrainModificationForm();
+      }
+      break;
+    case "AnomalyForm":
+      if ((0, _FormValidators.checkCustomInputs)()) {
+        saveAnomalyForm();
+        loadPreviousAnomalyForm();
       }
       break;
     case "ReviewForm":
@@ -33562,13 +33757,16 @@ Handles "Next" clicks while user is filling out the custom environment forms
 *******************************************************************************/
 function nextButtonHandler() {
   switch (currentState) {
+    case "SelectAnomalyTypes":
+      saveAnomalyTypesForm();
+      loadElementSelectionForm();
+      break;
     case "SelectElementTypes":
-      for (var i = 0; i < elementSeedForms.length; i++) {
-        var type = elementSeedForms[i]["element"];
-        if (!elementSelectionForm.elementTypes[type]) {
-          elementSeedForms[i]["selected"] = elementSelectionForm.selectables[type];
-        }
-      }
+      saveElementTypesForm();
+      loadTerrainModificationSelectionForm();
+      break;
+    case "SelectTerrainModificationTypes":
+      saveTerrainModificationTypesForm();
       loadNextElementSeedForm();
       break;
     case "ElementSeedForm":
@@ -33577,8 +33775,83 @@ function nextButtonHandler() {
         loadNextElementSeedForm();
       }
       break;
+    case "TerrainModificationForm":
+      if ((0, _FormValidators.checkCustomInputs)()) {
+        saveTerrainModificationForm();
+        loadNextTerrainModificationForm();
+      }
+    case "AnomalyForm":
+      if ((0, _FormValidators.checkCustomInputs)()) {
+        saveAnomalyForm();
+        loadNextAnomalyForm();
+      }
     case "ReviewForm":
       if (_FormValidators.checkBasicInputs) submitCustomEnvironment();
+  }
+}
+
+/*******************************************************************************
+_____loadAnomalySelectionForm_____
+Description
+    Loads form for number of each anomaly present
+*******************************************************************************/
+function loadAnomalySelectionForm() {
+  currentState = "SelectAnomalyTypes";
+  customInputsTitle.innerText = "Select Anomaly Presence";
+  customInputsContent.innerHTML = "";
+  var anomalySelectionList = document.createElement("ul");
+  anomalySelectionList.setAttribute("id", "anomaly-selection-list");
+  anomalySelectionList.setAttribute("class", "selection-list");
+  for (var i in anomalySelectionForm.anomalyTypes) {
+    var type = anomalySelectionForm.anomalyTypes[i];
+    var typeId = type + "-count";
+    // create list item element
+    var newListItem = document.createElement("li");
+    newListItem.setAttribute("id", type + "-list-item");
+    // create nubmer input element
+    var numberField = document.createElement('input');
+    numberField.setAttribute("class", "custom-input");
+    numberField.setAttribute("type", "number");
+    numberField.setAttribute("id", typeId);
+    numberField.setAttribute("min", 0);
+    numberField.setAttribute("max", maxAnomalies);
+    numberField.value = anomalySelectionForm.counts[type];
+    // create label element for checkbox
+    var newLabel = document.createElement("label");
+    newLabel.setAttribute("for", typeId);
+    newLabel.innerText = type;
+    // add elements to DOM
+    newListItem.appendChild(numberField);
+    newListItem.appendChild(newLabel);
+    anomalySelectionList.appendChild(newListItem);
+  }
+  customInputsContent.appendChild(anomalySelectionList);
+}
+
+/*******************************************************************************
+_____saveAnomalyTypesForm_____
+Description
+    Saves the form for the selected anomaly counts
+*******************************************************************************/
+function saveAnomalyTypesForm() {
+  // Save anomaly types form
+  var anomalyList = document.getElementById("anomaly-selection-list").children;
+  for (var i = 0; i < anomalyList.length; i++) {
+    var item = anomalyList[i];
+    var type = item.getElementsByTagName("label")[0].innerText;
+    var value = item.getElementsByTagName("input")[0].value;
+    anomalySelectionForm.counts[type] = value;
+  }
+  // Sets whether anomaly form is used or not
+  for (var _type in anomalySelectionForm.counts) {
+    var count = anomalySelectionForm.counts[_type];
+    var startIndex = anomalyTypeIndexes[_type];
+    for (var _i3 = startIndex; _i3 < startIndex + maxAnomalies; _i3++) {
+      if (count != 0) {
+        anomalyForms[_i3].selected = true;
+        count -= 1;
+      } else anomalyForms[_i3].selected = false;
+    }
   }
 }
 
@@ -33593,6 +33866,7 @@ function loadElementSelectionForm() {
   customInputsContent.innerHTML = "";
   var elementSelectionList = document.createElement("ul");
   elementSelectionList.setAttribute("id", "element-selection-list");
+  elementSelectionList.setAttribute("class", "selection-list");
   for (var type in elementSelectionForm.elementTypes) {
     var typeId = type + "-selection";
     // create list item element
@@ -33622,15 +33896,93 @@ function loadElementSelectionForm() {
   customInputsContent.appendChild(elementSelectionList);
   // add event listeners
 
-  var _loop2 = function _loop2(_type) {
-    var typeId = _type + "-selection";
+  var _loop4 = function _loop4(_type2) {
+    var typeId = _type2 + "-selection";
     document.getElementById(typeId).addEventListener("click", function () {
-      elementSelectionForm.selectables[_type] = !elementSelectionForm.selectables[_type];
+      elementSelectionForm.selectables[_type2] = !elementSelectionForm.selectables[_type2];
     });
   };
 
-  for (var _type in elementSelectionForm.selectables) {
-    _loop2(_type);
+  for (var _type2 in elementSelectionForm.selectables) {
+    _loop4(_type2);
+  }
+}
+
+/*******************************************************************************
+_____saveElementTypesForm_____
+Description
+    Saves the form for the selected element types
+*******************************************************************************/
+function saveElementTypesForm() {
+  for (var i = 0; i < elementSeedForms.length; i++) {
+    var type = elementSeedForms[i]["element"];
+    if (!elementSelectionForm.elementTypes[type]) {
+      elementSeedForms[i]["selected"] = elementSelectionForm.selectables[type];
+    }
+  }
+}
+
+/*******************************************************************************
+_____loadTerrainModificationSelectionForm_____
+Description
+    Loads form for number of each terrain modification to be made
+*******************************************************************************/
+function loadTerrainModificationSelectionForm() {
+  currentState = "SelectTerrainModificationTypes";
+  customInputsTitle.innerText = "Select Terrain Modificatinos to be Made";
+  customInputsContent.innerHTML = "";
+  var terrainModificationSelectionList = document.createElement("ul");
+  terrainModificationSelectionList.setAttribute("id", "terrain-modification-selection-list");
+  terrainModificationSelectionList.setAttribute("class", "selection-list");
+  for (var i in terrainModificationSelectionForm.terrainModificationTypes) {
+    var type = terrainModificationSelectionForm.terrainModificationTypes[i];
+    var typeId = type + "-count";
+    // create list item element
+    var newListItem = document.createElement("li");
+    newListItem.setAttribute("id", type + "-list-item");
+    // create nubmer input element
+    var numberField = document.createElement('input');
+    numberField.setAttribute("class", "custom-input");
+    numberField.setAttribute("type", "number");
+    numberField.setAttribute("id", typeId);
+    numberField.setAttribute("min", 0);
+    numberField.setAttribute("max", maxTerrainModifications);
+    numberField.value = 0;
+    // create label element for checkbox
+    var newLabel = document.createElement("label");
+    newLabel.setAttribute("for", typeId);
+    newLabel.innerText = type;
+    // add elements to DOM
+    newListItem.appendChild(numberField);
+    newListItem.appendChild(newLabel);
+    terrainModificationSelectionList.appendChild(newListItem);
+  }
+  customInputsContent.appendChild(terrainModificationSelectionList);
+}
+
+/*******************************************************************************
+_____saveTerrainModificationTypesForm_____
+Description
+    Saves the form for the selected terrain modification counts
+*******************************************************************************/
+function saveTerrainModificationTypesForm() {
+  var terrainModificationList = document.getElementById("terrain-modification-selection-list").children;
+  for (var i = 0; i < terrainModificationList.length; i++) {
+    var item = terrainModificationList[i];
+    var type = item.getElementsByTagName("label")[0].innerText;
+    var value = item.getElementsByTagName("input")[0].value;
+    terrainModificationSelectionForm.counts[type] = value;
+  }
+  // Sets whether terrain modification form is used or not
+  for (var _type3 in terrainModificationSelectionForm.counts) {
+    var count = terrainModificationSelectionForm.counts[_type3];
+    var startIndex = terrainModificationTypeIndexes[_type3];
+    for (var _i4 = startIndex; _i4 < startIndex + maxTerrainModifications; _i4++) {
+      if (count != 0) {
+        terrainModificationForms[_i4].selected = true;
+        count -= 1;
+      } else terrainModificationForms[_i4].selected = false;
+    }
   }
 }
 
@@ -33647,11 +33999,11 @@ function loadPreviousElementSeedForm() {
 /*******************************************************************************
 _____loadNextElementSeedForm_____
 Description
-    Moves to next selected element seed form or moves to review page
+    Moves to next selected element seed form or moves to terrain modification forms
 *******************************************************************************/
 function loadNextElementSeedForm() {
   elementSeedIndex += 1;
-  if (elementSeedIndex == elementSeedForms.length) loadReviewPage();else if (elementSeedForms[elementSeedIndex].selected) loadElementSeedForm();else loadNextElementSeedForm();
+  if (elementSeedIndex == elementSeedForms.length) loadNextTerrainModificationForm();else if (elementSeedForms[elementSeedIndex].selected) loadElementSeedForm();else loadNextElementSeedForm();
 }
 
 /*******************************************************************************
@@ -33662,10 +34014,8 @@ Description
 function loadElementSeedForm() {
   currentState = "ElementSeedForm";
   var elementType = elementSeedForms[elementSeedIndex]["element"];
-
   customInputsTitle.innerText = elementType;
   customInputsContent.innerHTML = "";
-
   var formData = elementSeedForms[elementSeedIndex]["json"]["fields"];
   var formFields = (0, _FormBuilder.buildFormFields)(formData);
   for (var i in formFields) {
@@ -33674,6 +34024,11 @@ function loadElementSeedForm() {
   }
 }
 
+/*******************************************************************************
+_____saveElementSeedForm_____
+Description
+    Saves the form for the current element seed
+*******************************************************************************/
 function saveElementSeedForm() {
   var elementType = elementSeedForms[elementSeedIndex]["element"];
   var formEntries = document.getElementById("custom-inputs").getElementsByClassName("custom-input");
@@ -33681,6 +34036,112 @@ function saveElementSeedForm() {
     var input = formEntries.item(i);
     var fieldName = input.id;
     elementSeedForms[elementSeedIndex]["json"]["fields"][fieldName]["value"] = input.value;
+  }
+}
+
+/*******************************************************************************
+_____loadPreviousTerrainModificationForm_____
+Description
+    Moves to previous terrain modification form or returns to previous element seed forms
+*******************************************************************************/
+function loadPreviousTerrainModificationForm() {
+  terrainModificationIndex -= 1;
+  if (terrainModificationIndex == -1) loadPreviousElementSeedForm();else if (terrainModificationForms[terrainModificationIndex].selected) loadTerrainModificationForm();else loadPreviousTerrainModificationForm();
+}
+
+/*******************************************************************************
+_____loadNextTerrainModificationForm_____
+Description
+    Moves to next terrain modification form or moves to anomaly forms
+*******************************************************************************/
+function loadNextTerrainModificationForm() {
+  terrainModificationIndex += 1;
+  if (terrainModificationIndex == terrainModificationForms.length) loadNextAnomalyForm();else if (terrainModificationForms[terrainModificationIndex].selected) loadTerrainModificationForm();else loadNextTerrainModificationForm();
+}
+
+/*******************************************************************************
+_____loadTerrainModificationForm_____
+Description
+    Loads in the form for the terrain modification at the current index
+*******************************************************************************/
+function loadTerrainModificationForm() {
+  currentState = "TerrainModificationForm";
+  var terrainModificationType = terrainModificationForms[terrainModificationIndex]["terrain-modification"];
+  customInputsTitle.innerText = terrainModificationType;
+  customInputsContent.innerHTML = "";
+  var formData = terrainModificationForms[terrainModificationIndex]["json"]["fields"];
+  var formFields = (0, _FormBuilder.buildFormFields)(formData);
+  for (var i in formFields) {
+    var field = formFields[i];
+    customInputsContent.appendChild(field);
+  }
+}
+
+/*******************************************************************************
+_____saveTerrainModificationForm_____
+Description
+    Saves the form for the current terrain modification
+*******************************************************************************/
+function saveTerrainModificationForm() {
+  var terrainModificationType = terrainModificationForms[terrainModificationIndex]["terrain-modification"];
+  var formEntries = document.getElementById("custom-inputs").getElementsByClassName("custom-input");
+  for (var i = 0; i < formEntries.length; i++) {
+    var input = formEntries.item(i);
+    var fieldName = input.id;
+    terrainModificationForms[terrainModificationIndex]["json"]["fields"][fieldName]["value"] = input.value;
+  }
+}
+
+/*******************************************************************************
+_____loadPreviousAnomalyForm_____
+Description
+    Moves to previous anomaly form or returns to previous terrain modification forms
+*******************************************************************************/
+function loadPreviousAnomalyForm() {
+  anomalyIndex -= 1;
+  if (anomalyIndex == -1) loadPreviousTerrainModificationForm();else if (anomalyForms[anomalyIndex].selected) loadAnomalyForm();else loadPreviousAnomalyForm();
+}
+
+/*******************************************************************************
+_____loadNextAnomalyForm_____
+Description
+    Moves to next anomaly form or moves to review page
+*******************************************************************************/
+function loadNextAnomalyForm() {
+  anomalyIndex += 1;
+  if (anomalyIndex == anomalyForms.length) loadReviewPage();else if (anomalyForms[anomalyIndex].selected) loadAnomalyForm();else loadNextAnomalyForm();
+}
+
+/*******************************************************************************
+_____loadAnomalyForm_____
+Description
+    Loads in the form for the anomaly at the current index
+*******************************************************************************/
+function loadAnomalyForm() {
+  currentState = "AnomalyForm";
+  var anomalyType = anomalyForms[anomalyIndex]["anomaly"];
+  customInputsTitle.innerText = anomalyType;
+  customInputsContent.innerHTML = "";
+  var formData = anomalyForms[anomalyIndex]["json"]["fields"];
+  var formFields = (0, _FormBuilder.buildFormFields)(formData);
+  for (var i in formFields) {
+    var field = formFields[i];
+    customInputsContent.appendChild(field);
+  }
+}
+
+/*******************************************************************************
+_____saveAnomalyForm_____
+Description
+    Saves the form for the current anomaly
+*******************************************************************************/
+function saveAnomalyForm() {
+  var anomalyType = anomalyForms[anomalyIndex]["anomaly"];
+  var formEntries = document.getElementById("custom-inputs").getElementsByClassName("custom-input");
+  for (var i = 0; i < formEntries.length; i++) {
+    var input = formEntries.item(i);
+    var fieldName = input.id;
+    anomalyForms[anomalyIndex]["json"]["fields"][fieldName]["value"] = input.value;
   }
 }
 
@@ -33695,10 +34156,10 @@ function loadReviewPage() {
   customInputsContent.innerHTML = "";
   document.getElementById("next-button").innerText = "Build Environment";
 
-  var _loop3 = function _loop3(i) {
+  var _loop5 = function _loop5(i) {
     if (elementSeedForms[i].selected == true && elementSeedForms[i].json["field-keys"]) {
-      var form = elementSeedForms[i];
-      var title = form.element;
+      var _form = elementSeedForms[i];
+      var title = _form.element;
       var titleId = title + "-review-header";
       var newTitle = document.createElement("h3");
       newTitle.setAttribute("id", titleId);
@@ -33708,7 +34169,7 @@ function loadReviewPage() {
       document.getElementById(titleId).addEventListener("click", function () {
         return goToFormPage(i);
       });
-      var jsonData = form.json;
+      var jsonData = _form.json;
       for (var j = 0; j < jsonData["field-keys"].length; j++) {
         var inputName = jsonData["field-keys"][j];
         var inputValue = jsonData["fields"][inputName]["value"];
@@ -33722,7 +34183,7 @@ function loadReviewPage() {
   };
 
   for (var i = 0; i < elementSeedForms.length; i++) {
-    _loop3(i);
+    _loop5(i);
   }
 }
 
@@ -33798,7 +34259,7 @@ Object.defineProperty(exports, "__esModule", {
 /*******************************************************************************
 _____buildFormFields_____
 Description
-    Takes an element's seed parameters and builds HTML form fields
+    Takes an json data and builds HTML form fields
 Parameters
     json:   json object holding fields and necessary data
 *******************************************************************************/

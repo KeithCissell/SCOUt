@@ -50,7 +50,7 @@ trait Element {
 // "Element Type" -> required?
 object ElementTypes {
   val elementTypes = Map(
-    // "Elevation" -> true,
+    "Elevation" -> true,
     "Latitude" -> true,
     "Longitude" -> true,
     "Decibel" -> false,

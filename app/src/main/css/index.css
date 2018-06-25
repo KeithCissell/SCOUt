@@ -182,7 +182,7 @@ button.submit-button {
   border-radius: 6pt;
 }
 
-#element-selection-list {
+ul.selection-list {
   margin-left: 33%;
   list-style: none;
   vertical-align: baseline;
