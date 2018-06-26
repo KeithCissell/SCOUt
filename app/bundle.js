@@ -34262,6 +34262,7 @@ Parameters
     formIndex:  index of the form in elementSeedForm list
 *******************************************************************************/
 function goToFormPage(formType, formIndex) {
+  document.getElementById("next-button").innerText = "Next";
   switch (formType) {
     case "SelectAnomalyTypes":
       if (formIndex < elementSeedForms.length && elementSeedForms[formIndex].selected) {

@@ -786,6 +786,8 @@ function submitCustomEnvironment() {
   let basicInputs = getBasicInputs()
   let elements = []
   let elementSeeds = {}
+  let terrainModifications = {}
+  let anomalies = {}
   for (let i = 0; i < elementSeedForms.length; i++) {
     let seedForm = elementSeedForms[i]
     let elementType = seedForm["element"]
@@ -794,7 +796,15 @@ function submitCustomEnvironment() {
       elementSeeds[elementType] = seedForm["json"]
     }
   }
-  loadCustomEnvironment(basicInputs.name, basicInputs.height, basicInputs.width, elements, elementSeeds)
+  for (let i = 0; i < terrainModificationForms.length; i++) {
+    let form = terrainModificationForms[i]
+    if (form["selected"]) elementSeeds[elementType] = form["json"]
+  }
+  for (let i = 0; i < anomalyForms.length; i++) {
+    let form = anomalyForms[i]
+    if (form["selected"]) elementSeeds[elementType] = form["json"]
+  }
+  loadCustomEnvironment(basicInputs.name, basicInputs.height, basicInputs.width, elements, elementSeeds, terrainModifications, anomalies)
 }
 
 /*******************************************************************************
@@ -802,14 +812,16 @@ _____loadCustomEnvironment_____
 Description
     Makes a server request for a custom environment and loads it into the visualizer
 Parameters
-    name:           associated name for random Environment
-    height:         number of cells hgih the Environment will be
-    width:          number of cells wide the Environment will be
-    elements:       list of all elements to be included in the environment
-    elementSeeds:   seed data for each element included
+    name:                 associated name for random Environment
+    height:               number of cells hgih the Environment will be
+    width:                number of cells wide the Environment will be
+    elements:             list of all elements to be included in the environment
+    elementSeeds:         seed data for each element included
+    terrainModifications: modifications to make on the environment's terrain
+    anomalies:            anomalies to place in the environment
 *******************************************************************************/
-async function loadCustomEnvironment(name, height, width, elements, elementSeeds) {
-  let customEnvironment = await buildCustomEnvironment(name, height, width, elements, elementSeeds)
+async function loadCustomEnvironment(name, height, width, elements, elementSeeds, terrainModifications, anomalies) {
+  let customEnvironment = await buildCustomEnvironment(name, height, width, elements, elementSeeds, terrainModifications, anomalies)
   customEnvironment.json().then((json) => {
     let environment = formatEnvironment(json)
     console.log(environment)

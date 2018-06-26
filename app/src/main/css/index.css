@@ -60,6 +60,7 @@ h3.review {
   font-size: 20pt;
   font-weight: bold;
   text-align: center;
+  text-decoration: underline;
   cursor: pointer;
 }
 
