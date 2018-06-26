@@ -41,7 +41,7 @@ function loadEnvironmentBuilderPage(name = "My Environment", height = "50", widt
         </div>
         <div id="custom-inputs">
           <h3 id="custom-inputs-title"></h3>
-          <div id="custom-inputs-content" class="scroll-box"></div>
+          <div id="custom-inputs-content" class="scroll-box rounded-border"></div>
         </div>
       </form>
     </div>

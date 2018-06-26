@@ -74,7 +74,6 @@ function loadCustomEnvironmentForm() {
   customInputsContent = document.getElementById("custom-inputs-content")
 
   // create submit buttons
-  elementSeedIndex = -1
   submitButtons.innerHTML = `
     <button class="submit-button" id="back-button">Back</button>
     <button class="submit-button" id="next-button">Next</button>
@@ -83,6 +82,10 @@ function loadCustomEnvironmentForm() {
   backButton.addEventListener("click", () => backButtonHandler())
   nextButton = document.getElementById("next-button")
   nextButton.addEventListener("click", () => nextButtonHandler())
+
+  elementSeedIndex = -1
+  terrainModificationIndex = -1
+  anomalyIndex = -1
 
   setupEnvironmentFormData()
 }
@@ -130,20 +133,21 @@ async function setupAnomalyForms(anomalyTypes) {
   let indexCounter = 0
   for (let i in anomalyTypes) {
     let type = anomalyTypes[i]
-    let form = await {}
-    form["anomaly"] = await type
-    form["selected"] = await false
+    let formJson
     let formData = await getAnomalyForm(type)
     await formData.json().then((json) => {
-      form["json"] = json
+      formJson = json
     })
     for (let i = 0; i < maxAnomalies; i++) {
+      let form = await {}
+      form["anomaly"] = await type
+      form["selected"] = await false
+      form["json"] = await formJson
       await anomalyForms.push(form)
     }
     anomalyTypeIndexes[type] = await indexCounter
     indexCounter += await maxAnomalies
   }
-  console.log(anomalyForms)
 }
 
 /*******************************************************************************
@@ -162,7 +166,6 @@ async function setupElementForms(elementTypes) {
     })
     await elementSeedForms.push(seedForm)
   }
-  console.log(elementSeedForms)
 }
 
 /*******************************************************************************
@@ -173,21 +176,22 @@ Description
 async function setupTerrainModificationForms(terrainModificationTypes) {
   let indexCounter = 0
   for (let i in terrainModificationTypes) {
-    let type = terrainModificationTypes[i]
-    let form = await {}
-    form["terrain-modification"] = await type
-    form["selected"] = await false
+    let type = await terrainModificationTypes[i]
+    let formJson
     let formData = await getTerrainModificationForm(type)
     await formData.json().then((json) => {
-      form["json"] = json
+      formJson = json
     })
     for (let i = 0; i < maxTerrainModifications; i++) {
+      let form = await {}
+      form["terrain-modification"] = await type
+      form["selected"] = await false
+      form["json"] = await formJson
       await terrainModificationForms.push(form)
     }
     terrainModificationTypeIndexes[type] = await indexCounter
     indexCounter += await maxTerrainModifications
   }
-  console.log(terrainModificationForms)
 }
 
 /*******************************************************************************
@@ -234,7 +238,7 @@ function backButtonHandler() {
           break;
     case "ReviewForm":
           document.getElementById("next-button").innerText = "Next"
-          loadPreviousElementSeedForm()
+          loadPreviousAnomalyForm()
   }
 }
 
@@ -268,11 +272,13 @@ function nextButtonHandler() {
             saveTerrainModificationForm()
             loadNextTerrainModificationForm()
           }
+          break;
     case "AnomalyForm":
           if (checkCustomInputs()) {
             saveAnomalyForm()
             loadNextAnomalyForm()
           }
+          break;
     case "ReviewForm":
           if (checkBasicInputs) submitCustomEnvironment()
   }
@@ -336,10 +342,10 @@ function saveAnomalyTypesForm() {
     let startIndex = anomalyTypeIndexes[type]
     for (let i = startIndex; i < startIndex + maxAnomalies; i++) {
       if (count != 0) {
-        anomalyForms[i].selected = true
+        anomalyForms[i]["selected"] = true
         count -= 1
       }
-      else anomalyForms[i].selected = false
+      else anomalyForms[i]["selected"] = false
     }
   }
 }
@@ -463,10 +469,10 @@ function saveTerrainModificationTypesForm() {
     let startIndex = terrainModificationTypeIndexes[type]
     for (let i = startIndex; i < startIndex + maxTerrainModifications; i++) {
       if (count != 0) {
-        terrainModificationForms[i].selected = true
+        terrainModificationForms[i]["selected"] = true
         count -= 1
       }
-      else terrainModificationForms[i].selected = false
+      else terrainModificationForms[i]["selected"] = false
     }
   }
 }
@@ -477,8 +483,9 @@ Description
     Moves to previous selected element seed form or returns to element type selection form
 *******************************************************************************/
 function loadPreviousElementSeedForm() {
+  currentState = "ElementSeedForm"
   elementSeedIndex -= 1
-  if (elementSeedIndex == -1) loadElementSelectionForm()
+  if (elementSeedIndex == -1) loadTerrainModificationSelectionForm()
   else if (elementSeedForms[elementSeedIndex].selected) loadElementSeedForm()
   else loadPreviousElementSeedForm()
 }
@@ -489,6 +496,7 @@ Description
     Moves to next selected element seed form or moves to terrain modification forms
 *******************************************************************************/
 function loadNextElementSeedForm() {
+  currentState = "ElementSeedForm"
   elementSeedIndex += 1
   if (elementSeedIndex == elementSeedForms.length) loadNextTerrainModificationForm()
   else if (elementSeedForms[elementSeedIndex].selected) loadElementSeedForm()
@@ -534,9 +542,10 @@ Description
     Moves to previous terrain modification form or returns to previous element seed forms
 *******************************************************************************/
 function loadPreviousTerrainModificationForm() {
+  currentState = "TerrainModificationForm"
   terrainModificationIndex -= 1
   if (terrainModificationIndex == -1) loadPreviousElementSeedForm()
-  else if (terrainModificationForms[terrainModificationIndex].selected) loadTerrainModificationForm()
+  else if (terrainModificationForms[terrainModificationIndex]["selected"]) loadTerrainModificationForm()
   else loadPreviousTerrainModificationForm()
 }
 
@@ -546,9 +555,10 @@ Description
     Moves to next terrain modification form or moves to anomaly forms
 *******************************************************************************/
 function loadNextTerrainModificationForm() {
+  currentState = "TerrainModificationForm"
   terrainModificationIndex += 1
   if (terrainModificationIndex == terrainModificationForms.length) loadNextAnomalyForm()
-  else if (terrainModificationForms[terrainModificationIndex].selected) loadTerrainModificationForm()
+  else if (terrainModificationForms[terrainModificationIndex]["selected"]) loadTerrainModificationForm()
   else loadNextTerrainModificationForm()
 }
 
@@ -560,7 +570,7 @@ Description
 function loadTerrainModificationForm() {
   currentState = "TerrainModificationForm"
   let terrainModificationType = terrainModificationForms[terrainModificationIndex]["terrain-modification"]
-  customInputsTitle.innerText = terrainModificationType
+  customInputsTitle.innerText = terrainModificationType + " " + (terrainModificationIndex - terrainModificationTypeIndexes[terrainModificationType] + 1)
   customInputsContent.innerHTML = ""
   let formData = terrainModificationForms[terrainModificationIndex]["json"]["fields"]
   let formFields = buildFormFields(formData)
@@ -591,9 +601,10 @@ Description
     Moves to previous anomaly form or returns to previous terrain modification forms
 *******************************************************************************/
 function loadPreviousAnomalyForm() {
+  currentState = "AnomalyForm"
   anomalyIndex -= 1
   if (anomalyIndex == -1) loadPreviousTerrainModificationForm()
-  else if (anomalyForms[anomalyIndex].selected) loadAnomalyForm()
+  else if (anomalyForms[anomalyIndex]["selected"]) loadAnomalyForm()
   else loadPreviousAnomalyForm()
 }
 
@@ -603,9 +614,10 @@ Description
     Moves to next anomaly form or moves to review page
 *******************************************************************************/
 function loadNextAnomalyForm() {
+  currentState = "AnomalyForm"
   anomalyIndex += 1
   if (anomalyIndex == anomalyForms.length) loadReviewPage()
-  else if (anomalyForms[anomalyIndex].selected) loadAnomalyForm()
+  else if (anomalyForms[anomalyIndex]["selected"]) loadAnomalyForm()
   else loadNextAnomalyForm()
 }
 
@@ -617,7 +629,7 @@ Description
 function loadAnomalyForm() {
   currentState = "AnomalyForm"
   let anomalyType = anomalyForms[anomalyIndex]["anomaly"]
-  customInputsTitle.innerText = anomalyType
+  customInputsTitle.innerText = anomalyType + " " + (anomalyIndex - anomalyTypeIndexes[anomalyType] + 1)
   customInputsContent.innerHTML = ""
   let formData = anomalyForms[anomalyIndex]["json"]["fields"]
   let formFields = buildFormFields(formData)
@@ -652,6 +664,7 @@ function loadReviewPage() {
   customInputsTitle.innerHTML = "Review"
   customInputsContent.innerHTML = ""
   document.getElementById("next-button").innerText = "Build Environment"
+  // Environment Seeds
   for (let i = 0; i < elementSeedForms.length; i++) {
     if (elementSeedForms[i].selected == true && elementSeedForms[i].json["field-keys"]){
       let form = elementSeedForms[i]
@@ -662,7 +675,57 @@ function loadReviewPage() {
       newTitle.setAttribute("class", "review")
       newTitle.innerText = title
       customInputsContent.appendChild(newTitle)
-      document.getElementById(titleId).addEventListener("click", () => goToFormPage(i))
+      document.getElementById(titleId).addEventListener("click", () => goToFormPage("element-seed", i))
+      let jsonData = form.json
+      for (let j = 0; j < jsonData["field-keys"].length; j++) {
+        let inputName = jsonData["field-keys"][j]
+        let inputValue = jsonData["fields"][inputName]["value"]
+        let inputUnit = jsonData["fields"][inputName]["unit"]
+        let newInput = document.createElement("h4")
+        newInput.setAttribute("class", "review")
+        newInput.innerText = `${inputName}: ${inputValue} ${inputUnit}`
+        customInputsContent.appendChild(newInput)
+      }
+    }
+  }
+  // Terrain Modifications
+  for (let i = 0; i < terrainModificationForms.length; i++) {
+    if (terrainModificationForms[i].selected == true && terrainModificationForms[i].json["field-keys"]){
+      let form = terrainModificationForms[i]
+      let title = form["terrain-modification"]
+      let indexTitle = i - terrainModificationTypeIndexes[title] + 1
+      let titleId = title + "-" + indexTitle + "-" + "-review-header"
+      let newTitle = document.createElement("h3")
+      newTitle.setAttribute("id", titleId)
+      newTitle.setAttribute("class", "review")
+      newTitle.innerText = title + " " + indexTitle
+      customInputsContent.appendChild(newTitle)
+      document.getElementById(titleId).addEventListener("click", () => goToFormPage("terrain-modification", i))
+      let jsonData = form.json
+      for (let j = 0; j < jsonData["field-keys"].length; j++) {
+        let inputName = jsonData["field-keys"][j]
+        let inputValue = jsonData["fields"][inputName]["value"]
+        let inputUnit = jsonData["fields"][inputName]["unit"]
+        let newInput = document.createElement("h4")
+        newInput.setAttribute("class", "review")
+        newInput.innerText = `${inputName}: ${inputValue} ${inputUnit}`
+        customInputsContent.appendChild(newInput)
+      }
+    }
+  }
+  // Anomalies
+  for (let i = 0; i < anomalyForms.length; i++) {
+    if (anomalyForms[i].selected == true && anomalyForms[i].json["field-keys"]){
+      let form = anomalyForms[i]
+      let title = form["anomaly"]
+      let indexTitle = i - anomalyTypeIndexes[title] + 1
+      let titleId = title + "-" + indexTitle + "-" + "-review-header"
+      let newTitle = document.createElement("h3")
+      newTitle.setAttribute("id", titleId)
+      newTitle.setAttribute("class", "review")
+      newTitle.innerText = title + " " + indexTitle
+      customInputsContent.appendChild(newTitle)
+      document.getElementById(titleId).addEventListener("click", () => goToFormPage("anomaly", i))
       let jsonData = form.json
       for (let j = 0; j < jsonData["field-keys"].length; j++) {
         let inputName = jsonData["field-keys"][j]
@@ -684,10 +747,33 @@ Description
 Parameters
     formIndex:  index of the form in elementSeedForm list
 *******************************************************************************/
-function goToFormPage(formIndex) {
-  if (formIndex < elementSeedForms.length && elementSeedForms[formIndex].selected) {
-    elementSeedIndex = formIndex
-    loadElementSeedForm()
+function goToFormPage(formType, formIndex) {
+  document.getElementById("next-button").innerText = "Next"
+  switch(formType) {
+    case "SelectAnomalyTypes":
+          if (formIndex < elementSeedForms.length && elementSeedForms[formIndex].selected) {
+            elementSeedIndex = formIndex
+            terrainModificationIndex = -1
+            anomalyIndex = -1
+            loadElementSeedForm()
+          }
+          break;
+    case "terrain-modification":
+          if (formIndex < terrainModificationForms.length && terrainModificationForms[formIndex].selected) {
+            elementSeedIndex = elementSeedForms.length
+            terrainModificationIndex = formIndex
+            anomalyIndex = -1
+            loadTerrainModificationForm()
+          }
+          break;
+    case "anomaly":
+          if (formIndex < anomalyForms.length && anomalyForms[formIndex].selected) {
+            elementSeedIndex = elementSeedForms.length
+            terrainModificationIndex = terrainModificationForms.length
+            anomalyIndex = formIndex
+            loadAnomalyForm()
+          }
+          break;
   }
 }
 
