@@ -22,6 +22,14 @@ class WaterStreamModification(
   val width: Double,
   val length: Double
 ) extends TerrainModification {
+  // Constructor using mapped input from json decoder
+  def this(formData: Map[String, String]) = this(
+    depth = formData("Depth").toDouble,
+    deviation = formData("Deviation").toDouble,
+    width = formData("Width").toDouble,
+    length = formData("Length").toDouble
+  )
+
   // Erode channels of water with a directional influence
   def modify(layer: Layer, constructionLayer: ConstructionLayer) = constructionLayer.getRandomUnmodified() match {
     case None => // No unmodified cells

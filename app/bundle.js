@@ -6206,14 +6206,16 @@ _____buildCustomEnvironment_____
 Description
     Build a custom environment based on element seed data
 Parameters
-    name:     associated name for random Environment
-    height:   number of cells long the Environment will be
-    width:    number of cells wide the Environment will be
-    elements: list of all the element types used
-    seeds:    map of element types with their seed data
+    name:       associated name for random Environment
+    height:     number of cells long the Environment will be
+    width:      number of cells wide the Environment will be
+    elements:   list of all the element types used
+    seeds:      map of element types with their seed data
+    mods:       list of terrain modifications to be applied
+    anomalies:  list of anomalies to be placed in the environment
 *******************************************************************************/
-function buildCustomEnvironment(name, height, width, elements, seeds) {
-  var reqBody = '{\n    "name": "' + name + '",\n    "height": ' + height + ',\n    "width": ' + width + ',\n    "elements": ' + JSON.stringify(elements) + ',\n    "seeds": ' + JSON.stringify(seeds) + '\n  }';
+function buildCustomEnvironment(name, height, width, elements, seeds, mods, anomalies) {
+  var reqBody = '{\n    "name": "' + name + '",\n    "height": ' + height + ',\n    "width": ' + width + ',\n    "elements": ' + JSON.stringify(elements) + ',\n    "seeds": ' + JSON.stringify(seeds) + ',\n    "terrain-modifications": ' + JSON.stringify(mods) + ',\n    "anomalies": ' + JSON.stringify(anomalies) + '\n  }';
   var reqSpecs = { method: 'POST',
     headers: reqHeaders,
     mode: 'cors',
@@ -33640,7 +33642,7 @@ async function setupAnomalyForms(anomalyTypes) {
       var form = await {};
       form["anomaly"] = await type;
       form["selected"] = await false;
-      form["json"] = await formJson;
+      form["json"] = await JSON.parse(JSON.stringify(formJson));
       await anomalyForms.push(form);
     }
     anomalyTypeIndexes[type] = await indexCounter;
@@ -33688,7 +33690,7 @@ async function setupTerrainModificationForms(terrainModificationTypes) {
       var form = await {};
       form["terrain-modification"] = await type;
       form["selected"] = await false;
-      form["json"] = await formJson;
+      form["json"] = await JSON.parse(JSON.stringify(formJson));
       await terrainModificationForms.push(form);
     }
     terrainModificationTypeIndexes[type] = await indexCounter;
@@ -34300,6 +34302,8 @@ function submitCustomEnvironment() {
   var basicInputs = (0, _EnvironmentBuilder.getBasicInputs)();
   var elements = [];
   var elementSeeds = {};
+  var terrainModifications = [];
+  var anomalies = [];
   for (var i = 0; i < elementSeedForms.length; i++) {
     var _seedForm = elementSeedForms[i];
     var elementType = _seedForm["element"];
@@ -34308,7 +34312,15 @@ function submitCustomEnvironment() {
       elementSeeds[elementType] = _seedForm["json"];
     }
   }
-  loadCustomEnvironment(basicInputs.name, basicInputs.height, basicInputs.width, elements, elementSeeds);
+  for (var _i5 = 0; _i5 < terrainModificationForms.length; _i5++) {
+    var form = terrainModificationForms[_i5];
+    if (form["selected"]) terrainModifications.push(form);
+  }
+  for (var _i6 = 0; _i6 < anomalyForms.length; _i6++) {
+    var _form = anomalyForms[_i6];
+    if (_form["selected"]) anomalies.push(_form);
+  }
+  loadCustomEnvironment(basicInputs.name, basicInputs.height, basicInputs.width, elements, elementSeeds, terrainModifications, anomalies);
 }
 
 /*******************************************************************************
@@ -34316,14 +34328,16 @@ _____loadCustomEnvironment_____
 Description
     Makes a server request for a custom environment and loads it into the visualizer
 Parameters
-    name:           associated name for random Environment
-    height:         number of cells hgih the Environment will be
-    width:          number of cells wide the Environment will be
-    elements:       list of all elements to be included in the environment
-    elementSeeds:   seed data for each element included
+    name:                 associated name for random Environment
+    height:               number of cells hgih the Environment will be
+    width:                number of cells wide the Environment will be
+    elements:             list of all elements to be included in the environment
+    elementSeeds:         seed data for each element included
+    terrainModifications: modifications to make on the environment's terrain
+    anomalies:            anomalies to place in the environment
 *******************************************************************************/
-async function loadCustomEnvironment(name, height, width, elements, elementSeeds) {
-  var customEnvironment = await (0, _SCOUtAPI.buildCustomEnvironment)(name, height, width, elements, elementSeeds);
+async function loadCustomEnvironment(name, height, width, elements, elementSeeds, terrainModifications, anomalies) {
+  var customEnvironment = await (0, _SCOUtAPI.buildCustomEnvironment)(name, height, width, elements, elementSeeds, terrainModifications, anomalies);
   customEnvironment.json().then(function (json) {
     var environment = (0, _EnvironmentFormatter.formatEnvironment)(json);
     console.log(environment);

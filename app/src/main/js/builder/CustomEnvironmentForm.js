@@ -142,7 +142,7 @@ async function setupAnomalyForms(anomalyTypes) {
       let form = await {}
       form["anomaly"] = await type
       form["selected"] = await false
-      form["json"] = await formJson
+      form["json"] = await JSON.parse(JSON.stringify(formJson))
       await anomalyForms.push(form)
     }
     anomalyTypeIndexes[type] = await indexCounter
@@ -186,7 +186,7 @@ async function setupTerrainModificationForms(terrainModificationTypes) {
       let form = await {}
       form["terrain-modification"] = await type
       form["selected"] = await false
-      form["json"] = await formJson
+      form["json"] = await JSON.parse(JSON.stringify(formJson))
       await terrainModificationForms.push(form)
     }
     terrainModificationTypeIndexes[type] = await indexCounter
@@ -786,8 +786,8 @@ function submitCustomEnvironment() {
   let basicInputs = getBasicInputs()
   let elements = []
   let elementSeeds = {}
-  let terrainModifications = {}
-  let anomalies = {}
+  let terrainModifications = []
+  let anomalies = []
   for (let i = 0; i < elementSeedForms.length; i++) {
     let seedForm = elementSeedForms[i]
     let elementType = seedForm["element"]
@@ -798,11 +798,11 @@ function submitCustomEnvironment() {
   }
   for (let i = 0; i < terrainModificationForms.length; i++) {
     let form = terrainModificationForms[i]
-    if (form["selected"]) elementSeeds[elementType] = form["json"]
+    if (form["selected"]) terrainModifications.push(form)
   }
   for (let i = 0; i < anomalyForms.length; i++) {
     let form = anomalyForms[i]
-    if (form["selected"]) elementSeeds[elementType] = form["json"]
+    if (form["selected"]) anomalies.push(form)
   }
   loadCustomEnvironment(basicInputs.name, basicInputs.height, basicInputs.width, elements, elementSeeds, terrainModifications, anomalies)
 }

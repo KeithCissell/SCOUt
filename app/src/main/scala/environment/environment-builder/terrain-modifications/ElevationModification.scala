@@ -25,7 +25,7 @@ class ElevationModification(
   def this(formData: Map[String, String]) = this(
     modification = formData("Modification").toDouble,
     deviation = formData("Deviation").toDouble,
-    coverage = formData("Coverage").toDouble,
+    coverage = formData("Coverage").toDouble / 100.0,
     slope = formData("Slope").toDouble
   )
 

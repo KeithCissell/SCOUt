@@ -55,6 +55,7 @@ object ElementTypes {
     "Longitude" -> true,
     "Decibel" -> false,
     "Temperature" -> false,
+    "Water Depth" -> true,
     "Wind Direction" -> false,
     "Wind Speed" -> false
   )

@@ -106,7 +106,7 @@ object SCOUtService {
       case ("", _, _, _, _, _) => BadRequest("Bad name")
       case (_, 0, _, _, _, _)  => BadRequest("Bad height")
       case (_, _, 0, _, _, _)  => BadRequest("Bad width")
-      // case (_, _, _, Nil, _, _)  => BadRequest("Bad element seed data")
+      case (_, _, _, Nil, _, _)  => BadRequest("Bad element seed data")
       // case (_, _, _, _, Nil, _)  => BadRequest("Bad terrain modification data")
       // case (_, _, _, _, _, Nil)  => BadRequest("Bad anomaly data")
       case (n, w, h, e, t, a)  => {

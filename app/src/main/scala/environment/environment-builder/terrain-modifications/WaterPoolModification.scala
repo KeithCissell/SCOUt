@@ -21,6 +21,14 @@ class WaterPoolModification(
   val coverage: Double,
   val slope: Double
 ) extends TerrainModification {
+  // Constructor using mapped input from json decoder
+  def this(formData: Map[String, String]) = this(
+    maxDepth = formData("Max Depth").toDouble,
+    deviation = formData("Deviation").toDouble,
+    coverage = formData("Coverage").toDouble / 100.0,
+    slope = formData("Slope").toDouble
+  )
+
   // Erodes area in a "step-down" erosion approach based on the given slope and maxDepth
   def modify(layer: Layer, constructionLayer: ConstructionLayer) = constructionLayer.getRandomUnmodified() match {
     case None => // No unmodified cells
