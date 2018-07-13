@@ -60,6 +60,7 @@ h3.review {
   font-size: 20pt;
   font-weight: bold;
   text-align: center;
+  text-decoration: underline;
   cursor: pointer;
 }
 
@@ -77,6 +78,11 @@ footer {
 
 div.scroll-box {
   overflow: auto;
+}
+
+div.rounded-border {
+  border: 2px solid lightgrey;
+  border-radius: 2px;
 }
 
 
@@ -136,8 +142,8 @@ input.custom-input {
 }
 
 button.submit-button {
-  margin-left: 10%;
-  margin-right: 10%;
+  margin-left: 2%;
+  margin-right: 2%;
   padding: 16px 31px;
 	background-color: forestGreen;
 	border-radius: 28px;
@@ -182,7 +188,7 @@ button.submit-button {
   border-radius: 6pt;
 }
 
-#element-selection-list {
+ul.selection-list {
   margin-left: 33%;
   list-style: none;
   vertical-align: baseline;

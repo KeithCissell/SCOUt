@@ -1,11 +1,11 @@
-package environment.modifications
+package environment.terrainmodification
 
 import environment._
 import environment.cell._
 import environment.element._
 import environment.element.seed._
 import environment.layer._
-import environment.modifications._
+import environment.terrainmodification._
 
 import scoututil.Util._
 
@@ -13,13 +13,22 @@ import scala.util.Random
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 // Water Pool Modification
-case class WaterPoolModification(
+class WaterPoolModification(
+  val name: String = "Water Pool Modification",
   val elementType: String = "Water Depth",
   val maxDepth: Double,
   val deviation: Double,
   val coverage: Double,
   val slope: Double
 ) extends TerrainModification {
+  // Constructor using mapped input from json decoder
+  def this(formData: Map[String, String]) = this(
+    maxDepth = formData("Max Depth").toDouble,
+    deviation = formData("Deviation").toDouble,
+    coverage = formData("Coverage").toDouble / 100.0,
+    slope = formData("Slope").toDouble
+  )
+
   // Erodes area in a "step-down" erosion approach based on the given slope and maxDepth
   def modify(layer: Layer, constructionLayer: ConstructionLayer) = constructionLayer.getRandomUnmodified() match {
     case None => // No unmodified cells
@@ -74,4 +83,45 @@ case class WaterPoolModification(
     }
   }
 
+}
+
+object WaterPoolModificationForm {
+  def formFields(): String = """{
+    "field-keys": [
+      "Max Depth",
+      "Deviation",
+      "Coverage",
+      "Slope"
+    ],
+    "fields": {
+      "Max Depth": {
+        "type": "number",
+        "unit": "ft",
+        "value": 100,
+        "lowerBound": 0,
+        "upperBound": 500
+      },
+      "Deviation": {
+        "type": "number",
+        "unit": "ft",
+        "value": 5,
+        "lowerBound": 0,
+        "upperBound": 50
+      },
+      "Coverage": {
+        "type": "number",
+        "unit": "% of the environment",
+        "value": 10,
+        "lowerBound": 0,
+        "upperBound": 100
+      },
+      "Slope": {
+        "type": "number",
+        "unit": "% of the modification area",
+        "value": 70,
+        "lowerBound": 0,
+        "upperBound": 100
+      }
+    }
+  }"""
 }

@@ -32,6 +32,9 @@ package seed {
       }
     }"""
   ) extends ElementSeed {
+    def this(seedData: Map[String, String]) {
+      this()
+    }
     def buildLayer(height: Int, width: Int, scale: Double): Layer = {
       return new Layer(AB.fill(height)(AB.fill(width)(Some(new WaterDepth(0.0)))))
     }

@@ -14,6 +14,8 @@ trait Anomaly {
   val area: Double
   val effects: List[Effect]
 
+  // this(data: Map[String, String])
+
   // Place Anomoly into envrionment and implement effects
   def place(environment: Environment, layers: MutableMap[String,Layer], constructionLayer: ConstructionLayer, scale: Double) = {
     // Set the anomoly's location
@@ -40,4 +42,22 @@ trait Anomaly {
     }
   }
 
+}
+
+// Gives access to all the avialable anomaly types that can be seed generated
+object AnomalyList {
+  // List of all anomalyTypes
+  val anomalyTypes = List(
+    "Human"
+  )
+
+  // List of all seeds set to default
+  def defaultList(): List[Anomaly] = List(
+    new Human()
+  )
+
+  // Returns the form field for the requested element type
+  def getForm(anomalyType: String): String = anomalyType match {
+    case "Human"  => HumanForm.formFields()
+  }
 }

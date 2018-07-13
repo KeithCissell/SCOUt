@@ -41,17 +41,18 @@ function loadEnvironmentBuilderPage(name = "My Environment", height = "50", widt
         </div>
         <div id="custom-inputs">
           <h3 id="custom-inputs-title"></h3>
-          <div id="custom-inputs-content" class="scroll-box"></div>
+          <div id="custom-inputs-content" class="scroll-box rounded-border"></div>
         </div>
       </form>
     </div>
     <div id="submit-buttons">
-      <button class="submit-button" id="random-environment-button">Generate Random Environment</button>
-      <button class="submit-button" id="custom-environment-button">Build Custom Environment</button>
+      <button class="submit-button" id="random-environment-button">Random</button>
+      <button class="submit-button" id="custom-environment-button">Custom</button>
+      <button class="submit-button" id="load-environment-button">Load</button>
     </div>
   </div>
   `
-  // Set basic input values
+  // Set default input values
   document.getElementById("environment-name").value = name
   document.getElementById("height").value = height
   document.getElementById("width").value = width
@@ -64,6 +65,10 @@ function loadEnvironmentBuilderPage(name = "My Environment", height = "50", widt
   })
   document.getElementById("custom-environment-button").addEventListener("click", () => {
     loadCustomEnvironmentForm()
+  })
+  document.getElementById("load-environment-button").addEventListener("click", () => {
+    console.log("Load Saved Environment")
+    //todo
   })
 }
 

@@ -27,8 +27,8 @@ package seed {
     val deviation: Double = 1.5,
     val formFields: String = """{
       "field-keys": [
-      "Average",
-      "Deviation"
+        "Average",
+        "Deviation"
       ],
       "fields": {
         "Average": {

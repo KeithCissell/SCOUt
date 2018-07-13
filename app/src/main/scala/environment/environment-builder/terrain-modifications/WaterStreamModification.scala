@@ -1,11 +1,11 @@
-package environment.modifications
+package environment.terrainmodification
 
 import environment._
 import environment.cell._
 import environment.element._
 import environment.element.seed._
 import environment.layer._
-import environment.modifications._
+import environment.terrainmodification._
 
 import scoututil.Util._
 
@@ -14,13 +14,22 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 
 
 // Water Stream Modification
-case class WaterStreamModification(
+class WaterStreamModification(
+  val name: String = "Water Stream Modification",
   val elementType: String = "Water Depth",
   val depth: Double,
   val deviation: Double,
   val width: Double,
   val length: Double
 ) extends TerrainModification {
+  // Constructor using mapped input from json decoder
+  def this(formData: Map[String, String]) = this(
+    depth = formData("Depth").toDouble,
+    deviation = formData("Deviation").toDouble,
+    width = formData("Width").toDouble,
+    length = formData("Length").toDouble
+  )
+
   // Erode channels of water with a directional influence
   def modify(layer: Layer, constructionLayer: ConstructionLayer) = constructionLayer.getRandomUnmodified() match {
     case None => // No unmodified cells
@@ -99,4 +108,45 @@ case class WaterStreamModification(
     }
   }
 
+}
+
+object WaterStreamModificationForm {
+  def formFields(): String = """{
+    "field-keys": [
+      "Depth",
+      "Deviation",
+      "Width",
+      "Length"
+    ],
+    "fields": {
+      "Depth": {
+        "type": "number",
+        "unit": "ft",
+        "value": 50,
+        "lowerBound": 0,
+        "upperBound": 500
+      },
+      "Deviation": {
+        "type": "number",
+        "unit": "ft",
+        "value": 5,
+        "lowerBound": 0,
+        "upperBound": 50
+      },
+      "Width": {
+        "type": "number",
+        "unit": "ft",
+        "value": 25,
+        "lowerBound": 0,
+        "upperBound": 200
+      },
+      "Length": {
+        "type": "number",
+        "unit": "ft",
+        "value": 250,
+        "lowerBound": 0,
+        "upperBound": 1000
+      }
+    }
+  }"""
 }

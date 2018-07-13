@@ -3,6 +3,7 @@ import {drawLayer, drawCell, eraseLayer, highlightAnomalies} from './Display.js'
 import {addToggle, addSelection, addAnomaly} from './Toolbar.js'
 import {addLegendMainItem, addLegendLayerItem, addLegendCellItem} from './Legend.js'
 import {loadEnvironmentBuilderPage} from '../builder/EnvironmentBuilder.js'
+import {getCustomEnvironmentForm, loadEnvironmentFromForm} from '../builder/CustomEnvironmentForm.js'
 
 
 // Globals
@@ -12,6 +13,7 @@ let anomalies
 let selectedLayer
 let selectedAnomalyType
 let selectedCell
+
 
 /*******************************************************************************
 _____loadVisualizer_____
@@ -26,6 +28,8 @@ function loadVisualizer(targetEnvironment) {
     <div id="navigation">
       <button class="submit-button" id="new-environment">New Environment</button>
       <button class="submit-button" id="regenerate-environment">Regenerate Environment</button>
+      <button class="submit-button" id="save-template">Save Template</button>
+      <button class="submit-button" id="save-environment">Save Environment</button>
       <h1 id="message"></h1>
       <p id="content"></p>
     </div>
@@ -77,13 +81,29 @@ Description
     Load navigation bar
 *******************************************************************************/
 function loadNavigation() {
+  // New Environment
   let newEnvironmentButton = document.getElementById("new-environment")
   newEnvironmentButton.addEventListener("click", () => {
     loadEnvironmentBuilderPage()
   })
+  // Regenerate Environment
   let regenerateEnvironmentButton = document.getElementById("regenerate-environment")
   regenerateEnvironmentButton.addEventListener("click", () => {
-    console.log("Regenerate Environment")
+    let customForm = getCustomEnvironmentForm()
+    loadEnvironmentFromForm(customForm)
+  })
+  // Save Environment Template
+  let saveTemplateButton = document.getElementById("save-template")
+  saveTemplateButton.addEventListener("click", () => {
+    let customForm = getCustomEnvironmentForm()
+    console.log(customForm)
+
+  })
+  // Save Environment
+  let saveEnvironmentButton = document.getElementById("save-environment")
+  saveEnvironmentButton.addEventListener("click", () => {
+    let environmentString = JSON.stringify(environment)
+    console.log(environmentString)
   })
 }
 

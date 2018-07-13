@@ -37,6 +37,32 @@ function getElementTypes() {
 }
 
 /*******************************************************************************
+_____getTerrainModificationTypes_____
+Description
+    Gets the different terrain modification types that can be applied to an environment
+*******************************************************************************/
+function getTerrainModificationTypes() {
+  return new Promise(resolve => {
+    fetch(host + '/terrain_modification_types', getSpecs).then(function(resp) {
+      resolve(resp)
+    }).catch(error => resolve(Response.error(error)))
+  })
+}
+
+/*******************************************************************************
+_____getAnomalyTypes_____
+Description
+    Gets the different anomaly types that can be used in an environment
+*******************************************************************************/
+function getAnomalyTypes() {
+  return new Promise(resolve => {
+    fetch(host + '/anomaly_types', getSpecs).then(function(resp) {
+      resolve(resp)
+    }).catch(error => resolve(Response.error(error)))
+  })
+}
+
+/*******************************************************************************
 _____getElementSeedForm_____
 Description
     Get the required form data for an element seed form
@@ -54,6 +80,52 @@ function getElementSeedForm(elementType) {
                     body: reqBody}
   return new Promise((resolve, reject) => {
     fetch(host + '/element_seed_form', reqSpecs).then(function(resp) {
+      resolve(resp)
+    }).catch(error => reject(Response.error(error)))
+  })
+}
+
+/*******************************************************************************
+_____getTerrainModificationForm_____
+Description
+    Get the required form data for a terrain modification form
+Parameters
+    terrainModificationType: the terrain modification type of the requested seed form data
+*******************************************************************************/
+function getTerrainModificationForm(terrainModificationType) {
+  let reqBody = `{
+    "terrain-modification-type": "${terrainModificationType}"
+  }`
+  let reqSpecs = {  method: 'POST',
+                    headers: reqHeaders,
+                    mode: 'cors',
+                    cache: 'default',
+                    body: reqBody}
+  return new Promise((resolve, reject) => {
+    fetch(host + '/terrain_modification_form', reqSpecs).then(function(resp) {
+      resolve(resp)
+    }).catch(error => reject(Response.error(error)))
+  })
+}
+
+/*******************************************************************************
+_____getAnomalyForm_____
+Description
+    Get the required form data for an anomaly form
+Parameters
+    anomalyType: the anomaly type of the requested seed form data
+*******************************************************************************/
+function getAnomalyForm(anomalyType) {
+  let reqBody = `{
+    "anomaly-type": "${anomalyType}"
+  }`
+  let reqSpecs = {  method: 'POST',
+                    headers: reqHeaders,
+                    mode: 'cors',
+                    cache: 'default',
+                    body: reqBody}
+  return new Promise((resolve, reject) => {
+    fetch(host + '/anomaly_form', reqSpecs).then(function(resp) {
       resolve(resp)
     }).catch(error => reject(Response.error(error)))
   })
@@ -106,20 +178,10 @@ _____buildCustomEnvironment_____
 Description
     Build a custom environment based on element seed data
 Parameters
-    name:     associated name for random Environment
-    height:   number of cells long the Environment will be
-    width:    number of cells wide the Environment will be
-    elements: list of all the element types used
-    seeds:    map of element types with their seed data
+    formData:       fully jsonified form data
 *******************************************************************************/
-function buildCustomEnvironment(name, height, width, elements, seeds) {
-  let reqBody = `{
-    "name": "${name}",
-    "height": ${height},
-    "width": ${width},
-    "elements": ${JSON.stringify(elements)},
-    "seeds": ${JSON.stringify(seeds)}
-  }`
+function buildCustomEnvironment(formData) {
+  let reqBody = formData
   let reqSpecs = {  method: 'POST',
                     headers: reqHeaders,
                     mode: 'cors',
@@ -133,4 +195,4 @@ function buildCustomEnvironment(name, height, width, elements, seeds) {
   })
 }
 
-export {pingServer, getElementTypes, getElementSeedForm, getCurrentState, newRandomEnvironment, buildCustomEnvironment}
+export {pingServer, getElementTypes, getAnomalyTypes, getTerrainModificationTypes, getElementSeedForm, getAnomalyForm, getTerrainModificationForm, getCurrentState, newRandomEnvironment, buildCustomEnvironment}

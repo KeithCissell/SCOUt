@@ -2,7 +2,7 @@
 /*******************************************************************************
 _____buildFormFields_____
 Description
-    Takes an element's seed parameters and builds HTML form fields
+    Takes an json data and builds HTML form fields
 Parameters
     json:   json object holding fields and necessary data
 *******************************************************************************/

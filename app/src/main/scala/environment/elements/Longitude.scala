@@ -26,7 +26,7 @@ package seed {
     val rootValue: Double = 1.0,
     val formFields: String = """{
       "field-keys": [
-      "Root Value"
+        "Root Value"
       ],
       "fields": {
         "Root Value": {
