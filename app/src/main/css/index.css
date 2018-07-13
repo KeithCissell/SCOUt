@@ -142,8 +142,8 @@ input.custom-input {
 }
 
 button.submit-button {
-  margin-left: 10%;
-  margin-right: 10%;
+  margin-left: 2%;
+  margin-right: 2%;
   padding: 16px 31px;
 	background-color: forestGreen;
 	border-radius: 28px;

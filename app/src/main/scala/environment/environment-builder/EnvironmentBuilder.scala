@@ -31,8 +31,6 @@ object EnvironmentBuilder {
     val environment = new Environment(name, height, width, scale)
 
     // INITIALIZE LAYERS
-    println()
-    println("Initializing layers...")
     val layers: MutableMap[String,Layer] = MutableMap()
     for (seed <- elementSeeds) {
       val elementType = seed.elementName
@@ -41,21 +39,15 @@ object EnvironmentBuilder {
     }
 
     // APPLY TERRAIN MODIFICATIONS
-    println()
-    println("Applying terrain modifications...")
     val terrainConstructionLayer = new ConstructionLayer(height, width, scale)
     for (mod <- terrainModifications) {
-      println()
-      println("Starting new mod: " + mod.elementType)
       layers.get(mod.elementType) match {
         case Some(layer) => mod.modify(layer, terrainConstructionLayer)
-        case None => println("Layer not found")// Layer not found
+        case None => // Layer not found
       }
     }
 
     // PLACE ANOMALIES
-    println()
-    println("Placing anomalies...")
     val anomalyConstructionLayer = new ConstructionLayer(height, width, scale)
     for (anomaly <- anomalies) anomaly.place(environment, layers, anomalyConstructionLayer, scale)
 

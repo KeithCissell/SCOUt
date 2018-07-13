@@ -41,6 +41,7 @@ let backButton
 let nextButton
 
 // Globals
+let customForm
 let currentState = "SelectAnomalyTypes"
 let maxAnomalies = 20
 let maxTerrainModifications = 10
@@ -821,7 +822,16 @@ Parameters
     anomalies:            anomalies to place in the environment
 *******************************************************************************/
 async function loadCustomEnvironment(name, height, width, elements, elementSeeds, terrainModifications, anomalies) {
-  let customEnvironment = await buildCustomEnvironment(name, height, width, elements, elementSeeds, terrainModifications, anomalies)
+  customForm = await `{
+    "name": "${name}",
+    "height": ${height},
+    "width": ${width},
+    "elements": ${JSON.stringify(elements)},
+    "seeds": ${JSON.stringify(elementSeeds)},
+    "terrain-modifications": ${JSON.stringify(terrainModifications)},
+    "anomalies": ${JSON.stringify(anomalies)}
+  }`
+  let customEnvironment = await buildCustomEnvironment(customForm)
   customEnvironment.json().then((json) => {
     let environment = formatEnvironment(json)
     console.log(environment)
@@ -829,4 +839,29 @@ async function loadCustomEnvironment(name, height, width, elements, elementSeeds
   }).catch((err) => { console.log(err) })
 }
 
-export {loadCustomEnvironmentForm}
+/*******************************************************************************
+_____loadEnvironmentFromForm_____
+Description
+    Makes a server request for a custom environment and loads it into the visualizer
+Parameters
+    fromData:     full from data for environment
+*******************************************************************************/
+async function loadEnvironmentFromForm(formData) {
+  let customEnvironment = await buildCustomEnvironment(formData)
+  customEnvironment.json().then((json) => {
+    let environment = formatEnvironment(json)
+    console.log(environment)
+    loadVisualizer(environment)
+  }).catch((err) => { console.log(err) })
+}
+
+/*******************************************************************************
+_____getCustomEnvironmentForm_____
+Description
+    Returns the current custom environment form
+*******************************************************************************/
+function getCustomEnvironmentForm() {
+  return customForm
+}
+
+export {loadCustomEnvironmentForm, getCustomEnvironmentForm, loadEnvironmentFromForm}

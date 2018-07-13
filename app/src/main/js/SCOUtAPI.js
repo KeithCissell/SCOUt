@@ -178,24 +178,10 @@ _____buildCustomEnvironment_____
 Description
     Build a custom environment based on element seed data
 Parameters
-    name:       associated name for random Environment
-    height:     number of cells long the Environment will be
-    width:      number of cells wide the Environment will be
-    elements:   list of all the element types used
-    seeds:      map of element types with their seed data
-    mods:       list of terrain modifications to be applied
-    anomalies:  list of anomalies to be placed in the environment
+    formData:       fully jsonified form data
 *******************************************************************************/
-function buildCustomEnvironment(name, height, width, elements, seeds, mods, anomalies) {
-  let reqBody = `{
-    "name": "${name}",
-    "height": ${height},
-    "width": ${width},
-    "elements": ${JSON.stringify(elements)},
-    "seeds": ${JSON.stringify(seeds)},
-    "terrain-modifications": ${JSON.stringify(mods)},
-    "anomalies": ${JSON.stringify(anomalies)}
-  }`
+function buildCustomEnvironment(formData) {
+  let reqBody = formData
   let reqSpecs = {  method: 'POST',
                     headers: reqHeaders,
                     mode: 'cors',
