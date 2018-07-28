@@ -25,10 +25,6 @@ object Encoder {
     return compact(render(json))
   }
 
-
-
-  // Type Specific encoders
-
   def encodeCell(c: Cell): String = {
     val json =
       (s"cell.${c.x}.${c.y}" ->

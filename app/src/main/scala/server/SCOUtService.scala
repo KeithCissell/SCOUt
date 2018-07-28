@@ -95,14 +95,8 @@ object SCOUtService {
 
   // Generates a new environment
   def buildCustomEnvironment(req: Request): Task[Response] = req.decode[Json] { data =>
-    val name = extractString("name", data).getOrElse("")
-    val height = extractInt("height", data).getOrElse(0)
-    val width = extractInt("width", data).getOrElse(0)
-    val scale = extractDouble("scale", data).getOrElse(10.0)
-    val elementSeeds = extractElementSeeds(data).getOrElse(Nil)
-    val terrainModifications = extractTerrainModifications(data).getOrElse(Nil)
-    val anomalies = extractAnomalies(data).getOrElse(Nil)
-    (name, height, width, elementSeeds, terrainModifications, anomalies) match {
+    val template = extractEnvironmentTemplate(data)
+    (template.name, template.height, template.width, template.elementSeeds, template.terrainModifications, template.anomalies) match {
       case ("", _, _, _, _, _)  => BadRequest("Bad name")
       case (_, 0, _, _, _, _)   => BadRequest("Bad height")
       case (_, _, 0, _, _, _)   => BadRequest("Bad width")
@@ -111,7 +105,7 @@ object SCOUtService {
         elementSeedList = e
         terrainModificationList = t
         anomalyList = a
-        environment = buildEnvironment(n, h, w, scale, elementSeedList, terrainModificationList, anomalyList)
+        environment = buildEnvironment(template)
         Ok(encodeEnvironment(environment))
       }
     }
