@@ -51,6 +51,7 @@ case class Cell(
       case None     => // Nothing to do
     }
   }
+  def containsElement(elementType: String): Boolean = getElementNames.contains(elementType)
   def getAnomalies: List[String] = anomalies.toList
   def containsAnomaly(anomaly: String) = anomalies.contains(anomaly)
   def setAnomaly(anomaly: String) = anomalies += anomaly

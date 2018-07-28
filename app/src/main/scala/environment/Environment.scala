@@ -17,11 +17,7 @@ class Environment(
     val scale: Double) {
 
   // Builds a grid of empty Cells
-  var grid: Grid[Cell] = AB.fill(height)(AB.fill(width)(None))
-  for {
-    x <- 0 until height
-    y <- 0 until width
-  } grid(x)(y) = Some(Cell(x, y))
+  var grid: Grid[Cell] = emptyCellGrid(height, width)
 
   override def toString: String = {
     var str = name + "\n"
@@ -46,6 +42,11 @@ class Environment(
     if (x >= 0 && x < height && y >= 0 && y < width) {
       grid(x)(y)
     } else None
+  }
+  // returns value of element type at (x, y)
+  def getElementValue(element: String, x: Int, y: Int): Option[Double] = {
+    val layer = getLayer(element)
+    return layer.getElementValue(x, y)
   }
   // returns a list of all cells in the grid
   def getAllCells: List[Cell] = {
