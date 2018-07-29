@@ -61,7 +61,7 @@ object Robot {
             clock += sensor.runTime
             // Log event
             clock += System.currentTimeMillis() - startTime
-            eventLog.append(new Event.Normal(s"Scanned for ${sensor.elementType}", clock))
+            eventLog.append(new Event.Successful(s"Scanned for ${sensor.elementType}", clock))
           } else {
             clock += System.currentTimeMillis() - startTime
             eventLog.append(new Event.LowEnergy(s"Not enough energy to run scan for ${sensor.elementType}.", clock))
@@ -97,8 +97,8 @@ object Robot {
           val healthReduction = Math.abs(slope) * 0.1 * (z2 - z1)
           health -= healthReduction
           if (health > 0) eventLog.append(new Event.TookDamage(s"Moved to ($x, $y). Took $healthReduction damage, health now at $health.", clock))
-          else eventLog.append(new Event.Inoperational(s"Health droped below threshold. Robot inoperational.", clock))
-        } else eventLog.append(new Event.Normal(s"Moved to ($x, $y)", clock))
+          else eventLog.append(new Event.HealthDepleted(s"Health droped below threshold. Robot inoperational.", clock))
+        } else eventLog.append(new Event.Successful(s"Moved to ($x, $y)", clock))
       } else eventLog.append(new Event.LowEnergy(s"Not enough energy to move to ($x, $y)", clock))
     }
 

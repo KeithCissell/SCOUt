@@ -16,7 +16,7 @@ import environment._
 import scoututil.Util._
 import jsonhandler.Encoder._
 import jsonhandler.Decoder._
-
+import filemanager.FileManager._
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
@@ -54,7 +54,7 @@ object SandBox {
       eventLog = AB())
 
     // Log Robot State
-    println(testBot.getState())
+    // println(testBot.getState())
 
     // Give robot commands
     testBot.move(testEnv, randomInt(0, height), randomInt(0, width))
@@ -65,20 +65,27 @@ object SandBox {
     testBot.scan(testEnv, "Decibel")
 
     //Log Robot State
-    println(testBot.getState())
-
-
-
-
+    // println(testBot.getState())
 
 
 
     // Playing with Json stuff
     val encodedEnv = encodeEnvironment(testEnv)
-    parse(encodedEnv) match {
-      case Left(_) => println("What the fuck")
-      case Right(e) => extractEnvironment(e)
+    // val decodedEnv = parse(encodedEnv) match {
+    //   case Left(_) => None
+    //   case Right(e) => Some(extractEnvironment(e))
+    // }
+
+
+
+    // Messing with filemanager
+    saveJsonFile("test", "SavedEnvironments/Environment/", encodedEnv)
+    val envStringFromFile = readJsonFile("test", "SavedEnvironments/Environment/")
+    val envFromFile = parse(envStringFromFile) match {
+      case Left(_) => None
+      case Right(e) => Some(extractEnvironment(e))
     }
+    println(envFromFile)
 
   }
 
