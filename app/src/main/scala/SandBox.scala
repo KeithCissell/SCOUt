@@ -5,6 +5,7 @@ import io.circe.parser._
 import io.circe.syntax._
 
 import agent._
+import agent.controler._
 import environment._
 import environment.anomaly._
 import environment.element._
@@ -37,6 +38,7 @@ object SandBox {
 
     // AGENT
     val testBot = new Robot(
+      controler = new RandomControler(),
       sensors = List(
         new ElevationSensor(),
         new DecibelSensor(),
@@ -44,14 +46,8 @@ object SandBox {
         new WaterSensor()),
       mapHeight = height,
       mapWidth = width,
-      movementCost = 0.01,
-      slopeDamageThreshHold = -3.0,
-      durability = 1.0,
       xPosition = randomInt(0, height),
-      yPosition = randomInt(0, width),
-      energyLevel = 100.0,
-      health = 100.0,
-      eventLog = AB())
+      yPosition = randomInt(0, width))
 
     // Log Robot State
     // println(testBot.getState())
@@ -69,23 +65,16 @@ object SandBox {
 
 
 
-    // Playing with Json stuff
-    val encodedEnv = encodeEnvironment(testEnv)
-    // val decodedEnv = parse(encodedEnv) match {
+
+    // Messing with filemanager
+    // val encodedEnv = encodeEnvironment(testEnv)
+    // saveJsonFile("test", "SavedEnvironments/Environment/", encodedEnv)
+    // val envStringFromFile = readJsonFile("test", "SavedEnvironments/Environment/")
+    // val envFromFile = parse(envStringFromFile) match {
     //   case Left(_) => None
     //   case Right(e) => Some(extractEnvironment(e))
     // }
-
-
-
-    // Messing with filemanager
-    saveJsonFile("test", "SavedEnvironments/Environment/", encodedEnv)
-    val envStringFromFile = readJsonFile("test", "SavedEnvironments/Environment/")
-    val envFromFile = parse(envStringFromFile) match {
-      case Left(_) => None
-      case Right(e) => Some(extractEnvironment(e))
-    }
-    println(envFromFile)
+    // println(envFromFile)
 
   }
 

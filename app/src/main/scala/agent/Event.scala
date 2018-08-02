@@ -14,7 +14,7 @@ object Event {
 
   class Successful(val msg: String, val timeStamp: Double) extends Normal
   class TookDamage(val msg: String, val timeStamp: Double) extends Normal
-  class LowEnergy(val msg: String, val timeStamp: Double) extends Incapable
+  class CannotMove(val msg: String, val timeStamp: Double) extends Incapable
   class SensorNotFound(val msg: String, val timeStamp: Double) extends Incapable
   class HealthDepleted(val msg: String, val timeStamp: Double) extends Fatal
   class EnergyDepleted(val msg: String, val timeStamp: Double) extends Fatal
