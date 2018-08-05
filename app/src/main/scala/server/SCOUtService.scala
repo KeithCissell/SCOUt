@@ -7,6 +7,7 @@ import org.http4s.dsl._
 import org.http4s.circe._
 import org.http4s.server._
 import scalaz.concurrent.Task
+import org.joda.time.DateTime
 
 import jsonhandler.Encoder._
 import jsonhandler.Decoder._
@@ -17,6 +18,8 @@ import environment.element._
 import environment.element.seed._
 import environment.terrainmodification._
 import environment.EnvironmentBuilder._
+import filemanager.FileManager._
+// import scoututil.Util._
 
 
 object SCOUtService {
@@ -39,17 +42,20 @@ object SCOUtService {
     case req @ GET  -> Root / "element_types"               => Ok(encodeMap("Element Types", ElementTypes.elementTypes))
     case req @ GET  -> Root / "terrain_modification_types"  => Ok(encodeList("Terrain Modification Types", TerrainModificationList.terrainModificationTypes))
     case req @ GET  -> Root / "anomaly_types"               => Ok(encodeList("Anomaly Types", AnomalyList.anomalyTypes))
+    case req @ GET  -> Root / "current_state"               => Ok(encodeEnvironment(environment))
+    case req @ GET  -> Root / "save_environment"            => saveEnvironment()
     case req @ POST -> Root / "element_seed_form"           => getElementSeedForm(req)
     case req @ POST -> Root / "terrain_modification_form"   => getTerrainModificationForm(req)
     case req @ POST -> Root / "anomaly_form"                => getAnomalyForm(req)
-    case req @ GET  -> Root / "current_state"               => Ok(encodeEnvironment(environment))
     case req @ POST -> Root / "new_random_environment"      => newRandomEnvironment(req)
     case req @ POST -> Root / "build_custom_environment"    => buildCustomEnvironment(req)
+    case req @ POST -> Root / "save_environment_template"   => saveEnvironmentTemplate(req)
   }
 
 
   // Gets the form info needed for a requested element type
   def getElementSeedForm(req: Request): Task[Response] = req.decode[Json] { data =>
+    println(req.body)
     val elementType = extractString("element-type", data).getOrElse("")
     if (ElementTypes.elementTypes contains elementType) {
       Ok(ElementSeedList.getSeedForm(elementType))
@@ -109,6 +115,23 @@ object SCOUtService {
         Ok(encodeEnvironment(environment))
       }
     }
+  }
+
+  // Saves an environmentTemplate to a json file
+  def saveEnvironmentTemplate(req: Request): Task[Response] = req.decode[Json] { data =>
+    val name = extractString("name", data).getOrElse("NameNotFound")
+    val jsonString = data.toString
+    val fileName = new DateTime().toString("yyyy-MM-dd-HH-mm") + "-" + name
+    saveJsonFile(fileName, "src/resources/environment-templates/", jsonString)
+    Ok(s"Saved as $fileName")
+  }
+
+  // Saves the environment to a json file
+  def saveEnvironment(): Task[Response] = {
+    val fileName = new DateTime().toString("yyyy-MM-dd-HH-mm") + "-" + environment.name
+    val encodedEnv = encodeEnvironment(environment)
+    saveJsonFile(fileName, "src/resources/environments/", encodedEnv)
+    Ok(s"Saved as $fileName")
   }
 
 }

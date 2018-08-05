@@ -1,7 +1,6 @@
 package sandbox
 
 import io.circe._
-import io.circe.parser._
 import io.circe.syntax._
 
 import agent._
@@ -50,26 +49,21 @@ object SandBox {
       yPosition = randomInt(0, width))
 
     // Log Robot State
-    // println(testBot.getState())
+    println(testBot.getState())
 
     // Give robot commands
-    testBot.move(testEnv, randomInt(0, height), randomInt(0, width))
-    testBot.scan(testEnv, "Elevation")
-    testBot.move(testEnv, randomInt(0, height), randomInt(0, width))
-    testBot.scan(testEnv, "Water")
-    testBot.move(testEnv, randomInt(0, height), randomInt(0, width))
-    testBot.scan(testEnv, "Decibel")
+    for (x <- 0 until 10) testBot.advanceState(testEnv)
 
     //Log Robot State
-    // println(testBot.getState())
+    println(testBot.getState())
 
 
 
 
     // Messing with filemanager
     // val encodedEnv = encodeEnvironment(testEnv)
-    // saveJsonFile("test", "SavedEnvironments/Environment/", encodedEnv)
-    // val envStringFromFile = readJsonFile("test", "SavedEnvironments/Environment/")
+    // saveJsonFile("test", "src/resources/environments/", encodedEnv)
+    // val envStringFromFile = readJsonFile("test", "src/resources/environments/")
     // val envFromFile = parse(envStringFromFile) match {
     //   case Left(_) => None
     //   case Right(e) => Some(extractEnvironment(e))

@@ -1,7 +1,6 @@
 package jsonhandler
 
 import io.circe._
-import io.circe.parser._
 import environment._
 import environment.cell._
 import environment.element._

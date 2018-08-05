@@ -12,5 +12,5 @@ libraryDependencies ++= Seq(
   "ch.qos.logback"    % "logback-classic"       % "1.2.1",
   "org.specs2"        %% "specs2-core"          % "3.9.2" % "test",
   "io.circe"          %% "circe-core"           % "0.10.0-M1",
-  "io.circe"          %% "circe-parser"         % "0.10.0-M1"
+  "joda-time"         % "joda-time"             % "2.10"
 )

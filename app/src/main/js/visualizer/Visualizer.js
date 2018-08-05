@@ -4,6 +4,7 @@ import {addToggle, addSelection, addAnomaly} from './Toolbar.js'
 import {addLegendMainItem, addLegendLayerItem, addLegendCellItem} from './Legend.js'
 import {loadEnvironmentBuilderPage} from '../builder/EnvironmentBuilder.js'
 import {getCustomEnvironmentForm, loadEnvironmentFromForm} from '../builder/CustomEnvironmentForm.js'
+import {saveEnvironment, saveEnvironmentTemplate} from '../SCOUtAPI.js'
 
 
 // Globals
@@ -96,14 +97,13 @@ function loadNavigation() {
   let saveTemplateButton = document.getElementById("save-template")
   saveTemplateButton.addEventListener("click", () => {
     let customForm = getCustomEnvironmentForm()
-    console.log(customForm)
-
+    if (customForm != undefined) saveEnvironmentTemplate(customForm)
+    else alert("You can only save custom forms.")
   })
   // Save Environment
   let saveEnvironmentButton = document.getElementById("save-environment")
   saveEnvironmentButton.addEventListener("click", () => {
-    let environmentString = JSON.stringify(environment)
-    console.log(environmentString)
+    saveEnvironment()
   })
 }
 

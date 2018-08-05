@@ -6,7 +6,7 @@ import scala.io.Source
 object FileManager {
 
   def saveJsonFile(fileName: String, path: String, jsonData: String): Unit = {
-    val filePath = path + fileName + ".json"
+    val filePath = (path + fileName + ".json").replace(' ', '_')
     val writer = new PrintWriter(new File(filePath))
       writer.write(jsonData)
       writer.close()

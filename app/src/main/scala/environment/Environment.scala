@@ -75,13 +75,14 @@ class Environment(
     }
     return layer
   }
-  // returns all Cells in range of an origin
-  def getCluster(originX: Int, originY: Int, range: Int): List[Cell] = {
+  // returns all Cells in radius of an origin
+  def getCluster(originX: Int, originY: Int, radius: Double): List[Cell] = {
+    val cellBlockSize = Math.round(Math.abs(radius)).toInt
     (for {
-      x <- (originX - range) to (originX + range)
-      y <- (originY - range) to (originY + range)
+      x <- (originX - cellBlockSize) to (originX + cellBlockSize)
+      y <- (originY - cellBlockSize) to (originY + cellBlockSize)
       if dist(x, y, originX, originY) != 0
-      if dist(x, y, originX, originY) <= range
+      if dist(x, y, originX, originY) <= radius
     } yield getCell(x, y)).flatten.toList
   }
   // add a variable to a given point

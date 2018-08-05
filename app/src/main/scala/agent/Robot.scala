@@ -5,6 +5,7 @@ import agent.controler._
 import environment._
 import environment.cell._
 import environment.element._
+import environment.layer._
 import scoututil.Util._
 
 import scala.collection.mutable.{ArrayBuffer => AB}
@@ -34,6 +35,8 @@ object Robot {
     var clock: Double = 0.0 // in milliseconds
     var eventLog: AB[Event] = AB()
 
+    def operational = (health > 0.0 && energyLevel > 0.0)
+
     def getState(): String = {
       s"""
       Position: ($xPosition, $yPosition)
@@ -57,35 +60,53 @@ object Robot {
       eventLog.append(event)
     }
 
+    def getValidActions(): List[String] = {
+      var validActions: MutableSet[String] = MutableSet()
+      // Add valid movements
+      if (xPosition != mapWidth) validActions += "up"
+      if (xPosition != 0) validActions += "down"
+      if (xPosition != 0) validActions += "left"
+      if (xPosition != mapHeight) validActions += "right"
+      // Add valid scan actions
+      for (sensor <- sensors) if (energyLevel - sensor.energyExpense >= 0) validActions += sensor.elementType
+      return validActions.toList
+    }
+
     def scan(env: Environment, elementType: String): Event = {
-      val startTime = System.currentTimeMillis()
       getSensor(elementType) match {
         case None => return new Event.SensorNotFound(s"Sensor for $elementType does not exist.", clock)
         case Some(sensor) => {
           // Update Internal Map
           val scanData = sensor.scan(env, xPosition, yPosition)
-          for {
-            x <- 0 until scanData.height
-            y <- 0 until scanData.width
-          } scanData.getElement(x, y) match {
-            case None => // No element
-            case Some(e: Element) => internalMap(x)(y) match {
-              case None => // No cell
-              case Some(cell) => cell.setElement(e)
-            }
-          }
+          addScanData(scanData)
           // Update energy level
           energyLevel -= sensor.energyExpense
           clock += sensor.runTime
           // Log event
-          clock += System.currentTimeMillis() - startTime
           return new Event.Successful(s"Scanned for ${sensor.elementType}", clock)
         }
       }
     }
 
+    def getSensor(elementType: String): Option[Sensor] = {
+      for (sensor <- sensors) if (sensor.elementType == elementType) return Some(sensor)
+      return None
+    }
+
+    def addScanData(scanData: Layer) = {
+      for {
+        x <- 0 until scanData.height
+        y <- 0 until scanData.width
+      } scanData.getElement(x, y) match {
+        case None => // No element
+        case Some(e: Element) => internalMap(x)(y) match {
+          case None => // No cell
+          case Some(cell) => cell.setElement(e)
+        }
+      }
+    }
+
     def move(env: Environment, x: Int, y: Int): Event = {
-      val startTime = System.currentTimeMillis()
       // Calculate movement slope and distance
       val x1: Double = xPosition.toDouble * env.scale
       val y1: Double = yPosition.toDouble * env.scale
@@ -97,8 +118,8 @@ object Robot {
       val dist = dist3D(x1, y1, z1, x2, y2, z2)
       val zDist = z2 - z2
       // Account for hazards
-      // ************************** TO-DO **************************
       val hazardDamage = 0.0
+      // ************************** TO-DO **************************
       // Calculate damage
       val movementDamage = calculateMovementDamage(slope, zDist)
       health = Math.max(health - movementDamage, 0.0)
@@ -126,27 +147,17 @@ object Robot {
       (1 + slope) * dist * movementCost
     }
 
-    def getValidActions(): List[String] = {
-      var validActions: MutableSet[String] = MutableSet()
-      // Add valid movements
-      if (xPosition != mapWidth) validActions += "up"
-      if (xPosition != 0) validActions += "down"
-      if (xPosition != 0) validActions += "left"
-      if (xPosition != mapHeight) validActions += "right"
-      // Add valid scan actions
-      for (sensor <- sensors) if (energyLevel - sensor.energyExpense >= 0) validActions += sensor.elementType
-      return validActions.toList
-    }
-
-    def getSensor(elementType: String): Option[Sensor] = {
-      for (sensor <- sensors) if (sensor.elementType == elementType) return Some(sensor)
-      return None
-    }
-
     def calculateMapDiscovered(): Double = {
       val discoveries = sensors.map(s => calculateTypeDiscovered(s.elementType)).toList
       if (discoveries.length > 0) return discoveries.sum / discoveries.length
       else return 100.0
+    }
+
+    def detectAnomaly(env: Environment, anomalyType: String): Event = {
+      // Looks at current cell and 8 adjacent cells
+      val anomalies: List[String] = env.getCluster(xPosition, yPosition, 1.5).map(_.anomalies.toList).flatten
+      if (anomalies.contains(anomalyType)) return new Event.AnomalyFound(s"Found $anomalyType.", clock)
+      else return new Event.AnomalyNotFound(s"Did not find $anomalyType.", clock)
     }
 
     def calculateTypeDiscovered(elementType: String): Double = {
