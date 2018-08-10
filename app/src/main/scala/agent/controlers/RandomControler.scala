@@ -1,10 +1,15 @@
 package agent.controler
 
 import agent._
+import agent.Event._
 import scoututil.Util._
+
+import scala.collection.mutable.{ArrayBuffer => AB}
 
 
 class RandomControler() extends Controler {
+
+  var eventLog: AB[LogItem] = AB()
 
   def selectAction(actions: List[String], state: String): String = {
     actions(randomInt(0, actions.length - 1))

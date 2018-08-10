@@ -52,7 +52,7 @@ object SandBox {
     println(testBot.getState())
 
     // Give robot commands
-    for (x <- 0 until 10) testBot.advanceState(testEnv)
+    while (testBot.operational) testBot.advanceState(testEnv)
 
     //Log Robot State
     println(testBot.getState())

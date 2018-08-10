@@ -33,23 +33,23 @@ object Robot {
     var energyLevel: Double = 100.0
     var health: Double = 100.0
     var clock: Double = 0.0 // in milliseconds
-    var eventLog: AB[Event] = AB()
 
     def operational = (health > 0.0 && energyLevel > 0.0)
 
     def getState(): String = {
       s"""
       Position: ($xPosition, $yPosition)
-      Energy: $energyLevel
-      Helth: $health
-      Clock: ${clock / 1000}
+      Energy: $energyLevel%
+      Helth: $health%
+      Clock: ${clock / 1000} s
       Internal Map: ${calculateMapDiscovered()}% discovered
       """
     }
 
     def advanceState(env: Environment): Unit = {
+      val beginState = getState()
       val validActions = getValidActions()
-      val action = controler.selectAction(validActions, getState())
+      val action = controler.selectAction(validActions, beginState)
       val event = action match {
         case "up"     => move(env, xPosition + 1, yPosition)
         case "down"   => move(env, xPosition - 1, yPosition)
@@ -57,16 +57,16 @@ object Robot {
         case "right"  => move(env, xPosition, yPosition + 1)
         case elementType  => scan(env, elementType)
       }
-      eventLog.append(event)
+      controler.logEvent(beginState, action, event)
     }
 
     def getValidActions(): List[String] = {
       var validActions: MutableSet[String] = MutableSet()
       // Add valid movements
-      if (xPosition != mapWidth) validActions += "up"
-      if (xPosition != 0) validActions += "down"
-      if (xPosition != 0) validActions += "left"
-      if (xPosition != mapHeight) validActions += "right"
+      if (xPosition < mapWidth) validActions += "up"
+      if (xPosition > 0) validActions += "down"
+      if (yPosition > 0) validActions += "left"
+      if (yPosition < mapHeight) validActions += "right"
       // Add valid scan actions
       for (sensor <- sensors) if (energyLevel - sensor.energyExpense >= 0) validActions += sensor.elementType
       return validActions.toList
@@ -74,16 +74,19 @@ object Robot {
 
     def scan(env: Environment, elementType: String): Event = {
       getSensor(elementType) match {
-        case None => return new Event.SensorNotFound(s"Sensor for $elementType does not exist.", clock)
+        case None => return new Event.ScanUnsuccessful(s"Sensor for $elementType does not exist.", clock, health, energyLevel, xPosition, yPosition)
         case Some(sensor) => {
           // Update Internal Map
           val scanData = sensor.scan(env, xPosition, yPosition)
-          addScanData(scanData)
+          val cellsScanned = 0 // to-do
+          val newDiscoveries = addScanData(scanData)
           // Update energy level
-          energyLevel -= sensor.energyExpense
+          val energyUse = sensor.energyExpense
+          energyLevel -= Math.max(energyUse, 0.0)
           clock += sensor.runTime
           // Log event
-          return new Event.Successful(s"Scanned for ${sensor.elementType}", clock)
+          if (energyLevel <= 0.0) return new Event.EnergyDepleted(s"Energy depleted atempting to scan for $elementType", clock, health, energyLevel, xPosition, yPosition)
+          else return new Event.ScanSuccessful(s"Scanned for $elementType", clock, health, energyLevel, xPosition, yPosition, energyUse, cellsScanned, newDiscoveries)
         }
       }
     }
@@ -93,7 +96,8 @@ object Robot {
       return None
     }
 
-    def addScanData(scanData: Layer) = {
+    def addScanData(scanData: Layer): Int = {
+      var newDiscoveries = 0
       for {
         x <- 0 until scanData.height
         y <- 0 until scanData.width
@@ -101,9 +105,13 @@ object Robot {
         case None => // No element
         case Some(e: Element) => internalMap(x)(y) match {
           case None => // No cell
-          case Some(cell) => cell.setElement(e)
+          case Some(cell) => {
+            cell.setElement(e)
+            newDiscoveries += 1
+          }
         }
       }
+      return newDiscoveries
     }
 
     def move(env: Environment, x: Int, y: Int): Event = {
@@ -118,24 +126,24 @@ object Robot {
       val dist = dist3D(x1, y1, z1, x2, y2, z2)
       val zDist = z2 - z2
       // Account for hazards
-      val hazardDamage = 0.0
+      val hazardDamage = calculateHazardDamage(env, x, y)
       // ************************** TO-DO **************************
       // Calculate damage
       val movementDamage = calculateMovementDamage(slope, zDist)
       health = Math.max(health - movementDamage, 0.0)
-      if (health <= 0.0) return new Event.HealthDepleted(s"Health droped below threshold. Robot inoperational.", clock)
+      if (health <= 0.0) return new Event.HealthDepleted(s"Health droped below threshold. Robot inoperational.", clock, health, energyLevel, xPosition, yPosition)
       val damage = hazardDamage + movementDamage
       // Calculate movement cost
       val cost = calculateMovementCost(slope, dist)
       energyLevel = Math.max(energyLevel - cost, 0.0)
-      if (energyLevel <= 0.0) return new Event.EnergyDepleted(s"Energy depleted atempting to move to ($x, $y)", clock)
+      if (energyLevel <= 0.0) return new Event.EnergyDepleted(s"Energy depleted atempting to move to ($x, $y)", clock, health, energyLevel, xPosition, yPosition)
       // Check if robot can climb slope
-      if (slope > slopeClimbThreshHold) return new Event.CannotMove(s"Cannot climb slope to move to ($x, $y).", clock)
+      if (slope > slopeClimbThreshHold) return new Event.MovementUnsuccessful(s"Cannot climb slope of $slope to move to ($x, $y).", clock, health, energyLevel, xPosition, yPosition, cost, movementDamage)
       // Move Robot
       xPosition = x
       yPosition = y
-      if (damage > 0.0) return new Event.TookDamage(s"Moved to ($x, $y). Took $damage damage, health now at $health.", clock)
-      else return new Event.Successful(s"Moved to ($x, $y)", clock)
+      val msg = if (damage > 0.0) s"Moved to ($x, $y). Took $damage damage, health now at $health." else s"Moved to ($x, $y)"
+      return new Event.MovementSuccessful(msg, clock, health, energyLevel, xPosition, yPosition, cost, damage)
     }
 
     def calculateMovementDamage(slope: Double, zDist: Double): Double = slope match {
@@ -147,17 +155,28 @@ object Robot {
       (1 + slope) * dist * movementCost
     }
 
+    def calculateHazardDamage(env: Environment, x: Int, y: Int): Double = env.getCell(x, y) match {
+      case None => 0.0
+      case Some(cell) => {
+        var damageTotal = 0.0
+        for (element <- cell.elements.keys) element match {
+          case _ => damageTotal += 0.0 // to-do
+        }
+        return damageTotal
+      }
+    }
+
     def calculateMapDiscovered(): Double = {
       val discoveries = sensors.map(s => calculateTypeDiscovered(s.elementType)).toList
       if (discoveries.length > 0) return discoveries.sum / discoveries.length
       else return 100.0
     }
 
-    def detectAnomaly(env: Environment, anomalyType: String): Event = {
+    def detectAnomaly(env: Environment): Event = {
       // Looks at current cell and 8 adjacent cells
       val anomalies: List[String] = env.getCluster(xPosition, yPosition, 1.5).map(_.anomalies.toList).flatten
-      if (anomalies.contains(anomalyType)) return new Event.AnomalyFound(s"Found $anomalyType.", clock)
-      else return new Event.AnomalyNotFound(s"Did not find $anomalyType.", clock)
+      if (anomalies.length > 0) return new Event.AnomalyDetectionSuccessful(s"Anomalies found.", clock, health, energyLevel, xPosition, yPosition, anomalies)
+      else return new Event.AnomalyDetectionUnsuccessful(s"No anomalies found.", clock, health, energyLevel, xPosition, yPosition)
     }
 
     def calculateTypeDiscovered(elementType: String): Double = {
