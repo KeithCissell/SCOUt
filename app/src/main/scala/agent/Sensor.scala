@@ -3,6 +3,7 @@ package agent
 import environment._
 import environment.element._
 import environment.layer._
+import scoututil.Util._
 
 
 trait Sensor {
@@ -15,5 +16,20 @@ trait Sensor {
     val searchLayer = env.getLayer(elementType)
     val searchRadius = if (range / env.scale > 1) range / env.scale else 1.0
     return searchLayer.getClusterLayer(x, y, searchRadius)
+  }
+
+  def cellRange(env: Environment, originX: Int, originY: Int): Int = {
+    var cellCount = 0
+    val searchRadius = if (range / env.scale > 1) range / env.scale else 1.0
+    val cellBlockSize = Math.round(Math.abs(searchRadius)).toInt
+    for {
+      x <- (originX - cellBlockSize) to (originX + cellBlockSize)
+      y <- (originY - cellBlockSize) to (originY + cellBlockSize)
+      if dist(x, y, originX, originY) <= searchRadius
+    } env.getCell(x, y) match {
+      case None => // No element found
+      case Some(c) => cellCount += 1
+    }
+    return cellCount
   }
 }
