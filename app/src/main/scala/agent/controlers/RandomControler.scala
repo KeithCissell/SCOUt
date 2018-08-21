@@ -7,7 +7,10 @@ import scoututil.Util._
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
-class RandomControler() extends Controler {
+class RandomControler(
+      maxHealth: Double = 100.0,
+      maxEnergyLevel: Double = 100.0,
+      timeLimit: Option[Double] = None) extends Controler {
 
   var eventLog: AB[LogItem] = AB()
 

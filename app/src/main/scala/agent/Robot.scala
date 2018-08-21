@@ -24,8 +24,8 @@ object Robot {
   ) {
     // Robot Satus Variables
     var internalMap: Grid[Cell] = emptyCellGrid(mapHeight, mapWidth)
-    var energyLevel: Double = 100.0
-    var health: Double = 100.0
+    var energyLevel: Double = controler.maxHealth
+    var health: Double = controler.maxEnergyLevel
     var clock: Double = 0.0 // in milliseconds
 
     // Universal damage and energy use variables
@@ -116,7 +116,7 @@ object Robot {
           // Return Event
           if (health <= 0.0) return new Event.HealthDepleted(s"Health droped below threshold. Robot inoperational.", clock, health, energyLevel, xPosition, yPosition)
           else if (energyLevel <= 0.0) return new Event.EnergyDepleted(s"Energy depleted atempting to scan for $elementType", clock, health, energyLevel, xPosition, yPosition)
-          else return new Event.ScanSuccessful(s"Scanned for $elementType", clock, health, energyLevel, xPosition, yPosition, energyUse, cellsScanned, newDiscoveries)
+          else return new Event.ScanSuccessful(s"Scanned for $elementType", clock, health, energyLevel, xPosition, yPosition, cellsScanned, newDiscoveries)
         }
       }
     }
@@ -158,8 +158,14 @@ object Robot {
       // Calculate effects
       val cost = calculateMovementCost(slope, dist)
       val timeElapsed = calculateMovementTime(slope, dist)
-      val movementDamage = calculateMovementDamage(slope, zDist)
-      val hazardDamage = calculateHazardDamage(env, x, y, timeElapsed)
+      var movementDamage = calculateMovementDamage(slope, zDist)
+      // Check if movement is possible
+      if (slope <= movementUpperThreshHold) {
+        xPosition = x
+        yPosition = y
+      }
+      // Apply hazard damage
+      val hazardDamage = calculateHazardDamage(env, xPosition, yPosition, timeElapsed)
       val damage = hazardDamage + movementDamage
       // Adjust robot status levels
       health = Math.max(health - damage, 0.0)
@@ -168,12 +174,10 @@ object Robot {
       // Return Event
       if (health <= 0.0) return new Event.HealthDepleted(s"Health droped below threshold. Robot inoperational.", clock, health, energyLevel, xPosition, yPosition)
       else if (energyLevel <= 0.0) return new Event.EnergyDepleted(s"Energy depleted atempting to move to ($x, $y)", clock, health, energyLevel, xPosition, yPosition)
-      else if (slope > movementUpperThreshHold) return new Event.MovementUnsuccessful(s"Cannot climb slope of $slope to move to ($x, $y).", clock, health, energyLevel, xPosition, yPosition, cost, movementDamage)
+      else if (slope > movementUpperThreshHold) return new Event.MovementUnsuccessful(s"Cannot climb slope of $slope to move to ($x, $y).", clock, health, energyLevel, xPosition, yPosition)
       else {
-        xPosition = x
-        yPosition = y
         val msg = if (damage > 0.0) s"Moved to ($x, $y). Took $damage damage, health now at $health." else s"Moved to ($x, $y)"
-        return new Event.MovementSuccessful(msg, clock, health, energyLevel, xPosition, yPosition, cost, damage)
+        return new Event.MovementSuccessful(msg, clock, health, energyLevel, xPosition, yPosition)
       }
     }
 
@@ -185,11 +189,14 @@ object Robot {
           case e: Temperature => e.value match {
             case Some(v) if (v > temperatureDamageUpperThreshold) => damageTotal += calculateTemperatureDamage(v, temperatureDamageUpperThreshold)
             case Some(v) if (v < temperatureDamageLowerThreshold) => damageTotal += calculateTemperatureDamage(v, temperatureDamageLowerThreshold)
+            case _ => // No damage
           }
           case e: WaterDepth => e.value match {
             case Some(v) if (v > waterDepthFatalThreshHold) => damageTotal += 100.0
             case Some(v) if (v > waterDepthDamageThreshHold) => damageTotal += calculateWaterDepthDamage(v, timeElapsed)
+            case _ => // No damage
           }
+          case _ => // No damage
         }
         return damageTotal
       }

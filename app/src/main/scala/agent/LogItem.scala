@@ -6,7 +6,7 @@ import io.circe.syntax._
 import agent.Event._
 
 
-class LogItem(state: String, action: String, event: Event, score: Double) {
+class LogItem(val state: String, val action: String, val event: Event, val score: Double) {
 
   def toJson(): Json = {
     val outcome = event match {
@@ -20,7 +20,7 @@ class LogItem(state: String, action: String, event: Event, score: Double) {
       ("outcome", Json.fromString(outcome)),
       ("timeStamp", Json.fromDoubleOrNull(event.timeStamp)),
       ("health", Json.fromDoubleOrNull(event.health)),
-      ("energy", Json.fromDoubleOrNull(event.energy)),
+      ("energyLevel", Json.fromDoubleOrNull(event.energyLevel)),
       ("x", Json.fromInt(event.x)),
       ("y", Json.fromInt(event.y)),
       ("score", Json.fromDoubleOrNull(score))
