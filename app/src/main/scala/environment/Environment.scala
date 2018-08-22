@@ -37,6 +37,8 @@ class Environment(
   //        METHODS
   // return copy of the grid
   def getGrid: Grid[Cell] = grid
+  // returns whether coordinate in grid
+  def inGrid(x: Int, y: Int): Boolean = (x >= 0 && x < height && y >= 0 && y < width)
   // returns the grid Cell at (x,y)
   def getCell(x: Int, y: Int): Option[Cell] = { //(x-1,y-1) match {
     if (x >= 0 && x < height && y >= 0 && y < width) {

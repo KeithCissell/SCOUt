@@ -9,6 +9,7 @@ import environment.layer._
 import scoututil.Util._
 
 import scala.collection.mutable.{ArrayBuffer => AB}
+import scala.collection.mutable.{Map => MutableMap}
 import scala.collection.mutable.{Set => MutableSet}
 
 
@@ -34,29 +35,29 @@ object Robot {
     val movementCost: Double = 0.01
 
     // Damage calculations
-    val movementUpperThreshHold: Double = 1.0
-    val movementLowerThreshHold: Double = -3.0
+    val movementSlopeUpperThreshHold: Double = 1.0
+    val movementSlopeLowerThreshHold: Double = -1.0
     val movementDamageResistance: Double = 0.0
-    def calculateMovementDamage(slope: Double, zDist: Double): Double = slope match {
-      case s if (s > movementLowerThreshHold) => 0.0
-      case _ => Math.abs(slope) * zDist * (1 + movementDamageResistance) * damageNormal
+    def calculateMovementDamage(slope: Double, dist: Double): Double = slope match {
+      case slope if (slope > movementSlopeLowerThreshHold) => 0.0
+      case _ => Math.abs(slope * dist * (2.0 - movementDamageResistance) * damageNormal)
     }
     def calculateMovementCost(slope: Double, dist: Double): Double = {
-      (1 + slope) * dist * movementCost
+      (1.0 + slope) * dist * movementCost
     }
     def calculateMovementTime(slope: Double, dist: Double): Double = {
-      (1 + slope) * dist * 1000
+      (1.0 + slope) * dist * 1000.0
     }
     val temperatureDamageUpperThreshold: Double = 150.0
     val temperatureDamageLowerThreshold: Double = -50.0
     val temperatureDamageResistance: Double = 0.0
     def calculateTemperatureDamage(value: Double, threshHold: Double): Double = {
-      Math.abs(value - threshHold) * (1 + temperatureDamageResistance) * damageNormal
+      Math.abs(value - threshHold) * (1.0 - temperatureDamageResistance) * damageNormal
     }
     val waterDepthDamageThreshHold: Double = 0.25
     val waterDepthFatalThreshHold: Double = 1.0
     val waterDepthDamageResistance: Double = 0.0
-    def calculateWaterDepthDamage(value: Double, timeElapsed: Double): Double = (timeElapsed / 1000) * 5.0
+    def calculateWaterDepthDamage(value: Double, timeElapsed: Double): Double = (timeElapsed / 1000.0) * 5.0
 
 
     def operational = (health > 0.0 && energyLevel > 0.0)
@@ -64,10 +65,10 @@ object Robot {
     def getState(): String = {
       s"""
       Position: ($xPosition, $yPosition)
-      Energy: $energyLevel%
-      Helth: $health%
+      Energy: $energyLevel %
+      Helth: $health %
       Clock: ${clock / 1000} s
-      Internal Map: ${calculateMapDiscovered()}% discovered
+      Internal Map: ${calculateMapDiscovered()} % discovered
       """
     }
 
@@ -76,10 +77,10 @@ object Robot {
       val validActions = getValidActions()
       val action = controler.selectAction(validActions, beginState)
       val event = action match {
-        case "up"     => move(env, xPosition + 1, yPosition)
-        case "down"   => move(env, xPosition - 1, yPosition)
-        case "left"   => move(env, xPosition, yPosition - 1)
-        case "right"  => move(env, xPosition, yPosition + 1)
+        case "north"     => move(env, xPosition + 1, yPosition)
+        case "south"   => move(env, xPosition - 1, yPosition)
+        case "west"   => move(env, xPosition, yPosition - 1)
+        case "east"  => move(env, xPosition, yPosition + 1)
         case elementType  => scan(env, elementType)
       }
       controler.logEvent(beginState, action, event)
@@ -88,10 +89,10 @@ object Robot {
     def getValidActions(): List[String] = {
       var validActions: MutableSet[String] = MutableSet()
       // Add valid movements
-      if (xPosition < mapWidth) validActions += "up"
-      if (xPosition > 0) validActions += "down"
-      if (yPosition > 0) validActions += "left"
-      if (yPosition < mapHeight) validActions += "right"
+      if (xPosition < mapWidth) validActions += "north"
+      if (xPosition > 0) validActions += "south"
+      if (yPosition > 0) validActions += "west"
+      if (yPosition < mapHeight) validActions += "east"
       // Add valid scan actions
       for (sensor <- sensors) if (energyLevel - sensor.energyExpense >= 0) validActions += sensor.elementType
       return validActions.toList
@@ -132,12 +133,15 @@ object Robot {
         x <- 0 until scanData.height
         y <- 0 until scanData.width
       } scanData.getElement(x, y) match {
-        case None => // No element
-        case Some(e: Element) => internalMap(x)(y) match {
-          case None => // No cell
-          case Some(cell) => {
-            cell.setElement(e)
+        case None => // No new data
+        case Some(element: Element) => internalMap(x)(y) match {
+          case None => {
             newDiscoveries += 1
+            internalMap(x)(y) = Some(new Cell(x = x, y = y, elements = MutableMap(element.name -> element)))
+          }
+          case Some(cell) => {
+            if (cell.containsElement(element.name)) newDiscoveries += 1
+            cell.setElement(element)
           }
         }
       }
@@ -154,13 +158,12 @@ object Robot {
       val z2: Double = env.getElementValue("Elevation", x, y).getOrElse(0.0)
       val slope = slope3D(x1, y1, z1, x2, y2, z2)
       val dist = dist3D(x1, y1, z1, x2, y2, z2)
-      val zDist = z2 - z2
       // Calculate effects
       val cost = calculateMovementCost(slope, dist)
       val timeElapsed = calculateMovementTime(slope, dist)
-      var movementDamage = calculateMovementDamage(slope, zDist)
+      var movementDamage = calculateMovementDamage(slope, dist)
       // Check if movement is possible
-      if (slope <= movementUpperThreshHold) {
+      if (slope <= movementSlopeUpperThreshHold) {
         xPosition = x
         yPosition = y
       }
@@ -174,7 +177,7 @@ object Robot {
       // Return Event
       if (health <= 0.0) return new Event.HealthDepleted(s"Health droped below threshold. Robot inoperational.", clock, health, energyLevel, xPosition, yPosition)
       else if (energyLevel <= 0.0) return new Event.EnergyDepleted(s"Energy depleted atempting to move to ($x, $y)", clock, health, energyLevel, xPosition, yPosition)
-      else if (slope > movementUpperThreshHold) return new Event.MovementUnsuccessful(s"Cannot climb slope of $slope to move to ($x, $y).", clock, health, energyLevel, xPosition, yPosition)
+      else if (slope > movementSlopeUpperThreshHold) return new Event.MovementUnsuccessful(s"Cannot climb slope of $slope to move to ($x, $y).", clock, health, energyLevel, xPosition, yPosition)
       else {
         val msg = if (damage > 0.0) s"Moved to ($x, $y). Took $damage damage, health now at $health." else s"Moved to ($x, $y)"
         return new Event.MovementSuccessful(msg, clock, health, energyLevel, xPosition, yPosition)

@@ -34,7 +34,7 @@ trait Controler {
     case e: ScanSuccessful => (scanReward(e) + statusRewards(e)) / weightsTotal
     case e: MovementSuccessful => (movementReward(e) + statusRewards(e)) / weightsTotal
   }
-  def scanReward(scanEvent: ScanSuccessful): Double = (scanEvent.newDiscoveries / scanEvent.cellsScanned) * mainEventRewardWeight
+  def scanReward(scanEvent: ScanSuccessful): Double = (scanEvent.newDiscoveries.toDouble / scanEvent.cellsScanned.toDouble) * mainEventRewardWeight
   def movementReward(movementEvent: MovementSuccessful): Double = (if (visitedBefore(movementEvent.x, movementEvent.y)) 0.0 else 1.0) * mainEventRewardWeight
   def statusRewards(event: Event): Double = healthReward(event) + energyReward(event) + timeReward(event)
   def healthReward(event: Event): Double = ((maxHealth - damageTaken(event)) / maxHealth) * healthRewardWeight
