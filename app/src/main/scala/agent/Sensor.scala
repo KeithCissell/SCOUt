@@ -14,13 +14,13 @@ trait Sensor {
 
   def scan(env: Environment, x: Int, y: Int): Layer = {
     val searchLayer = env.getLayer(elementType)
-    val searchRadius = if (range / env.scale > 1.0) range / env.scale else 1.0
+    val searchRadius = Math.max(range / env.scale, 1.0)
     return searchLayer.getClusterLayer(x, y, searchRadius)
   }
 
   def cellRange(env: Environment, originX: Int, originY: Int): Int = {
     var cellCount = 0
-    val searchRadius = if (range / env.scale > 1.0) range / env.scale else 1.0
+    val searchRadius = Math.max(range / env.scale, 1.0)
     val cellBlockSize = Math.round(Math.abs(searchRadius)).toInt
     for {
       x <- (originX - cellBlockSize) to (originX + cellBlockSize)

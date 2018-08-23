@@ -11,8 +11,7 @@ import environment.element._
 import environment.element.seed._
 import environment.terrainmodification._
 import environment.EnvironmentBuilder._
-import agent.Robot._
-import environment._
+import operation._
 import scoututil.Util._
 import jsonhandler.Encoder._
 import jsonhandler.Decoder._
@@ -48,15 +47,13 @@ object SandBox {
       xPosition = randomInt(0, height),
       yPosition = randomInt(0, width))
 
-    // Log Robot State
-    println(testBot.getState())
+    // GOAL
+    val goal = new FindAnomalies(Map("Human" -> 1), None)
 
-    // Give robot commands
-    while (testBot.operational) testBot.advanceState(testEnv)
+    // OPERATION
+    val operation = new Operation(testBot, testEnv, goal)
 
-    //Log Robot State
-    println(testBot.getState())
-
+    operation.run
 
 
 

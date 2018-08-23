@@ -88,7 +88,6 @@ class Layer(val layer: Grid[Element]) {
     for {
       x <- (originX - cellBlockSize) to (originX + cellBlockSize)
       y <- (originY - cellBlockSize) to (originY + cellBlockSize)
-      if dist(x, y, originX, originY) != 0
       if dist(x, y, originX, originY) <= radius
     } getElement(x, y) match {
       case None => // No element found

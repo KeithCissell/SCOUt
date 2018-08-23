@@ -77,13 +77,22 @@ class Environment(
     }
     return layer
   }
-  // returns all Cells in radius of an origin
+  // returns all Cells in radius around an origin
   def getCluster(originX: Int, originY: Int, radius: Double): List[Cell] = {
     val cellBlockSize = Math.round(Math.abs(radius)).toInt
     (for {
       x <- (originX - cellBlockSize) to (originX + cellBlockSize)
       y <- (originY - cellBlockSize) to (originY + cellBlockSize)
       if dist(x, y, originX, originY) != 0
+      if dist(x, y, originX, originY) <= radius
+    } yield getCell(x, y)).flatten.toList
+  }
+  // Gets all cells in a radius including the origin
+  def getClusterInclusive(originX: Int, originY: Int, radius: Double): List[Cell] = {
+    val cellBlockSize = Math.round(Math.abs(radius)).toInt
+    (for {
+      x <- (originX - cellBlockSize) to (originX + cellBlockSize)
+      y <- (originY - cellBlockSize) to (originY + cellBlockSize)
       if dist(x, y, originX, originY) <= radius
     } yield getCell(x, y)).flatten.toList
   }

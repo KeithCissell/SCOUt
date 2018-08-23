@@ -32,8 +32,7 @@ object Event {
   class ScanUnsuccessful(val msg: String, val timeStamp: Double, val health: Double, val energyLevel: Double, val x: Int, val y: Int) extends ScanEvent with Unsuccessful
 
   // Anomaly scan events
-  class AnomalyDetectionSuccessful(val msg: String, val timeStamp: Double, val health: Double, val energyLevel: Double, val x: Int, val y: Int, val anomalies: List[String]) extends AnomalyDetectionEvent with Successful
-  class AnomalyDetectionUnsuccessful(val msg: String, val timeStamp: Double, val health: Double, val energyLevel: Double, val x: Int, val y: Int) extends AnomalyDetectionEvent with Unsuccessful
+  class AnomalyDetected(val msg: String, val timeStamp: Double, val health: Double, val energyLevel: Double, val x: Int, val y: Int, val anomalyType: String, val xFound: Int, val yFound: Int) extends AnomalyDetectionEvent with Successful
 
   // Fatal events
   class HealthDepleted(val msg: String, val timeStamp: Double, val health: Double, val energyLevel: Double, val x: Int, val y: Int) extends Fatal
