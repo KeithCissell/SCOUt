@@ -29,6 +29,11 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
   val statusWeightsTotal = healthRewardWeight + energyRewardWeight + timeRewardWeight
 
   // LONG-TERM SCORE WEIGHTS
+  val goalRewardWeight = 1.0
+  val longTermHealthRewardWeight = 1.0
+  val longTermEnergyRewardWeight = 1.0
+  val longTermTimeRewardWeight = if (timeLimit == None) 0.0 else 1.0
+  val longTermWeightsTotal = goalRewardWeight + longTermHealthRewardWeight + longTermEnergyRewardWeight + longTermTimeRewardWeight
 
   //--------------------------- FUNCTIONS --------------------------------------
 
@@ -48,17 +53,7 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
       goal.update(environment, robot)
     }
     // Propagate Long-Term Score
-    for (i <- 0 until eventLogShort.size) {
-      val item = eventLogShort(i)
-      val longTermScore = scoreEventLongTerm(item.event)
-      eventLog += new LogItem(item.state, item.action, item.event, item.shortTermScore, longTermScore)
-      println(s"${item.action}: ${item.event.msg}")
-      println(s"       Short-Term Score: ${item.shortTermScore}")
-      println(s"       Long-Term Score: $longTermScore")
-    }
-    println()
-    println(robot.getState())
-    println(s"GOAL COMPLETION: ${goal.percentComplete}")
+    scoreEventsLongTerm()
   }
 
   //------------------------ SHORT-TERM SCORE --------------------------------
@@ -95,6 +90,26 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
   }
 
   //------------------------ LONG-TERM SCORE ---------------------------------
-  def scoreEventLongTerm(event: Event): Double = 0.0 // to-do
+  def scoreEventsLongTerm(): Unit = {
+    val goalReward = (goal.percentComplete / 100.0) * goalRewardWeight
+    val longTermHealthReward = (robot.health / maxHealth) * longTermHealthRewardWeight
+    val longTermEnergyReward = (robot.energyLevel / maxEnergyLevel) * longTermEnergyRewardWeight
+    val longTermTimeReward = timeLimit match {
+      case None => 0.0
+      case Some(tl) => Math.max(((tl - robot.clock) / tl), 0.0) * longTermTimeRewardWeight
+    }
+    val longTermScore = (goalReward + longTermHealthReward + longTermEnergyReward + longTermTimeReward) / longTermWeightsTotal
+    for (i <- 0 until eventLogShort.size) {
+      val item = eventLogShort(i)
+      val itemLongTermScore = longTermScore / Math.max(Math.log(eventLogShort.size - i + 1), 1.0)
+      eventLog += new LogItem(item.state, item.action, item.event, item.shortTermScore, longTermScore)
+      println(s"${item.action}: ${item.event.msg}")
+      println(s"       Short-Term Score: ${item.shortTermScore}")
+      println(s"       Long-Term Score: $itemLongTermScore")
+    }
+    println()
+    println(robot.getState())
+    println(s"GOAL COMPLETION: ${goal.percentComplete}")
+  }
 
 }
