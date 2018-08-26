@@ -4,6 +4,7 @@ import operation._
 import agent._
 import agent.Event._
 import environment._
+import scoututil.Util._
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
@@ -101,7 +102,7 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
     val longTermScore = (goalReward + longTermHealthReward + longTermEnergyReward + longTermTimeReward) / longTermWeightsTotal
     for (i <- 0 until eventLogShort.size) {
       val item = eventLogShort(i)
-      val itemLongTermScore = longTermScore / Math.max(Math.log(eventLogShort.size - i + 1), 1.0)
+      val itemLongTermScore = longTermScore / Math.max(Math.log(eventLogShort.size - i), 1.0) //Math.max(log2(eventLogShort.size - i + 1), 1.0)
       eventLog += new LogItem(item.state, item.action, item.event, item.shortTermScore, longTermScore)
       println(s"${item.action}: ${item.event.msg}")
       println(s"       Short-Term Score: ${item.shortTermScore}")
@@ -109,6 +110,7 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
     }
     println()
     println(robot.getState())
+    println(s"Nmber of Events: ${eventLog.size}")
     println(s"GOAL COMPLETION: ${goal.percentComplete}")
   }
 

@@ -2,6 +2,8 @@ package operation
 
 import agent._
 import environment._
+import environment.cell._
+import scoututil.Util._
 import scala.collection.mutable.{Set => MutableSet}
 
 
@@ -38,7 +40,33 @@ class FindAnomalies(anomaliesToFind: Map[String,Int], timeLimit: Option[Double])
 }
 
 // Map out as much of a certain element type as possible
-class MapElements(elementsToMap: List[String], timeLimit: Option[Double]) extends Goal {
-  def percentComplete: Double = 0.0
-  def update(environment: Environment, robot: Robot): Unit = {}
+class MapElements(mapHeight: Int, mapWidth: Int, elementsToMap: List[String], timeLimit: Option[Double]) extends Goal {
+  // Copy of the Robot's internal map
+  var internalMap: Grid[Cell] = emptyCellGrid(mapHeight, mapWidth)
+
+  def percentComplete: Double = {
+    var percentsTotal = 0.0
+    for (elementType <- elementsToMap) percentsTotal += calculateTypeDiscovered(elementType)
+    return percentsTotal / elementsToMap.length.toDouble
+  }
+
+  def calculateTypeDiscovered(elementType: String): Double = {
+    var dataAvail = 0.0
+    var dataKnown = 0.0
+    for {
+      x <- 0 until mapHeight
+      y <- 0 until mapWidth
+    } internalMap(x)(y) match {
+      case None => dataAvail += 1.0
+      case Some(cell) => {
+        dataAvail += 1.0
+        if (cell.containsElement(elementType)) dataKnown += 1.0
+      }
+    }
+    return (dataKnown / dataAvail) * 100.0
+  }
+
+  def update(environment: Environment, robot: Robot): Unit = {
+    internalMap = robot.internalMap
+  }
 }

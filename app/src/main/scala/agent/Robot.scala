@@ -29,7 +29,7 @@ class Robot(
 
   // Universal damage and energy use variables
   val damageNormal: Double = 0.1
-  val energyUseNormal: Double = 0.1
+  val energyUseNormal: Double = 0.5
   val movementCost: Double = 0.01
 
   // Damage calculations
@@ -40,7 +40,7 @@ class Robot(
     case slope if (slope > movementSlopeLowerThreshHold) => 0.0
     case _ => Math.abs(slope * dist * (2.0 - movementDamageResistance) * damageNormal)
   }
-  def calculateMovementCost(slope: Double, dist: Double): Double = {
+  def calculateMovementEnergyUse(slope: Double, dist: Double): Double = {
     (1.0 + slope) * dist * movementCost
   }
   def calculateMovementTime(slope: Double, dist: Double): Double = {
@@ -101,7 +101,7 @@ class Robot(
         val cellsScanned = sensor.cellRange(env, xPosition, yPosition)
         val newDiscoveries = addScanData(scanData)
         // Account for hazard damage
-        val energyUse = sensor.energyExpense
+        val energyUse = sensor.energyExpense * energyUseNormal
         val timeElapsed = sensor.runTime
         val damage = calculateHazardDamage(env, xPosition, yPosition, timeElapsed)
         // Update status levels
@@ -153,7 +153,7 @@ class Robot(
     val slope = slope3D(x1, y1, z1, x2, y2, z2)
     val dist = dist3D(x1, y1, z1, x2, y2, z2)
     // Calculate effects
-    val cost = calculateMovementCost(slope, dist)
+    val energyUse = calculateMovementEnergyUse(slope, dist) * energyUseNormal
     val timeElapsed = calculateMovementTime(slope, dist)
     var movementDamage = calculateMovementDamage(slope, dist)
     // Check if movement is possible
@@ -166,7 +166,7 @@ class Robot(
     val damage = hazardDamage + movementDamage
     // Adjust robot status levels
     health = Math.max(health - damage, 0.0)
-    energyLevel = Math.max(energyLevel - cost, 0.0)
+    energyLevel = Math.max(energyLevel - energyUse, 0.0)
     clock += timeElapsed
     // Return Event
     if (health <= 0.0) return new Event.HealthDepleted(s"Health droped below threshold. Robot inoperational.", clock, health, energyLevel, xPosition, yPosition)
