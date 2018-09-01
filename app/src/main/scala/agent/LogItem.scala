@@ -6,7 +6,7 @@ import io.circe.syntax._
 import agent.Event._
 
 
-class LogItemShort(val state: String, val action: String, val event: Event, val shortTermScore: Double) {
+class LogItemShort(val state: AgentState, val action: String, val event: Event, val shortTermScore: Double) {
 
   def toJson(): Json = {
     val outcome = event match {
@@ -29,7 +29,7 @@ class LogItemShort(val state: String, val action: String, val event: Event, val 
 
 }
 
-class LogItem(val state: String, val action: String, val event: Event, val shortTermScore: Double, val longTermScore: Double) {
+class LogItem(val state: AgentState, val action: String, val event: Event, val shortTermScore: Double, val longTermScore: Double) {
 
   def toJson(): Json = {
     val outcome = event match {

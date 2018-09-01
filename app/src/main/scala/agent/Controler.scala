@@ -4,6 +4,6 @@ import agent._
 
 trait Controler {
 
-  def selectAction(actions: List[String], state: String): String
+  def selectAction(actions: List[String], state: AgentState): String
 
 }

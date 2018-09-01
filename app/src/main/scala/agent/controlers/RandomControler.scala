@@ -14,7 +14,7 @@ class RandomControler(
 
   var eventLog: AB[LogItem] = AB()
 
-  def selectAction(actions: List[String], state: String): String = {
+  def selectAction(actions: List[String], state: AgentState): String = {
     actions(randomInt(0, actions.length - 1))
   }
 

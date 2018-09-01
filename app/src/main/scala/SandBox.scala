@@ -44,8 +44,8 @@ object SandBox {
         new WaterSensor()),
       mapHeight = height,
       mapWidth = width,
-      xPosition = randomInt(0, height),
-      yPosition = randomInt(0, width))
+      xPosition = randomInt(0, height - 1),
+      yPosition = randomInt(0, width - 1))
 
     // GOAL
     // val goal = new FindAnomalies(Map("Human" -> 1), None)

@@ -81,4 +81,9 @@ object Util {
     return (t >= lb && t <= ub)
   }
 
+  // Normalize value to be between 0 and 1
+  def normalize(lowerBound: Double, upperBound: Double, value: Double): Double = {
+    return (value - lowerBound) / (upperBound - lowerBound)
+  }
+
 }

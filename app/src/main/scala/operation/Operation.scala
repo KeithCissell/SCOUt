@@ -41,7 +41,7 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
   //------------------------------ RUN -----------------------------------------
   def run: Unit = {
     // Have the robot explore until it completes its goal is inoperational
-    println(robot.getState())
+    println(robot.statusString())
     println()
     while(robot.operational && !goal.isComplete){
       val state = robot.getState()
@@ -109,7 +109,7 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
       println(s"       Long-Term Score: $itemLongTermScore")
     }
     println()
-    println(robot.getState())
+    println(robot.statusString())
     println(s"Nmber of Events: ${eventLog.size}")
     println(s"GOAL COMPLETION: ${goal.percentComplete}")
   }

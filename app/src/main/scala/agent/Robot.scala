@@ -60,7 +60,97 @@ class Robot(
 
   def operational = (health > 0.0 && energyLevel > 0.0)
 
-  def getState(): String = {
+  def getState(): AgentState = {
+    new AgentState(
+      health,
+      energyLevel,
+      clock,
+      getElementStates())
+  }
+
+  def getElementStates(): List[ElementState] = {
+    for (elementType <- sensors.map(_.elementType)) yield new ElementState(
+      elementType,
+      internalMap(xPosition)(yPosition).flatMap(_.get(elementType).flatMap(_.value)),
+      getQuadrantState("north", elementType),
+      getQuadrantState("south", elementType),
+      getQuadrantState("west", elementType),
+      getQuadrantState("east", elementType))
+  }
+
+  def getQuadrantState(quadrant: String, elementType: String): QuadrantState = {
+    var cells: AB[Option[Cell]] = AB()
+    var xImmediate = 0
+    var yImmediate = 0
+    quadrant match {
+      case "north" => {
+        cells = getNorthQuadrantCells()
+        xImmediate = xPosition + 1
+        yImmediate = yPosition }
+      case "south" => {
+        cells = getSouthQuadrantCells()
+        xImmediate = xPosition - 1
+        yImmediate = yPosition }
+      case "west" => {
+        cells = getWestQuadrantCells()
+        xImmediate = xPosition
+        yImmediate = yPosition + 1 }
+      case "east" => {
+        cells = getEastQuadrantCells()
+        xImmediate = xPosition
+        yImmediate = yPosition - 1 }
+    }
+    val elements: List[Element] = cells.flatMap(_.get.get(elementType)).toList
+    val values: List[Double] = elements.map(_.value).flatten
+    val pctKnown = if (cells.length > 0) values.length.toDouble / cells.length.toDouble else 1.0
+    val avgVal = if (values.length > 0) Some(values.foldLeft(0.0)(_ + _) / values.length) else None
+    val immediateVal = if (inMap(xImmediate, yImmediate)) internalMap(xImmediate)(yImmediate).flatMap(_.get(elementType).flatMap(_.value)) else None
+    return new QuadrantState(pctKnown, avgVal, immediateVal)
+  }
+
+  def inMap(x: Int, y: Int): Boolean = (x >= 0 && x < mapHeight && y >= 0 && y < mapWidth)
+
+  def getNorthQuadrantCells(): AB[Option[Cell]] = {
+    var cells: AB[Option[Cell]] = AB()
+    for (x <- xPosition + 1 until mapWidth) {
+      for (y <- (yPosition - (x - xPosition)) to (yPosition + (x - xPosition))) {
+        if (inMap(x,y)) cells += internalMap(x)(y)
+      }
+    }
+    return cells
+  }
+
+  def getSouthQuadrantCells(): AB[Option[Cell]] = {
+    var cells: AB[Option[Cell]] = AB()
+    for (x <- 0 until xPosition) {
+      for (y <- (yPosition - (xPosition - x)) to (yPosition + (xPosition - x))) {
+        if (inMap(x,y)) cells += internalMap(x)(y)
+      }
+    }
+    return cells
+  }
+
+  def getWestQuadrantCells(): AB[Option[Cell]] = {
+    var cells: AB[Option[Cell]] = AB()
+    for (y <- 0 until yPosition) {
+      for (x <- (xPosition - (yPosition - y)) to (xPosition + (yPosition - y))) {
+        if (inMap(x,y)) cells += internalMap(x)(y)
+      }
+    }
+    return cells
+  }
+
+  def getEastQuadrantCells(): AB[Option[Cell]] = {
+    var cells: AB[Option[Cell]] = AB()
+    for (y <- yPosition + 1 until mapHeight) {
+      for (x <- (xPosition - (y - yPosition)) to (xPosition + (y - yPosition))) {
+        if (inMap(x,y)) cells += internalMap(x)(y)
+      }
+    }
+    return cells
+  }
+
+  def statusString(): String = {
     s"""
     Position: ($xPosition, $yPosition)
     Energy: $energyLevel %
@@ -73,20 +163,20 @@ class Robot(
   def chooseAction(): String = controler.selectAction(getValidActions(), getState())
 
   def performAction(env: Environment, action: String): Event = action match {
-    case "north"  => move(env, xPosition + 1, yPosition)
-    case "south"  => move(env, xPosition - 1, yPosition)
-    case "west"   => move(env, xPosition, yPosition - 1)
-    case "east"   => move(env, xPosition, yPosition + 1)
+    case "north"  => move(env, xPosition, yPosition + 1)
+    case "south"  => move(env, xPosition, yPosition - 1)
+    case "west"   => move(env, xPosition - 1, yPosition)
+    case "east"   => move(env, xPosition + 1, yPosition)
     case elementType  => scan(env, elementType)
   }
 
   def getValidActions(): List[String] = {
     var validActions: MutableSet[String] = MutableSet()
     // Add valid movements
-    if (xPosition < mapWidth) validActions += "north"
-    if (xPosition > 0) validActions += "south"
-    if (yPosition > 0) validActions += "west"
-    if (yPosition < mapHeight) validActions += "east"
+    if (yPosition < mapHeight - 1) validActions += "north"
+    if (yPosition > 0) validActions += "south"
+    if (xPosition > 0) validActions += "west"
+    if (xPosition < mapWidth - 1) validActions += "east"
     // Add valid scan actions
     for (sensor <- sensors) if (energyLevel - sensor.energyExpense >= 0) validActions += sensor.elementType
     return validActions.toList
