@@ -114,4 +114,7 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
     println(s"GOAL COMPLETION: ${goal.percentComplete}")
   }
 
+  //------------------------ EXPORT EVENT LOG ----------------------------------
+  def getStateActionPairs(): List[StateActionPair] = eventLog.map(_.getStateActionPair()).toList
+
 }

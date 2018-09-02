@@ -46,9 +46,23 @@ class LogItem(val state: AgentState, val action: String, val event: Event, val s
       ("energyLevel", Json.fromDoubleOrNull(event.energyLevel)),
       ("x", Json.fromInt(event.x)),
       ("y", Json.fromInt(event.y)),
+      ("state", state.toJson()),
       ("shortTermScore", Json.fromDoubleOrNull(shortTermScore)),
       ("longTermScore", Json.fromDoubleOrNull(longTermScore))
     )
   }
+
+  def getStateActionPair(): StateActionPair = new StateActionPair(state, action, shortTermScore, longTermScore)
+
+}
+
+class StateActionPair(val state: AgentState, val action: String, val shortTermScore: Double, val longTermScore: Double) {
+
+  def toJson(): Json = Json.obj(
+    ("state", state.toJson()),
+    ("action", Json.fromString(action)),
+    ("shortTermScore", Json.fromDoubleOrNull(shortTermScore)),
+    ("longTermScore", Json.fromDoubleOrNull(longTermScore))
+  )
 
 }

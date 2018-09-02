@@ -48,15 +48,13 @@ object SandBox {
       yPosition = randomInt(0, width - 1))
 
     // GOAL
-    // val goal = new FindAnomalies(Map("Human" -> 1), None)
-    val goal = new MapElements(height, width, List("Elevation"), None)
+    val goal = new FindAnomalies(Map("Human" -> 1), None)
+    // val goal = new MapElements(height, width, List("Elevation"), None)
 
     // OPERATION
     val operation = new Operation(testBot, testEnv, goal)
 
     operation.run
-
-
 
     // Messing with filemanager
     // val encodedEnv = encodeEnvironment(testEnv)
@@ -67,6 +65,10 @@ object SandBox {
     //   case Right(e) => Some(extractEnvironment(e))
     // }
     // println(envFromFile)
+
+    // Save State Actions
+    // val stateActionJson = Json.fromValues(operation.getStateActionPairs().map(_.toJson()))
+    // saveJsonFile("stateActionTest", "src/resources/agent-memory/", stateActionJson)
 
   }
 

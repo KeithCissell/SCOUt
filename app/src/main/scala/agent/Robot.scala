@@ -64,7 +64,7 @@ class Robot(
     new AgentState(
       health,
       energyLevel,
-      clock,
+      // clock,
       getElementStates())
   }
 

@@ -1,5 +1,6 @@
 package filemanager
 
+import io.circe._
 import java.io._
 import scala.io.Source
 
@@ -10,6 +11,10 @@ object FileManager {
     val writer = new PrintWriter(new File(filePath))
       writer.write(jsonData)
       writer.close()
+  }
+
+  def saveJsonFile(fileName: String, path: String, jsonData: Json): Unit = {
+    saveJsonFile(fileName, path, jsonData.toString)
   }
 
   def readJsonFile(fileName: String, path: String): String = {
