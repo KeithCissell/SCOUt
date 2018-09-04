@@ -5,14 +5,20 @@
 \title{Surveillance Coordination and Operations Utility (SCOUt)}
 \author{Keith August Cissell}
 \date{June 2018}
+
 \maketitle
 
 \begin{abstract}
   asdf
 \end{abstract}
 
+\section*{Acknowledgement}
+Thanks to all my peeps
+
 \tableofcontents
 \newpage
+
+
 
 \section{Introduction}
 As research in the fields of autonomous systems and robotics have become more extensive, it is evident that there are a wide range of application for robots with integrated autonomy.  There are rovers, drones and even aquatic robots that are capable of decision making in their own environments. The tasks that these robots carry out can greatly vary as well. This variance can cause a demand for distinct software and hardware to achieve each robot’s given task. However, almost all autonomous robots operate similarly through their use of observation (typically with external sensors) and analytics of the data that is observed.
@@ -24,5 +30,69 @@ There are many evolutionary computing approaches that can be applied to decision
 This project approaches the problem from the bottom up. It looks at the very basics of autonomous robotics. This is: the collection of data from sensors, analytics of incoming data, and the output of response controls. Additionally, these three steps are repetitively being performed to achieve a given objective. I have broken this project into three phases. The first phase involves setting up a simulation environment to be used for training the autonomous system. Next, a graphical interphase will be integrated with the simulation data to allow for easy debugging. Finally, an Artificially Intelligent system will be trained to take in various sets of environmental data as inputs, make decisions based on these inputs and its current objective, and produce a response.
 
 The project is still a work in progress and this paper will only present phases one and two. These phases cover the procedural environment generator and the graphical interface that pairs with it. The implementation of the abstracted autonomous system will come in future work. The main topic covered looks at the representation and formulaic production of data that will be used to represent an environment. The graphical interfaces capabilities will also be touched on. For the AI component, we will look at the various evolutionary methods that hold great potential for our given problem setup.
+
+
+
+\section{Related Work}
+Related works
+
+
+
+\section{Methodology}
+The project’s simulation consists of three main components: environments, agents and the interactions between the two. A wide range of diversity is required for both the environments and agents represented in simulation.
+
+
+\subsection{Environment Representation}
+Representing any environment is a tricky process. A simulation needs to balance simplicity and coverage when modeling an environment. Leave out too much from the model and its uses won’t reflect real word scenarios. Trying to model too much can waste time and effort that could be used to run real world experiments instead. The SCOUt environment builder tool captures important details that are necessary for agent-environment interactions to be simulated, while remaining simple to implement and understand. The tool is also highly abstracted so that more details can easily be added as needed but maintains a defined build process.
+
+(Diagram)
+•	User Fills out dynamically generated template. (separate diagram?)
+•	Builder initializes a grid of empty cells
+•	Element seeds are used to populate each present element type into the gird of cells
+•	Terrain modifications are applied to manipulate their related element(s)
+•	Anomalies are placed randomly within the environment
+•	Anomaly effect(s) are applied to corresponding element(s) in neighboring cells
+
+Use of a dynamic template to allow representation of a wide range of environments while allowing re-creation of multiple random environments based on the same template. The goal of each template is to provide influence over the values generated so that a specific environment can be modeled with minimal input. To-do …
+
+Each **Environment** created is represented as an n x m 2D grid of uniformly sized s x s square **Cell**, whose size is specified by a scaling factor. Along with positional data, each **Cell** contains information about the different elements and anomalies present within their s x s area. An **Element** is a generalized object that represents one specific environmental attribute such as the elevation or temperature. An **Anomaly** represents some object present within the cell that could be of interest. Anomalies often have an effect on element values in their surrounding area which makes them “traceable”.
+
+Element and Anomaly are abstract data structures that each provide a basic object that is then extended to create specific instances. They all share core members that allow handling to be generalized when being manipulated or interacted with. Each instance also has an associated seeding process to automate their population within the environment. Seeding processes are specific to each instance of an Element or Anomaly.
+
+Element seeds require input variables to be provided in order to drive their population process within the environment.
+
+
+\subsection{Agent Representation}
+Agents within this experiment have a core set of attributes and abilities, along with a set of sensors and a controller. The core attributes for an agent are health, energy level, a system clock, an internal map and its current position. Because SCOUt is focused on purely observational interactions with its environment, an agent only has two categories of actions that can be taken: movement and scanning. The agent can attempt to move one cell at a time in any of the cardinal directions. This allows the agent to re-assess after each movement attempt. Scanning collects information about the agent's immediate environment and updates internal map. The list of scan actions that an agent can perform is based on the set of sensors the agent is equipped with. The controller is in charge of analyzing the current state of the agent and deciding the next action to be performed. This project focuses on creating a single controller (SCOUt) that highly adaptable to wide ranges of agent configurations, environments and operations.
+
+\subsubsection{Movement}
+
+\subsubsection{Sensors}
+
+\subsubsection{State Representation}
+
+\subsubsection{Controllers}
+In this experiment three different controllers are created and compared for their performance.
+
+
+\subsection{Actions and Rewards}
+The SCOUt agent uses a
+
+
+
+\section{Experimentation}
+Trial setups and data interpretation
+
+
+
+\section{Results}
+What did the results yield and what can we infer from this
+
+
+
+\section{Conclusion}
+Conclude stuff
+
+
 
 \end{document}
