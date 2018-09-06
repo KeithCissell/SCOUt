@@ -4,7 +4,7 @@ import io.circe._
 import io.circe.syntax._
 
 import agent._
-import agent.controler._
+import agent.controller._
 import environment._
 import environment.anomaly._
 import environment.element._
@@ -36,7 +36,7 @@ object SandBox {
 
     // AGENT
     val testBot = new Robot(
-      controler = new RandomControler(),
+      controller = new RandomController(),
       sensors = List(
         new ElevationSensor(),
         new DecibelSensor(),
@@ -53,8 +53,11 @@ object SandBox {
 
     // OPERATION
     val operation = new Operation(testBot, testEnv, goal)
+    // operation.run
 
-    operation.run
+    val scoutController = new SCOUtController("stateActionTest")
+    scoutController.loadMemory()
+    scoutController.saveMemory()
 
     // Messing with filemanager
     // val encodedEnv = encodeEnvironment(testEnv)

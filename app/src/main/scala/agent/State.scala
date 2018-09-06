@@ -10,6 +10,8 @@ class AgentState(
   // val clock: Double,
   val elementStates: List[ElementState]
 ) {
+  def elementTypes: List[String] = elementStates.map(_.elementType).toList
+  def totalPercentKnown: Double = elementStates.map(_.percentKnown).foldLeft(0.0)(_ + _)
   def toJson(): Json = Json.obj(
     ("health", Json.fromDoubleOrNull(health)),
     ("energyLevel", Json.fromDoubleOrNull(energyLevel)),
@@ -23,16 +25,17 @@ class ElementState(
   val value: Option[Double],
   val northQuadrant: QuadrantState,
   val southQuadrant: QuadrantState,
-  val eastQuadrant: QuadrantState,
-  val westQuadrant: QuadrantState
+  val westQuadrant: QuadrantState,
+  val eastQuadrant: QuadrantState
 ) {
+  def percentKnown: Double = northQuadrant.percentKnown + southQuadrant.percentKnown + westQuadrant.percentKnown + eastQuadrant.percentKnown
   def toJson(): Json = Json.obj(
     ("elementType", Json.fromString(elementType)),
     ("value", Json.fromDoubleOrNull(value.getOrElse(Double.NaN))),
     ("northQuadrant", northQuadrant.toJson()),
     ("southQuadrant", southQuadrant.toJson()),
-    ("eastQuadrant", eastQuadrant.toJson()),
-    ("westQuadrant", westQuadrant.toJson())
+    ("westQuadrant", westQuadrant.toJson()),
+    ("eastQuadrant", eastQuadrant.toJson())
   )
 }
 

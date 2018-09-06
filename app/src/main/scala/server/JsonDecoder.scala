@@ -1,6 +1,7 @@
 package jsonhandler
 
 import io.circe._
+import agent._
 import environment._
 import environment.cell._
 import environment.element._
@@ -12,9 +13,12 @@ import scoututil.Util._
 
 import scala.collection.mutable.{Map => MutableMap}
 import scala.collection.mutable.{Set => MutableSet}
+import scala.collection.mutable.{ArrayBuffer => AB}
 
 
 object Decoder {
+
+  // ------------------- GENERAL EXTRACTORS ------------------------------------
 
   def extractString(field: String, data: Json): Option[String] = {
     val cursor: HCursor = data.hcursor
@@ -60,6 +64,8 @@ object Decoder {
       case Right(i) => Some(i)
     }
   }
+
+  // ------------------- ENVIRONMENT EXTRACTORS --------------------------------
 
   def extractEnvironment(data: Json): Environment = {
     val cursor: HCursor = data.hcursor
@@ -255,6 +261,56 @@ object Decoder {
       case Left(_) => None
       case Right(fieldValue) => Some((key, fieldValue.toString))
     }
+  }
+
+  // -------------------- MEMORY EXTRACTORS ------------------------------------
+
+  def extractStateActionMemory(data: Json): AB[StateActionPair] = {
+    val stateActionPairs: AB[StateActionPair] = AB()
+    val stateActionPairsJson = data.as[List[Json]]
+    stateActionPairsJson match {
+      case Left(_) => // Extraction failure
+      case Right(saps) => for (sap <- saps) stateActionPairs += extractStateActionPair(sap)
+    }
+    return stateActionPairs
+  }
+
+  def extractStateActionPair(data: Json): StateActionPair = {
+    val cursor: HCursor = data.hcursor
+    val state = extractAgentState(cursor.downField("state"))
+    val action = extractString("action", data).getOrElse("")
+    val shortTermScore = extractDouble("shortTermScore", data).getOrElse(-1.0)
+    val longTermScore = extractDouble("longTermScore", data).getOrElse(-1.0)
+    return new StateActionPair(state, action, shortTermScore, longTermScore)
+  }
+
+  def extractAgentState(data: ACursor): AgentState = {
+    val health = extractDouble("health", data).getOrElse(-1.0)
+    val energyLevel = extractDouble("energyLevel", data).getOrElse(-1.0)
+    val elementStatesJson = data.downField("elementStates").as[List[Json]]
+    val elementStates = elementStatesJson match {
+      case Left(_) => Nil
+      case Right(eStates) => (for (state <- eStates) yield extractElementState(state))
+    }
+    return new AgentState(health, energyLevel, elementStates)
+  }
+
+  def extractElementState(data: Json): ElementState = {
+    val cursor: HCursor = data.hcursor
+    val elementType = extractString("elementType", data).getOrElse("")
+    val value = extractDouble("value", data)
+    val northQuadrant = extractQuadrantState(cursor.downField("northQuadrant"))
+    val southQuadrant = extractQuadrantState(cursor.downField("southQuadrant"))
+    val westQuadrant = extractQuadrantState(cursor.downField("westQuadrant"))
+    val eastQuadrant = extractQuadrantState(cursor.downField("eastQuadrant"))
+    return new ElementState(elementType, value, northQuadrant, southQuadrant, westQuadrant, eastQuadrant)
+  }
+
+  def extractQuadrantState(data: ACursor): QuadrantState = {
+    val percentKnown = extractDouble("percentKnown", data).getOrElse(0.0)
+    val averageValue = extractDouble("averageValue", data)
+    val immediateValue = extractDouble("immediateValue", data)
+    return new QuadrantState(percentKnown, averageValue, immediateValue)
   }
 
 }

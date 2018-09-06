@@ -1,7 +1,7 @@
 package agent
 
 import agent._
-import agent.controler._
+import agent.controller._
 import environment._
 import environment.cell._
 import environment.element._
@@ -14,7 +14,7 @@ import scala.collection.mutable.{Set => MutableSet}
 
 
 class Robot(
-  val controler: Controler,
+  val controller: Controller,
   val sensors: List[Sensor] = Nil,
   val mapHeight: Int = 0,
   val mapWidth: Int = 0,
@@ -160,7 +160,7 @@ class Robot(
     """
   }
 
-  def chooseAction(): String = controler.selectAction(getValidActions(), getState())
+  def chooseAction(): String = controller.selectAction(getValidActions(), getState())
 
   def performAction(env: Environment, action: String): Event = action match {
     case "north"  => move(env, xPosition, yPosition + 1)
