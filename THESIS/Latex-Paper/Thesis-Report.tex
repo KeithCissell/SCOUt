@@ -1,4 +1,17 @@
+\RequirePackage[l2tabu, orthodox]{nag}
+
 \documentclass[]{report}
+
+%%% Subliminal refinements towards typographical perfection (1%)
+\usepackage[stretch=10]{microtype}
+
+%%% Handle input and output of accented/special characters and modern fonts
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+
+\usepackage[american]{babel}
+\usepackage{csquotes}
 
 \begin{document}
 
@@ -20,7 +33,7 @@ Thanks to all my peeps
 
 
 
-\section{Introduction}
+\chapter{Introduction}
 As research in the fields of autonomous systems and robotics have become more extensive, it is evident that there are a wide range of application for robots with integrated autonomy.  There are rovers, drones and even aquatic robots that are capable of decision making in their own environments. The tasks that these robots carry out can greatly vary as well. This variance can cause a demand for distinct software and hardware to achieve each robot’s given task. However, almost all autonomous robots operate similarly through their use of observation (typically with external sensors) and analytics of the data that is observed.
 
 A great deal of research has been done in hybrid robots and creating hardware that is multifunctional to various tasks. However, there is not an extensive amount of research on software with the capability to integrate with multiple robot compositions and tasks. Most of this is due to the fact that each robot has unique capabilities that do not overlap with many other robots. Autonomous robots seem to focus in on a certain niche and require their systems to be built from the ground up each time. This leaves the question of what pieces of autonomous control can be abstracted.
@@ -33,16 +46,16 @@ The project is still a work in progress and this paper will only present phases 
 
 
 
-\section{Related Work}
+\chapter{Related Work}
 Related works
 
 
 
-\section{Methodology}
+\chapter{Methodology}
 The project’s simulation consists of three main components: environments, agents and the interactions between the two. A wide range of diversity is required for both the environments and agents represented in simulation.
 
 
-\subsection{Environment Representation}
+\section{Environment Representation}
 Representing any environment is a tricky process. A simulation needs to balance simplicity and coverage when modeling an environment. Leave out too much from the model and its uses won’t reflect real word scenarios. Trying to model too much can waste time and effort that could be used to run real world experiments instead. The SCOUt environment builder tool captures important details that are necessary for agent-environment interactions to be simulated, while remaining simple to implement and understand. The tool is also highly abstracted so that more details can easily be added as needed but maintains a defined build process.
 
 (Diagram)
@@ -62,37 +75,39 @@ Element and Anomaly are abstract data structures that each provide a basic objec
 Element seeds require input variables to be provided in order to drive their population process within the environment.
 
 
-\subsection{Agent Representation}
+\section{Agent Representation}
 Agents within this experiment have a core set of attributes and abilities, along with a set of sensors and a controller. The core attributes for an agent are health, energy level, a system clock, an internal map and its current position. Because SCOUt is focused on purely observational interactions with its environment, an agent only has two categories of actions that can be taken: movement and scanning. The agent can attempt to move one cell at a time in any of the cardinal directions. This allows the agent to re-assess after each movement attempt. Scanning collects information about the agent's immediate environment and updates internal map. The list of scan actions that an agent can perform is based on the set of sensors the agent is equipped with. The controller is in charge of analyzing the current state of the agent and deciding the next action to be performed. This project focuses on creating a single controller (SCOUt) that highly adaptable to wide ranges of agent configurations, environments and operations.
 
-\subsubsection{Movement}
+\subsection{Movement}
 
-\subsubsection{Sensors}
+\subsection{Sensors}
 
-\subsubsection{State Representation}
+\subsection{State Representation}
 
-\subsubsection{Controllers}
+\subsection{Controllers}
 In this experiment three different controllers are created and compared for their performance.
 
 
-\subsection{Actions and Rewards}
+\section{Actions and Rewards}
 The SCOUt agent uses a
 
 
 
-\section{Experimentation}
+\chapter{Experimentation}
 Trial setups and data interpretation
 
 
 
-\section{Results}
+\chapter{Results}
 What did the results yield and what can we infer from this
 
 
 
-\section{Conclusion}
+\chapter{Conclusion}
 Conclude stuff
 
 
+
+\bibliography{refs}
 
 \end{document}
