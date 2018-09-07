@@ -4922,7 +4922,7 @@ Parameters
     elementType: the element type of the requested seed form data
 *******************************************************************************/
 function getElementSeedForm(elementType) {
-  var reqBody = '{\n    "element-type": "' + elementType + '"\n  }';
+  var reqBody = '{"element-type": "' + elementType + '"}';
   var reqSpecs = { method: 'POST',
     headers: reqHeaders,
     mode: 'cors',
@@ -4945,7 +4945,7 @@ Parameters
     terrainModificationType: the terrain modification type of the requested seed form data
 *******************************************************************************/
 function getTerrainModificationForm(terrainModificationType) {
-  var reqBody = '{\n    "terrain-modification-type": "' + terrainModificationType + '"\n  }';
+  var reqBody = '{"terrain-modification-type": "' + terrainModificationType + '"}';
   var reqSpecs = { method: 'POST',
     headers: reqHeaders,
     mode: 'cors',
@@ -4968,7 +4968,7 @@ Parameters
     anomalyType: the anomaly type of the requested seed form data
 *******************************************************************************/
 function getAnomalyForm(anomalyType) {
-  var reqBody = '{\n    "anomaly-type": "' + anomalyType + '"\n  }';
+  var reqBody = '{"anomaly-type": "' + anomalyType + '"}';
   var reqSpecs = { method: 'POST',
     headers: reqHeaders,
     mode: 'cors',
@@ -5062,6 +5062,7 @@ function saveEnvironmentTemplate(environmentTemplate) {
     body: reqBody };
   return new Promise(function (resolve, reject) {
     fetch(host + '/save_environment_template', reqSpecs).then(function (resp) {
+      alert("Saved");
       resolve(resp);
     }).catch(function (error) {
       return reject(Response.error(error));
@@ -5072,6 +5073,7 @@ function saveEnvironmentTemplate(environmentTemplate) {
 function saveEnvironment() {
   return new Promise(function (resolve) {
     fetch(host + '/save_environment', getSpecs).then(function (resp) {
+      alert("Saved");
       resolve(resp);
     }).catch(function (error) {
       return resolve(Response.error(error));

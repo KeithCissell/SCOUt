@@ -1,0 +1,139 @@
+{
+  "name" : "10by10NoMods",
+  "height" : 10,
+  "width" : 10,
+  "elements" : [
+    "Elevation",
+    "Decibel",
+    "Latitude",
+    "Water Depth",
+    "Longitude",
+    "Temperature"
+  ],
+  "seeds" : {
+    "Elevation" : {
+      "field-keys" : [
+        "Average",
+        "Deviation"
+      ],
+      "fields" : {
+        "Average" : {
+          "type" : "number",
+          "unit" : "ft",
+          "value" : "0",
+          "lowerBound" : -1500,
+          "upperBound" : 1500
+        },
+        "Deviation" : {
+          "type" : "number",
+          "unit" : "ft",
+          "value" : "0.25",
+          "lowerBound" : 0,
+          "upperBound" : 25
+        }
+      }
+    },
+    "Decibel" : {
+      "field-keys" : [
+      ],
+      "fields" : {
+        
+      }
+    },
+    "Latitude" : {
+      "field-keys" : [
+        "Root Value"
+      ],
+      "fields" : {
+        "Root Value" : {
+          "type" : "number",
+          "unit" : "°",
+          "value" : "1",
+          "lowerBound" : 0,
+          "upperBound" : 360
+        }
+      }
+    },
+    "Water Depth" : {
+      "field-keys" : [
+      ],
+      "fields" : {
+        
+      }
+    },
+    "Longitude" : {
+      "field-keys" : [
+        "Root Value"
+      ],
+      "fields" : {
+        "Root Value" : {
+          "type" : "number",
+          "unit" : "°",
+          "value" : "1",
+          "lowerBound" : 0,
+          "upperBound" : 360
+        }
+      }
+    },
+    "Temperature" : {
+      "field-keys" : [
+        "Average",
+        "Deviation"
+      ],
+      "fields" : {
+        "Average" : {
+          "type" : "number",
+          "unit" : "°F",
+          "value" : "70",
+          "lowerBound" : -200,
+          "upperBound" : 200
+        },
+        "Deviation" : {
+          "type" : "number",
+          "unit" : "°F",
+          "value" : "0.2",
+          "lowerBound" : 0,
+          "upperBound" : 5
+        }
+      }
+    }
+  },
+  "terrain-modifications" : [
+  ],
+  "anomalies" : [
+    {
+      "anomaly" : "Human",
+      "selected" : true,
+      "json" : {
+        "field-keys" : [
+          "Area",
+          "Sound",
+          "Heat"
+        ],
+        "fields" : {
+          "Area" : {
+            "type" : "number",
+            "unit" : "ft (diameter)",
+            "value" : "6",
+            "lowerBound" : 2,
+            "upperBound" : 10
+          },
+          "Sound" : {
+            "type" : "number",
+            "unit" : "dB",
+            "value" : "40",
+            "lowerBound" : 0,
+            "upperBound" : 100
+          },
+          "Heat" : {
+            "type" : "number",
+            "unit" : "°F",
+            "value" : "98.6",
+            "lowerBound" : 95,
+            "upperBound" : 110
+          }
+        }
+      }
+    }
+  ]
+}

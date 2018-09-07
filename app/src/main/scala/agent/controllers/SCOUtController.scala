@@ -33,7 +33,7 @@ class SCOUtController(val memoryFileName: String = "SCOUtMemory") extends Contro
 
   def saveMemory() = {
     val memoryJson = Json.fromValues(memory.map(_.toJson()))
-    saveJsonFile(memoryFileName + "-after", memoryFilePath, memoryJson)
+    saveJsonFile(memoryFileName, memoryFilePath, memoryJson)
   }
 
 }

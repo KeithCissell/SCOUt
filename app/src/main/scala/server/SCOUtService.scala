@@ -2,6 +2,7 @@
 package server
 
 import io.circe._
+import io.circe.parser._
 import org.http4s._
 import org.http4s.dsl._
 import org.http4s.circe._
@@ -54,76 +55,93 @@ object SCOUtService {
 
 
   // Gets the form info needed for a requested element type
-  def getElementSeedForm(req: Request): Task[Response] = req.decode[Json] { data =>
-    println(req.body)
-    val elementType = extractString("element-type", data).getOrElse("")
-    if (ElementTypes.elementTypes contains elementType) {
-      Ok(ElementSeedList.getSeedForm(elementType))
-    } else BadRequest(data)
+  def getElementSeedForm(req: Request): Task[Response] = parse(req.bodyAsText.runLastOr("").run) match {
+    case Left(_) => BadRequest()
+    case Right(data) => {
+      val elementType = extractString("element-type", data).getOrElse("")
+      if (ElementTypes.elementTypes contains elementType) {
+        Ok(ElementSeedList.getSeedForm(elementType))
+      } else BadRequest(data)
+    }
   }
 
   // Gets the form info needed for a requested terrain modification type
-  def getTerrainModificationForm(req: Request): Task[Response] = req.decode[Json] { data =>
-    val terrainModificationType = extractString("terrain-modification-type", data).getOrElse("")
-    if (TerrainModificationList.terrainModificationTypes contains terrainModificationType) {
-      Ok(TerrainModificationList.getForm(terrainModificationType))
-    } else BadRequest(data)
+  def getTerrainModificationForm(req: Request): Task[Response] = parse(req.bodyAsText.runLastOr("").run) match {
+    case Left(_) => BadRequest()
+    case Right(data) => {
+      val terrainModificationType = extractString("terrain-modification-type", data).getOrElse("")
+      if (TerrainModificationList.terrainModificationTypes contains terrainModificationType) {
+        Ok(TerrainModificationList.getForm(terrainModificationType))
+      } else BadRequest(data)
+    }
   }
 
   // Gets the form info needed for a requested anomaly type
-  def getAnomalyForm(req: Request): Task[Response] = req.decode[Json] { data =>
-    val anomalyType = extractString("anomaly-type", data).getOrElse("")
-    if (AnomalyList.anomalyTypes contains anomalyType) {
-      Ok(AnomalyList.getForm(anomalyType))
-    } else BadRequest(data)
+  def getAnomalyForm(req: Request): Task[Response] = parse(req.bodyAsText.runLastOr("").run) match {
+    case Left(_) => BadRequest()
+    case Right(data) => {
+      val anomalyType = extractString("anomaly-type", data).getOrElse("")
+      if (AnomalyList.anomalyTypes contains anomalyType) {
+        Ok(AnomalyList.getForm(anomalyType))
+      } else BadRequest(data)
+    }
   }
 
   // Sets environment to the default environment
-  def newRandomEnvironment(req: Request): Task[Response] = req.decode[Json] { data =>
-    println(data.toString)
-    val name = extractString("name", data).getOrElse("")
-    val height = extractInt("height", data).getOrElse(0)
-    val width = extractInt("width", data).getOrElse(0)
-    val scale = extractDouble("scale", data).getOrElse(10.0)
-    (name, height, width) match {
-      case ("", _, _) => BadRequest("Bad name")
-      case (_, 0, _)  => BadRequest("Bad height")
-      case (_, _, 0)  => BadRequest("Bad width")
-      case (n, w, h)  => {
-        elementSeedList = ElementSeedList.defaultSeedList()
-        terrainModificationList = TerrainModificationList.defaultList()
-        anomalyList = AnomalyList.defaultList()
-        environment = buildEnvironment(n, h, w, scale, elementSeedList, terrainModificationList, anomalyList)
-        Ok(encodeEnvironment(environment))
+  def newRandomEnvironment(req: Request): Task[Response] = parse(req.bodyAsText.runLastOr("").run) match {
+    case Left(_) => BadRequest()
+    case Right(data) => {
+      println(data.toString)
+      val name = extractString("name", data).getOrElse("")
+      val height = extractInt("height", data).getOrElse(0)
+      val width = extractInt("width", data).getOrElse(0)
+      val scale = extractDouble("scale", data).getOrElse(10.0)
+      (name, height, width) match {
+        case ("", _, _) => BadRequest("Bad name")
+        case (_, 0, _)  => BadRequest("Bad height")
+        case (_, _, 0)  => BadRequest("Bad width")
+        case (n, w, h)  => {
+          elementSeedList = ElementSeedList.defaultSeedList()
+          terrainModificationList = TerrainModificationList.defaultList()
+          anomalyList = AnomalyList.defaultList()
+          environment = buildEnvironment(n, h, w, scale, elementSeedList, terrainModificationList, anomalyList)
+          Ok(encodeEnvironment(environment))
+        }
       }
     }
   }
 
   // Generates a new environment
-  def buildCustomEnvironment(req: Request): Task[Response] = req.decode[Json] { data =>
-    val template = extractEnvironmentTemplate(data)
-    (template.name, template.height, template.width, template.elementSeeds, template.terrainModifications, template.anomalies) match {
-      case ("", _, _, _, _, _)  => BadRequest("Bad name")
-      case (_, 0, _, _, _, _)   => BadRequest("Bad height")
-      case (_, _, 0, _, _, _)   => BadRequest("Bad width")
-      case (_, _, _, Nil, _, _) => BadRequest("Bad element seed data")
-      case (n, w, h, e, t, a)   => {
-        elementSeedList = e
-        terrainModificationList = t
-        anomalyList = a
-        environment = buildEnvironment(template)
-        Ok(encodeEnvironment(environment))
+  def buildCustomEnvironment(req: Request): Task[Response] = parse(req.bodyAsText.runLastOr("").run) match {
+    case Left(_) => BadRequest()
+    case Right(data) => {
+      val template = extractEnvironmentTemplate(data)
+      (template.name, template.height, template.width, template.elementSeeds, template.terrainModifications, template.anomalies) match {
+        case ("", _, _, _, _, _)  => BadRequest("Bad name")
+        case (_, 0, _, _, _, _)   => BadRequest("Bad height")
+        case (_, _, 0, _, _, _)   => BadRequest("Bad width")
+        case (_, _, _, Nil, _, _) => BadRequest("Bad element seed data")
+        case (n, w, h, e, t, a)   => {
+          elementSeedList = e
+          terrainModificationList = t
+          anomalyList = a
+          environment = buildEnvironment(template)
+          Ok(encodeEnvironment(environment))
+        }
       }
     }
   }
 
   // Saves an environmentTemplate to a json file
-  def saveEnvironmentTemplate(req: Request): Task[Response] = req.decode[Json] { data =>
-    val name = extractString("name", data).getOrElse("NameNotFound")
-    val jsonString = data.toString
-    val fileName = new DateTime().toString("yyyy-MM-dd-HH-mm") + "-" + name
-    saveJsonFile(fileName, "src/resources/environment-templates/", jsonString)
-    Ok(s"Saved as $fileName")
+  def saveEnvironmentTemplate(req: Request): Task[Response] = parse(req.bodyAsText.runLastOr("").run) match {
+    case Left(_) => BadRequest()
+    case Right(data) => {
+      val name = extractString("name", data).getOrElse("NameNotFound")
+      val jsonString = data.toString
+      val fileName = new DateTime().toString("yyyy-MM-dd-HH-mm") + "-" + name
+      saveJsonFile(fileName, "src/resources/environment-templates/", jsonString)
+      Ok(s"Saved as $fileName")
+    }
   }
 
   // Saves the environment to a json file
