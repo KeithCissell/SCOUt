@@ -41,8 +41,6 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
   //------------------------------ RUN -----------------------------------------
   def run: Unit = {
     // Have the robot explore until it completes its goal is inoperational
-    println(robot.statusString())
-    println()
     while(robot.operational && !goal.isComplete){
       val state = robot.getState()
       val action = robot.chooseAction()
@@ -104,17 +102,21 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
       val item = eventLogShort(i)
       val itemLongTermScore = longTermScore * Math.pow(0.9, i)
       eventLog += new LogItem(item.state, item.action, item.event, item.shortTermScore, longTermScore)
-      println(s"${item.action}: ${item.event.msg}")
-      println(s"       Short-Term Score: ${item.shortTermScore}")
-      println(s"       Long-Term Score: $itemLongTermScore")
     }
-    println()
-    println(robot.statusString())
-    println(s"Nmber of Events: ${eventLog.size}")
-    println(s"GOAL COMPLETION: ${goal.percentComplete}")
   }
 
   //------------------------ EXPORT EVENT LOG ----------------------------------
   def getStateActionPairs(): List[StateActionPair] = eventLog.map(_.getStateActionPair()).toList
+
+  def printEvents = {
+    for (item <- eventLog) {
+      println(s"${item.action}: ${item.event.msg}")
+      println(s"       Short-Term Score: ${item.shortTermScore}")
+      println(s"       Long-Term Score: ${item.longTermScore}")
+    }
+    println(robot.statusString())
+    println(s"Nmber of Events: ${eventLog.size}")
+    println(s"GOAL COMPLETION: ${goal.percentComplete}")
+  }
 
 }

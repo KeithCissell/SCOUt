@@ -31,6 +31,9 @@ object SandBox {
     var elementSeedList: List[ElementSeed] = ElementSeedList.defaultSeedList()
     var anomalyList: List[Anomaly] = AnomalyList.defaultList()
 
+    // Load Environment Template from file
+    // to-do
+
     // ENVIRONMENT
     val testEnv = buildEnvironment("Test Environment", height, width, scale, elementSeedList, terrainModificationList, anomalyList)
 
@@ -53,8 +56,10 @@ object SandBox {
 
     // OPERATION
     val operation = new Operation(testBot, testEnv, goal)
-    // operation.run
+    operation.run
+    operation.printEvents
 
+    // MEMORY
     val scoutController = new SCOUtController("stateActionTest")
     scoutController.loadMemory()
     scoutController.saveMemory()
