@@ -115,6 +115,10 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
       println(s"       Long-Term Score: ${item.longTermScore}")
     }
     println(robot.statusString())
+    printOutcome
+  }
+
+  def printOutcome = {
     println(s"Nmber of Events: ${eventLog.size}")
     println(s"GOAL COMPLETION: ${goal.percentComplete}")
   }

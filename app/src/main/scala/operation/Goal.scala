@@ -12,6 +12,7 @@ trait Goal {
   def isComplete: Boolean = percentComplete >= 100.0
   def percentComplete: Double
   def update(environment: Environment, robot: Robot): Unit
+  def reset: Unit
 }
 
 // Find different anomalies in an environment
@@ -35,6 +36,10 @@ class FindAnomalies(anomaliesToFind: Map[String,Int], timeLimit: Option[Double])
   def update(environment: Environment, robot: Robot): Unit = {
     val anomalyDetections = robot.detectAnomalies(environment)
     for (detection <- anomalyDetections) anomaliesFound += ((detection.anomalyType, detection.xFound, detection.yFound))
+  }
+
+  def reset: Unit = {
+    anomaliesFound = MutableSet()
   }
 
 }
@@ -68,5 +73,9 @@ class MapElements(mapHeight: Int, mapWidth: Int, elementsToMap: List[String], ti
 
   def update(environment: Environment, robot: Robot): Unit = {
     internalMap = robot.internalMap
+  }
+
+  def reset: Unit = {
+    internalMap = emptyCellGrid(mapHeight, mapWidth)
   }
 }

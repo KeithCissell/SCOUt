@@ -14,6 +14,7 @@ import scala.collection.mutable.{Set => MutableSet}
 
 
 class Robot(
+  val name: String,
   val controller: Controller,
   val sensors: List[Sensor] = Nil,
   val mapHeight: Int = 0,
