@@ -20,7 +20,6 @@ class SCOUtController(val memoryFileName: String = "SCOUtMemory") extends Contro
 
   // ---------------------------------MEMORY------------------------------------
   val memory: AB[StateActionPair] = AB()
-  val memoryFilePath = "src/resources/agent-memory/"
 
   def loadMemory() = {
     val fileData = readJsonFile(memoryFileName, memoryFilePath)

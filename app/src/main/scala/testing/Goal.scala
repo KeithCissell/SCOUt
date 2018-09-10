@@ -7,16 +7,23 @@ import scoututil.Util._
 import scala.collection.mutable.{Set => MutableSet}
 
 
+trait GoalTemplate {
+  def generateGoal(env: Environment): Goal
+}
+
 trait Goal {
   val timeLimit: Option[Double] = None // in milliseconds
   def isComplete: Boolean = percentComplete >= 100.0
   def percentComplete: Double
   def update(environment: Environment, robot: Robot): Unit
-  def reset: Unit
 }
 
 // Find different anomalies in an environment
 // anomaliesToFind is a map of (anomalyType -> # to find)
+class FindAnomaliesTemplate(anomaliesToFind: Map[String,Int], timeLimit: Option[Double]) extends GoalTemplate {
+  def generateGoal(env: Environment): FindAnomalies = new FindAnomalies(anomaliesToFind, timeLimit)
+}
+
 class FindAnomalies(anomaliesToFind: Map[String,Int], timeLimit: Option[Double]) extends Goal {
   // anomaliesFound keeps track of findings (anomalyType, x-position, y-position)
   var anomaliesFound: MutableSet[(String,Int,Int)] = MutableSet()
@@ -38,13 +45,13 @@ class FindAnomalies(anomaliesToFind: Map[String,Int], timeLimit: Option[Double])
     for (detection <- anomalyDetections) anomaliesFound += ((detection.anomalyType, detection.xFound, detection.yFound))
   }
 
-  def reset: Unit = {
-    anomaliesFound = MutableSet()
-  }
-
 }
 
 // Map out as much of a certain element type as possible
+class MapElementsTemplate(elementsToMap: List[String], timeLimit: Option[Double]) extends GoalTemplate {
+  def generateGoal(env: Environment): MapElements = new MapElements(env.height, env.width, elementsToMap, timeLimit)
+}
+
 class MapElements(mapHeight: Int, mapWidth: Int, elementsToMap: List[String], timeLimit: Option[Double]) extends Goal {
   // Copy of the Robot's internal map
   var internalMap: Grid[Cell] = emptyCellGrid(mapHeight, mapWidth)
@@ -75,7 +82,4 @@ class MapElements(mapHeight: Int, mapWidth: Int, elementsToMap: List[String], ti
     internalMap = robot.internalMap
   }
 
-  def reset: Unit = {
-    internalMap = emptyCellGrid(mapHeight, mapWidth)
-  }
 }

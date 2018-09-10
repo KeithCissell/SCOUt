@@ -5,6 +5,10 @@ import java.io._
 import scala.io.Source
 
 object FileManager {
+  // File Paths
+  val environmentPath = "src/resources/environments/"
+  val environmentTemplatePath = "src/resources/environment-templates/"
+  val memoryFilePath = "src/resources/agent-memory/"
 
   def saveJsonFile(fileName: String, path: String, jsonData: String): Unit = {
     val filePath = (path + fileName + ".json").replace(' ', '_')
