@@ -4922,7 +4922,7 @@ Parameters
     elementType: the element type of the requested seed form data
 *******************************************************************************/
 function getElementSeedForm(elementType) {
-  var reqBody = '{"element-type": "' + elementType + '"}';
+  var reqBody = '{\n    "element-type": "' + elementType + '"\n  }';
   var reqSpecs = { method: 'POST',
     headers: reqHeaders,
     mode: 'cors',
@@ -4945,7 +4945,7 @@ Parameters
     terrainModificationType: the terrain modification type of the requested seed form data
 *******************************************************************************/
 function getTerrainModificationForm(terrainModificationType) {
-  var reqBody = '{"terrain-modification-type": "' + terrainModificationType + '"}';
+  var reqBody = '{\n    "terrain-modification-type": "' + terrainModificationType + '"\n  }';
   var reqSpecs = { method: 'POST',
     headers: reqHeaders,
     mode: 'cors',
@@ -4968,7 +4968,7 @@ Parameters
     anomalyType: the anomaly type of the requested seed form data
 *******************************************************************************/
 function getAnomalyForm(anomalyType) {
-  var reqBody = '{"anomaly-type": "' + anomalyType + '"}';
+  var reqBody = '{\n    "anomaly-type": "' + anomalyType + '"\n  }';
   var reqSpecs = { method: 'POST',
     headers: reqHeaders,
     mode: 'cors',
