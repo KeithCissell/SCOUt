@@ -40,12 +40,12 @@ object SandBox {
     // AGENT
     val testBot = new Robot(
       name = "TestBot",
-      controller = new RandomController(),
+      controller = new SCOUtController("stateActionTest", false),
       sensors = List(
-        new ElevationSensor(),
-        new DecibelSensor(),
-        new TemperatureSensor(),
-        new WaterSensor()),
+        new ElevationSensor(false),
+        new DecibelSensor(true),
+        new TemperatureSensor(true),
+        new WaterSensor(false)),
       mapHeight = height,
       mapWidth = width,
       xPosition = randomInt(0, height - 1),
@@ -58,12 +58,12 @@ object SandBox {
     // OPERATION
     val operation = new Operation(testBot, testEnv, goal)
     operation.run
-    operation.printEvents
+    // operation.printEvents
 
     // MEMORY
-    val scoutController = new SCOUtController("stateActionTest")
-    scoutController.loadMemory()
-    scoutController.saveMemory()
+    // val scoutController = new SCOUtController("stateActionTest", false)
+    // scoutController.loadMemory()
+    // scoutController.saveMemory()
 
     // Messing with filemanager
     // val encodedEnv = encodeEnvironment(testEnv)

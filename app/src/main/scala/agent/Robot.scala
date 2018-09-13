@@ -29,6 +29,8 @@ class Robot(
   var clock: Double = 0.0 // in milliseconds
 
   // Universal damage and energy use variables
+  var maxHealth: Double = 0.0
+  var maxEnergyLevel: Double = 0.0
   val damageNormal: Double = 0.1
   val energyUseNormal: Double = 0.5
   val movementCost: Double = 0.01
@@ -63,43 +65,41 @@ class Robot(
 
   def getState(): AgentState = {
     new AgentState(
-      health,
-      energyLevel,
+      health / maxHealth,
+      energyLevel / maxEnergyLevel,
       // clock,
       getElementStates())
   }
 
   def getElementStates(): List[ElementState] = {
-    for (elementType <- sensors.map(_.elementType)) yield new ElementState(
-      elementType,
-      internalMap(xPosition)(yPosition).flatMap(_.get(elementType).flatMap(_.value)),
-      getQuadrantState("north", elementType),
-      getQuadrantState("south", elementType),
-      getQuadrantState("west", elementType),
-      getQuadrantState("east", elementType))
+    for (sensor <- sensors) yield new ElementState(
+      sensor.elementType,
+      sensor.indicator,
+      sensor.hazard,
+      internalMap(xPosition)(yPosition).flatMap(_.get(sensor.elementType).flatMap(_.value)),
+      getQuadrantState("north", sensor.elementType),
+      getQuadrantState("south", sensor.elementType),
+      getQuadrantState("west", sensor.elementType),
+      getQuadrantState("east", sensor.elementType))
   }
 
   def getQuadrantState(quadrant: String, elementType: String): QuadrantState = {
     var cells: AB[Option[Cell]] = AB()
-    var xImmediate = 0
-    var yImmediate = 0
+    var xImmediate = xPosition
+    var yImmediate = yPosition
     quadrant match {
       case "north" => {
         cells = getNorthQuadrantCells()
-        xImmediate = xPosition + 1
-        yImmediate = yPosition }
+        xImmediate += 1 }
       case "south" => {
         cells = getSouthQuadrantCells()
-        xImmediate = xPosition - 1
-        yImmediate = yPosition }
+        xImmediate -= 1 }
       case "west" => {
         cells = getWestQuadrantCells()
-        xImmediate = xPosition
-        yImmediate = yPosition + 1 }
+        yImmediate += 1 }
       case "east" => {
         cells = getEastQuadrantCells()
-        xImmediate = xPosition
-        yImmediate = yPosition - 1 }
+        yImmediate -= 1 }
     }
     val elements: List[Element] = cells.flatMap(_.get.get(elementType)).toList
     val values: List[Double] = elements.map(_.value).flatten
@@ -159,6 +159,16 @@ class Robot(
     Clock: ${clock / 1000} s
     Internal Map: ${calculateMapDiscovered()} % discovered
     """
+  }
+
+  def setup: Unit = {
+    maxHealth = health
+    maxEnergyLevel = energyLevel
+    controller.setup
+  }
+
+  def shutDown(stateActionPairs: List[StateActionPair]): Unit = {
+    controller.shutDown(stateActionPairs)
   }
 
   def chooseAction(): String = controller.selectAction(getValidActions(), getState())

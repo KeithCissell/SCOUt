@@ -34,10 +34,10 @@ object SimpleTest {
       controllers = Map(
         "Random" -> new RandomController()),
       sensors = List(
-        new ElevationSensor(),
-        new DecibelSensor(),
-        new TemperatureSensor(),
-        new WaterSensor()),
+        new ElevationSensor(false),
+        new DecibelSensor(true),
+        new TemperatureSensor(true),
+        new WaterSensor(false)),
       goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None))
 
     // Run Test

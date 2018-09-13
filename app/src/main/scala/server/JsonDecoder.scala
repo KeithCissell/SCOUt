@@ -54,14 +54,22 @@ object Decoder {
     val cursor: HCursor = data.hcursor
     cursor.downField(field).as[Double] match {
       case Left(_)  => None
-      case Right(i) => Some(i)
+      case Right(d) => Some(d)
     }
   }
 
   def extractDouble(field: String, data: ACursor): Option[Double] = {
     data.downField(field).as[Double] match {
       case Left(_)  => None
-      case Right(i) => Some(i)
+      case Right(d) => Some(d)
+    }
+  }
+
+  def extractBoolean(field: String, data: Json): Option[Boolean] = {
+    val cursor: HCursor = data.hcursor
+    cursor.downField(field).as[Boolean] match {
+      case Left(_)  => None
+      case Right(b) => Some(b)
     }
   }
 
@@ -298,12 +306,14 @@ object Decoder {
   def extractElementState(data: Json): ElementState = {
     val cursor: HCursor = data.hcursor
     val elementType = extractString("elementType", data).getOrElse("")
+    val indicator = extractBoolean("indicator", data).getOrElse(false)
+    val hazard = extractBoolean("hazard", data).getOrElse(false)
     val value = extractDouble("value", data)
     val northQuadrant = extractQuadrantState(cursor.downField("northQuadrant"))
     val southQuadrant = extractQuadrantState(cursor.downField("southQuadrant"))
     val westQuadrant = extractQuadrantState(cursor.downField("westQuadrant"))
     val eastQuadrant = extractQuadrantState(cursor.downField("eastQuadrant"))
-    return new ElementState(elementType, value, northQuadrant, southQuadrant, westQuadrant, eastQuadrant)
+    return new ElementState(elementType, indicator, hazard, value, northQuadrant, southQuadrant, westQuadrant, eastQuadrant)
   }
 
   def extractQuadrantState(data: ACursor): QuadrantState = {

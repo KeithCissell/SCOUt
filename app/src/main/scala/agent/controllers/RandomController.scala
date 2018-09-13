@@ -9,8 +9,12 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 
 class RandomController() extends Controller {
 
+  def setup: Unit = {}
+
   def selectAction(actions: List[String], state: AgentState): String = {
     actions(randomInt(0, actions.length - 1))
   }
+
+  def shutDown(stateActionPairs: List[StateActionPair]): Unit = {}
 
 }

@@ -40,6 +40,8 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
 
   //------------------------------ RUN -----------------------------------------
   def run: Unit = {
+    // Setup the robot
+    robot.setup
     // Have the robot explore until it completes its goal is inoperational
     while(robot.operational && !goal.isComplete){
       val state = robot.getState()
@@ -53,6 +55,8 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
     }
     // Propagate Long-Term Score
     scoreEventsLongTerm()
+    // Shut down robot
+    robot.shutDown(getStateActionPairs())
   }
 
   //------------------------ SHORT-TERM SCORE --------------------------------
