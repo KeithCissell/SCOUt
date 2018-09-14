@@ -4,6 +4,7 @@ import io.circe._
 import io.circe.syntax._
 
 import agent.Event._
+import scoututil.Util._
 
 
 class LogItemShort(
@@ -80,5 +81,11 @@ class StateActionPair(
     ("shortTermScore", Json.fromDoubleOrNull(shortTermScore)),
     ("longTermScore", Json.fromDoubleOrNull(longTermScore))
   )
+
+  def roundOff(fps: Int): StateActionPair = {
+    val sts = roundDoubleX(shortTermScore, fps)
+    val lts = roundDoubleX(longTermScore, fps)
+    return new StateActionPair(state.roundOff(fps), action, sts, lts)
+  }
 
 }

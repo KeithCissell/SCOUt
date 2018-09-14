@@ -32,9 +32,14 @@ object Util {
   def randomDouble(lowerBound: Double, upperBound: Double): Double = {
     lowerBound + (upperBound - lowerBound) * Random.nextDouble
   }
-  def roundDouble2(d: Double): Double = {
-    BigDecimal(d).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+  def roundDoubleX(d: Double, x: Int): Double = {
+    BigDecimal(d).setScale(x, BigDecimal.RoundingMode.HALF_UP).toDouble
   }
+  def roundDoubleX(d: Option[Double], x: Int): Option[Double] = d match {
+    case None => None
+    case Some(d) => Some(BigDecimal(d).setScale(x, BigDecimal.RoundingMode.HALF_UP).toDouble)
+  }
+  def roundDouble2(d: Double): Double = roundDoubleX(d, 2)
   def dist(x1: Int, y1: Int, x2: Int, y2: Int): Double = {
     sqrt(pow(x2 - x1, 2.0) + pow(y2 - y1, 2.0))
   }

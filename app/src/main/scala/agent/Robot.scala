@@ -63,6 +63,7 @@ class Robot(
 
   def operational = (health > 0.0 && energyLevel > 0.0)
 
+  // AGENT STATE
   def getState(): AgentState = {
     new AgentState(
       health / maxHealth,

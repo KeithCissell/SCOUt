@@ -31,16 +31,13 @@ object SandBox {
     var elementSeedList: List[ElementSeed] = ElementSeedList.defaultSeedList()
     var anomalyList: List[Anomaly] = AnomalyList.defaultList()
 
-    // Load Environment Template from file
-    // to-do
-
     // ENVIRONMENT
     val testEnv = buildEnvironment("Test Environment", height, width, scale, elementSeedList, terrainModificationList, anomalyList)
 
     // AGENT
     val testBot = new Robot(
       name = "TestBot",
-      controller = new SCOUtController("stateActionTest", false),
+      controller = new SCOUtController("stateActionTest", true),
       sensors = List(
         new ElevationSensor(false),
         new DecibelSensor(true),
@@ -58,7 +55,7 @@ object SandBox {
     // OPERATION
     val operation = new Operation(testBot, testEnv, goal)
     operation.run
-    // operation.printEvents
+    operation.printOutcome
 
     // MEMORY
     // val scoutController = new SCOUtController("stateActionTest", false)

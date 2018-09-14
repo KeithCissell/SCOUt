@@ -32,7 +32,8 @@ object SimpleTest {
       testTemplates = Map(
         "10by10NoMods" -> (10, 10)),
       controllers = Map(
-        "Random" -> new RandomController()),
+        "Random" -> new RandomController(),
+        "SCOUt" -> new SCOUtController("testytest", true)),
       sensors = List(
         new ElevationSensor(false),
         new DecibelSensor(true),

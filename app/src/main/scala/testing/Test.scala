@@ -49,7 +49,7 @@ class Test(
           val goal = goalTemplate.generateGoal(environment)
           val operation = new Operation(robot, environment, goal)
           operation.run
-          operation.printOutcome
+          // operation.printOutcome
         }
       }
     }
