@@ -12,6 +12,7 @@ object FileManager {
 
   def fileExists(fileName: String, path: String, extension: String): Boolean = {
     val filePath = (path + fileName + s".$extension").replace(' ', '_')
+    println(filePath)
     new File(filePath).exists
   }
 

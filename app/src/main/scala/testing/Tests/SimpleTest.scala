@@ -33,7 +33,7 @@ object SimpleTest {
         "10by10NoMods" -> (10, 10)),
       controllers = Map(
         "Random" -> new RandomController(),
-        "SCOUt" -> new SCOUtController("testytest", true)),
+        "SCOUt" -> new SCOUtController("stateActionTest", true)),
       sensors = List(
         new ElevationSensor(false),
         new DecibelSensor(true),

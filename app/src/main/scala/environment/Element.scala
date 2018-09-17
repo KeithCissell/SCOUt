@@ -59,4 +59,24 @@ object ElementTypes {
     "Wind Direction" -> false,
     "Wind Speed" -> false
   )
+
+  def normalizeElementValue(elementType: String, value: Option[Double]): Option[Double] = value match {
+    case None => None
+    case Some(v) => getSampleElement(elementType) match {
+      case None => None
+      case Some(element) => Some(v / (element.upperBound - element.lowerBound))
+    }
+  }
+
+  def getSampleElement(elementType: String): Option[Element] = elementType match {
+    case "Elevation" => Some(new Elevation())
+    case "Latitude" => Some(new Latitude())
+    case "Longitude" => Some(new Longitude())
+    case "Decibel" => Some(new Decibel())
+    case "Temperature" => Some(new Temperature())
+    case "Water Depth" => Some(new WaterDepth())
+    case "Wind Direction" => Some(new WindDirection())
+    case "Wind Speed" => Some(new WindSpeed())
+    case _ => None
+  }
 }

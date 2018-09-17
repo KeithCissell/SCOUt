@@ -37,7 +37,7 @@ object SandBox {
     // AGENT
     val testBot = new Robot(
       name = "TestBot",
-      controller = new SCOUtController("stateActionTest", true),
+      controller = new SCOUtController("stateActionTest", false),
       sensors = List(
         new ElevationSensor(false),
         new DecibelSensor(true),

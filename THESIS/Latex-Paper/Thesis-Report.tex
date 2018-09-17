@@ -28,7 +28,7 @@
 \end{abstract}
 
 \section*{Acknowledgement}
-Thanks to all my peeps
+Thanks to all my peeps.
 
 \tableofcontents
 \newpage
@@ -72,7 +72,15 @@ For the AI component, we will look at the various evolutionary methods that hold
 
 
 \chapter{Related Work}
-Related works
+% ----------------------------------------------------------------------------------------------------------------------------------------
+\todo{Reword/Expand}
+To begin my process, I read various research papers on autonomous vehicle exploration.
+The key point I extracted from my readings were the various proposed tasks and situations that were being solved by autonomy.
+From these proposed tasks, I was able to put together a broad perspective of use cases and begin to draw parallels between them all.
+My end goal is to create an abstracted process for goal-oriented robots regardless of what their specific tasks were, the environment they were in, and the means in which they gathered their data.
+I found these were the three cornerstones of goal-oriented robotics: given task, environmental obstacles to handle, and given capabilities.
+This semester’s work lays out the foundation for my research in the possibility and ease for this three dimensional problem to be abstracted.
+% ----------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -81,14 +89,13 @@ The project’s simulation consists of three main components: environments, agen
 A wide range of diversity is required for both the environments and agents represented in simulation.
 
 
-\section{Environment Build Tool}
+\section{Environment Representation}
 Representing any environment is a tricky process.
 A simulation needs to balance simplicity and coverage when modeling an environment.
 Leave out too much from the model and it won’t reflect real word scenarios.
 Trying to model too much can consume time and effort that could instead be used to run real world experiments.
 The SCOUt environment build tool captures important details that are necessary for agent-environment interactions to be simulated, while remaining simple to implement and understand.
 The tool is also highly abstracted so that more details can easily be added as needed while still maintaining a defined build process.
-
 
 Build Process
 \begin{enumerate}
@@ -100,22 +107,23 @@ Build Process
   \item	Anomaly effect(s) are applied to corresponding element(s) in neighboring cells
 \end{enumerate}
 
-The environment build tool provides a Graphical User Interface (GUI) for creating and visualizing environments.
-Electron \todo{Possibly cite Electron} is used to simulate a web page contained within a standalone desktop application.
-This allows the front end to be written in JavaScript, HTML and CSS and handle communication to the back end via http over a localhost network.
-Scala library http4s \todo{Possibly cite http4s} is used to create a server on a localhost network for handling the http requests from the front end.
-This architecture allows all data creation and manipulation to be isolated in Scala on the back end, while allowing user interactions with the data to take place on the front end.
-Launching the app starts up the Scala server in a new terminal and opens the Electron window which will begin attempts to establish communication with the server.
-
-Once connection between the server and GUI have been established the user can choose to generate a random environment or build a custom environment. \todo{Load environment or template from file}
-For a random environment, the user only inputs the name and size of the environment and all other variables are selected by the server.
-Building a custom environment steps the user through a series of form pages to create an environment template.
-% Loading an environment allows the user to select a previously built environment or a saved template to use.
+\subsection{Environment Generation}
+% ----------------------------------------------------------------------------------------------------------------------------------------
+\todo{Reword}
+Beginning the developmental process, I researched more clever/elegant ways to procedurally generate an environment given little to no user input.
+I divided the generation process into three main phases: terrain formation and initialization, anomaly placement, and finally statistical calculation.
+Phase one proved to be the trickiest as it required me to redo a lot of previous work in a way that required each environmental factor (i.e. elevation, temperature, water depth etc.) to take each other into account when being initialized.
+Many of the existing algorithms were improved upon to allow for either more realistic representation of an environmental factor, or easier user control of the generation process.
+Phase two was then to place anomalies throughout the environment.
+An anomaly is any object that may be of significance to the robot such as a human or precious mineral.
+Anomalies have their own effects on the environment around them and this then leads to phase three.
+Phase three is the statistical calculation of the environmental factors once again, taking all anomalies and other environmental factors into account.
+For example, if a “human” anomaly is placed in the environment, the area of the environment in which the human is present will have a higher heat reading as well as a decibel reading.
+% ----------------------------------------------------------------------------------------------------------------------------------------
 
 Environment generation is guided by an environment template that holds the necessary data to build a specific environment. \todo{environment template table}
 Use of a dynamic template to allow representation of a wide range of environments while allowing re-creation of multiple random environments based on the same template.
 The goal of each template is to provide influence over the values generated so that a specific environment can be modeled with minimal input.
-To-do …
 
 Each \textbf{Environment} created is represented as an n x m 2D grid of uniformly sized s x s square \textbf{Cell}, whose size is specified by a scaling factor.
 Along with positional data, each \textbf{Cell} contains information about the different elements and anomalies present within their s x s area.
@@ -130,30 +138,133 @@ Seeding processes are specific to each instance of an Element or Anomaly.
 
 Element seeds require input variables to be provided in order to drive their population process within the environment.
 
+\subsection{Environment Build Tool}
+The environment build tool provides a Graphical User Interface (GUI) for creating and visualizing environments.
+Electron \todo{Possibly cite Electron} is used to simulate a web page contained within a standalone desktop application.
+This allows the front end to be written in JavaScript, HTML and CSS and handle communication to the back end via http over a localhost network.
+Scala library http4s \todo{Possibly cite http4s} is used to create a server on a localhost network for handling the http requests from the front end.
+This architecture allows all data creation and manipulation to be isolated in Scala on the back end, while allowing user interactions with the data to take place on the front end.
+Launching the app starts up the Scala server in a new terminal and opens the Electron window which will begin attempts to establish communication with the server.
+
+Once connection between the server and GUI have been established the user can choose to generate a random environment or build a custom environment. \todo{Load environment or template from file}
+For a random environment, the user only inputs the name and size of the environment and all other variables are selected by the server.
+Building a custom environment steps the user through a series of form pages to create an environment template.
+% Loading an environment allows the user to select a previously built environment or a saved template to use.
+
+% ----------------------------------------------------------------------------------------------------------------------------------------
+\todo{Reword}
+The “Builder” page took the remaining time of the semester.
+It is the starting point of my application.
+When the app is launched, a user will be presented a screen with a few basic form fields to build an environment and two options: “Generate Random Environment” or “Build Custom Environment”.
+The basic fields will allow the user to enter the name and dimensions of the environment to be created.
+These fields are required regardless of the user’s build option.
+If the random environment build option is selected, a request will be made to the SCOUt server to create and return an environment based on the default environment parameters and will contain layers of every optional element type.
+If the custom environment option is selected, the user will then walk through several pages of forms to provide the “seed” data for each element layer.
+The first form will ask the user which elements it would like to include.
+Some elements (environment, latitude and longitude) are required in all environments.
+For each layer that the user has selected, they will then be given a form page that asks for “seed” data for each of the element types.
+Each form within this process will save the user’s input data on the front end.
+This allows the user to go back and edit while moving through the different form pages, as well as go back and edit the data if they select “New Environment” from the Visualizer page.
+Form data is also set within required bounds and checked before submission.
+Once the user has filled out all required form info, they can review their data and then submit it.
+When submitted, the front end data is gathered and sent in a request to the SCOUt server.
+An environment is then created with these specs and returned to the front end to be loaded into the Visualizer.
+% ---------------------------------------------------------------------------------------------------------------------------------------
+
+
+\subsection{Visualizer}
+% ----------------------------------------------------------------------------------------------------------------------------------------
+\todo{Reword}
+I spent the majority of the semester working on the visualizer portion of the GUI.
+I had already worked with D3 libraries within JavaScript to make basic contour maps.
+My new goal was to create a way to logically display the different layers of elements within the environment using these libraries.
+The visualizer also needed to incorporate a way for the user to control which layer(s) were being displayed, and present proper information corresponding to the environment.
+To do so, I created a “Visualizer” page to my application. This page is divided into four main sections: display, toolbar, legend, and navigation bar.
+The display is an SVG element that holds graphing data for the environment.
+It will display specified layers of the environment as well as a grid representing each “cell” within the environment.
+The toolbar allows the user to select the current element layer(s) that are displayed.
+The legend displays information on the environment in three areas: general information, information for the currently selected layer and information of a single cell in the grid.
+A cell’s information will be displayed within the legend when selected.
+A cell can be selected by clicking its corresponding position in the SVG display.
+The selected cell will also be highlighted within the display when selected.
+The navigation bar will be populated with controls for the robot once it is incorporated into the application in my future work.
+Currently, the only item in the navigation bar is a button to return the user to the “Builder” page which allows the creation of an environment.
+% ----------------------------------------------------------------------------------------------------------------------------------------
+
 
 \section{Agent Representation}
 Agents within this experiment have a core set of attributes and abilities, along with a set of sensors and a controller.
 The core attributes for an agent are health, energy level, a system clock, an internal map and its current position.
 Because SCOUt is focused on purely observational interactions with its environment, an agent only has two categories of actions that can be taken: movement and scanning.
 The agent can attempt to move one cell at a time in any of the cardinal directions.
-This allows the agent to re-assess after each movement attempt.
+This allows the agent to reassess after each movement attempt.
 Scanning collects information about the agent's immediate environment and updates internal map.
 The list of scan actions that an agent can perform is based on the set of sensors the agent is equipped with.
 The controller is in charge of analyzing the current state of the agent and deciding the next action to be performed.
-This project focuses on creating a single controller (SCOUt) that highly adaptable to wide ranges of agent configurations, environments and operations.
+This project focuses on creating a single controller (SCOUt) that is highly adaptable to wide ranges of agent configurations, environments and goals.
+
+An agent is considered operational as long as it has remaining health and energy.
+Health is effected by....
+Energy is effected by....
 
 \subsection{Movement}
+An agent's movement is simplified to stepping from its current cell to one of its four neighboring cells.
+Movement to a neighboring cell is denoted as "north", "south", "west" or "east" based on the orientation of the x, y grid of cells that make up the environment.
+Moving a single cell at a time gives the agent the opportunity to reassess its current state before continuing movement.
+Distance covered by successful movement will inherently scale to the size of the cells within the environment representation.
+Each time an agent attempts to move to a new cell, Elevation levels will be compared between the current and new cell to check if movement is possible or if it results in damage.
+After the attempt has been made, changes to health, energy level and the system clock are calculated and then updated.
+If the movement action is successfully completed, the current position is also updated.
 
 \subsection{Sensors}
+A sensor is an object that allows an agent to gather data about one specific Element Type within an environment.
+Each sensor has set attributes for the element type that it can detect, the range, the energy required to run and the time required to run.
+Additionally two flags are passed to a sensor when it is first setup.
+One of these flags denote if the sensor is being used to detect "hazard" elements in the environment.
+Whether an element is hazardous typically depends on the setup of the agent.
+For example, water could be considered hazardous to most robots, however if the agent was designed for aqueous missions, water could no longer be a concern.
+The other flag denotes if the sensor is being used to detect "indicator" elements in the environment.
+Indicator elements are any element that are associated to the agent's goal.
+An example is if the agent is searching for a human within the environment, their heat signature might be significantly different than the surrounding environment, so temperature would be considered an indicator.
+
+When a sensor is used, it does a full 360° sweep of surrounding cells in the environment.
+This creates a search circle with radius equal to the sensor's range and the center located at the agent's current position.
+For each cell that fall within this search circle, the value for the sensor's given element type is extracted.
+These values are then added to the agent's internal map if they did not previously exist there.
+Through repeated scanning, the agent will begin to map out its surrounding environment.
+This map can be then be used by the controller to determine what actions would be most beneficial to the goal at hand.
 
 \subsection{State Representation}
+For controllers to intelligently select when to perform what actions, they need to have sufficient data about the agent and the known surrounding environment.
+The agent's health and energy level can easily be stored, but the internal map containing the known environment can become a very large data structure to work with.
+For this reason the data structure is stripped down in order to reduce memory usage and computational effort required to analyze a state.
+Instead of a 2-D array of cells, \todo{reference cell structure diagram?} the internal map is represented as a list of element states for each element type that there is a sensor present for.
+
+Each element state is comprised of the value at the agents current position (if known), a flag for whether the element type is considered a hazard element, a flag for whether the element type is considered an indicator element, and then four quadrant states for each cardinal direction.
+Because agent movement is split into north, south, west and east, we can collapse information about the element type into four quadrants \todo{Image of quadrants}.
+A quadrant state contains the percent of cells where the value for the element type is known, the neighboring cell's value (if known) and the average of all known cell values in the quadrant.
+These metrics allow us to generate useful information that ties the current state with consequences that may come from each action.
+Particularly...\todo{add state comparison equations?}
+
+\todo{talk about normalization}
+
 
 \subsection{Controllers}
 In this experiment three different controllers are created and compared for their performance.
 
+\subsection{Goals}
 
-\section{Actions and Rewards}
-The SCOUt agent uses a
+
+\section{Simulation}
+To explore the usefulness and robustness of our intelligent controllers, many different scenarios need to be explored.
+All scenarios are made up of three main components: an agent, a goal and the environment.
+Different configurations of each component's variables allows us to create a vast variety of scenarios.
+These three components are chosen and then fed into a simulation process \todo{Simulation Process Diagram} where interactions between them will be played out and data will be collected.
+Data collection takes place on a low level and a high level during each simulation.
+
+Low level data is collected each time the agent takes action throughout the main loop of the simulation process.
+
+High level data is only collected once at the end state of the simulation process.
 
 
 
