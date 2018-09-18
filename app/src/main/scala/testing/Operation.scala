@@ -44,7 +44,7 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
     robot.setup
     // Have the robot explore until it completes its goal is inoperational
     // while(robot.operational && !goal.isComplete) {
-    for (i <- 0 until 1) {
+    for (i <- 0 until 15) {
       val state = robot.getState()
       val action = robot.chooseAction()
       val event = robot.performAction(environment, action)

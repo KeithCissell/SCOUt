@@ -308,12 +308,13 @@ object Decoder {
     val elementType = extractString("elementType", data).getOrElse("")
     val indicator = extractBoolean("indicator", data).getOrElse(false)
     val hazard = extractBoolean("hazard", data).getOrElse(false)
+    val percentKnownInRange = extractDouble("percentKnownInRange", data).getOrElse(0.0)
     val value = extractDouble("value", data)
     val northQuadrant = extractQuadrantState(cursor.downField("north"))
     val southQuadrant = extractQuadrantState(cursor.downField("south"))
     val westQuadrant = extractQuadrantState(cursor.downField("west"))
     val eastQuadrant = extractQuadrantState(cursor.downField("east"))
-    return new ElementState(elementType, indicator, hazard, value, northQuadrant, southQuadrant, westQuadrant, eastQuadrant)
+    return new ElementState(elementType, indicator, hazard, percentKnownInRange, value, northQuadrant, southQuadrant, westQuadrant, eastQuadrant)
   }
 
   def extractQuadrantState(data: ACursor): QuadrantState = {

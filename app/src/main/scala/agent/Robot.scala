@@ -19,6 +19,7 @@ class Robot(
   val sensors: List[Sensor] = Nil,
   val mapHeight: Int = 0,
   val mapWidth: Int = 0,
+  val mapScale: Double = 1,
   var xPosition: Int = 0,
   var yPosition: Int = 0
 ) {
@@ -77,11 +78,24 @@ class Robot(
       sensor.elementType,
       sensor.indicator,
       sensor.hazard,
+      getPctCellsKnownInRange(sensor.elementType, sensor.range),
       internalMap(xPosition)(yPosition).flatMap(_.get(sensor.elementType).flatMap(_.value)),
       getQuadrantState("north", sensor.elementType),
       getQuadrantState("south", sensor.elementType),
       getQuadrantState("west", sensor.elementType),
       getQuadrantState("east", sensor.elementType))
+  }
+
+  def getPctCellsKnownInRange(elementType: String, range: Double): Double = {
+    val searchRadius = Math.max(range / mapScale, 1.0)
+    val cellBlockSize = Math.round(Math.abs(searchRadius)).toInt
+    val cellsInRange = (for {
+      x <- (xPosition - cellBlockSize) to (xPosition + cellBlockSize)
+      y <- (yPosition - cellBlockSize) to (yPosition + cellBlockSize)
+      if inMap(x, y)
+      if dist(x, y, xPosition, yPosition) <= searchRadius
+    } yield internalMap(x)(y).flatMap(_.get(elementType).flatMap(_.value))).toList
+    return cellsInRange.flatten.length / cellsInRange.length
   }
 
   def getQuadrantState(quadrant: String, elementType: String): QuadrantState = {

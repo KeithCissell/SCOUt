@@ -30,7 +30,7 @@ object SimpleTest {
     val simpleTest = new Test(
       testEnvironments = Map(),
       testTemplates = Map(
-        "10by10NoMods" -> (10, 10)),
+        "10by10NoMods" -> (1, 1)),
       controllers = Map(
         "Random" -> new RandomController(),
         "SCOUt" -> new SCOUtController("stateActionTest", true)),

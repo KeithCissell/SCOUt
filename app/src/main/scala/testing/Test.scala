@@ -43,6 +43,7 @@ class Test(
             sensors = sensors,
             mapHeight = environment.height,
             mapWidth = environment.width,
+            mapScale = environment.scale,
             xPosition = startX,
             yPosition = startY)
           // OPERATION
@@ -57,7 +58,7 @@ class Test(
 
   // Generate Environments: environment -> iterations to run
   def generateEnvironments: Map[Environment,Int] = {
-    val environments: MutableMap[Environment,Int] = MutableMap()
+    var environments: MutableMap[Environment,Int] = MutableMap()
     // Load environment files
     for ((fName, iterations) <- testEnvironments) {
       val envString = readJsonFile(fName, environmentPath)
@@ -78,7 +79,7 @@ class Test(
         case Left(_) => // Load or parse failure
         case Right(templateJson) => {
           val template = extractEnvironmentTemplate(templateJson)
-          for (i <- 0 to buildIterations) {
+          for (i <- 0 until buildIterations) {
             val env = buildEnvironment(template)
             environments += (env -> testIterations)
           }

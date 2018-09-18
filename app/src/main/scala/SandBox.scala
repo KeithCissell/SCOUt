@@ -45,6 +45,7 @@ object SandBox {
         new WaterSensor(false)),
       mapHeight = height,
       mapWidth = width,
+      mapScale = scale,
       xPosition = randomInt(0, height - 1),
       yPosition = randomInt(0, width - 1))
 

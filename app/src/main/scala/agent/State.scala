@@ -35,6 +35,7 @@ class ElementState(
   val elementType: String,
   val indicator: Boolean,
   val hazard: Boolean,
+  val percentKnownInRange: Double,
   val value: Option[Double],
   val northQuadrant: QuadrantState,
   val southQuadrant: QuadrantState,
@@ -46,6 +47,7 @@ class ElementState(
     ("elementType", Json.fromString(elementType)),
     ("indicator", Json.fromBoolean(indicator)),
     ("hazard", Json.fromBoolean(hazard)),
+    ("percentKnownInRange", Json.fromDoubleOrNull(percentKnownInRange)),
     ("value", Json.fromDoubleOrNull(value.getOrElse(Double.NaN))),
     ("north", northQuadrant.toJson()),
     ("south", southQuadrant.toJson()),
@@ -59,12 +61,13 @@ class ElementState(
     case "east" => eastQuadrant
   }
   def roundOff(fps: Int): ElementState = {
+    val pkir = roundDoubleX(percentKnownInRange, fps)
     val v = roundDoubleX(value, fps)
     val nq = northQuadrant.roundOff(fps)
     val sq = southQuadrant.roundOff(fps)
     val wq = westQuadrant.roundOff(fps)
     val eq = eastQuadrant.roundOff(fps)
-    return new ElementState(elementType, indicator, hazard, v, nq, sq, wq, eq)
+    return new ElementState(elementType, indicator, hazard, pkir, v, nq, sq, wq, eq)
   }
 }
 
