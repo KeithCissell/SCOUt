@@ -54,14 +54,20 @@ object Decoder {
     val cursor: HCursor = data.hcursor
     cursor.downField(field).as[Double] match {
       case Left(_)  => None
-      case Right(d) => Some(d)
+      case Right(d) => d match {
+        case n if n.isNaN => None
+        case _ => Some(d)
+      }
     }
   }
 
   def extractDouble(field: String, data: ACursor): Option[Double] = {
     data.downField(field).as[Double] match {
       case Left(_)  => None
-      case Right(d) => Some(d)
+      case Right(d) => d match {
+        case n if n.isNaN => None
+        case _ => Some(d)
+      }
     }
   }
 

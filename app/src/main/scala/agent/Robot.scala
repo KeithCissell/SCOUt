@@ -67,8 +67,8 @@ class Robot(
   // AGENT STATE
   def getState(): AgentState = {
     new AgentState(
-      health / maxHealth,
-      energyLevel / maxEnergyLevel,
+      health,
+      energyLevel,
       // clock,
       getElementStates())
   }

@@ -67,7 +67,7 @@ class SCOUtController(
 
   // Variables
   val scanSimilarityThreshhold = 0.5
-  val movementSimilarityThreshhold = 0.0
+  val movementSimilarityThreshhold = 0.5
 
   // SIMILARITY
   // Find similar scan events and accumulate the strongest similarities
@@ -112,13 +112,13 @@ class SCOUtController(
     val simElementState = simState.getElementState(simElementType)
     val overallDiff = (elementState, simElementState) match {
       case (Some(es), Some(ses)) => {
-        val healthDiff = Math.abs(state.health - simState.health)
-        val energyDiff = Math.abs(state.energyLevel - simState.energyLevel)
-        val indicatorDiff = if (es.indicator == ses.indicator) 0.0 else 1.0
-        val hazardDiff = if (es.hazard == ses.hazard) 0.0 else 1.0
-        val percentKnownDiff = Math.abs(es.percentKnownInRange - ses.percentKnownInRange)
+        val healthDiff = Math.abs(state.health - simState.health) * healthWeight
+        val energyDiff = Math.abs(state.energyLevel - simState.energyLevel) * energyWeight
+        val indicatorDiff = (if (es.indicator == ses.indicator) 0.0 else 1.0) * indicatorWeight
+        val hazardDiff = (if (es.hazard == ses.hazard) 0.0 else 1.0) * hazardWeight
+        val percentKnownDiff = Math.abs(es.percentKnownInRange - ses.percentKnownInRange) * percentKnownWeight
         // println(s"${es.percentKnownInRange} - ${ses.percentKnownInRange}")
-        (healthDiff * healthWeight + energyDiff * energyWeight + indicatorDiff * indicatorWeight + hazardDiff * hazardWeight + percentKnownDiff * percentKnownWeight) / weightTotals
+        (healthDiff + energyDiff + indicatorDiff + hazardDiff + percentKnownDiff) / weightTotals
       }
       case _ => 1.0
     }
@@ -146,22 +146,22 @@ class SCOUtController(
     val sl = getCounterClockwiseOrientation(simOrientation)
     val sr = getClockwiseOrientation(simOrientation)
     // Calculate differences
-    val healthDiff = Math.abs(state.health - simState.health)
-    val energyDiff = Math.abs(state.energyLevel - simState.energyLevel)
-    val forwardDiff = calculateQuadrantDiff(state, f, simState, sf)
-    val backDiff = calculateQuadrantDiff(state, b, simState, sb)
-    // Consider relection of state
-    val leftDiff = calculateQuadrantDiff(state, l, simState, sl)
-    val rightDiff = calculateQuadrantDiff(state, r, simState, sr)
-    val leftDiffReflect = calculateQuadrantDiff(state, l, simState, getOppositeOrientation(sl))
-    val rightDiffReflect = calculateQuadrantDiff(state, r, simState, getOppositeOrientation(sr))
+    val healthDiff = Math.abs(state.health - simState.health) * healthWeight
+    val energyDiff = Math.abs(state.energyLevel - simState.energyLevel) * energyWeight
+    val forwardDiff = calculateQuadrantDiff(state, f, simState, sf) * forwardWeight
+    val backDiff = calculateQuadrantDiff(state, b, simState, sb) * backWeight
+    // Consider reflection of state
+    val leftDiff = calculateQuadrantDiff(state, l, simState, sl) * leftWeight
+    val rightDiff = calculateQuadrantDiff(state, r, simState, sr) * rightWeight
+    val leftDiffReflect = calculateQuadrantDiff(state, l, simState, sr) * leftWeight
+    val rightDiffReflect = calculateQuadrantDiff(state, r, simState, sl) * rightWeight
     // Calculate total direction differences
-    val weightedDirectionsDiff = if (leftDiff + rightDiff < leftDiffReflect + rightDiffReflect) {
-      forwardDiff * forwardWeight + backDiff * backWeight + leftDiff * leftWeight + rightDiff * rightWeight
+    val directionsDiff = if (leftDiff + rightDiff < leftDiffReflect + rightDiffReflect) {
+      forwardDiff + backDiff + leftDiff + rightDiff
     } else {
-      forwardDiff * forwardWeight + backDiff * backWeight + leftDiffReflect * leftWeight + rightDiffReflect * rightWeight
+      forwardDiff + backDiff + leftDiffReflect + rightDiffReflect
     }
-    val overallDiff = (healthDiff * healthWeight + energyDiff * energyWeight + weightedDirectionsDiff) / weightTotals
+    val overallDiff = (healthDiff + energyDiff + directionsDiff) / weightTotals
     return 1.0 - overallDiff
   }
 
@@ -172,7 +172,8 @@ class SCOUtController(
       case None => 1.0
       case Some(ses) => calculateElementStateDiff(es, quadrant, ses, simQuadrant)
     }
-    return esDiffs.foldLeft(0.0)(_ + _) / esDiffs.length
+    val overallDiff = if (esDiffs.length > 0) esDiffs.foldLeft(0.0)(_ + _) / esDiffs.length else 1.0
+    return overallDiff
   }
 
   // Element State Difference
@@ -190,24 +191,24 @@ class SCOUtController(
     val qs = es.getQuadrantState(quadrant)
     val sqs = ses.getQuadrantState(simQuadrant)
     // Calculate differences
-    val indicatorDiff = if (es.indicator == ses.indicator) 0.0 else 1.0
-    val hazardDiff = if (es.hazard == ses.hazard) 0.0 else 1.0
-    val percentKnownDiff = Math.abs(qs.percentKnown - sqs.percentKnown)
+    val indicatorDiff = (if (es.indicator == ses.indicator) 0.0 else 1.0) * indicatorWeight
+    val hazardDiff = (if (es.hazard == ses.hazard) 0.0 else 1.0) * hazardWeight
+    val percentKnownDiff = Math.abs(qs.percentKnown - sqs.percentKnown) * percentKnownWeight
     // Difference between Average vs. Current Value Differentials
-    val averageValueDiff = getDiffBetweenDifferentials(value, qs.averageValue, simValue, sqs.averageValue)
+    val averageValueDiff = getDiffBetweenDifferentials(value, qs.averageValue, simValue, sqs.averageValue) * averageValueWeight
     // Difference between Immediate vs. Current Value Differentials
-    val immediateValueDiff = getDiffBetweenDifferentials(value, qs.immediateValue, simValue, sqs.immediateValue)
+    val immediateValueDiff = getDiffBetweenDifferentials(value, qs.immediateValue, simValue, sqs.immediateValue) * immediateValueWeight
     // return overall difference
-    val overallDiff = (indicatorDiff * indicatorWeight + hazardDiff * hazardWeight + percentKnownDiff * percentKnownWeight + averageValueDiff * averageValueWeight + immediateValueDiff * immediateValueWeight) / weightTotals
+    val overallDiff = (indicatorDiff + hazardDiff + percentKnownDiff + averageValueDiff + immediateValueDiff) / weightTotals
     return overallDiff
   }
 
   def getDiffBetweenDifferentials(start1: Option[Double], end1: Option[Double], start2: Option[Double], end2: Option[Double]): Double = {
-    val differential1 = (start1, end1) match {
+    val differential1: Option[Double] = (start1, end1) match {
       case (Some(sv), Some(ev)) => Some(sv - ev)
       case _ => None
     }
-    val differential2 = (start2, end2) match {
+    val differential2: Option[Double] = (start2, end2) match {
       case (Some(sv), Some(ev)) => Some(sv - ev)
       case _ => None
     }
