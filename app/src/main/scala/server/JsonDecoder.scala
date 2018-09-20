@@ -1,7 +1,8 @@
 package jsonhandler
 
 import io.circe._
-import agent._
+import scoutagent._
+import scoutagent.State._
 import environment._
 import environment.cell._
 import environment.element._
@@ -293,14 +294,14 @@ object Decoder {
     val cursor: HCursor = data.hcursor
     val state = extractAgentState(cursor.downField("state"))
     val action = extractString("action", data).getOrElse("")
-    val shortTermScore = extractDouble("shortTermScore", data).getOrElse(-1.0)
-    val longTermScore = extractDouble("longTermScore", data).getOrElse(-1.0)
+    val shortTermScore = extractDouble("shortTermScore", data).getOrElse(Double.NaN)
+    val longTermScore = extractDouble("longTermScore", data).getOrElse(Double.NaN)
     return new StateActionPair(state, action, shortTermScore, longTermScore)
   }
 
   def extractAgentState(data: ACursor): AgentState = {
-    val health = extractDouble("health", data).getOrElse(-1.0)
-    val energyLevel = extractDouble("energyLevel", data).getOrElse(-1.0)
+    val health = extractDouble("health", data).getOrElse(Double.NaN)
+    val energyLevel = extractDouble("energyLevel", data).getOrElse(Double.NaN)
     val elementStatesJson = data.downField("elementStates").as[List[Json]]
     val elementStates = elementStatesJson match {
       case Left(_) => Nil
@@ -314,20 +315,19 @@ object Decoder {
     val elementType = extractString("elementType", data).getOrElse("")
     val indicator = extractBoolean("indicator", data).getOrElse(false)
     val hazard = extractBoolean("hazard", data).getOrElse(false)
-    val percentKnownInRange = extractDouble("percentKnownInRange", data).getOrElse(0.0)
-    val value = extractDouble("value", data)
+    val percentKnownInRange = extractDouble("percentKnownInRange", data).getOrElse(Double.NaN)
     val northQuadrant = extractQuadrantState(cursor.downField("north"))
     val southQuadrant = extractQuadrantState(cursor.downField("south"))
     val westQuadrant = extractQuadrantState(cursor.downField("west"))
     val eastQuadrant = extractQuadrantState(cursor.downField("east"))
-    return new ElementState(elementType, indicator, hazard, percentKnownInRange, value, northQuadrant, southQuadrant, westQuadrant, eastQuadrant)
+    return new ElementState(elementType, indicator, hazard, percentKnownInRange, northQuadrant, southQuadrant, westQuadrant, eastQuadrant)
   }
 
   def extractQuadrantState(data: ACursor): QuadrantState = {
-    val percentKnown = extractDouble("percentKnown", data).getOrElse(0.0)
-    val averageValue = extractDouble("averageValue", data)
-    val immediateValue = extractDouble("immediateValue", data)
-    return new QuadrantState(percentKnown, averageValue, immediateValue)
+    val percentKnown = extractDouble("percentKnown", data).getOrElse(Double.NaN)
+    val averageValueDifferential = extractDouble("averageValueDifferential", data)
+    val immediateValueDifferential = extractDouble("immediateValueDifferential", data)
+    return new QuadrantState(percentKnown, averageValueDifferential, immediateValueDifferential)
   }
 
 }

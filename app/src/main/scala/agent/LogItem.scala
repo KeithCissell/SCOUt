@@ -1,9 +1,10 @@
-package agent
+package scoutagent
 
 import io.circe._
 import io.circe.syntax._
 
-import agent.Event._
+import scoutagent.Event._
+import scoutagent.State._
 import scoututil.Util._
 
 

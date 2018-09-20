@@ -3,8 +3,9 @@ package sandbox
 import io.circe._
 import io.circe.syntax._
 
-import agent._
-import agent.controller._
+import scoutagent._
+import scoutagent.State._
+import scoutagent.controller._
 import environment._
 import environment.anomaly._
 import environment.element._
@@ -35,9 +36,9 @@ object SandBox {
     val testEnv = buildEnvironment("Test Environment", height, width, scale, elementSeedList, terrainModificationList, anomalyList)
 
     // AGENT
-    val testBot = new Robot(
+    val testBot = new Agent(
       name = "TestBot",
-      controller = new SCOUtController("stateActionTest", false),
+      controller = new SCOUtController("stateActionTest", true),
       sensors = List(
         new ElevationSensor(false),
         new DecibelSensor(true),

@@ -1,14 +1,15 @@
 package operation
 
 import operation._
-import agent._
-import agent.Event._
+import scoutagent._
+import scoutagent.Event._
+import scoutagent.State._
 import environment._
 import scoututil.Util._
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
-class Operation(robot: Robot, environment: Environment, goal: Goal) {
+class Operation(agent: Agent, environment: Environment, goal: Goal) {
 
   //------------------------ VARIABLES --------------------------------
 
@@ -17,8 +18,8 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
   var eventLog: AB[LogItem] = AB()
 
   // IMPORTANT STUFF....
-  val maxHealth: Double = robot.health
-  val maxEnergyLevel: Double = robot.energyLevel
+  val maxHealth: Double = agent.health
+  val maxEnergyLevel: Double = agent.energyLevel
   val timeLimit: Option[Double] = goal.timeLimit
 
   // SHORT-TERM SCORE WEIGHTS
@@ -40,24 +41,24 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
 
   //------------------------------ RUN -----------------------------------------
   def run: Unit = {
-    // Setup the robot
-    robot.setup
-    // Have the robot explore until it completes its goal is inoperational
-    // while(robot.operational && !goal.isComplete) {
-    for (i <- 0 until 15) {
-      val state = robot.getState()
-      val action = robot.chooseAction()
-      val event = robot.performAction(environment, action)
+    // Setup the agent
+    agent.setup
+    // Have the agent explore until it completes its goal is inoperational
+    while(agent.operational && !goal.isComplete) {
+    // for (i <- 0 until 15) {
+      val state = agent.getState()
+      val action = agent.chooseAction()
+      val event = agent.performAction(environment, action)
       // Calculate Short-Term Score and Log
       val shortTermScore = scoreEventShortTerm(event)
       eventLogShort += new LogItemShort(state, action, event, shortTermScore)
       // Update Goal
-      goal.update(environment, robot)
+      goal.update(environment, agent)
     }
     // Propagate Long-Term Score
     scoreEventsLongTerm()
-    // Shut down robot
-    robot.shutDown(getStateActionPairs())
+    // Shut down agent
+    agent.shutDown(getStateActionPairs())
   }
 
   //------------------------ SHORT-TERM SCORE --------------------------------
@@ -96,11 +97,11 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
   //------------------------ LONG-TERM SCORE ---------------------------------
   def scoreEventsLongTerm(): Unit = {
     val goalReward = (goal.percentComplete / 100.0) * goalRewardWeight
-    val longTermHealthReward = (robot.health / maxHealth) * longTermHealthRewardWeight
-    val longTermEnergyReward = (robot.energyLevel / maxEnergyLevel) * longTermEnergyRewardWeight
+    val longTermHealthReward = (agent.health / maxHealth) * longTermHealthRewardWeight
+    val longTermEnergyReward = (agent.energyLevel / maxEnergyLevel) * longTermEnergyRewardWeight
     val longTermTimeReward = timeLimit match {
       case None => 0.0
-      case Some(tl) => Math.max(((tl - robot.clock) / tl), 0.0) * longTermTimeRewardWeight
+      case Some(tl) => Math.max(((tl - agent.clock) / tl), 0.0) * longTermTimeRewardWeight
     }
     val longTermScore = (goalReward + longTermHealthReward + longTermEnergyReward + longTermTimeReward) / longTermWeightsTotal
     for (i <- 0 until eventLogShort.size) {
@@ -119,7 +120,7 @@ class Operation(robot: Robot, environment: Environment, goal: Goal) {
       println(s"       Short-Term Score: ${item.shortTermScore}")
       println(s"       Long-Term Score: ${item.longTermScore}")
     }
-    println(robot.statusString())
+    println(agent.statusString())
     printOutcome
   }
 

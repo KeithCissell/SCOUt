@@ -1,6 +1,6 @@
 package operation
 
-import agent._
+import scoutagent._
 import environment._
 import environment.cell._
 import scoututil.Util._
@@ -15,7 +15,7 @@ trait Goal {
   val timeLimit: Option[Double] = None // in milliseconds
   def isComplete: Boolean = percentComplete >= 100.0
   def percentComplete: Double
-  def update(environment: Environment, robot: Robot): Unit
+  def update(environment: Environment, agent: Agent): Unit
 }
 
 // Find different anomalies in an environment
@@ -40,8 +40,8 @@ class FindAnomalies(anomaliesToFind: Map[String,Int], timeLimit: Option[Double])
     return (numFound.toDouble / numToFind.toDouble) * 100.0
   }
 
-  def update(environment: Environment, robot: Robot): Unit = {
-    val anomalyDetections = robot.detectAnomalies(environment)
+  def update(environment: Environment, agent: Agent): Unit = {
+    val anomalyDetections = agent.detectAnomalies(environment)
     for (detection <- anomalyDetections) anomaliesFound += ((detection.anomalyType, detection.xFound, detection.yFound))
   }
 
@@ -53,7 +53,7 @@ class MapElementsTemplate(elementsToMap: List[String], timeLimit: Option[Double]
 }
 
 class MapElements(mapHeight: Int, mapWidth: Int, elementsToMap: List[String], timeLimit: Option[Double]) extends Goal {
-  // Copy of the Robot's internal map
+  // Copy of the Agent's internal map
   var internalMap: Grid[Cell] = emptyCellGrid(mapHeight, mapWidth)
 
   def percentComplete: Double = {
@@ -78,8 +78,8 @@ class MapElements(mapHeight: Int, mapWidth: Int, elementsToMap: List[String], ti
     return (dataKnown / dataAvail) * 100.0
   }
 
-  def update(environment: Environment, robot: Robot): Unit = {
-    internalMap = robot.internalMap
+  def update(environment: Environment, agent: Agent): Unit = {
+    internalMap = agent.internalMap
   }
 
 }

@@ -1,10 +1,11 @@
-package agent.controller
+package scoutagent.controller
 
 import io.circe._
 import io.circe.parser._
 
-import agent._
-import agent.Event._
+import scoutagent._
+import scoutagent.Event._
+import scoutagent.State._
 import filemanager.FileManager._
 import jsonhandler.Decoder._
 import scoututil.Util._
@@ -27,7 +28,7 @@ class SCOUtController(
 
   def selectAction(actions: List[String], state: AgentState): String = {
     // Action Confidence (action -> confidence of successful outcome)
-    val actionConfidence: Map[String,SimilarityAverage] = actions.map(a => a -> calculateSimilarity(state, a)).toMap
+    val actionStateSimilarities: Map[String,SimilarityAverage] = actions.map(a => a -> calculateSimilarity(state, a)).toMap
 
     actions(randomInt(0, actions.length - 1))
   }
@@ -182,12 +183,10 @@ class SCOUtController(
     val indicatorWeight = 1.0
     val hazardWeight = 1.0
     val percentKnownWeight = 1.0
-    val averageValueWeight = 1.0
-    val immediateValueWeight = 1.0
-    val weightTotals = indicatorWeight + hazardWeight + percentKnownWeight + averageValueWeight + immediateValueWeight
+    val averageValueDifferentialWeight = 1.0
+    val immediateValueDifferentialWeight = 1.0
+    val weightTotals = indicatorWeight + hazardWeight + percentKnownWeight + averageValueDifferentialWeight + immediateValueDifferentialWeight
     // Important values
-    val value = es.value
-    val simValue = ses.value
     val qs = es.getQuadrantState(quadrant)
     val sqs = ses.getQuadrantState(simQuadrant)
     // Calculate differences
@@ -195,29 +194,20 @@ class SCOUtController(
     val hazardDiff = (if (es.hazard == ses.hazard) 0.0 else 1.0) * hazardWeight
     val percentKnownDiff = Math.abs(qs.percentKnown - sqs.percentKnown) * percentKnownWeight
     // Difference between Average vs. Current Value Differentials
-    val averageValueDiff = getDiffBetweenDifferentials(value, qs.averageValue, simValue, sqs.averageValue) * averageValueWeight
+    val averageValueDifferentialDiff = (qs.averageValueDifferential, sqs.averageValueDifferential) match {
+      case (Some(avd), Some(savd)) => Math.abs(avd - savd) * averageValueDifferentialWeight
+      case _ => 1.0
+    }
     // Difference between Immediate vs. Current Value Differentials
-    val immediateValueDiff = getDiffBetweenDifferentials(value, qs.immediateValue, simValue, sqs.immediateValue) * immediateValueWeight
+    val immediateValueDifferentialDiff = (qs.immediateValueDifferential, sqs.immediateValueDifferential) match {
+      case (Some(ivd), Some(sivd)) => Math.abs(ivd - sivd) * immediateValueDifferentialWeight
+      case _ => 1.0
+    }
     // return overall difference
-    val overallDiff = (indicatorDiff + hazardDiff + percentKnownDiff + averageValueDiff + immediateValueDiff) / weightTotals
+    val overallDiff = (indicatorDiff + hazardDiff + percentKnownDiff + averageValueDifferentialDiff + immediateValueDifferentialDiff) / weightTotals
     return overallDiff
   }
 
-  def getDiffBetweenDifferentials(start1: Option[Double], end1: Option[Double], start2: Option[Double], end2: Option[Double]): Double = {
-    val differential1: Option[Double] = (start1, end1) match {
-      case (Some(sv), Some(ev)) => Some(sv - ev)
-      case _ => None
-    }
-    val differential2: Option[Double] = (start2, end2) match {
-      case (Some(sv), Some(ev)) => Some(sv - ev)
-      case _ => None
-    }
-    val diff = (differential1, differential2) match {
-      case (Some(d1), Some(d2)) => Math.abs(d1 - d2)
-      case _ => 1.0
-    }
-    return diff
-  }
 
   // Set of movement actions
   def isMovementAction(action: String): Boolean = Set("north","south","west","east").contains(action)

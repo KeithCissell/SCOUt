@@ -4,8 +4,9 @@ import io.circe._
 import io.circe.parser._
 import io.circe.syntax._
 
-import agent._
-import agent.controller._
+import scoutagent._
+import scoutagent.State._
+import scoutagent.controller._
 import environment._
 import environment.anomaly._
 import environment.element._
@@ -35,9 +36,9 @@ class Test(
       for (i <- 0 until iterations) {
         val startX = randomInt(0, environment.height - 1)
         val startY = randomInt(0, environment.width - 1)
-        // Setup robot and run operation
+        // Setup agent and run operation
         for ((name, controller) <- controllers) {
-          val robot = new Robot(
+          val agent = new Agent(
             name = name,
             controller = controller,
             sensors = sensors,
@@ -48,7 +49,7 @@ class Test(
             yPosition = startY)
           // OPERATION
           val goal = goalTemplate.generateGoal(environment)
-          val operation = new Operation(robot, environment, goal)
+          val operation = new Operation(agent, environment, goal)
           operation.run
           // operation.printOutcome
         }

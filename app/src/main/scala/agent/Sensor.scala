@@ -1,4 +1,4 @@
-package agent
+package scoutagent
 
 import environment._
 import environment.element._

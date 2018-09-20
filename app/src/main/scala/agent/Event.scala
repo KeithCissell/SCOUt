@@ -1,4 +1,4 @@
-package agent
+package scoutagent
 
 import environment.cell._
 import scoututil.Util._

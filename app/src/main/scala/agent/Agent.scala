@@ -1,7 +1,8 @@
-package agent
+package scoutagent
 
-import agent._
-import agent.controller._
+import scoutagent._
+import scoutagent.State._
+import scoutagent.controller._
 import environment._
 import environment.cell._
 import environment.element._
@@ -13,7 +14,7 @@ import scala.collection.mutable.{Map => MutableMap}
 import scala.collection.mutable.{Set => MutableSet}
 
 
-class Robot(
+class Agent(
   val name: String,
   val controller: Controller,
   val sensors: List[Sensor] = Nil,
@@ -23,7 +24,7 @@ class Robot(
   var xPosition: Int = 0,
   var yPosition: Int = 0
 ) {
-  // Robot Satus Variables
+  // Agent Satus Variables
   var internalMap: Grid[Cell] = emptyCellGrid(mapHeight, mapWidth)
   var health: Double = 100.0
   var energyLevel: Double = 100.0
@@ -65,106 +66,7 @@ class Robot(
   def operational = (health > 0.0 && energyLevel > 0.0)
 
   // AGENT STATE
-  def getState(): AgentState = {
-    new AgentState(
-      health,
-      energyLevel,
-      // clock,
-      getElementStates())
-  }
-
-  def getElementStates(): List[ElementState] = {
-    for (sensor <- sensors) yield new ElementState(
-      sensor.elementType,
-      sensor.indicator,
-      sensor.hazard,
-      getPctCellsKnownInRange(sensor.elementType, sensor.range),
-      internalMap(xPosition)(yPosition).flatMap(_.get(sensor.elementType).flatMap(_.value)),
-      getQuadrantState("north", sensor.elementType),
-      getQuadrantState("south", sensor.elementType),
-      getQuadrantState("west", sensor.elementType),
-      getQuadrantState("east", sensor.elementType))
-  }
-
-  def getPctCellsKnownInRange(elementType: String, range: Double): Double = {
-    val searchRadius = Math.max(range / mapScale, 1.0)
-    val cellBlockSize = Math.round(Math.abs(searchRadius)).toInt
-    val cellsInRange = (for {
-      x <- (xPosition - cellBlockSize) to (xPosition + cellBlockSize)
-      y <- (yPosition - cellBlockSize) to (yPosition + cellBlockSize)
-      if inMap(x, y)
-      if dist(x, y, xPosition, yPosition) <= searchRadius
-    } yield internalMap(x)(y).flatMap(_.get(elementType).flatMap(_.value))).toList
-    return cellsInRange.flatten.length / cellsInRange.length
-  }
-
-  def getQuadrantState(quadrant: String, elementType: String): QuadrantState = {
-    var cells: AB[Option[Cell]] = AB()
-    var xImmediate = xPosition
-    var yImmediate = yPosition
-    quadrant match {
-      case "north" => {
-        cells = getNorthQuadrantCells()
-        xImmediate += 1 }
-      case "south" => {
-        cells = getSouthQuadrantCells()
-        xImmediate -= 1 }
-      case "west" => {
-        cells = getWestQuadrantCells()
-        yImmediate += 1 }
-      case "east" => {
-        cells = getEastQuadrantCells()
-        yImmediate -= 1 }
-    }
-    val elements: List[Element] = cells.flatMap(_.get.get(elementType)).toList
-    val values: List[Double] = elements.map(_.value).flatten
-    val pctKnown = if (cells.length > 0) values.length.toDouble / cells.length.toDouble else 1.0
-    val avgVal = if (values.length > 0) Some(values.foldLeft(0.0)(_ + _) / values.length) else None
-    val immediateVal = if (inMap(xImmediate, yImmediate)) internalMap(xImmediate)(yImmediate).flatMap(_.get(elementType).flatMap(_.value)) else None
-    return new QuadrantState(pctKnown, avgVal, immediateVal)
-  }
-
-  def inMap(x: Int, y: Int): Boolean = (x >= 0 && x < mapHeight && y >= 0 && y < mapWidth)
-
-  def getNorthQuadrantCells(): AB[Option[Cell]] = {
-    var cells: AB[Option[Cell]] = AB()
-    for (x <- xPosition + 1 until mapWidth) {
-      for (y <- (yPosition - (x - xPosition)) to (yPosition + (x - xPosition))) {
-        if (inMap(x,y)) cells += internalMap(x)(y)
-      }
-    }
-    return cells
-  }
-
-  def getSouthQuadrantCells(): AB[Option[Cell]] = {
-    var cells: AB[Option[Cell]] = AB()
-    for (x <- 0 until xPosition) {
-      for (y <- (yPosition - (xPosition - x)) to (yPosition + (xPosition - x))) {
-        if (inMap(x,y)) cells += internalMap(x)(y)
-      }
-    }
-    return cells
-  }
-
-  def getWestQuadrantCells(): AB[Option[Cell]] = {
-    var cells: AB[Option[Cell]] = AB()
-    for (y <- 0 until yPosition) {
-      for (x <- (xPosition - (yPosition - y)) to (xPosition + (yPosition - y))) {
-        if (inMap(x,y)) cells += internalMap(x)(y)
-      }
-    }
-    return cells
-  }
-
-  def getEastQuadrantCells(): AB[Option[Cell]] = {
-    var cells: AB[Option[Cell]] = AB()
-    for (y <- yPosition + 1 until mapHeight) {
-      for (x <- (xPosition - (y - yPosition)) to (xPosition + (y - yPosition))) {
-        if (inMap(x,y)) cells += internalMap(x)(y)
-      }
-    }
-    return cells
-  }
+  def getState(): AgentState = generateAgentState(this)
 
   def statusString(): String = {
     s"""
@@ -225,7 +127,7 @@ class Robot(
         energyLevel = Math.max(energyLevel - energyUse, 0.0)
         clock += timeElapsed
         // Return Event
-        if (health <= 0.0) return new Event.HealthDepleted(s"Health droped below threshold. Robot inoperational.", clock, health, energyLevel, xPosition, yPosition)
+        if (health <= 0.0) return new Event.HealthDepleted(s"Health droped below threshold. Agent inoperational.", clock, health, energyLevel, xPosition, yPosition)
         else if (energyLevel <= 0.0) return new Event.EnergyDepleted(s"Energy depleted atempting to scan for $elementType", clock, health, energyLevel, xPosition, yPosition)
         else return new Event.ScanSuccessful(s"Scanned for $elementType", clock, health, energyLevel, xPosition, yPosition, cellsScanned, newDiscoveries)
       }
@@ -280,12 +182,12 @@ class Robot(
     // Apply hazard damage
     val hazardDamage = calculateHazardDamage(env, xPosition, yPosition, timeElapsed)
     val damage = hazardDamage + movementDamage
-    // Adjust robot status levels
+    // Adjust agent status levels
     health = Math.max(health - damage, 0.0)
     energyLevel = Math.max(energyLevel - energyUse, 0.0)
     clock += timeElapsed
     // Return Event
-    if (health <= 0.0) return new Event.HealthDepleted(s"Health droped below threshold. Robot inoperational.", clock, health, energyLevel, xPosition, yPosition)
+    if (health <= 0.0) return new Event.HealthDepleted(s"Health droped below threshold. Agent inoperational.", clock, health, energyLevel, xPosition, yPosition)
     else if (energyLevel <= 0.0) return new Event.EnergyDepleted(s"Energy depleted atempting to move to ($x, $y)", clock, health, energyLevel, xPosition, yPosition)
     else if (slope > movementSlopeUpperThreshHold) return new Event.MovementUnsuccessful(s"Cannot climb slope of $slope to move to ($x, $y).", clock, health, energyLevel, xPosition, yPosition)
     else {

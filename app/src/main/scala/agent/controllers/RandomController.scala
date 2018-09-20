@@ -1,7 +1,8 @@
-package agent.controller
+package scoutagent.controller
 
-import agent._
-import agent.Event._
+import scoutagent._
+import scoutagent.Event._
+import scoutagent.State._
 import scoututil.Util._
 
 import scala.collection.mutable.{ArrayBuffer => AB}

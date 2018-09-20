@@ -1,6 +1,7 @@
-package agent.controller
+package scoutagent.controller
 
-import agent._
+import scoutagent._
+import scoutagent.State._
 
 trait Controller {
 

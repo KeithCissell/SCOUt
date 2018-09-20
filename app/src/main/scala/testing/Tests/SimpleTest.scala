@@ -4,8 +4,9 @@ import io.circe._
 import io.circe.parser._
 import io.circe.syntax._
 
-import agent._
-import agent.controller._
+import scoutagent._
+import scoutagent.State._
+import scoutagent.controller._
 import environment._
 import environment.anomaly._
 import environment.element._

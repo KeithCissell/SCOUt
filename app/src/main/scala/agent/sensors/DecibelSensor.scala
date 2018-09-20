@@ -1,6 +1,6 @@
-package agent
+package scoutagent
 
-import agent._
+import scoutagent._
 
 
 class DecibelSensor(
