@@ -15,6 +15,8 @@ import scala.collection.mutable.{Map => MutableMap}
 object State {
   // ----------------------------CLASSes----------------------------------------
   class AgentState(
+    val xPosition: Int,
+    val yPosition: Int,
     val health: Double,
     val energyLevel: Double,
     // val clock: Double,
@@ -23,11 +25,21 @@ object State {
     def elementTypes: List[String] = elementStates.map(_.elementType).toList
     def totalPercentKnown: Double = elementStates.map(_.percentKnown).foldLeft(0.0)(_ + _)
     def toJson(): Json = Json.obj(
+      ("xPosition", Json.fromInt(xPosition)),
+      ("yPosition", Json.fromInt(yPosition)),
       ("health", Json.fromDoubleOrNull(health)),
       ("energyLevel", Json.fromDoubleOrNull(energyLevel)),
       // ("clock", Json.fromDoubleOrNull(clock)),
       ("elementStates", Json.fromValues(elementStates.map(_.toJson())))
     )
+    def toJsonIndexed(): Json = Json.fromValues(List(
+      Json.fromInt(xPosition),
+      Json.fromInt(yPosition),
+      Json.fromDoubleOrNull(health),
+      Json.fromDoubleOrNull(energyLevel),
+      // Json.fromDoubleOrNull(clock)),
+      Json.fromValues(elementStates.map(_.toJsonIndexed()))
+    ))
     def getElementState(elementType: String): Option[ElementState] = {
       for (es <- elementStates) if (es.elementType == elementType) return Some(es)
       return None
@@ -36,7 +48,7 @@ object State {
       val h = roundDoubleX(health, fps)
       val el = roundDoubleX(energyLevel, fps)
       val es = for (e <- elementStates) yield e.roundOff(fps)
-      return new AgentState(h, el, es)
+      return new AgentState(xPosition, yPosition, h, el, es)
     }
   }
 
@@ -51,6 +63,11 @@ object State {
     val eastQuadrant: QuadrantState
   ) {
     def percentKnown: Double = (northQuadrant.percentKnown + southQuadrant.percentKnown + westQuadrant.percentKnown + eastQuadrant.percentKnown) / 4
+    def immediateValuesKnown: Int = {
+      val immVals: List[Option[Double]] = List(northQuadrant.immediateValueDifferential, southQuadrant.immediateValueDifferential, westQuadrant.immediateValueDifferential, eastQuadrant.immediateValueDifferential)
+      val knownImmVals: List[Double] = immVals.flatten
+      return knownImmVals.length
+    }
     def toJson(): Json = Json.obj(
       ("elementType", Json.fromString(elementType)),
       ("indicator", Json.fromBoolean(indicator)),
@@ -61,6 +78,16 @@ object State {
       ("west", westQuadrant.toJson()),
       ("east", eastQuadrant.toJson())
     )
+    def toJsonIndexed(): Json = Json.fromValues(List(
+      Json.fromString(elementType),
+      Json.fromBoolean(indicator),
+      Json.fromBoolean(hazard),
+      Json.fromDoubleOrNull(percentKnownInRange),
+      northQuadrant.toJsonIndexed(),
+      southQuadrant.toJsonIndexed(),
+      westQuadrant.toJsonIndexed(),
+      eastQuadrant.toJsonIndexed()
+    ))
     def getQuadrantState(q: String): QuadrantState = q match {
       case "north" => northQuadrant
       case "south" => southQuadrant
@@ -87,6 +114,11 @@ object State {
       ("averageValueDifferential", Json.fromDoubleOrNull(averageValueDifferential.getOrElse(Double.NaN))),
       ("immediateValueDifferential", Json.fromDoubleOrNull(immediateValueDifferential.getOrElse(Double.NaN)))
     )
+    def toJsonIndexed(): Json = Json.fromValues(List(
+      Json.fromDoubleOrNull(percentKnown),
+      Json.fromDoubleOrNull(averageValueDifferential.getOrElse(Double.NaN)),
+      Json.fromDoubleOrNull(immediateValueDifferential.getOrElse(Double.NaN))
+    ))
     def roundOff(fps: Int): QuadrantState = {
       val pk = roundDoubleX(percentKnown, fps)
       val avd = roundDoubleX(averageValueDifferential, fps)
@@ -141,7 +173,7 @@ object State {
         val normalizedEQ = new QuadrantState(es.eastQuadrant.percentKnown, avdsGaussianData.normalize(es.eastQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.eastQuadrant.immediateValueDifferential))
         new ElementState(es.elementType, es.indicator, es.hazard, es.percentKnownInRange, normalizedNQ, normalizedSQ, normalizedWQ, normalizedEQ)
       }
-      val normalizedState = new AgentState(normalizedHealth, normalizedEnergy, normalizedElementStates)
+      val normalizedState = new AgentState(sap.state.xPosition, sap.state.yPosition, normalizedHealth, normalizedEnergy, normalizedElementStates)
       new StateActionPair(normalizedState, sap.action, sap.shortTermScore, sap.longTermScore)
     }
     return normalizedStateActionPairs
@@ -164,6 +196,8 @@ object State {
   // ----------------------------GENORATOR--------------------------------------
   def generateAgentState(agent: Agent): AgentState = {
     new AgentState(
+      agent.xPosition,
+      agent.yPosition,
       agent.health,
       agent.energyLevel,
       // agent.clock,

@@ -15,20 +15,35 @@ object FileManager {
     new File(filePath).exists
   }
 
-  def saveJsonFile(fileName: String, path: String, jsonData: String): Unit = {
-    val filePath = (path + fileName + ".json").replace(' ', '_')
+  def saveFile(fileName: String, path: String, extension: String, data: String): Unit = {
+    val filePath = (path + fileName + s".$extension").replace(' ', '_')
     val writer = new PrintWriter(new File(filePath))
-      writer.write(jsonData)
+      writer.write(data)
       writer.close()
   }
 
+  def saveFile(fileName: String, path: String, extension: String, data: Json): Unit = {
+    val filePath = (path + fileName + s".$extension").replace(' ', '_')
+    val writer = new PrintWriter(new File(filePath))
+      writer.write(data.toString)
+      writer.close()
+  }
+
+  def saveJsonFile(fileName: String, path: String, jsonData: String): Unit = {
+    saveFile(fileName, path, "json", jsonData)
+  }
+
   def saveJsonFile(fileName: String, path: String, jsonData: Json): Unit = {
-    saveJsonFile(fileName, path, jsonData.toString)
+    saveFile(fileName, path, "json", jsonData.toString)
+  }
+
+  def readFile(fileName: String, path: String, extension: String): String = {
+    val filePath = path + fileName + s".$extension"
+    return Source.fromFile(filePath).mkString
   }
 
   def readJsonFile(fileName: String, path: String): String = {
-    val filePath = path + fileName + ".json"
-    return Source.fromFile(filePath).mkString
+    readFile(fileName, path, "json")
   }
 
   def getEnvironmentFileNames(): List[String] = {

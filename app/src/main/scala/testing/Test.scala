@@ -29,11 +29,18 @@ class Test(
   val sensors: List[Sensor],
   val goalTemplate: GoalTemplate
 ) {
+  // Test Metrics to gather
+  val testMetrics: Map[String,TestMetric] = for ((name,controller) <- controllers) yield name -> new TestMetric(name, AB())
+
   def run: Unit = {
     // Setup environments
     val environments = generateEnvironments
+    var runNumber = 0
     for ((environment, iterations) <- environments) {
       for (i <- 0 until iterations) {
+        runNumber += 1
+        println()
+        println(s"Running Test $runNumber")
         val startX = randomInt(0, environment.height - 1)
         val startY = randomInt(0, environment.width - 1)
         // Setup agent and run operation
@@ -50,11 +57,17 @@ class Test(
           // OPERATION
           val goal = goalTemplate.generateGoal(environment)
           val operation = new Operation(agent, environment, goal)
+          // println(s"Running ${agent.name}")
           operation.run
-          // operation.printOutcome
+          testMetrics(name).addRun(operation.runData)
+          println(s"Stat Position ($startX, $startY)")
+          operation.printOutcome
+          println(s"End Position (${operation.eventLog.last.state.xPosition}, ${operation.eventLog.last.state.yPosition})")
+          println()
         }
       }
     }
+    for ((name,data) <- testMetrics) data.printRunResults
   }
 
   // Generate Environments: environment -> iterations to run
@@ -90,4 +103,20 @@ class Test(
     return environments.toMap
   }
 
+}
+
+class TestMetric(controllerName: String, runs: AB[RunData]) {
+  def addRun(runData: RunData) = runs += runData
+  def printRunResults = {
+    println()
+    println(s"Controller: $controllerName")
+    println(s"Runs:       ${runs.size}")
+    println(s"Successes:  ${runs.filter(_.successful == true).size}")
+    println(s"Avg Success ${runs.map(_.goalCompletion).foldLeft(0.0)(_ + _) / runs.size}")
+    println(s"Avg Steps:  ${runs.map(_.steps).foldLeft(0)(_ + _) / runs.size}")
+  }
+}
+
+class RunData(val goalCompletion: Double, val steps: Int) {
+  def successful: Boolean = goalCompletion >= 100.0
 }

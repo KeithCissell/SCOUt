@@ -83,6 +83,14 @@ class StateActionPair(
     ("longTermScore", Json.fromDoubleOrNull(longTermScore))
   )
 
+  def toJsonIndexed(): Json = Json.fromValues(List(
+    state.toJsonIndexed(),
+    Json.fromString(action),
+    Json.fromDoubleOrNull(shortTermScore),
+    Json.fromDoubleOrNull(longTermScore)
+  ))
+
+
   def roundOff(fps: Int): StateActionPair = {
     val sts = roundDoubleX(shortTermScore, fps)
     val lts = roundDoubleX(longTermScore, fps)

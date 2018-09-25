@@ -300,6 +300,8 @@ object Decoder {
   }
 
   def extractAgentState(data: ACursor): AgentState = {
+    val xPosition = extractInt("xPosition", data).getOrElse(0)
+    val yPosition = extractInt("yPosition", data).getOrElse(0)
     val health = extractDouble("health", data).getOrElse(Double.NaN)
     val energyLevel = extractDouble("energyLevel", data).getOrElse(Double.NaN)
     val elementStatesJson = data.downField("elementStates").as[List[Json]]
@@ -307,7 +309,7 @@ object Decoder {
       case Left(_) => Nil
       case Right(eStates) => (for (state <- eStates) yield extractElementState(state))
     }
-    return new AgentState(health, energyLevel, elementStates)
+    return new AgentState(xPosition, yPosition, health, energyLevel, elementStates)
   }
 
   def extractElementState(data: Json): ElementState = {
@@ -328,6 +330,92 @@ object Decoder {
     val averageValueDifferential = extractDouble("averageValueDifferential", data)
     val immediateValueDifferential = extractDouble("immediateValueDifferential", data)
     return new QuadrantState(percentKnown, averageValueDifferential, immediateValueDifferential)
+  }
+
+  // For indexed memory
+  // []
+  // [STATE, action, sts, lts]
+  // [x, y, health, energyLevel, ELEMENTSTATES]
+  // [elementType, indicator, hazard, percentKnownInRange, northQuadrant, southQuadrant, westQuadrant, eastQuadrant]
+  // [percentKnown, averageValueDifferential, immediateValueDifferential]
+  def extractStateActionMemoryIndexed(data: Json): AB[StateActionPair] = {
+    val stateActionPairs: AB[StateActionPair] = AB()
+    val stateActionPairsJson = data.as[List[Json]]
+    stateActionPairsJson match {
+      case Left(_) => // Extraction failure
+      case Right(saps) => for (sap <- saps) extractStateActionPairIndexed(sap) match {
+        case None => // Bad extraction
+        case Some(s) => stateActionPairs += s
+      }
+    }
+    return stateActionPairs
+  }
+
+  def extractStateActionPairIndexed(data: Json): Option[StateActionPair] = data.as[List[Json]] match {
+    case Left(_) => None
+    case Right(dataList) => extractAgentStateIndexed(dataList(0)) match {
+      case None => None
+      case Some(state) => {
+        val action = dataList(1).as[String].getOrElse("")
+        val shortTermScore = dataList(2).as[Double].getOrElse(Double.NaN)
+        val longTermScore = dataList(3).as[Double].getOrElse(Double.NaN)
+        return Some(new StateActionPair(state, action, shortTermScore, longTermScore))
+      }
+    }
+  }
+
+  def extractAgentStateIndexed(data: Json): Option[AgentState] = data.as[List[Json]] match {
+    case Left(_) => None
+    case Right(dataList) => {
+      val xPosition = dataList(0).as[Int].getOrElse(0)
+      val yPosition = dataList(1).as[Int].getOrElse(0)
+      val health = dataList(2).as[Double].getOrElse(Double.NaN)
+      val energyLevel = dataList(3).as[Double].getOrElse(Double.NaN)
+      val elementStatesJson = dataList(2).as[List[Json]]
+      var elementStates: AB[ElementState] = AB()
+      elementStatesJson match {
+        case Left(_) => Nil
+        case Right(eStates) => for (state <- eStates) extractElementStateIndexed(state) match {
+          case None => // Bad extraction
+          case Some(es) => elementStates += es
+        }
+      }
+      return Some(new AgentState(xPosition, yPosition, health, energyLevel, elementStates.toList))
+    }
+  }
+
+  def extractElementStateIndexed(data: Json): Option[ElementState] = data.as[List[Json]] match {
+    case Left(_) => None
+    case Right(dataList) => {
+      val elementType = dataList(0).as[String].getOrElse("")
+      val indicator = dataList(1).as[Boolean].getOrElse(false)
+      val hazard = dataList(2).as[Boolean].getOrElse(false)
+      val percentKnownInRange = dataList(3).as[Double].getOrElse(Double.NaN)
+      val northQuadrant = extractQuadrantStateIndexed(dataList(4))
+      val southQuadrant = extractQuadrantStateIndexed(dataList(5))
+      val westQuadrant = extractQuadrantStateIndexed(dataList(6))
+      val eastQuadrant = extractQuadrantStateIndexed(dataList(7))
+      (northQuadrant, southQuadrant, westQuadrant, eastQuadrant) match {
+        case (Some(nq), Some(sq), Some(wq), Some(eq)) => Some(new ElementState(elementType, indicator, hazard, percentKnownInRange, nq, sq, wq, eq))
+        case _ => None
+      }
+    }
+  }
+
+  def extractQuadrantStateIndexed(data: Json): Option[QuadrantState] = data.as[List[Json]] match {
+    case Left(_) => None
+    case Right(dataList) => {
+      val percentKnown = dataList(0).as[Double].getOrElse(Double.NaN)
+      val averageValueDifferential = dataList(1).as[Double] match {
+        case Right(v) => Some(v)
+        case _ => None
+      }
+      val immediateValueDifferential = dataList(2).as[Double] match {
+        case Right(v) => Some(v)
+        case _ => None
+      }
+      return Some(new QuadrantState(percentKnown, averageValueDifferential, immediateValueDifferential))
+    }
   }
 
 }

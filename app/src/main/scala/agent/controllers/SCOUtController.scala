@@ -27,34 +27,74 @@ class SCOUtController(
   }
 
   def selectAction(actions: List[String], state: AgentState): String = {
-    // Action Confidence (action -> confidence of successful outcome)
+    // Action Confidence (action -> similarity and outcome)
     val actionStateSimilarities: Map[String,SimilarityAverage] = actions.map(a => a -> calculateSimilarity(state, a)).toMap
+    // Select action
+    if (training) rouletteSelection(actionStateSimilarities)
+    else eliteSelection(actionStateSimilarities)
+  }
 
-    actions(randomInt(0, actions.length - 1))
+  def rouletteSelection(actionStateSimilarities: Map[String,SimilarityAverage]): String = {
+    val sizeWeight = 1.0
+    val similarityWeight = 1.0
+    val shortTermScoreWeight = 1.0
+    val longTermScoreWeight = 1.0
+    val weightTotals = sizeWeight + similarityWeight + shortTermWeight + longTermWeight
+    val actionConfidence = for ((a,s) <- actionStateSimilarities) yield (a -> (s.numSimilarStates * sizeWeight + s.similarity * similarityWeight + s.shortTermScore * shortTermWeight + s.longTermScore * longTermScoreWeight) / weightTotals)
+    var selection = randomDouble(0.0, actionConfidence.values.foldLeft(0.0)(_ + _))
+    for ((action, confidence) <- actionConfidence) {
+      if (confidence >= selection) return action
+      else selection -= confidence
+    }
+    return "null"
+  }
+
+  def eliteSelection(actionStateSimilarities: Map[String,SimilarityAverage]): String = {
+    val sizeWeight = 1.0
+    val similarityWeight = 1.0
+    val shortTermScoreWeight = 1.0
+    val longTermScoreWeight = 1.0
+    val weightTotals = sizeWeight + similarityWeight + shortTermWeight + longTermWeight
+    val actionConfidence = for ((a,s) <- actionStateSimilarities) yield (a -> (s.numSimilarStates * sizeWeight + s.similarity * similarityWeight + s.shortTermScore * shortTermWeight + s.longTermScore * longTermScoreWeight) / weightTotals)
+    var bestAction = "null"
+    var bestConfidence = 0.0
+    for ((action, confidence) <- actionConfidence) {
+      if (confidence > bestConfidence) {
+        bestAction = action
+        bestConfidence = confidence
+      }
+    }
+    return bestAction
   }
 
   def shutDown(stateActionPairs: List[StateActionPair]): Unit = {
     if (training) {
       val fps = 4 // floating points past decimal to store
+      println("Clipping Memory...")
       memory ++= stateActionPairs.map(_.roundOff(fps))
       saveMemory()
     }
   }
 
   // ---------------------------------MEMORY------------------------------------
+  val memoryExtention = "txt"
 
-  def loadMemory() = if (fileExists(memoryFileName, memoryFilePath, "json")) {
-    val fileData = readJsonFile(memoryFileName, memoryFilePath)
+  def loadMemory() = if (fileExists(memoryFileName, memoryFilePath, memoryExtention)) {
+    val fileData = readFile(memoryFileName, memoryFilePath, memoryExtention)
     val loadedMemory = parse(fileData) match {
       case Left(_) => AB() // Memory not found or invalid
-      case Right(jsonData) => extractStateActionMemory(jsonData)
+      case Right(jsonData) => extractStateActionMemoryIndexed(jsonData)
     }
+    println(s"Loaded ${loadedMemory.length} items")
     memory ++= loadedMemory
   }
 
   def saveMemory() = {
-    val memoryJson = Json.fromValues(memory.map(_.toJson()))
-    saveJsonFile(memoryFileName, memoryFilePath, memoryJson)
+    println("Converting to JSON...")
+    val memoryJson = Json.fromValues(memory.map(_.toJsonIndexed()))
+    println("Saving file...")
+    saveFile(memoryFileName, memoryFilePath, memoryExtention, memoryJson)
+    println("Save Complete")
   }
 
   // ---------------------------------CONFIDENCE--------------------------------
@@ -89,13 +129,12 @@ class SCOUtController(
     val avgSimilarity: Double = if (similarities.size > 0) (similarities.map(_.similarity).fold(0.0)(_ + _) / similarities.size) else 0.0
     val avgSTS: Double = if (similarities.size > 0) (similarities.map(_.shortTermScore).fold(0.0)(_ + _) / similarities.size) else 0.0
     val avgLTS: Double = if (similarities.size > 0) (similarities.map(_.longTermScore).fold(0.0)(_ + _) / similarities.size) else 0.0
-
-    println()
-    println(s"Action: $action")
-    println(s"Similar States: ${similarities.size}")
-    println(s"Average Similarity: $avgSimilarity")
-    println(s"Average STS: $avgSTS")
-    println(s"Average LTS: $avgLTS")
+    // println()
+    // println(s"Action: $action")
+    // println(s"Similar States: ${similarities.size}")
+    // println(s"Average Similarity: $avgSimilarity")
+    // println(s"Average STS: $avgSTS")
+    // println(s"Average LTS: $avgLTS")
     return new SimilarityAverage(similarities.size, avgSimilarity, avgSTS, avgLTS)
   }
 
@@ -118,7 +157,6 @@ class SCOUtController(
         val indicatorDiff = (if (es.indicator == ses.indicator) 0.0 else 1.0) * indicatorWeight
         val hazardDiff = (if (es.hazard == ses.hazard) 0.0 else 1.0) * hazardWeight
         val percentKnownDiff = Math.abs(es.percentKnownInRange - ses.percentKnownInRange) * percentKnownWeight
-        // println(s"${es.percentKnownInRange} - ${ses.percentKnownInRange}")
         (healthDiff + energyDiff + indicatorDiff + hazardDiff + percentKnownDiff) / weightTotals
       }
       case _ => 1.0
@@ -206,28 +244,6 @@ class SCOUtController(
     // return overall difference
     val overallDiff = (indicatorDiff + hazardDiff + percentKnownDiff + averageValueDifferentialDiff + immediateValueDifferentialDiff) / weightTotals
     return overallDiff
-  }
-
-
-  // Set of movement actions
-  def isMovementAction(action: String): Boolean = Set("north","south","west","east").contains(action)
-  def getOppositeOrientation(orientation: String): String = orientation match {
-    case "north" => "south"
-    case "south" => "north"
-    case "west" => "east"
-    case "east" => "west"
-  }
-  def getClockwiseOrientation(orientation: String): String = orientation match {
-    case "north" => "east"
-    case "south" => "west"
-    case "west" => "north"
-    case "east" => "south"
-  }
-  def getCounterClockwiseOrientation(orientation: String): String = orientation match {
-    case "north" => "west"
-    case "south" => "east"
-    case "west" => "south"
-    case "east" => "north"
   }
 
 }

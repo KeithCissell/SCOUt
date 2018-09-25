@@ -1,5 +1,6 @@
 package operation
 
+import test._
 import operation._
 import scoutagent._
 import scoutagent.Event._
@@ -42,8 +43,10 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
   //------------------------------ RUN -----------------------------------------
   def run: Unit = {
     // Setup the agent
+    // println("Agent Setting Up...")
     agent.setup
     // Have the agent explore until it completes its goal is inoperational
+    // println("Agent run started...")
     while(agent.operational && !goal.isComplete) {
     // for (i <- 0 until 15) {
       val state = agent.getState()
@@ -56,8 +59,10 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
       goal.update(environment, agent)
     }
     // Propagate Long-Term Score
+    // println("Calculating Scores...")
     scoreEventsLongTerm()
     // Shut down agent
+    // println("Shutting Agent Down...")
     agent.shutDown(getStateActionPairs())
   }
 
@@ -111,6 +116,9 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
     }
   }
 
+  //------------------------ TEST METRIC DATA ----------------------------------
+  def runData: RunData = new RunData(goal.percentComplete, eventLog.size)
+
   //------------------------ EXPORT EVENT LOG ----------------------------------
   def getStateActionPairs(): List[StateActionPair] = eventLog.map(_.getStateActionPair()).toList
 
@@ -125,8 +133,9 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
   }
 
   def printOutcome = {
+    println(s"AGENT: ${agent.name}")
     println(s"Nmber of Events: ${eventLog.size}")
-    println(s"GOAL COMPLETION: ${goal.percentComplete}")
+    println(s"Goal Completion: ${goal.percentComplete}")
   }
 
 }
