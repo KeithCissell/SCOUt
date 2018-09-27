@@ -16,17 +16,21 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 
 class SCOUtController(
   val memoryFileName: String,
+  val memoryExtention: String = "json",
   val training: Boolean
 ) extends Controller {
 
   // Holds a history of movements for reference
   val memory: AB[StateActionPair] = AB()
 
+  def copy: Controller = new SCOUtController(memoryFileName, memoryExtention, training)
+
   def setup: Unit = {
     loadMemory()
   }
 
   def selectAction(actions: List[String], state: AgentState): String = {
+    println(state.energyLevel)
     // Action Confidence (action -> similarity and outcome)
     val actionStateSimilarities: Map[String,SimilarityAverage] = actions.map(a => a -> calculateSimilarity(state, a)).toMap
     // Select action
@@ -35,12 +39,20 @@ class SCOUtController(
   }
 
   def rouletteSelection(actionStateSimilarities: Map[String,SimilarityAverage]): String = {
-    val sizeWeight = 1.0
+    val sizeWeight = 0
     val similarityWeight = 1.0
     val shortTermScoreWeight = 1.0
     val longTermScoreWeight = 1.0
     val weightTotals = sizeWeight + similarityWeight + shortTermWeight + longTermWeight
-    val actionConfidence = for ((a,s) <- actionStateSimilarities) yield (a -> (s.numSimilarStates * sizeWeight + s.similarity * similarityWeight + s.shortTermScore * shortTermWeight + s.longTermScore * longTermScoreWeight) / weightTotals)
+    val offset = 0.5 // Ensures every action has a chance for selection
+    val actionConfidence: Map[String,Double] = for ((a,s) <- actionStateSimilarities) yield {
+      val sizeScore = s.numSimilarStates * sizeWeight
+      val similarityScore = s.similarity * similarityWeight
+      val stsScore = s.shortTermScore * shortTermWeight
+      val ltsScore = s.longTermScore * longTermScoreWeight
+      val scoreTotal = (sizeScore + similarityScore + stsScore + ltsScore) / weightTotals
+      (a -> (scoreTotal + offset))
+    }
     var selection = randomDouble(0.0, actionConfidence.values.foldLeft(0.0)(_ + _))
     for ((action, confidence) <- actionConfidence) {
       if (confidence >= selection) return action
@@ -50,51 +62,61 @@ class SCOUtController(
   }
 
   def eliteSelection(actionStateSimilarities: Map[String,SimilarityAverage]): String = {
-    val sizeWeight = 1.0
+    val sizeWeight = 0.0
     val similarityWeight = 1.0
     val shortTermScoreWeight = 1.0
     val longTermScoreWeight = 1.0
     val weightTotals = sizeWeight + similarityWeight + shortTermWeight + longTermWeight
-    val actionConfidence = for ((a,s) <- actionStateSimilarities) yield (a -> (s.numSimilarStates * sizeWeight + s.similarity * similarityWeight + s.shortTermScore * shortTermWeight + s.longTermScore * longTermScoreWeight) / weightTotals)
-    var bestAction = "null"
-    var bestConfidence = 0.0
-    for ((action, confidence) <- actionConfidence) {
-      if (confidence > bestConfidence) {
-        bestAction = action
-        bestConfidence = confidence
-      }
+    val actionConfidence: Map[String,Double] = for ((a,s) <- actionStateSimilarities) yield {
+      val sizeScore = s.numSimilarStates * sizeWeight
+      val similarityScore = s.similarity * similarityWeight
+      val stsScore = s.shortTermScore * shortTermWeight
+      val ltsScore = s.longTermScore * longTermScoreWeight
+      val scoreTotal = (sizeScore + similarityScore + stsScore + ltsScore) / weightTotals
+      (a -> scoreTotal)
     }
-    return bestAction
+    var bestAction: Option[String] = None
+    var bestConfidence: Option[Double] = None
+    for ((action, confidence) <- actionConfidence) bestConfidence match {
+      case None => {
+        bestAction = Some(action)
+        bestConfidence = Some(confidence)
+      }
+      case Some(bc) if (confidence > bc) => {
+        bestAction = Some(action)
+        bestConfidence = Some(confidence)
+      }
+      case _ => // no update
+    }
+    println(bestAction.getOrElse("null"))
+    return bestAction.getOrElse("null")
   }
 
   def shutDown(stateActionPairs: List[StateActionPair]): Unit = {
     if (training) {
       val fps = 4 // floating points past decimal to store
-      println("Clipping Memory...")
       memory ++= stateActionPairs.map(_.roundOff(fps))
       saveMemory()
     }
   }
 
   // ---------------------------------MEMORY------------------------------------
-  val memoryExtention = "txt"
-
   def loadMemory() = if (fileExists(memoryFileName, memoryFilePath, memoryExtention)) {
     val fileData = readFile(memoryFileName, memoryFilePath, memoryExtention)
     val loadedMemory = parse(fileData) match {
       case Left(_) => AB() // Memory not found or invalid
       case Right(jsonData) => extractStateActionMemoryIndexed(jsonData)
     }
-    println(s"Loaded ${loadedMemory.length} items")
+    // println(s"Loaded ${loadedMemory.length} items")
     memory ++= loadedMemory
   }
 
   def saveMemory() = {
-    println("Converting to JSON...")
     val memoryJson = Json.fromValues(memory.map(_.toJsonIndexed()))
-    println("Saving file...")
+    // println(s"Memory length: ${memory.size}")
+    // println("Saving file...")
     saveFile(memoryFileName, memoryFilePath, memoryExtention, memoryJson)
-    println("Save Complete")
+    // println("Save Complete")
   }
 
   // ---------------------------------CONFIDENCE--------------------------------

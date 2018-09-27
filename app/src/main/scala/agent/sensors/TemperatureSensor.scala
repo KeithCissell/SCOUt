@@ -8,7 +8,7 @@ class TemperatureSensor(
 ) extends Sensor {
   val elementType: String = "Temperature"
   val range: Double = 30.0 // in feet
-  val energyExpense: Double = 0.1
+  val energyExpense: Double = 1.0
   val runTime: Double = 15000 // in milliseconds
   val hazard: Boolean = true
 }

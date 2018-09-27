@@ -102,9 +102,14 @@ class Environment(
     case None     => grid(x)(y) = Some(new Cell(x = x, y = y, elements = MutableMap(element.name -> element)))
   }
   // adds an anomaly to cell at (x,y)
-  def setAnomaly(x: Int, y:Int, anomaly: String) = getCell(x, y) match {
+  def setAnomaly(x: Int, y: Int, anomaly: String) = getCell(x, y) match {
     case Some(c)  => grid(x)(y).get.setAnomaly(anomaly)
     case None     => grid(x)(y) = Some(new Cell(x = x, y = y, anomalies = MutableSet(anomaly)))
+  }
+  // returns any anomalies found
+  def getAnomalies(x: Int, y: Int): Option[MutableSet[String]] = getCell(x, y) match {
+    case Some(c)  => Some(c.anomalies)
+    case None     => None
   }
   // takes a layer of elements and adds it to the environment
   def setLayer(layer: Layer) = {

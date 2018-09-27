@@ -14,6 +14,8 @@ class FindHumanController() extends Controller {
   // Keeps track of visited cells
   var visitedCells: MutableMap[(Int,Int),Int] = MutableMap()
 
+  def copy: Controller = new FindHumanController()
+
   def setup: Unit = {}
 
   def selectAction(actions: List[String], state: AgentState): String = {

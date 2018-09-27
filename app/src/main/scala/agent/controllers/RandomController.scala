@@ -10,6 +10,8 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 
 class RandomController() extends Controller {
 
+  def copy: Controller = new RandomController()
+
   def setup: Unit = {}
 
   def selectAction(actions: List[String], state: AgentState): String = {

@@ -32,6 +32,9 @@ class Test(
   // Test Metrics to gather
   val testMetrics: Map[String,TestMetric] = for ((name,controller) <- controllers) yield name -> new TestMetric(name, AB())
 
+  // Validation Agent used to assure a valid start point is selected
+  val validationAgent: Agent = new Agent("VALIDATOR", new RandomController())
+
   def run: Unit = {
     // Setup environments
     val environments = generateEnvironments
@@ -41,13 +44,14 @@ class Test(
         runNumber += 1
         println()
         println(s"Running Test $runNumber")
-        val startX = randomInt(0, environment.height - 1)
-        val startY = randomInt(0, environment.width - 1)
+        val startPosition = getValidStartPosition(environment)
+        val startX = startPosition._1
+        val startY = startPosition._2
         // Setup agent and run operation
         for ((name, controller) <- controllers) {
           val agent = new Agent(
             name = name,
-            controller = controller,
+            controller = controller.copy,
             sensors = sensors,
             mapHeight = environment.height,
             mapWidth = environment.width,
@@ -60,10 +64,11 @@ class Test(
           // println(s"Running ${agent.name}")
           operation.run
           testMetrics(name).addRun(operation.runData)
-          println(s"Stat Position ($startX, $startY)")
+          // operation.printActions
           operation.printOutcome
-          println(s"End Position (${operation.eventLog.last.state.xPosition}, ${operation.eventLog.last.state.yPosition})")
-          println()
+          // println(s"Stat Position ($startX, $startY)")
+          // println(s"End Position (${operation.eventLog.last.state.xPosition}, ${operation.eventLog.last.state.yPosition})")
+          // println()
         }
       }
     }
@@ -101,6 +106,20 @@ class Test(
       }
     }
     return environments.toMap
+  }
+
+  def getValidStartPosition(env: Environment): (Int,Int) = {
+    // Choose a random point
+    val startX = randomInt(0, env.height - 1)
+    val startY = randomInt(0, env.width - 1)
+    // Check if start position is clear of hazards and doesn't start on an anomaly
+    validationAgent.calculateHazardDamage(env, startX, startY, 10000) match {
+      case d if (d > 0.0) => return getValidStartPosition(env) // Try different start position
+      case d => env.getAnomalies(startX, startY) match {
+        case Some(as) if (as.size > 0) => return getValidStartPosition(env)
+        case _ => return (startX, startY)
+      }
+    }
   }
 
 }

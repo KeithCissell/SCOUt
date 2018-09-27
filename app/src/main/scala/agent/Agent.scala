@@ -35,7 +35,7 @@ class Agent(
   var maxEnergyLevel: Double = 0.0
   val damageNormal: Double = 0.1
   val energyUseNormal: Double = 0.5
-  val movementCost: Double = 0.01
+  val movementCost: Double = 0.5
 
   // Damage calculations
   val movementSlopeUpperThreshHold: Double = 1.0

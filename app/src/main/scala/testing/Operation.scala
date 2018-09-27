@@ -109,9 +109,10 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
       case Some(tl) => Math.max(((tl - agent.clock) / tl), 0.0) * longTermTimeRewardWeight
     }
     val longTermScore = (goalReward + longTermHealthReward + longTermEnergyReward + longTermTimeReward) / longTermWeightsTotal
+    val scale = if (eventLogShort.size / 10 > 1) eventLogShort.size / 10 else 1.0
     for (i <- 0 until eventLogShort.size) {
       val item = eventLogShort(i)
-      val itemLongTermScore = longTermScore * Math.pow(0.9, i)
+      val itemLongTermScore = longTermScore * Math.pow(0.9, i/scale)
       eventLog += new LogItem(item.state, item.action, item.event, item.shortTermScore, longTermScore)
     }
   }
@@ -121,6 +122,8 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
 
   //------------------------ EXPORT EVENT LOG ----------------------------------
   def getStateActionPairs(): List[StateActionPair] = eventLog.map(_.getStateActionPair()).toList
+
+  def printActions = for (item <- eventLog) println(item.action)
 
   def printEvents = {
     for (item <- eventLog) {
@@ -135,6 +138,8 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
   def printOutcome = {
     println(s"AGENT: ${agent.name}")
     println(s"Nmber of Events: ${eventLog.size}")
+    println(s"Health: ${agent.health}")
+    println(s"Energy: ${agent.energyLevel}")
     println(s"Goal Completion: ${goal.percentComplete}")
   }
 
