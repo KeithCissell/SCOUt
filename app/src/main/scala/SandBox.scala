@@ -38,7 +38,7 @@ object SandBox {
     // AGENT
     val testBot = new Agent(
       name = "TestBot",
-      controller = new SCOUtController("stateActionTest", "json", true),
+      controller = new SCOUtController("stateActionTest", "json", true, 5000),
       sensors = List(
         new ElevationSensor(false),
         new DecibelSensor(true),

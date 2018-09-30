@@ -31,11 +31,11 @@ object SimpleTest {
     val simpleTest = new Test(
       testEnvironments = Map(),
       testTemplates = Map(
-        "10by10NoMods" -> (20, 10)),
+        "10by10NoMods" -> (15, 1)),
       controllers = Map(
         "Random" -> new RandomController(),
         "FindHuman" -> new FindHumanController(),
-        "SCOUt" -> new SCOUtController("NewLongTermScoreTest", "json", false)),
+        "SCOUt" -> new SCOUtController("RandomSelection30000", "json", false, 30000)),
       sensors = List(
         new ElevationSensor(false),
         new DecibelSensor(true),
