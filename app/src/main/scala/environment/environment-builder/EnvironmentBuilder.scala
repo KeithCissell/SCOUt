@@ -61,4 +61,8 @@ object EnvironmentBuilder {
     return environment
   }
 
+  def buildEnvironment(template: EnvironmentTemplate): Environment = {
+    buildEnvironment(template.name, template.height, template.width, template.scale, template.elementSeeds, template.terrainModifications, template.anomalies)
+  }
+
 }

@@ -31,8 +31,16 @@ package seed {
     // val sources: AB[NoiseSource] = AB.empty,
     val formFields: String = """{
       "field-keys": [
+        "Average"
       ],
       "fields": {
+        "Average": {
+          "type": "number",
+          "unit": "db",
+          "value": 0,
+          "lowerBound": 0.0,
+          "upperBound": 120.0
+        }
       }
     }"""
   ) extends ElementSeed {

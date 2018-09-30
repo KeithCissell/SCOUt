@@ -13,8 +13,6 @@ trait ElementSeed {
   val dynamic: Boolean
   val formFields: String
 
-  // def this(seedData: Map[String, String])
-
   def buildLayer(height: Int, width: Int, scale: Double): Layer
 }
 
@@ -34,7 +32,7 @@ object ElementSeedList {
 
   // Returns the form field for the requested element type
   def getSeedForm(elementType: String): String = elementType match {
-    case "Decibel"        => "{}"//DecibelSeed().formFields
+    case "Decibel"        => DecibelSeed().formFields
     case "Elevation"      => ElevationSeed().formFields
     case "Latitude"       => LatitudeSeed().formFields
     case "Longitude"      => LongitudeSeed().formFields

@@ -159,7 +159,6 @@ function newRandomEnvironment(name, height, width) {
     "height": ${height},
     "width": ${width}
   }`
-  console.log(reqBody)
   let reqSpecs = {  method: 'POST',
                     headers: reqHeaders,
                     mode: 'cors',
@@ -171,7 +170,6 @@ function newRandomEnvironment(name, height, width) {
     }).catch(error => reject(Response.error(error)))
   })
 }
-
 
 /*******************************************************************************
 _____buildCustomEnvironment_____
@@ -187,7 +185,6 @@ function buildCustomEnvironment(formData) {
                     mode: 'cors',
                     cache: 'default',
                     body: reqBody}
-  console.log(reqBody)
   return new Promise((resolve, reject) => {
     fetch(host + '/build_custom_environment', reqSpecs).then(function(resp) {
       resolve(resp)
@@ -195,4 +192,35 @@ function buildCustomEnvironment(formData) {
   })
 }
 
-export {pingServer, getElementTypes, getAnomalyTypes, getTerrainModificationTypes, getElementSeedForm, getAnomalyForm, getTerrainModificationForm, getCurrentState, newRandomEnvironment, buildCustomEnvironment}
+/*******************************************************************************
+_____saveEnvironmentTemplate_____
+Description
+    Saves environment template on the back end
+Parameters
+    environmentTemplate:       fully jsonified environment template
+*******************************************************************************/
+function saveEnvironmentTemplate(environmentTemplate) {
+  let reqBody = environmentTemplate
+  let reqSpecs = {  method: 'POST',
+                    headers: reqHeaders,
+                    mode: 'cors',
+                    cache: 'default',
+                    body: reqBody}
+  return new Promise((resolve, reject) => {
+    fetch(host + '/save_environment_template', reqSpecs).then(function(resp) {
+      alert("Saved")
+      resolve(resp)
+    }).catch(error => reject(Response.error(error)))
+  })
+}
+
+function saveEnvironment() {
+  return new Promise(resolve => {
+    fetch(host + '/save_environment', getSpecs).then(function(resp) {
+      alert("Saved")
+      resolve(resp)
+    }).catch(error => resolve(Response.error(error)))
+  })
+}
+
+export {pingServer, getElementTypes, getAnomalyTypes, getTerrainModificationTypes, getElementSeedForm, getAnomalyForm, getTerrainModificationForm, getCurrentState, newRandomEnvironment, buildCustomEnvironment, saveEnvironmentTemplate, saveEnvironment}

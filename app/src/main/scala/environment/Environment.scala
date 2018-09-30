@@ -17,11 +17,7 @@ class Environment(
     val scale: Double) {
 
   // Builds a grid of empty Cells
-  var grid: Grid[Cell] = AB.fill(height)(AB.fill(width)(None))
-  for {
-    x <- 0 until height
-    y <- 0 until width
-  } grid(x)(y) = Some(Cell(x, y))
+  var grid: Grid[Cell] = emptyCellGrid(height, width)
 
   override def toString: String = {
     var str = name + "\n"
@@ -41,11 +37,18 @@ class Environment(
   //        METHODS
   // return copy of the grid
   def getGrid: Grid[Cell] = grid
+  // returns whether coordinate in grid
+  def inGrid(x: Int, y: Int): Boolean = (x >= 0 && x < height && y >= 0 && y < width)
   // returns the grid Cell at (x,y)
   def getCell(x: Int, y: Int): Option[Cell] = { //(x-1,y-1) match {
     if (x >= 0 && x < height && y >= 0 && y < width) {
       grid(x)(y)
     } else None
+  }
+  // returns value of element type at (x, y)
+  def getElementValue(element: String, x: Int, y: Int): Option[Double] = {
+    val layer = getLayer(element)
+    return layer.getElementValue(x, y)
   }
   // returns a list of all cells in the grid
   def getAllCells: List[Cell] = {
@@ -74,13 +77,23 @@ class Environment(
     }
     return layer
   }
-  // returns all Cells in range of an origin
-  def getCluster(originX: Int, originY: Int, range: Int): List[Cell] = {
+  // returns all Cells in radius around an origin
+  def getCluster(originX: Int, originY: Int, radius: Double): List[Cell] = {
+    val cellBlockSize = Math.round(Math.abs(radius)).toInt
     (for {
-      x <- (originX - range) to (originX + range)
-      y <- (originY - range) to (originY + range)
+      x <- (originX - cellBlockSize) to (originX + cellBlockSize)
+      y <- (originY - cellBlockSize) to (originY + cellBlockSize)
       if dist(x, y, originX, originY) != 0
-      if dist(x, y, originX, originY) <= range
+      if dist(x, y, originX, originY) <= radius
+    } yield getCell(x, y)).flatten.toList
+  }
+  // Gets all cells in a radius including the origin
+  def getClusterInclusive(originX: Int, originY: Int, radius: Double): List[Cell] = {
+    val cellBlockSize = Math.round(Math.abs(radius)).toInt
+    (for {
+      x <- (originX - cellBlockSize) to (originX + cellBlockSize)
+      y <- (originY - cellBlockSize) to (originY + cellBlockSize)
+      if dist(x, y, originX, originY) <= radius
     } yield getCell(x, y)).flatten.toList
   }
   // add a variable to a given point
@@ -89,9 +102,14 @@ class Environment(
     case None     => grid(x)(y) = Some(new Cell(x = x, y = y, elements = MutableMap(element.name -> element)))
   }
   // adds an anomaly to cell at (x,y)
-  def setAnomaly(x: Int, y:Int, anomaly: String) = getCell(x, y) match {
+  def setAnomaly(x: Int, y: Int, anomaly: String) = getCell(x, y) match {
     case Some(c)  => grid(x)(y).get.setAnomaly(anomaly)
     case None     => grid(x)(y) = Some(new Cell(x = x, y = y, anomalies = MutableSet(anomaly)))
+  }
+  // returns any anomalies found
+  def getAnomalies(x: Int, y: Int): Option[MutableSet[String]] = getCell(x, y) match {
+    case Some(c)  => Some(c.anomalies)
+    case None     => None
   }
   // takes a layer of elements and adds it to the environment
   def setLayer(layer: Layer) = {

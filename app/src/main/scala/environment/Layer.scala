@@ -81,6 +81,20 @@ class Layer(val layer: Grid[Element]) {
       if dist(x, y, originX, originY) <= radius
     } yield getElement(x, y).flatMap(_.value)).flatten.toList
   }
+  // Like getCluster, but returns a layer including only those in the search radius
+  def getClusterLayer(originX: Int, originY: Int, radius: Double): Layer = {
+    val clusterLayer = new Layer(AB.fill(height)(AB.fill(width)(None)))
+    val cellBlockSize = Math.round(Math.abs(radius)).toInt
+    for {
+      x <- (originX - cellBlockSize) to (originX + cellBlockSize)
+      y <- (originY - cellBlockSize) to (originY + cellBlockSize)
+      if dist(x, y, originX, originY) <= radius
+    } getElement(x, y) match {
+      case None => // No element found
+      case Some(e) => clusterLayer.setElement(x, y, e)
+    }
+    return clusterLayer
+  }
   // Adjust value at (x,y) by a weighted average of neighboring cells
   def smooth(x: Int, y: Int, radius: Double, originWeight: Double) = getElementValue(x,y) match {
     case None => // Nothing to do

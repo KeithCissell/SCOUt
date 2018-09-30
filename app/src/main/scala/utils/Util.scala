@@ -1,14 +1,25 @@
 package scoututil
 
+import environment.cell._
+
 import scala.math._
 import scala.util.Random
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.{ArrayBuffer => AB}
 
 
 object Util {
 
   // Custom Types
-  type Grid[A] = ArrayBuffer[ArrayBuffer[Option[A]]]
+  type Grid[A] = AB[AB[Option[A]]]
+
+  def emptyCellGrid(height: Int, width: Int): Grid[Cell] = {
+    val grid: Grid[Cell] = AB.fill(height)(AB.fill(width)(None))
+    for {
+      x <- 0 until height
+      y <- 0 until width
+    } grid(x)(y) = Some(Cell(x, y))
+    return grid
+  }
 
   // Util Functions
   def log2(x: Double): Double = {
@@ -21,11 +32,25 @@ object Util {
   def randomDouble(lowerBound: Double, upperBound: Double): Double = {
     lowerBound + (upperBound - lowerBound) * Random.nextDouble
   }
-  def roundDouble2(d: Double): Double = {
-    BigDecimal(d).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+  def roundDoubleX(d: Double, x: Int): Double = {
+    BigDecimal(d).setScale(x, BigDecimal.RoundingMode.HALF_UP).toDouble
   }
+  def roundDoubleX(d: Option[Double], x: Int): Option[Double] = d match {
+    case None => None
+    case Some(d) => Some(BigDecimal(d).setScale(x, BigDecimal.RoundingMode.HALF_UP).toDouble)
+  }
+  def roundDouble2(d: Double): Double = roundDoubleX(d, 2)
   def dist(x1: Int, y1: Int, x2: Int, y2: Int): Double = {
     sqrt(pow(x2 - x1, 2.0) + pow(y2 - y1, 2.0))
+  }
+  def dist(x1: Double, y1: Double, x2: Double, y2: Double): Double = {
+    sqrt(pow(x2 - x1, 2.0) + pow(y2 - y1, 2.0))
+  }
+  def dist3D(x1: Double, y1: Double, z1: Double, x2: Double, y2: Double, z2: Double): Double = {
+    sqrt(pow(x2 - x1, 2.0) + pow(y2 - y1, 2.0) + pow(z2 - z1, 2.0))
+  }
+  def slope3D(x1: Double, y1: Double, z1: Double, x2: Double, y2: Double, z2: Double): Double = {
+    (z2 - z1) / dist(x1, y1, x2, y2)
   }
 
   // Note: All degree calculations are done under the assumption of
@@ -59,6 +84,11 @@ object Util {
       ub += 360
     }
     return (t >= lb && t <= ub)
+  }
+
+  // Normalize value to be between 0 and 1
+  def normalize(lowerBound: Double, upperBound: Double, value: Double): Double = {
+    return (value - lowerBound) / (upperBound - lowerBound)
   }
 
 }
