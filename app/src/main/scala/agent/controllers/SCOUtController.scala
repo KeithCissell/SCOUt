@@ -17,25 +17,31 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 class SCOUtController(
   val memoryFileName: String,
   val memoryExtention: String = "json",
-  val training: Boolean
+  val training: Boolean,
+  val randomSelectThreshhold: Int
 ) extends Controller {
 
   // Holds a history of movements for reference
   val memory: AB[StateActionPair] = AB()
 
-  def copy: Controller = new SCOUtController(memoryFileName, memoryExtention, training)
+  def copy: Controller = new SCOUtController(memoryFileName, memoryExtention, training, randomSelectThreshhold)
 
   def setup: Unit = {
     loadMemory()
+    println(s"MEM SIZE: ${memory.size}")
   }
 
   def selectAction(actions: List[String], state: AgentState): String = {
-    println(state.energyLevel)
-    // Action Confidence (action -> similarity and outcome)
-    val actionStateSimilarities: Map[String,SimilarityAverage] = actions.map(a => a -> calculateSimilarity(state, a)).toMap
-    // Select action
-    if (training) rouletteSelection(actionStateSimilarities)
-    else eliteSelection(actionStateSimilarities)
+    // Randomly select while training and memory size is bellow threshold
+    if (training && memory.size < randomSelectThreshhold) {
+      actions(randomInt(0, actions.length - 1))
+    } else {
+      // Action Confidence (action -> similarity and outcome)
+      val actionStateSimilarities: Map[String,SimilarityAverage] = actions.map(a => a -> calculateSimilarity(state, a)).toMap
+      // Select action
+      if (training) rouletteSelection(actionStateSimilarities)
+      else eliteSelection(actionStateSimilarities)
+    }
   }
 
   def rouletteSelection(actionStateSimilarities: Map[String,SimilarityAverage]): String = {
@@ -88,7 +94,6 @@ class SCOUtController(
       }
       case _ => // no update
     }
-    println(bestAction.getOrElse("null"))
     return bestAction.getOrElse("null")
   }
 
