@@ -223,4 +223,72 @@ function saveEnvironment() {
   })
 }
 
-export {pingServer, getElementTypes, getAnomalyTypes, getTerrainModificationTypes, getElementSeedForm, getAnomalyForm, getTerrainModificationForm, getCurrentState, newRandomEnvironment, buildCustomEnvironment, saveEnvironmentTemplate, saveEnvironment}
+// Get Environment Files
+function getEnvironmentFileList() {
+  return new Promise(resolve => {
+    fetch(host + '/get_environment_file_list', getSpecs).then(function(resp) {
+      resolve(resp)
+    }).catch(error => resolve(Response.error(error)))
+  })
+}
+function getEnvironmentFile(fileName) {
+  let reqBody = `{"fileName": "${fileName}"}`
+  let reqSpecs = {  method: 'POST',
+                    headers: reqHeaders,
+                    mode: 'cors',
+                    cache: 'default',
+                    body: reqBody}
+  return new Promise((resolve, reject) => {
+    fetch(host + '/get_environment_file', reqSpecs).then(function(resp) {
+      resolve(resp)
+    }).catch(error => reject(Response.error(error)))
+  })
+}
+
+// Get Environment Template Files
+function getTemplateFileList() {
+  return new Promise(resolve => {
+    fetch(host + '/get_template_file_list', getSpecs).then(function(resp) {
+      resolve(resp)
+    }).catch(error => resolve(Response.error(error)))
+  })
+}
+function getTemplateFile(fileName) {
+  let reqBody = `{"fileName": "${fileName}"}`
+  let reqSpecs = {  method: 'POST',
+                    headers: reqHeaders,
+                    mode: 'cors',
+                    cache: 'default',
+                    body: reqBody}
+  return new Promise((resolve, reject) => {
+    fetch(host + '/get_template_file', reqSpecs).then(function(resp) {
+      resolve(resp)
+    }).catch(error => reject(Response.error(error)))
+  })
+}
+
+// Get Operation Files
+function getOperationFileList() {
+  return new Promise(resolve => {
+    fetch(host + '/get_operation_file_list', getSpecs).then(function(resp) {
+      resolve(resp)
+    }).catch(error => resolve(Response.error(error)))
+  })
+}
+function getOperationFile(fileName) {
+  let reqBody = `{"fileName": "${fileName}"}`
+  let reqSpecs = {  method: 'POST',
+                    headers: reqHeaders,
+                    mode: 'cors',
+                    cache: 'default',
+                    body: reqBody}
+  return new Promise((resolve, reject) => {
+    fetch(host + '/get_operation_file', reqSpecs).then(function(resp) {
+      resolve(resp)
+    }).catch(error => reject(Response.error(error)))
+  })
+}
+
+export {pingServer, getElementTypes, getAnomalyTypes, getTerrainModificationTypes, getElementSeedForm, getAnomalyForm,
+  getTerrainModificationForm, getCurrentState, newRandomEnvironment, buildCustomEnvironment, saveEnvironmentTemplate,
+  saveEnvironment, getEnvironmentFileList, getEnvironmentFile, getTemplateFileList, getTemplateFile, getOperationFileList, getOperationFile}

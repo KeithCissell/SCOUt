@@ -1,12 +1,17 @@
 package operation
 
+import io.circe._
+import io.circe.parser._
+
 import test._
 import operation._
 import scoutagent._
-import scoutagent.Event._
-import scoutagent.State._
 import environment._
 import scoututil.Util._
+import scoutagent.Event._
+import scoutagent.State._
+import jsonhandler.Encoder._
+import filemanager.FileManager._
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
@@ -118,7 +123,7 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
   }
 
   //------------------------ TEST METRIC DATA ----------------------------------
-  def runData: RunData = new RunData(goal.percentComplete, eventLog.size)
+  def runData: RunData = new RunData(goal.percentComplete, eventLog.size, agent.health, agent.energyLevel)
 
   //------------------------ EXPORT EVENT LOG ----------------------------------
   def getStateActionPairs(): List[StateActionPair] = eventLog.map(_.getStateActionPair()).toList
@@ -141,6 +146,19 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
     println(s"Health: ${agent.health}")
     println(s"Energy: ${agent.energyLevel}")
     println(s"Goal Completion: ${goal.percentComplete}")
+  }
+
+  //------------------------- SAVE OPERATION -----------------------------------
+  def saveOperation(fName: String) = {
+    val jsonEnv = parse(encodeEnvironment(environment)) match {
+      case Left(_) => Json.obj()
+      case Right(jEnv) => jEnv
+    }
+    val jsonData = Json.obj(
+      ("environment", jsonEnv),
+      ("stateActionPairs", Json.fromValues(getStateActionPairs().map(_.toJson())))
+    )
+    saveJsonFile(fName, operationRunPath, jsonData)
   }
 
 }

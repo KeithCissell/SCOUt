@@ -133,9 +133,11 @@ class TestMetric(controllerName: String, runs: AB[RunData]) {
     println(s"Successes:  ${runs.filter(_.successful == true).size}")
     println(s"Avg Success ${runs.map(_.goalCompletion).foldLeft(0.0)(_ + _) / runs.size}")
     println(s"Avg Steps:  ${runs.map(_.steps).foldLeft(0)(_ + _) / runs.size}")
+    println(s"Avg Remaining Health: ${runs.map(_.remainingHealth).foldLeft(0.0)(_ + _) / runs.size}")
+    println(s"Avg Remaining Energy: ${runs.map(_.remainingEnergy).foldLeft(0.0)(_ + _) / runs.size}")
   }
 }
 
-class RunData(val goalCompletion: Double, val steps: Int) {
+class RunData(val goalCompletion: Double, val steps: Int, val remainingHealth: Double, val remainingEnergy: Double) {
   def successful: Boolean = goalCompletion >= 100.0
 }

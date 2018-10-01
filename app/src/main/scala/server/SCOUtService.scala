@@ -45,12 +45,18 @@ object SCOUtService {
     case req @ GET  -> Root / "anomaly_types"               => Ok(encodeList("Anomaly Types", AnomalyList.anomalyTypes))
     case req @ GET  -> Root / "current_state"               => Ok(encodeEnvironment(environment))
     case req @ GET  -> Root / "save_environment"            => saveEnvironment()
+    case req @ GET  -> Root / "get_environment_file_list"   => getEnvironmentFileList()
+    case req @ GET  -> Root / "get_template_file_list"      => getTemplateFileList()
+    case req @ GET  -> Root / "get_operation_file_list"     => getOperationFileList()
     case req @ POST -> Root / "element_seed_form"           => getElementSeedForm(req)
     case req @ POST -> Root / "terrain_modification_form"   => getTerrainModificationForm(req)
     case req @ POST -> Root / "anomaly_form"                => getAnomalyForm(req)
     case req @ POST -> Root / "new_random_environment"      => newRandomEnvironment(req)
     case req @ POST -> Root / "build_custom_environment"    => buildCustomEnvironment(req)
     case req @ POST -> Root / "save_environment_template"   => saveEnvironmentTemplate(req)
+    case req @ POST -> Root / "get_environment_file"        => getEnvironmentFile(req)
+    case req @ POST -> Root / "get_template_file"           => getTemplateFile(req)
+    case req @ POST -> Root / "get_operation_file"          => getOperationFile(req)
   }
 
 
@@ -150,6 +156,66 @@ object SCOUtService {
     val encodedEnv = encodeEnvironment(environment)
     saveJsonFile(fileName, "src/resources/environments/", encodedEnv)
     Ok(s"Saved as $fileName")
+  }
+
+  // Environment Files
+  def getEnvironmentFileList(): Task[Response] = {
+    val fileNames = getEnvironmentFileNames()
+    val jsonResponse = Json.fromValues(getEnvironmentFileNames().map(fn => Json.fromString(fn)))
+    Ok(jsonResponse.toString)
+  }
+
+  def getEnvironmentFile(req: Request): Task[Response] = parse(req.bodyAsText.runLastOr("").run) match {
+    case Left(_) => BadRequest()
+    case Right(data) => {
+      extractString("fileName", data) match {
+        case None => BadRequest()
+        case Some(fName) => fileExists(fName, environmentPath, "json") match {
+          case false => BadRequest("File Does Not Exist")
+          case true => Ok(readJsonFile(fName, environmentPath))
+        }
+      }
+    }
+  }
+
+  // Environment Template Files
+  def getTemplateFileList(): Task[Response] = {
+    val fileNames = getEnvironmentFileNames()
+    val jsonResponse = Json.fromValues(getEnvironmentTemplateFileNames().map(fn => Json.fromString(fn)))
+    Ok(jsonResponse.toString)
+  }
+
+  def getTemplateFile(req: Request): Task[Response] = parse(req.bodyAsText.runLastOr("").run) match {
+    case Left(_) => BadRequest()
+    case Right(data) => {
+      extractString("fileName", data) match {
+        case None => BadRequest()
+        case Some(fName) => fileExists(fName, environmentTemplatePath, "json") match {
+          case false => BadRequest("File Does Not Exist")
+          case true => Ok(readJsonFile(fName, environmentTemplatePath))
+        }
+      }
+    }
+  }
+
+  // Operation Run Files
+  def getOperationFileList(): Task[Response] = {
+    val fileNames = getEnvironmentFileNames()
+    val jsonResponse = Json.fromValues(getOperationRunFileNames().map(fn => Json.fromString(fn)))
+    Ok(jsonResponse.toString)
+  }
+
+  def getOperationFile(req: Request): Task[Response] = parse(req.bodyAsText.runLastOr("").run) match {
+    case Left(_) => BadRequest()
+    case Right(data) => {
+      extractString("fileName", data) match {
+        case None => BadRequest()
+        case Some(fName) => fileExists(fName, operationRunPath, "json") match {
+          case false => BadRequest("File Does Not Exist")
+          case true => Ok(readJsonFile(fName, operationRunPath))
+        }
+      }
+    }
   }
 
 }

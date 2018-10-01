@@ -5081,6 +5081,84 @@ function saveEnvironment() {
   });
 }
 
+// Get Environment Files
+function getEnvironmentFileList() {
+  return new Promise(function (resolve) {
+    fetch(host + '/get_environment_file_list', getSpecs).then(function (resp) {
+      resolve(resp);
+    }).catch(function (error) {
+      return resolve(Response.error(error));
+    });
+  });
+}
+function getEnvironmentFile(fileName) {
+  var reqBody = '{"fileName": "' + fileName + '"}';
+  var reqSpecs = { method: 'POST',
+    headers: reqHeaders,
+    mode: 'cors',
+    cache: 'default',
+    body: reqBody };
+  return new Promise(function (resolve, reject) {
+    fetch(host + '/get_environment_file', reqSpecs).then(function (resp) {
+      resolve(resp);
+    }).catch(function (error) {
+      return reject(Response.error(error));
+    });
+  });
+}
+
+// Get Environment Template Files
+function getTemplateFileList() {
+  return new Promise(function (resolve) {
+    fetch(host + '/get_template_file_list', getSpecs).then(function (resp) {
+      resolve(resp);
+    }).catch(function (error) {
+      return resolve(Response.error(error));
+    });
+  });
+}
+function getTemplateFile(fileName) {
+  var reqBody = '{"fileName": "' + fileName + '"}';
+  var reqSpecs = { method: 'POST',
+    headers: reqHeaders,
+    mode: 'cors',
+    cache: 'default',
+    body: reqBody };
+  return new Promise(function (resolve, reject) {
+    fetch(host + '/get_template_file', reqSpecs).then(function (resp) {
+      resolve(resp);
+    }).catch(function (error) {
+      return reject(Response.error(error));
+    });
+  });
+}
+
+// Get Operation Files
+function getOperationFileList() {
+  return new Promise(function (resolve) {
+    fetch(host + '/get_operation_file_list', getSpecs).then(function (resp) {
+      resolve(resp);
+    }).catch(function (error) {
+      return resolve(Response.error(error));
+    });
+  });
+}
+function getOperationFile(fileName) {
+  var reqBody = '{"fileName": "' + fileName + '"}';
+  var reqSpecs = { method: 'POST',
+    headers: reqHeaders,
+    mode: 'cors',
+    cache: 'default',
+    body: reqBody };
+  return new Promise(function (resolve, reject) {
+    fetch(host + '/get_operation_file', reqSpecs).then(function (resp) {
+      resolve(resp);
+    }).catch(function (error) {
+      return reject(Response.error(error));
+    });
+  });
+}
+
 exports.pingServer = pingServer;
 exports.getElementTypes = getElementTypes;
 exports.getAnomalyTypes = getAnomalyTypes;
@@ -5093,6 +5171,12 @@ exports.newRandomEnvironment = newRandomEnvironment;
 exports.buildCustomEnvironment = buildCustomEnvironment;
 exports.saveEnvironmentTemplate = saveEnvironmentTemplate;
 exports.saveEnvironment = saveEnvironment;
+exports.getEnvironmentFileList = getEnvironmentFileList;
+exports.getEnvironmentFile = getEnvironmentFile;
+exports.getTemplateFileList = getTemplateFileList;
+exports.getTemplateFile = getTemplateFile;
+exports.getOperationFileList = getOperationFileList;
+exports.getOperationFile = getOperationFile;
 
 /***/ }),
 /* 43 */
@@ -6316,24 +6400,72 @@ function loadEnvironmentBuilderPage() {
   var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "50";
 
   // Setup Environment Builder Page
-  main.innerHTML = '\n  <div id="home-page">\n    <h1 id="home-title">Environment Builder</h1>\n    <div id="home-content">\n      <form id="environment-form">\n        <div id="basic-inputs">\n          <label for="environment-name">Environment Name</label>\n          <input class="basic-input" type="text" id="environment-name">\n          <label for="height">Height</label>\n          <input class="basic-input" type="number" id="height" min="10" max="100">\n          <label for="width">Width</label>\n          <input class="basic-input" type="number" id="width" min="10" max="100">\n        </div>\n        <div id="custom-inputs">\n          <h3 id="custom-inputs-title"></h3>\n          <div id="custom-inputs-content" class="scroll-box rounded-border"></div>\n        </div>\n      </form>\n    </div>\n    <div id="submit-buttons">\n      <button class="submit-button" id="random-environment-button">Random</button>\n      <button class="submit-button" id="custom-environment-button">Custom</button>\n      <button class="submit-button" id="load-environment-button">Load</button>\n    </div>\n  </div>\n  ';
+  main.innerHTML = '\n  <div id="home-page">\n    <h1 id="home-title">Environment Builder</h1>\n    <div id="home-content">\n      <form id="environment-form">\n        <div id="basic-inputs">\n          <label for="environment-name">Environment Name</label>\n          <input class="basic-input" type="text" id="environment-name">\n          <label for="height">Height</label>\n          <input class="basic-input" type="number" id="height" min="10" max="100">\n          <label for="width">Width</label>\n          <input class="basic-input" type="number" id="width" min="10" max="100">\n        </div>\n        <div id="custom-inputs">\n          <h3 id="custom-inputs-title"></h3>\n          <div id="custom-inputs-content" class="scroll-box rounded-border"></div>\n        </div>\n      </form>\n    </div>\n    <div id="submit-buttons">\n      <button class="submit-button" id="random-environment-button">Random Env</button>\n      <button class="submit-button" id="custom-environment-button">Custom Env</button>\n      <button class="submit-button" id="load-environment-button">Load Env</button>\n      <button class="submit-button" id="load-environment-template-button">Load Env Template</button>\n      <button class="submit-button" id="load-operation-button">Load Operation</button>\n    </div>\n  </div>\n  ';
   // Set default input values
   document.getElementById("environment-name").value = name;
   document.getElementById("height").value = height;
   document.getElementById("width").value = width;
+
   // Add event listeners
+  // Random Environment
   document.getElementById("random-environment-button").addEventListener("click", function () {
     if ((0, _FormValidators.checkBasicInputs)()) {
       var form = getBasicInputs();
       buildRandomEnvironment(form.name, form.height, form.width);
     }
   });
+  // Custom Environment
   document.getElementById("custom-environment-button").addEventListener("click", function () {
     (0, _CustomEnvironmentForm.loadCustomEnvironmentForm)();
   });
+  // Load Environment
   document.getElementById("load-environment-button").addEventListener("click", function () {
-    console.log("Load Saved Environment");
-    //todo
+    loadFileLists("environment");
+  });
+  // Load Environment Template
+  document.getElementById("load-environment-template-button").addEventListener("click", function () {
+    loadFileLists("template");
+  });
+  // Load Operation
+  document.getElementById("load-operation-button").addEventListener("click", function () {
+    loadFileLists("operation");
+  });
+}
+
+/*******************************************************************************
+_____loadFileLists_____
+Description
+    Display files that can be chosen from
+*******************************************************************************/
+async function loadFileLists(fileType) {
+  // capture DOM elements
+  document.getElementById("home-content").innerHTML = await '\n  <div id="files" class="scroll-box rounded-border">\n    <ul id="file-list"></ul>\n  </div>\n  ';
+  var fileList = await document.getElementById("file-list");
+  var fileNames = await [];
+  if (fileType == "environment") {
+    var filesJson = await (0, _SCOUtAPI.getEnvironmentFileList)();
+    await filesJson.json().then(function (json) {
+      console.log(json);
+    });
+    // await for (fileName in filesJson) {}
+  } else if (fileType == "template") {
+    var _filesJson = await (0, _SCOUtAPI.getTemplateFileList)();
+    await _filesJson.json().then(function (json) {
+      console.log(json);
+    });
+    // await for (fileName in filesJson) {}
+  } else if (fileType == "operation") {
+    var _filesJson2 = await (0, _SCOUtAPI.getOperationFileList)();
+    await _filesJson2.json().then(function (json) {
+      console.log(json);
+    });
+    // await for (fileName in filesJson) {}
+  }
+
+  // Populate Submit Button Div
+  document.getElementById("submit-buttons").innerHTML = await '<button class="submit-button" id="back-button">Back</button>';
+  await document.getElementById("back-button").addEventListener("click", function () {
+    loadEnvironmentBuilderPage();
   });
 }
 
