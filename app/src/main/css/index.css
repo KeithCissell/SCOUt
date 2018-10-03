@@ -154,6 +154,19 @@ button.submit-button {
 	font-weight: bold;
 }
 
+#file-list {
+  margin-left: 20%;
+  text-align: left;
+  list-style: none;
+}
+
+li.file-selection {
+  margin-bottom: 2%;
+  font-size: 15pt;
+  cursor: pointer;
+  color: white;
+}
+
 
 /*******************************************************************************
       CUSTOM INPUT FORM

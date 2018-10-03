@@ -6439,29 +6439,69 @@ Description
 *******************************************************************************/
 async function loadFileLists(fileType) {
   // capture DOM elements
-  document.getElementById("home-content").innerHTML = await '\n  <div id="files" class="scroll-box rounded-border">\n    <ul id="file-list"></ul>\n  </div>\n  ';
+  document.getElementById("home-content").innerHTML = await '\n  <div id="files" class="scroll-box rounded-border">\n    <h3 id="file-list-title"></h3>\n    <ul id="file-list"></ul>\n  </div>\n  ';
   var fileList = await document.getElementById("file-list");
-  var fileNames = await [];
+  var fileListTitle = await document.getElementById("file-list-title");
   if (fileType == "environment") {
+    fileListTitle.innerText = "Choose Environment File To Load";
     var filesJson = await (0, _SCOUtAPI.getEnvironmentFileList)();
     await filesJson.json().then(function (json) {
-      console.log(json);
+      var _loop = function _loop(i) {
+        var fileSelection = document.createElement("li");
+        fileSelection.innerText = json[i];
+        fileSelection.setAttribute("id", json[i]);
+        fileSelection.setAttribute("class", "file-selection");
+        fileSelection.addEventListener("click", function () {
+          loadEnvironmentFromJson(json[i]);
+        });
+        fileList.appendChild(fileSelection);
+      };
+
+      for (var i = 0; i < json.length; i++) {
+        _loop(i);
+      }
     });
     // await for (fileName in filesJson) {}
   } else if (fileType == "template") {
+    fileListTitle.innerText = "Choose Environment Template To Load";
     var _filesJson = await (0, _SCOUtAPI.getTemplateFileList)();
     await _filesJson.json().then(function (json) {
-      console.log(json);
+      var _loop2 = function _loop2(i) {
+        var fileSelection = document.createElement("li");
+        fileSelection.innerText = json[i];
+        fileSelection.setAttribute("id", json[i]);
+        fileSelection.setAttribute("class", "file-selection");
+        fileSelection.addEventListener("click", function () {
+          loadEnvironmentTemplate(json[i]);
+        });
+        fileList.appendChild(fileSelection);
+      };
+
+      for (var i = 0; i < json.length; i++) {
+        _loop2(i);
+      }
     });
     // await for (fileName in filesJson) {}
   } else if (fileType == "operation") {
+    fileListTitle.innerText = "Choose Operation Run To Load";
     var _filesJson2 = await (0, _SCOUtAPI.getOperationFileList)();
     await _filesJson2.json().then(function (json) {
-      console.log(json);
-    });
-    // await for (fileName in filesJson) {}
-  }
+      var _loop3 = function _loop3(i) {
+        var fileSelection = document.createElement("li");
+        fileSelection.innerText = json[i];
+        fileSelection.setAttribute("id", json[i]);
+        fileSelection.setAttribute("class", "file-selection");
+        fileSelection.addEventListener("click", function () {
+          loadOperationRun(json[i]);
+        });
+        fileList.appendChild(fileSelection);
+      };
 
+      for (var i = 0; i < json.length; i++) {
+        _loop3(i);
+      }
+    });
+  }
   // Populate Submit Button Div
   document.getElementById("submit-buttons").innerHTML = await '<button class="submit-button" id="back-button">Back</button>';
   await document.getElementById("back-button").addEventListener("click", function () {
@@ -6499,6 +6539,30 @@ async function buildRandomEnvironment(name, height, width) {
     (0, _Visualizer.loadVisualizer)(environment);
   }).catch(function (err) {
     console.log(err);
+  });
+}
+
+async function loadEnvironmentFromJson(fileName) {
+  var environmentJson = await (0, _SCOUtAPI.getEnvironmentFile)(fileName);
+  await environmentJson.json().then(function (json) {
+    console.log(json);
+    var environment = (0, _EnvironmentFormatter.formatEnvironment)(json);
+    (0, _Visualizer.loadVisualizer)(environment);
+  });
+}
+
+async function loadEnvironmentTemplate(fileName) {
+  var environmentTemplateJson = await (0, _SCOUtAPI.getTemplateFile)(fileName);
+  await environmentTemplateJson.json().then(function (json) {
+    console.log(json);
+    (0, _CustomEnvironmentForm.loadEnvironmentFromForm)(JSON.stringify(json));
+  });
+}
+
+async function loadOperationRun(fileName) {
+  var operationJson = await (0, _SCOUtAPI.getOperationFile)(fileName);
+  await operationJson.json().then(function (json) {
+    console.log(json);
   });
 }
 

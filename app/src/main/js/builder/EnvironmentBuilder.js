@@ -10,7 +10,7 @@ import {pingServer,
 import {formatEnvironment} from '../environment/EnvironmentFormatter.js'
 import {BasicEnvironmentForm} from './FormClasses.js'
 import {loadVisualizer} from '../visualizer/Visualizer.js'
-import {loadCustomEnvironmentForm} from './CustomEnvironmentForm.js'
+import {loadCustomEnvironmentForm, loadEnvironmentFromForm} from './CustomEnvironmentForm.js'
 import {checkBasicInputs} from './FormValidators.js'
 
 
@@ -92,31 +92,54 @@ async function loadFileLists(fileType) {
   // capture DOM elements
   document.getElementById("home-content").innerHTML = await `
   <div id="files" class="scroll-box rounded-border">
+    <h3 id="file-list-title"></h3>
     <ul id="file-list"></ul>
   </div>
   `
   let fileList = await document.getElementById("file-list")
-  let fileNames = await []
+  let fileListTitle = await document.getElementById("file-list-title")
   if (fileType == "environment") {
+    fileListTitle.innerText = "Choose Environment File To Load"
     let filesJson = await getEnvironmentFileList()
     await filesJson.json().then((json) => {
-      console.log(json)
+      for (let i = 0; i < json.length; i++) {
+        let fileSelection = document.createElement("li")
+        fileSelection.innerText = json[i]
+        fileSelection.setAttribute("id", json[i])
+        fileSelection.setAttribute("class", "file-selection")
+        fileSelection.addEventListener("click", () => { loadEnvironmentFromJson(json[i]) })
+        fileList.appendChild(fileSelection)
+      }
     })
     // await for (fileName in filesJson) {}
   } else if (fileType == "template") {
+    fileListTitle.innerText = "Choose Environment Template To Load"
     let filesJson = await getTemplateFileList()
     await filesJson.json().then((json) => {
-      console.log(json)
+      for (let i = 0; i < json.length; i++) {
+        let fileSelection = document.createElement("li")
+        fileSelection.innerText = json[i]
+        fileSelection.setAttribute("id", json[i])
+        fileSelection.setAttribute("class", "file-selection")
+        fileSelection.addEventListener("click", () => { loadEnvironmentTemplate(json[i]) })
+        fileList.appendChild(fileSelection)
+      }
     })
     // await for (fileName in filesJson) {}
   } else if (fileType == "operation") {
+    fileListTitle.innerText = "Choose Operation Run To Load"
     let filesJson = await getOperationFileList()
     await filesJson.json().then((json) => {
-      console.log(json)
+      for (let i = 0; i < json.length; i++) {
+        let fileSelection = document.createElement("li")
+        fileSelection.innerText = json[i]
+        fileSelection.setAttribute("id", json[i])
+        fileSelection.setAttribute("class", "file-selection")
+        fileSelection.addEventListener("click", () => { loadOperationRun(json[i]) })
+        fileList.appendChild(fileSelection)
+      }
     })
-    // await for (fileName in filesJson) {}
   }
-
   // Populate Submit Button Div
   document.getElementById("submit-buttons").innerHTML = await `<button class="submit-button" id="back-button">Back</button>`
   await document.getElementById("back-button").addEventListener("click", () => { loadEnvironmentBuilderPage() })
@@ -151,6 +174,32 @@ async function buildRandomEnvironment(name, height, width) {
     console.log(environment)
     loadVisualizer(environment)
   }).catch((err) => { console.log(err) })
+}
+
+
+async function loadEnvironmentFromJson(fileName) {
+  let environmentJson = await getEnvironmentFile(fileName)
+  await environmentJson.json().then((json) => {
+    console.log(json)
+    let environment = formatEnvironment(json)
+    loadVisualizer(environment)
+  })
+}
+
+async function loadEnvironmentTemplate(fileName) {
+  let environmentTemplateJson = await getTemplateFile(fileName)
+  await environmentTemplateJson.json().then((json) => {
+    console.log(json)
+    loadEnvironmentFromForm(JSON.stringify(json))
+  })
+}
+
+async function loadOperationRun(fileName) {
+  let operationJson = await getOperationFile(fileName)
+  await operationJson.json().then((json) => {
+    console.log(json)
+
+  })
 }
 
 export {loadEnvironmentBuilderPage, getBasicInputs}

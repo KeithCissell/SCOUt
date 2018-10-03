@@ -49,7 +49,7 @@ object FileManager {
 
   def getFileNames(path: String): List[String] = {
     val d = new File(path)
-    if (d.exists && d.isDirectory) d.listFiles.filter(_.isFile).toList.map(_.getName())
+    if (d.exists && d.isDirectory) d.listFiles.filter(_.isFile).toList.map(_.getName().split('.').head)
     else List[String]()
   }
   def getEnvironmentFileNames(): List[String] = getFileNames(environmentPath)
