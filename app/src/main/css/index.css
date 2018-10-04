@@ -324,6 +324,41 @@ td.legend-table-value {
   height: 42%;
 }
 
+
+/*******************************************************************************
+      STYLING FOR TOGGLE SWITCHES
+*******************************************************************************/
+#operation-controls {
+  height: 8%;
+  width: 98%;
+  margin-top: 3%;
+  padding: 2%;
+  float: left;
+  background-color: grey;
+  border-radius: 6pt;
+  text-align: center;
+}
+
+#action-message {
+  height: 90%;
+  padding: 2%;
+  background-color: white;
+  text-decoration-color: black;
+  font-size: 12pt;
+  text-align: left;
+  display: inline;
+}
+
+#state-message {
+  height: 90%;
+  padding: 2%;
+  background-color: white;
+  text-decoration-color: black;
+  font-size: 12pt;
+  text-align: left;
+}
+
+
 /*******************************************************************************
       STYLING FOR TOGGLE SWITCHES
 *******************************************************************************/

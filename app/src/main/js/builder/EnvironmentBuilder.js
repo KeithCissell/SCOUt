@@ -10,6 +10,7 @@ import {pingServer,
 import {formatEnvironment} from '../environment/EnvironmentFormatter.js'
 import {BasicEnvironmentForm} from './FormClasses.js'
 import {loadVisualizer} from '../visualizer/Visualizer.js'
+import {loadOperationVisualizer} from '../visualizer/OperationVisualizer.js'
 import {loadCustomEnvironmentForm, loadEnvironmentFromForm} from './CustomEnvironmentForm.js'
 import {checkBasicInputs} from './FormValidators.js'
 
@@ -197,8 +198,10 @@ async function loadEnvironmentTemplate(fileName) {
 async function loadOperationRun(fileName) {
   let operationJson = await getOperationFile(fileName)
   await operationJson.json().then((json) => {
-    console.log(json)
-
+    let environment = formatEnvironment(json.environment)
+    console.log(environment)
+    console.log(json.stateActionPairs)
+    loadOperationVisualizer(environment, json.stateActionPairs)
   })
 }
 

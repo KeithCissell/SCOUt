@@ -156,7 +156,7 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
     }
     val jsonData = Json.obj(
       ("environment", jsonEnv),
-      ("stateActionPairs", Json.fromValues(getStateActionPairs().map(_.toJson())))
+      ("stateActionPairs", Json.fromValues(getStateActionPairs().map(_.roundOff(4).toJson())))
     )
     saveJsonFile(fName, operationRunPath, jsonData)
   }

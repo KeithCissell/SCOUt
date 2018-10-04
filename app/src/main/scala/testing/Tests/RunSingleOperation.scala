@@ -58,8 +58,9 @@ object RunSingleOperation {
       new TemperatureSensor(true),
       new WaterSensor(false))
 
-    // Set Environment
+    // DEFAULT
     lazy val defaultEnvironment = buildEnvironment("Test Environment", 20, 20, 10.0, ElementSeedList.defaultSeedList(), TerrainModificationList.defaultList(), AnomalyList.defaultList())
+    // LOADED
     val environemtFileName = "10by10NoMods"
     // Environment file
     // val envString = readJsonFile(environemtFileName, environmentPath)
