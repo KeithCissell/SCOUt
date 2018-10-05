@@ -86,6 +86,12 @@ class SCOUtController(
       val stsScore = s.shortTermScore * shortTermWeight
       val ltsScore = s.longTermScore * longTermScoreWeight
       val scoreTotal = (sizeScore + similarityScore + stsScore + ltsScore) / weightTotals
+      // println()
+      // println(a)
+      // println(s"Similarity Score: ${similarityScore}")
+      // println(s"STS Score: ${stsScore}")
+      // println(s"LTS Score: ${ltsScore}")
+      // println(s"Total Score: $scoreTotal")
       (a -> scoreTotal)
     }
     var bestAction: Option[String] = None

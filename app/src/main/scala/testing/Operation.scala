@@ -116,7 +116,7 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
     val longTermScore = (goalReward + longTermHealthReward + longTermEnergyReward + longTermTimeReward) / longTermWeightsTotal
     for (i <- 0 until eventLogShort.size) {
       val item = eventLogShort(i)
-      val scale = if (i > 10) i / 10 else 1.0
+      val scale = if (eventLogShort.size > 10) eventLogShort.size / 10 else 1.0
       val itemLongTermScore = longTermScore * Math.pow(0.9, i/scale)
       eventLog += new LogItem(item.state, item.action, item.event, item.shortTermScore, longTermScore)
     }
