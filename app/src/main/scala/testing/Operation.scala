@@ -1,12 +1,17 @@
 package operation
 
+import io.circe._
+import io.circe.parser._
+
 import test._
 import operation._
 import scoutagent._
-import scoutagent.Event._
-import scoutagent.State._
 import environment._
 import scoututil.Util._
+import scoutagent.Event._
+import scoutagent.State._
+import jsonhandler.Encoder._
+import filemanager.FileManager._
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
@@ -24,8 +29,8 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
   val timeLimit: Option[Double] = goal.timeLimit
 
   // SHORT-TERM SCORE WEIGHTS
-  val movementRewardWeight = 0.1
-  val scanRewardWeight = 5.0
+  val movementRewardWeight = 1.0
+  val scanRewardWeight = 1.0
   val healthRewardWeight = 1.0
   val energyRewardWeight = 1.0
   val timeRewardWeight = if (timeLimit == None) 0.0 else 1.0
@@ -109,16 +114,16 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
       case Some(tl) => Math.max(((tl - agent.clock) / tl), 0.0) * longTermTimeRewardWeight
     }
     val longTermScore = (goalReward + longTermHealthReward + longTermEnergyReward + longTermTimeReward) / longTermWeightsTotal
-    val scale = if (eventLogShort.size / 10 > 1) eventLogShort.size / 10 else 1.0
     for (i <- 0 until eventLogShort.size) {
       val item = eventLogShort(i)
+      val scale = if (i > 10) i / 10 else 1.0
       val itemLongTermScore = longTermScore * Math.pow(0.9, i/scale)
       eventLog += new LogItem(item.state, item.action, item.event, item.shortTermScore, longTermScore)
     }
   }
 
   //------------------------ TEST METRIC DATA ----------------------------------
-  def runData: RunData = new RunData(goal.percentComplete, eventLog.size)
+  def runData: RunData = new RunData(goal.percentComplete, eventLog.size, agent.health, agent.energyLevel)
 
   //------------------------ EXPORT EVENT LOG ----------------------------------
   def getStateActionPairs(): List[StateActionPair] = eventLog.map(_.getStateActionPair()).toList
@@ -136,11 +141,25 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
   }
 
   def printOutcome = {
+    println()
     println(s"AGENT: ${agent.name}")
     println(s"Nmber of Events: ${eventLog.size}")
     println(s"Health: ${agent.health}")
     println(s"Energy: ${agent.energyLevel}")
     println(s"Goal Completion: ${goal.percentComplete}")
+  }
+
+  //------------------------- SAVE OPERATION -----------------------------------
+  def saveOperation(fName: String) = {
+    val jsonEnv = parse(encodeEnvironment(environment)) match {
+      case Left(_) => Json.obj()
+      case Right(jEnv) => jEnv
+    }
+    val jsonData = Json.obj(
+      ("environment", jsonEnv),
+      ("stateActionPairs", Json.fromValues(getStateActionPairs().map(_.roundOff(4).toJson())))
+    )
+    saveJsonFile(fName, operationRunPath, jsonData)
   }
 
 }

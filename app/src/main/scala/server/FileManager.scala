@@ -9,6 +9,7 @@ object FileManager {
   val environmentPath = "src/resources/environments/"
   val environmentTemplatePath = "src/resources/environment-templates/"
   val memoryFilePath = "src/resources/agent-memory/"
+  val operationRunPath = "src/resources/operation-runs/"
 
   def fileExists(fileName: String, path: String, extension: String): Boolean = {
     val filePath = (path + fileName + s".$extension").replace(' ', '_')
@@ -46,22 +47,14 @@ object FileManager {
     readFile(fileName, path, "json")
   }
 
-  def getEnvironmentFileNames(): List[String] = {
-    val d = new File(environmentPath)
-    if (d.exists && d.isDirectory) d.listFiles.filter(_.isFile).toList.map(_.getName())
+  def getFileNames(path: String): List[String] = {
+    val d = new File(path)
+    if (d.exists && d.isDirectory) d.listFiles.filter(_.isFile).toList.map(_.getName().split('.').head)
     else List[String]()
   }
-
-  def getEnvironmentTemplateFileNames(): List[String] = {
-    val d = new File(environmentTemplatePath)
-    if (d.exists && d.isDirectory) d.listFiles.filter(_.isFile).toList.map(_.getName())
-    else List[String]()
-  }
-
-  def getTestFileNames(): List[String] = {
-    val d = new File(memoryFilePath)
-    if (d.exists && d.isDirectory) d.listFiles.filter(_.isFile).toList.map(_.getName())
-    else List[String]()
-  }
+  def getEnvironmentFileNames(): List[String] = getFileNames(environmentPath)
+  def getEnvironmentTemplateFileNames(): List[String] = getFileNames(environmentTemplatePath)
+  def getMemoryFileNames(): List[String] = getFileNames(memoryFilePath)
+  def getOperationRunFileNames(): List[String] = getFileNames(operationRunPath)
 
 }

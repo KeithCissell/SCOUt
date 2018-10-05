@@ -1,10 +1,17 @@
 import {pingServer,
         getCurrentState,
-        newRandomEnvironment} from '../SCOUtAPI.js'
+        newRandomEnvironment,
+        getEnvironmentFileList,
+        getEnvironmentFile,
+        getTemplateFileList,
+        getTemplateFile,
+        getOperationFileList,
+        getOperationFile} from '../SCOUtAPI.js'
 import {formatEnvironment} from '../environment/EnvironmentFormatter.js'
 import {BasicEnvironmentForm} from './FormClasses.js'
 import {loadVisualizer} from '../visualizer/Visualizer.js'
-import {loadCustomEnvironmentForm} from './CustomEnvironmentForm.js'
+import {loadOperationVisualizer} from '../visualizer/OperationVisualizer.js'
+import {loadCustomEnvironmentForm, loadEnvironmentFromForm} from './CustomEnvironmentForm.js'
 import {checkBasicInputs} from './FormValidators.js'
 
 
@@ -46,9 +53,11 @@ function loadEnvironmentBuilderPage(name = "My Environment", height = "50", widt
       </form>
     </div>
     <div id="submit-buttons">
-      <button class="submit-button" id="random-environment-button">Random</button>
-      <button class="submit-button" id="custom-environment-button">Custom</button>
-      <button class="submit-button" id="load-environment-button">Load</button>
+      <button class="submit-button" id="random-environment-button">Random Env</button>
+      <button class="submit-button" id="custom-environment-button">Custom Env</button>
+      <button class="submit-button" id="load-environment-button">Load Env</button>
+      <button class="submit-button" id="load-environment-template-button">Load Env Template</button>
+      <button class="submit-button" id="load-operation-button">Load Operation</button>
     </div>
   </div>
   `
@@ -56,20 +65,85 @@ function loadEnvironmentBuilderPage(name = "My Environment", height = "50", widt
   document.getElementById("environment-name").value = name
   document.getElementById("height").value = height
   document.getElementById("width").value = width
+
   // Add event listeners
+  // Random Environment
   document.getElementById("random-environment-button").addEventListener("click", () => {
     if (checkBasicInputs()) {
       let form = getBasicInputs()
       buildRandomEnvironment(form.name, form.height, form.width)
     }
   })
-  document.getElementById("custom-environment-button").addEventListener("click", () => {
-    loadCustomEnvironmentForm()
-  })
-  document.getElementById("load-environment-button").addEventListener("click", () => {
-    console.log("Load Saved Environment")
-    //todo
-  })
+  // Custom Environment
+  document.getElementById("custom-environment-button").addEventListener("click", () => { loadCustomEnvironmentForm() })
+  // Load Environment
+  document.getElementById("load-environment-button").addEventListener("click", () => { loadFileLists("environment") })
+  // Load Environment Template
+  document.getElementById("load-environment-template-button").addEventListener("click", () => { loadFileLists("template") })
+  // Load Operation
+  document.getElementById("load-operation-button").addEventListener("click", () => {loadFileLists("operation")})
+}
+
+/*******************************************************************************
+_____loadFileLists_____
+Description
+    Display files that can be chosen from
+*******************************************************************************/
+async function loadFileLists(fileType) {
+  // capture DOM elements
+  document.getElementById("home-content").innerHTML = await `
+  <div id="files" class="scroll-box rounded-border">
+    <h3 id="file-list-title"></h3>
+    <ul id="file-list"></ul>
+  </div>
+  `
+  let fileList = await document.getElementById("file-list")
+  let fileListTitle = await document.getElementById("file-list-title")
+  if (fileType == "environment") {
+    fileListTitle.innerText = "Choose Environment File To Load"
+    let filesJson = await getEnvironmentFileList()
+    await filesJson.json().then((json) => {
+      for (let i = 0; i < json.length; i++) {
+        let fileSelection = document.createElement("li")
+        fileSelection.innerText = json[i]
+        fileSelection.setAttribute("id", json[i])
+        fileSelection.setAttribute("class", "file-selection")
+        fileSelection.addEventListener("click", () => { loadEnvironmentFromJson(json[i]) })
+        fileList.appendChild(fileSelection)
+      }
+    })
+    // await for (fileName in filesJson) {}
+  } else if (fileType == "template") {
+    fileListTitle.innerText = "Choose Environment Template To Load"
+    let filesJson = await getTemplateFileList()
+    await filesJson.json().then((json) => {
+      for (let i = 0; i < json.length; i++) {
+        let fileSelection = document.createElement("li")
+        fileSelection.innerText = json[i]
+        fileSelection.setAttribute("id", json[i])
+        fileSelection.setAttribute("class", "file-selection")
+        fileSelection.addEventListener("click", () => { loadEnvironmentTemplate(json[i]) })
+        fileList.appendChild(fileSelection)
+      }
+    })
+    // await for (fileName in filesJson) {}
+  } else if (fileType == "operation") {
+    fileListTitle.innerText = "Choose Operation Run To Load"
+    let filesJson = await getOperationFileList()
+    await filesJson.json().then((json) => {
+      for (let i = 0; i < json.length; i++) {
+        let fileSelection = document.createElement("li")
+        fileSelection.innerText = json[i]
+        fileSelection.setAttribute("id", json[i])
+        fileSelection.setAttribute("class", "file-selection")
+        fileSelection.addEventListener("click", () => { loadOperationRun(json[i]) })
+        fileList.appendChild(fileSelection)
+      }
+    })
+  }
+  // Populate Submit Button Div
+  document.getElementById("submit-buttons").innerHTML = await `<button class="submit-button" id="back-button">Back</button>`
+  await document.getElementById("back-button").addEventListener("click", () => { loadEnvironmentBuilderPage() })
 }
 
 /*******************************************************************************
@@ -101,6 +175,34 @@ async function buildRandomEnvironment(name, height, width) {
     console.log(environment)
     loadVisualizer(environment)
   }).catch((err) => { console.log(err) })
+}
+
+
+async function loadEnvironmentFromJson(fileName) {
+  let environmentJson = await getEnvironmentFile(fileName)
+  await environmentJson.json().then((json) => {
+    console.log(json)
+    let environment = formatEnvironment(json)
+    loadVisualizer(environment)
+  })
+}
+
+async function loadEnvironmentTemplate(fileName) {
+  let environmentTemplateJson = await getTemplateFile(fileName)
+  await environmentTemplateJson.json().then((json) => {
+    console.log(json)
+    loadEnvironmentFromForm(JSON.stringify(json))
+  })
+}
+
+async function loadOperationRun(fileName) {
+  let operationJson = await getOperationFile(fileName)
+  await operationJson.json().then((json) => {
+    let environment = formatEnvironment(json.environment)
+    console.log(environment)
+    console.log(json.stateActionPairs)
+    loadOperationVisualizer(environment, json.stateActionPairs)
+  })
 }
 
 export {loadEnvironmentBuilderPage, getBasicInputs}
