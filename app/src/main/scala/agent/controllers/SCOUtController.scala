@@ -23,12 +23,13 @@ class SCOUtController(
 
   // Holds a history of movements for reference
   val memory: AB[StateActionPair] = AB()
+  var normalizedMemory = new NormalizedStateActionPairs(Nil)
 
   def copy: Controller = new SCOUtController(memoryFileName, memoryExtention, training, randomSelectThreshhold)
 
   def setup: Unit = {
     loadMemory()
-    println(s"MEM SIZE: ${memory.size}")
+    normalizedMemory = new NormalizedStateActionPairs(memory.toList)
   }
 
   def selectAction(actions: List[String], state: AgentState): String = {
@@ -57,6 +58,12 @@ class SCOUtController(
       val stsScore = s.shortTermScore * shortTermWeight
       val ltsScore = s.longTermScore * longTermScoreWeight
       val scoreTotal = (sizeScore + similarityScore + stsScore + ltsScore) / weightTotals
+      // println()
+      // println(a)
+      // println(s"Similarity Score: ${similarityScore}")
+      // println(s"STS Score: ${stsScore}")
+      // println(s"LTS Score: ${ltsScore}")
+      // println(s"Total Score: $scoreTotal")
       (a -> (scoreTotal + offset))
     }
     var selection = randomDouble(0.0, actionConfidence.values.foldLeft(0.0)(_ + _))
@@ -131,7 +138,7 @@ class SCOUtController(
   val shortTermWeight = 1.0
   val longTermWeight = 1.0
   val weightTotals: Double = similarityWeight + shortTermWeight + longTermWeight
-  def confidenceEQ(s: Double, sts: Double, lts: Double): Double = (s * similarityWeight + sts * shortTermWeight + lts * longTermWeight) / weightTotals
+  // def confidenceEQ(s: Double, sts: Double, lts: Double): Double = (s * similarityWeight + sts * shortTermWeight + lts * longTermWeight) / weightTotals
 
   // Variables
   val scanSimilarityThreshhold = 0.5
@@ -140,17 +147,20 @@ class SCOUtController(
   // SIMILARITY
   // Find similar scan events and accumulate the strongest similarities
   // Calculate a confidence score based on the confidence equations
-  def calculateSimilarity(state: AgentState, action: String): SimilarityAverage = {
+  def calculateSimilarity(rawState: AgentState, action: String): SimilarityAverage = {
     var similarities: AB[Similarity] = AB()
     val movementAction = isMovementAction(action)
-    for (sap <- memory) if (movementAction == isMovementAction(sap.action)) movementAction match {
+    val state = normalizedMemory.normalizeState(rawState)
+    for (sap <- normalizedMemory.normalizedStateActionPairs) if (movementAction == isMovementAction(sap.action)) movementAction match {
       case true => {
         val similarity = calculateSimilarityMovement(state, action, sap.state, sap.action)
-        if (similarity >= movementSimilarityThreshhold) similarities += new Similarity(similarity, sap.shortTermScore, sap.longTermScore)
+        // if (similarity >= movementSimilarityThreshhold)
+        similarities += new Similarity(similarity, sap.shortTermScore, sap.longTermScore)
       }
       case false => {
         val similarity = calculateSimilarityScan(state, action, sap.state, sap.action)
-        if (similarity >= scanSimilarityThreshhold) similarities += new Similarity(similarity, sap.shortTermScore, sap.longTermScore)
+        // if (similarity >= scanSimilarityThreshhold)
+        similarities += new Similarity(similarity, sap.shortTermScore, sap.longTermScore)
       }
     }
     val avgSimilarity: Double = if (similarities.size > 0) (similarities.map(_.similarity).fold(0.0)(_ + _) / similarities.size) else 0.0
@@ -221,6 +231,15 @@ class SCOUtController(
     val rightDiff = calculateQuadrantDiff(state, r, simState, sr) * rightWeight
     val leftDiffReflect = calculateQuadrantDiff(state, l, simState, sr) * leftWeight
     val rightDiffReflect = calculateQuadrantDiff(state, r, simState, sl) * rightWeight
+    // println()
+    // println(s"Health: $healthDiff")
+    // println(s"Energy: $energyDiff")
+    // println(s"F: $forwardDiff")
+    // println(s"B: $backDiff")
+    // println(s"L: $leftDiff")
+    // println(s"R: $rightDiff")
+    // println(s"Lr: $leftDiffReflect")
+    // println(s"Rr: $rightDiffReflect")
     // Calculate total direction differences
     val directionsDiff = if (leftDiff + rightDiff < leftDiffReflect + rightDiffReflect) {
       forwardDiff + backDiff + leftDiff + rightDiff
@@ -261,13 +280,21 @@ class SCOUtController(
     // Difference between Average vs. Current Value Differentials
     val averageValueDifferentialDiff = (qs.averageValueDifferential, sqs.averageValueDifferential) match {
       case (Some(avd), Some(savd)) => Math.abs(avd - savd) * averageValueDifferentialWeight
+      case (None, None) => 0.0
       case _ => 1.0
     }
     // Difference between Immediate vs. Current Value Differentials
     val immediateValueDifferentialDiff = (qs.immediateValueDifferential, sqs.immediateValueDifferential) match {
       case (Some(ivd), Some(sivd)) => Math.abs(ivd - sivd) * immediateValueDifferentialWeight
+      case (None, None) => 0.0
       case _ => 1.0
     }
+    // println()
+    // println(s"Indicator: $indicatorDiff")
+    // println(s"hazard: $hazardDiff")
+    // println(s"PK: $percentKnownDiff")
+    // println(s"AVD: $averageValueDifferentialDiff")
+    // println(s"IMD: $immediateValueDifferentialDiff")
     // return overall difference
     val overallDiff = (indicatorDiff + hazardDiff + percentKnownDiff + averageValueDifferentialDiff + immediateValueDifferentialDiff) / weightTotals
     return overallDiff

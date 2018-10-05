@@ -128,14 +128,18 @@ object State {
   }
 
   // ----------------------------NORMALIZATION----------------------------------
-  def normalizeAgentStatesGaussian(stateActionPairs: List[StateActionPair]): List[StateActionPair] = {
+  class NormalizedStateActionPairs(stateActionPairs: List[StateActionPair]) {
+    // CALCULATE NORMALS
     val states: List[AgentState] = stateActionPairs.map(_.state)
+
     // Gather health data
     val healthValues: List[Double] = states.map(_.health)
     val healthGaussianData: GaussianData = calculateGaussianDistribution(healthValues)
+
     // Gather energyLevel data
     val energyLevelValues: List[Double] = states.map(_.energyLevel)
     val energyGaussianData: GaussianData = calculateGaussianDistribution(energyLevelValues)
+
     // Gather elementStates data
     val elementStates: List[ElementState] = states.flatMap(_.elementStates)
     var elementStateData: MutableMap[String,(AB[Double],AB[Double])] = MutableMap() // map(elementType -> (avgValDiff, immValDiff))
@@ -161,10 +165,16 @@ object State {
       yield (eType -> ((calculateGaussianDistribution(avds.toList), calculateGaussianDistribution(ivds.toList))))).toMap
 
     // Create normalized data
-    val normalizedStateActionPairs = for (sap <- stateActionPairs) yield {
-      val normalizedHealth = healthGaussianData.normalize(sap.state.health)
-      val normalizedEnergy = energyGaussianData.normalize(sap.state.energyLevel)
-      val normalizedElementStates = for (es <- sap.state.elementStates) yield {
+    val normalizedStateActionPairs: List[StateActionPair] = for (sap <- stateActionPairs) yield {
+      val normalizedState = normalizeState(sap.state)
+      new StateActionPair(normalizedState, sap.action, sap.shortTermScore, sap.longTermScore)
+    }
+
+    // Normalize Given State
+    def normalizeState(state: AgentState): AgentState = {
+      val normalizedHealth = healthGaussianData.normalize(state.health)
+      val normalizedEnergy = energyGaussianData.normalize(state.energyLevel)
+      val normalizedElementStates = for (es <- state.elementStates) yield {
         val avdsGaussianData = elementsGaussianData.get(es.elementType).get._1
         val ivdsGaussianData = elementsGaussianData.get(es.elementType).get._2
         val normalizedNQ = new QuadrantState(es.northQuadrant.percentKnown, avdsGaussianData.normalize(es.northQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.northQuadrant.immediateValueDifferential))
@@ -173,24 +183,26 @@ object State {
         val normalizedEQ = new QuadrantState(es.eastQuadrant.percentKnown, avdsGaussianData.normalize(es.eastQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.eastQuadrant.immediateValueDifferential))
         new ElementState(es.elementType, es.indicator, es.hazard, es.percentKnownInRange, normalizedNQ, normalizedSQ, normalizedWQ, normalizedEQ)
       }
-      val normalizedState = new AgentState(sap.state.xPosition, sap.state.yPosition, normalizedHealth, normalizedEnergy, normalizedElementStates)
-      new StateActionPair(normalizedState, sap.action, sap.shortTermScore, sap.longTermScore)
+      new AgentState(state.xPosition, state.yPosition, normalizedHealth, normalizedEnergy, normalizedElementStates)
     }
-    return normalizedStateActionPairs
+
   }
 
   class GaussianData(val mean: Double, val std: Double) {
-    def normalize(x: Double): Double = (x - mean) / std
+    def normalize(x: Double): Double = if (std != 0.0) (x - mean) / std else 0.0
     def normalize(o: Option[Double]): Option[Double] = o match {
       case None => None
+      case Some(x) if (x.isNaN) => None
       case Some(x) => Some(normalize(x))
     }
   }
 
   def calculateGaussianDistribution(values: List[Double]): GaussianData = {
-    val mean = values.foldLeft(0.0)(_ + _) / values.length
-    val std = Math.sqrt(values.foldLeft(0.0)((a,b) => a + Math.pow((b - mean),2)) / values.length)
-    return new GaussianData(mean, std)
+    if (values.length > 0) {
+      val mean = values.foldLeft(0.0)(_ + _) / values.length
+      val std = Math.sqrt(values.foldLeft(0.0)((a,b) => a + Math.pow((b - mean),2)) / values.length)
+      return new GaussianData(mean, std)
+    } else return new GaussianData(0.0, 0.0)
   }
 
   // ----------------------------GENORATOR--------------------------------------

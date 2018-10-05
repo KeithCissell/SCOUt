@@ -110,6 +110,9 @@ function loadOperationControls() {
   document.getElementById("previous-action").addEventListener("click", () => { loadPreviousAction(1) })
   document.getElementById("next-action").addEventListener("click", () => { loadNextAction(1) })
   document.getElementById("next-action-ten").addEventListener("click", () => { loadNextAction(10) })
+  let cell = document.getElementById(`cell-${stateActionPairs[0].state.xPosition}-${stateActionPairs[0].state.yPosition}`)
+  if (cell.selected == "false") selectCell(cell)
+  else deSelectCell(cell)
 }
 
 function updateMessages() {
@@ -128,6 +131,9 @@ function loadPreviousAction(x) {
 function removeAction(x) {
   let sap = stateActionPairs[x]
   console.log("REMOVING", sap)
+  let cell = document.getElementById(`cell-${sap.state.xPosition}-${sap.state.yPosition}`)
+  if (cell.selected == "false") selectCell(cell)
+  else deSelectCell(cell)
 }
 
 function loadNextAction(x) {
@@ -140,7 +146,8 @@ function loadNextAction(x) {
 function addAction(x) {
   let sap = stateActionPairs[x]
   let cell = document.getElementById(`cell-${sap.state.xPosition}-${sap.state.yPosition}`)
-  selectCell(cell)
+  if (cell.selected == "false") selectCell(cell)
+  else deSelectCell(cell)
   if (isMovementAction(sap.action)) {
     // add movment
     console.log("ADDING Movement", sap)

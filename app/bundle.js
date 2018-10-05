@@ -34804,6 +34804,8 @@ function loadOperationControls() {
   document.getElementById("next-action-ten").addEventListener("click", function () {
     loadNextAction(10);
   });
+  var cell = document.getElementById('cell-' + stateActionPairs[0].state.xPosition + '-' + stateActionPairs[0].state.yPosition);
+  if (cell.selected == "false") selectCell(cell);else deSelectCell(cell);
 }
 
 function updateMessages() {
@@ -34824,6 +34826,8 @@ function loadPreviousAction(x) {
 function removeAction(x) {
   var sap = stateActionPairs[x];
   console.log("REMOVING", sap);
+  var cell = document.getElementById('cell-' + sap.state.xPosition + '-' + sap.state.yPosition);
+  if (cell.selected == "false") selectCell(cell);else deSelectCell(cell);
 }
 
 function loadNextAction(x) {
@@ -34838,7 +34842,7 @@ function loadNextAction(x) {
 function addAction(x) {
   var sap = stateActionPairs[x];
   var cell = document.getElementById('cell-' + sap.state.xPosition + '-' + sap.state.yPosition);
-  selectCell(cell);
+  if (cell.selected == "false") selectCell(cell);else deSelectCell(cell);
   if (isMovementAction(sap.action)) {
     // add movment
     console.log("ADDING Movement", sap);

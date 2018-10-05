@@ -43,6 +43,7 @@ class Test(
       for (i <- 0 until iterations) {
         runNumber += 1
         println()
+        println()
         println(s"Running Test $runNumber")
         val startPosition = getValidStartPosition(environment)
         val startX = startPosition._1

@@ -56,7 +56,7 @@ object Decoder {
     cursor.downField(field).as[Double] match {
       case Left(_)  => None
       case Right(d) => d match {
-        case n if n.isNaN => None
+        case n if (n.isNaN) => None
         case _ => Some(d)
       }
     }
@@ -66,7 +66,7 @@ object Decoder {
     data.downField(field).as[Double] match {
       case Left(_)  => None
       case Right(d) => d match {
-        case n if n.isNaN => None
+        case n if (n.isNaN) => None
         case _ => Some(d)
       }
     }
@@ -172,7 +172,7 @@ object Decoder {
     seedFields match {
       case None => None
       case Some(seedFields) => elementType match {
-        // case "Decibel"        => Some(new DecibelSeed(seedFields))
+        case "Decibel"        => Some(new DecibelSeed(seedFields))
         case "Elevation"      => Some(new ElevationSeed(seedFields))
         case "Latitude"       => Some(new LatitudeSeed(seedFields))
         case "Longitude"      => Some(new LongitudeSeed(seedFields))
@@ -371,7 +371,7 @@ object Decoder {
       val yPosition = dataList(1).as[Int].getOrElse(0)
       val health = dataList(2).as[Double].getOrElse(Double.NaN)
       val energyLevel = dataList(3).as[Double].getOrElse(Double.NaN)
-      val elementStatesJson = dataList(2).as[List[Json]]
+      val elementStatesJson = dataList(4).as[List[Json]]
       var elementStates: AB[ElementState] = AB()
       elementStatesJson match {
         case Left(_) => Nil
@@ -407,11 +407,11 @@ object Decoder {
     case Right(dataList) => {
       val percentKnown = dataList(0).as[Double].getOrElse(Double.NaN)
       val averageValueDifferential = dataList(1).as[Double] match {
-        case Right(v) => Some(v)
+        case Right(v) if (!v.isNaN) => Some(v)
         case _ => None
       }
       val immediateValueDifferential = dataList(2).as[Double] match {
-        case Right(v) => Some(v)
+        case Right(v) if (!v.isNaN) => Some(v)
         case _ => None
       }
       return Some(new QuadrantState(percentKnown, averageValueDifferential, immediateValueDifferential))

@@ -44,6 +44,9 @@ package seed {
       }
     }"""
   ) extends ElementSeed {
+    def this(seedData: Map[String, String]) {
+      this()
+    }
     // NOTE: using noise ruduction of -6 dB every doubling of distance
     // http://www.sengpielaudio.com/calculator-distance.htm
     // def soundReduction(source: NoiseSource, x: Int, y: Int, scale: Double): Double = {

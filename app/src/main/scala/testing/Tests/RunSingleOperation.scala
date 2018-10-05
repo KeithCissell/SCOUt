@@ -49,7 +49,7 @@ object RunSingleOperation {
     // val agentName = "Random"
     // val controller = new FindHumanController()
     // val agentName = "Find Human"
-    val controller = new SCOUtController("RandomSelection5000", "json", false, 30000)
+    val controller = new SCOUtController("NormalizedDataTest", "json", true, 10000)
     val agentName = "SCOUt"
 
     val sensors = List(

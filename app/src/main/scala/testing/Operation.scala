@@ -29,8 +29,8 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
   val timeLimit: Option[Double] = goal.timeLimit
 
   // SHORT-TERM SCORE WEIGHTS
-  val movementRewardWeight = 0.1
-  val scanRewardWeight = 5.0
+  val movementRewardWeight = 1.0
+  val scanRewardWeight = 1.0
   val healthRewardWeight = 1.0
   val energyRewardWeight = 1.0
   val timeRewardWeight = if (timeLimit == None) 0.0 else 1.0
@@ -114,9 +114,9 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
       case Some(tl) => Math.max(((tl - agent.clock) / tl), 0.0) * longTermTimeRewardWeight
     }
     val longTermScore = (goalReward + longTermHealthReward + longTermEnergyReward + longTermTimeReward) / longTermWeightsTotal
-    val scale = if (eventLogShort.size / 10 > 1) eventLogShort.size / 10 else 1.0
     for (i <- 0 until eventLogShort.size) {
       val item = eventLogShort(i)
+      val scale = if (i > 10) i / 10 else 1.0
       val itemLongTermScore = longTermScore * Math.pow(0.9, i/scale)
       eventLog += new LogItem(item.state, item.action, item.event, item.shortTermScore, longTermScore)
     }
@@ -141,6 +141,7 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
   }
 
   def printOutcome = {
+    println()
     println(s"AGENT: ${agent.name}")
     println(s"Nmber of Events: ${eventLog.size}")
     println(s"Health: ${agent.health}")
