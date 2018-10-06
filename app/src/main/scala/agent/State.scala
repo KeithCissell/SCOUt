@@ -19,7 +19,6 @@ object State {
     val yPosition: Int,
     val health: Double,
     val energyLevel: Double,
-    // val clock: Double,
     val elementStates: List[ElementState]
   ) {
     def elementTypes: List[String] = elementStates.map(_.elementType).toList
@@ -29,7 +28,6 @@ object State {
       ("yPosition", Json.fromInt(yPosition)),
       ("health", Json.fromDoubleOrNull(health)),
       ("energyLevel", Json.fromDoubleOrNull(energyLevel)),
-      // ("clock", Json.fromDoubleOrNull(clock)),
       ("elementStates", Json.fromValues(elementStates.map(_.toJson())))
     )
     def toJsonIndexed(): Json = Json.fromValues(List(
@@ -37,7 +35,6 @@ object State {
       Json.fromInt(yPosition),
       Json.fromDoubleOrNull(health),
       Json.fromDoubleOrNull(energyLevel),
-      // Json.fromDoubleOrNull(clock)),
       Json.fromValues(elementStates.map(_.toJsonIndexed()))
     ))
     def getElementState(elementType: String): Option[ElementState] = {
@@ -107,7 +104,7 @@ object State {
   class QuadrantState(
     val percentKnown: Double,
     val averageValueDifferential: Option[Double],
-    val immediateValueDifferential: Option[Double],
+    val immediateValueDifferential: Option[Double]
   ) {
     def toJson(): Json = Json.obj(
       ("percentKnown", Json.fromDoubleOrNull(percentKnown)),
@@ -127,83 +124,36 @@ object State {
     }
   }
 
-  // ----------------------------NORMALIZATION----------------------------------
-  class NormalizedStateActionPairs(stateActionPairs: List[StateActionPair]) {
-    // CALCULATE NORMALS
-    val states: List[AgentState] = stateActionPairs.map(_.state)
+  class StateActionPair(
+    val state: AgentState,
+    val action: String,
+    val shortTermScore: Double,
+    val longTermScore: Double
+  ) {
 
-    // Gather health data
-    val healthValues: List[Double] = states.map(_.health)
-    val healthGaussianData: GaussianData = calculateGaussianDistribution(healthValues)
+    def toJson(): Json = Json.obj(
+      ("state", state.toJson()),
+      ("action", Json.fromString(action)),
+      ("shortTermScore", Json.fromDoubleOrNull(shortTermScore)),
+      ("longTermScore", Json.fromDoubleOrNull(longTermScore))
+    )
 
-    // Gather energyLevel data
-    val energyLevelValues: List[Double] = states.map(_.energyLevel)
-    val energyGaussianData: GaussianData = calculateGaussianDistribution(energyLevelValues)
+    def toJsonIndexed(): Json = Json.fromValues(List(
+      state.toJsonIndexed(),
+      Json.fromString(action),
+      Json.fromDoubleOrNull(shortTermScore),
+      Json.fromDoubleOrNull(longTermScore)
+    ))
 
-    // Gather elementStates data
-    val elementStates: List[ElementState] = states.flatMap(_.elementStates)
-    var elementStateData: MutableMap[String,(AB[Double],AB[Double])] = MutableMap() // map(elementType -> (avgValDiff, immValDiff))
-    for (es <- elementStates) elementStateData.get(es.elementType) match {
-      case None => {
-        val avds: AB[Double] = AB()
-        val ivds: AB[Double] = AB()
-        for (quad <- List(es.northQuadrant, es.southQuadrant, es.westQuadrant, es.eastQuadrant)) {
-          if (quad.averageValueDifferential != None) avds += quad.averageValueDifferential.get
-          if (quad.immediateValueDifferential != None) ivds += quad.immediateValueDifferential.get
-        }
-        elementStateData += (es.elementType -> (avds, ivds))
-      }
-      case Some((avds, ivds)) => {
-        for (quad <- List(es.northQuadrant, es.southQuadrant, es.westQuadrant, es.eastQuadrant)) {
-          if (quad.averageValueDifferential != None) avds += quad.averageValueDifferential.get
-          if (quad.immediateValueDifferential != None) ivds += quad.immediateValueDifferential.get
-        }
-      }
-    }
-    val elementsGaussianData: Map[String,(GaussianData,GaussianData)] =
-      (for ((eType, (avds, ivds)) <- elementStateData)
-      yield (eType -> ((calculateGaussianDistribution(avds.toList), calculateGaussianDistribution(ivds.toList))))).toMap
 
-    // Create normalized data
-    val normalizedStateActionPairs: List[StateActionPair] = for (sap <- stateActionPairs) yield {
-      val normalizedState = normalizeState(sap.state)
-      new StateActionPair(normalizedState, sap.action, sap.shortTermScore, sap.longTermScore)
-    }
-
-    // Normalize Given State
-    def normalizeState(state: AgentState): AgentState = {
-      val normalizedHealth = healthGaussianData.normalize(state.health)
-      val normalizedEnergy = energyGaussianData.normalize(state.energyLevel)
-      val normalizedElementStates = for (es <- state.elementStates) yield {
-        val avdsGaussianData = elementsGaussianData.get(es.elementType).get._1
-        val ivdsGaussianData = elementsGaussianData.get(es.elementType).get._2
-        val normalizedNQ = new QuadrantState(es.northQuadrant.percentKnown, avdsGaussianData.normalize(es.northQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.northQuadrant.immediateValueDifferential))
-        val normalizedSQ = new QuadrantState(es.southQuadrant.percentKnown, avdsGaussianData.normalize(es.southQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.southQuadrant.immediateValueDifferential))
-        val normalizedWQ = new QuadrantState(es.westQuadrant.percentKnown, avdsGaussianData.normalize(es.westQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.westQuadrant.immediateValueDifferential))
-        val normalizedEQ = new QuadrantState(es.eastQuadrant.percentKnown, avdsGaussianData.normalize(es.eastQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.eastQuadrant.immediateValueDifferential))
-        new ElementState(es.elementType, es.indicator, es.hazard, es.percentKnownInRange, normalizedNQ, normalizedSQ, normalizedWQ, normalizedEQ)
-      }
-      new AgentState(state.xPosition, state.yPosition, normalizedHealth, normalizedEnergy, normalizedElementStates)
+    def roundOff(fps: Int): StateActionPair = {
+      val sts = roundDoubleX(shortTermScore, fps)
+      val lts = roundDoubleX(longTermScore, fps)
+      return new StateActionPair(state.roundOff(fps), action, sts, lts)
     }
 
   }
 
-  class GaussianData(val mean: Double, val std: Double) {
-    def normalize(x: Double): Double = if (std != 0.0) (x - mean) / std else 0.0
-    def normalize(o: Option[Double]): Option[Double] = o match {
-      case None => None
-      case Some(x) if (x.isNaN) => None
-      case Some(x) => Some(normalize(x))
-    }
-  }
-
-  def calculateGaussianDistribution(values: List[Double]): GaussianData = {
-    if (values.length > 0) {
-      val mean = values.foldLeft(0.0)(_ + _) / values.length
-      val std = Math.sqrt(values.foldLeft(0.0)((a,b) => a + Math.pow((b - mean),2)) / values.length)
-      return new GaussianData(mean, std)
-    } else return new GaussianData(0.0, 0.0)
-  }
 
   // ----------------------------GENORATOR--------------------------------------
   def generateAgentState(agent: Agent): AgentState = {
@@ -330,4 +280,206 @@ object State {
     }
     return cells
   }
+
+
+  // ----------------------------NORMALIZATION----------------------------------
+  class NormalizedStateActionPairs(stateActionPairs: List[StateActionPair]) {
+    // CALCULATE NORMALS
+    val states: List[AgentState] = stateActionPairs.map(_.state)
+
+    // Gather health data
+    val healthValues: List[Double] = states.map(_.health)
+    val healthGaussianData: GaussianData = calculateGaussianDistribution(healthValues)
+
+    // Gather energyLevel data
+    val energyLevelValues: List[Double] = states.map(_.energyLevel)
+    val energyGaussianData: GaussianData = calculateGaussianDistribution(energyLevelValues)
+
+    // Gather elementStates data
+    val elementStates: List[ElementState] = states.flatMap(_.elementStates)
+    var elementStateData: MutableMap[String,(AB[Double],AB[Double])] = MutableMap() // map(elementType -> (avgValDiff, immValDiff))
+    for (es <- elementStates) elementStateData.get(es.elementType) match {
+      case None => {
+        val avds: AB[Double] = AB()
+        val ivds: AB[Double] = AB()
+        for (quad <- List(es.northQuadrant, es.southQuadrant, es.westQuadrant, es.eastQuadrant)) {
+          if (quad.averageValueDifferential != None) avds += quad.averageValueDifferential.get
+          if (quad.immediateValueDifferential != None) ivds += quad.immediateValueDifferential.get
+        }
+        elementStateData += (es.elementType -> (avds, ivds))
+      }
+      case Some((avds, ivds)) => {
+        for (quad <- List(es.northQuadrant, es.southQuadrant, es.westQuadrant, es.eastQuadrant)) {
+          if (quad.averageValueDifferential != None) avds += quad.averageValueDifferential.get
+          if (quad.immediateValueDifferential != None) ivds += quad.immediateValueDifferential.get
+        }
+      }
+    }
+    val elementsGaussianData: Map[String,(GaussianData,GaussianData)] =
+      (for ((eType, (avds, ivds)) <- elementStateData)
+      yield (eType -> ((calculateGaussianDistribution(avds.toList), calculateGaussianDistribution(ivds.toList))))).toMap
+
+    // Create normalized data
+    val normalizedStateActionPairs: List[StateActionPair] = for (sap <- stateActionPairs) yield {
+      val normalizedState = normalizeState(sap.state)
+      new StateActionPair(normalizedState, sap.action, sap.shortTermScore, sap.longTermScore)
+    }
+
+    // Normalize Given State
+    def normalizeState(state: AgentState): AgentState = {
+      val normalizedHealth = healthGaussianData.normalize(state.health)
+      val normalizedEnergy = energyGaussianData.normalize(state.energyLevel)
+      val normalizedElementStates = for (es <- state.elementStates) yield {
+        val avdsGaussianData = elementsGaussianData.get(es.elementType).get._1
+        val ivdsGaussianData = elementsGaussianData.get(es.elementType).get._2
+        val normalizedNQ = new QuadrantState(es.northQuadrant.percentKnown, avdsGaussianData.normalize(es.northQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.northQuadrant.immediateValueDifferential))
+        val normalizedSQ = new QuadrantState(es.southQuadrant.percentKnown, avdsGaussianData.normalize(es.southQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.southQuadrant.immediateValueDifferential))
+        val normalizedWQ = new QuadrantState(es.westQuadrant.percentKnown, avdsGaussianData.normalize(es.westQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.westQuadrant.immediateValueDifferential))
+        val normalizedEQ = new QuadrantState(es.eastQuadrant.percentKnown, avdsGaussianData.normalize(es.eastQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.eastQuadrant.immediateValueDifferential))
+        new ElementState(es.elementType, es.indicator, es.hazard, es.percentKnownInRange, normalizedNQ, normalizedSQ, normalizedWQ, normalizedEQ)
+      }
+      new AgentState(state.xPosition, state.yPosition, normalizedHealth, normalizedEnergy, normalizedElementStates)
+    }
+
+
+    // DIFFERENCES
+    def calculateStateActionDifferences(rawState: AgentState): List[StateActionDifference] = {
+      // Normalize Raw State
+      val state = normalizeState(rawState)
+      // Generate list
+      val differences: List[StateActionDifference] = for (sap <- normalizedStateActionPairs) yield {
+        // Extract State Action Pair Data
+        val cState: AgentState = sap.state
+        val cAction: String = sap.action
+        val cSTS: Double = sap.shortTermScore
+        val cLTS: Double = sap.longTermScore
+        // Calculate Differences
+        val healthDifference: Double = Math.abs(state.health - cState.health)
+        val energyDifference: Double = Math.abs(state.energyLevel - cState.energyLevel)
+        val elementStateDifferences: List[ElementStateDifference] = calculateElementStateDifferences(state, cState)
+        val northComparisons: QuadrantComparisons = calculateQuadrantComparisons(state, "north", cState)
+        val southComparisons: QuadrantComparisons = calculateQuadrantComparisons(state, "south", cState)
+        val westComparisons: QuadrantComparisons = calculateQuadrantComparisons(state, "west", cState)
+        val eastComparisons: QuadrantComparisons = calculateQuadrantComparisons(state, "east", cState)
+        val stateDifference = new StateDifference(healthDifference, energyDifference, elementStateDifferences, northComparisons, southComparisons, westComparisons, eastComparisons)
+        new StateActionDifference(stateDifference, cAction, cSTS, cLTS)
+      }
+      return differences
+    }
+
+    // ELEMENT STATE DIFFERENCES
+    def calculateElementStateDifferences(state: AgentState, cState: AgentState): List[ElementStateDifference] = for (es <- state.elementStates) yield {
+      val elementType = es.elementType
+      cState.getElementState(elementType) match {
+        case None => new ElementStateDifference(elementType, 1.0, 1.0, 1.0, 1.0)
+        case Some(ces) => {
+          val indicatorDifference: Double = if (es.indicator == ces.indicator) 0.0 else 1.0
+          val hazardDifference: Double = if (es.indicator == ces.indicator) 0.0 else 1.0
+          val percentKnownInRangeDifference: Double = Math.abs(es.percentKnownInRange - ces.percentKnownInRange)
+          val immediateKnownDifference: Double = Math.abs(es.immediateValuesKnown - ces.immediateValuesKnown) / 4.0
+          new ElementStateDifference(elementType, indicatorDifference, hazardDifference, percentKnownInRangeDifference, immediateKnownDifference)
+        }
+      }
+    }
+
+    // QUADRANT DIFFERENCE
+    def calculateQuadrantComparisons(state: AgentState, orientation: String, cState: AgentState): QuadrantComparisons = {
+      val northQuadrantDifference: QuadrantDifference = calculateQuadrantDifference(state, orientation, cState, "north")
+      val southQuadrantDifference: QuadrantDifference = calculateQuadrantDifference(state, orientation, cState, "south")
+      val westQuadrantDifference: QuadrantDifference = calculateQuadrantDifference(state, orientation, cState, "west")
+      val eastQuadrantDifference: QuadrantDifference = calculateQuadrantDifference(state, orientation, cState, "east")
+      new QuadrantComparisons(northQuadrantDifference, southQuadrantDifference, westQuadrantDifference, eastQuadrantDifference)
+    }
+
+    def calculateQuadrantDifference(state: AgentState, orientation: String, cState: AgentState, cOrientation: String): QuadrantDifference = {
+      val quadrantElementStateDifferences = for (es <- state.elementStates) yield {
+        val elementType = es.elementType
+        cState.getElementState(elementType) match {
+          case None => new QuadrantElementStateDifference(elementType, 1.0, 1.0, 1.0)
+          case Some(ces) => CalculateQuadrantElementStateDifference(es, orientation, ces, cOrientation)
+        }
+      }
+      return new QuadrantDifference(quadrantElementStateDifferences)
+    }
+
+    def CalculateQuadrantElementStateDifference(es: ElementState, orientation: String, ces: ElementState, cOrientation: String): QuadrantElementStateDifference = {
+      val quadrant = es.getQuadrantState(orientation)
+      val cQuadrant = ces.getQuadrantState(cOrientation)
+      val percentKnownDifference: Double = Math.abs(quadrant.percentKnown - cQuadrant.percentKnown)
+      val averageValueDifference: Double = (quadrant.averageValueDifferential, cQuadrant.averageValueDifferential) match {
+        case (Some(avd), Some(cavd)) => Math.abs(avd - cavd)
+        case (None, None) => 0.0
+        case _ => 1.0
+      }
+      val immediateValueDifference: Double = (quadrant.immediateValueDifferential, cQuadrant.immediateValueDifferential) match {
+        case (Some(ivd), Some(civd)) => Math.abs(ivd - civd)
+        case (None, None) => 0.0
+        case _ => 1.0
+      }
+      new QuadrantElementStateDifference(es.elementType, percentKnownDifference, averageValueDifference, immediateValueDifference)
+    }
+
+  }
+
+  class GaussianData(val mean: Double, val std: Double) {
+    def normalize(x: Double): Double = if (std != 0.0) (x - mean) / std else 0.0
+    def normalize(o: Option[Double]): Option[Double] = o match {
+      case None => None
+      case Some(x) if (x.isNaN) => None
+      case Some(x) => Some(normalize(x))
+    }
+  }
+
+  // Find the Gaussin Distribution of data values
+  def calculateGaussianDistribution(values: List[Double]): GaussianData = {
+    if (values.length > 0) {
+      val mean = values.foldLeft(0.0)(_ + _) / values.length
+      val std = Math.sqrt(values.foldLeft(0.0)((a,b) => a + Math.pow((b - mean),2)) / values.length)
+      return new GaussianData(mean, std)
+    } else return new GaussianData(0.0, 0.0)
+  }
+
+  class StateActionDifference(
+    val stateDifference: StateDifference,
+    val action: String,
+    val shortTermScore: Double,
+    val longTermScore: Double
+  ) {}
+
+  class StateDifference(
+    val healthDifference: Double,
+    val energyDifference: Double,
+    val elementStateDifferences: List[ElementStateDifference],
+    val northComparisons: QuadrantComparisons,
+    val southComparisons: QuadrantComparisons,
+    val westComparisons: QuadrantComparisons,
+    val eastComparisons: QuadrantComparisons
+  ) {}
+
+  class ElementStateDifference(
+    val elementType: String,
+    val indicatorDifference: Double,
+    val hazardDifference: Double,
+    val percentKnownInRangeDifference: Double,
+    val immediateKnownDifference: Double
+  ) {}
+
+  class QuadrantComparisons(
+    val northQuadrantDifference: QuadrantDifference,
+    val southQuadrantDifference: QuadrantDifference,
+    val westQuadrantDifference: QuadrantDifference,
+    val eastQuadrantDifference: QuadrantDifference
+  )
+
+  class QuadrantDifference(
+    val quadrantElementStateDifferences: List[QuadrantElementStateDifference]
+  ) {}
+
+  class QuadrantElementStateDifference(
+    val elementType: String,
+    val percentKnownDifference: Double,
+    val averageValueDifference: Double,
+    val immediateValueDifference: Double
+  )
+
 }

@@ -16,7 +16,7 @@ class FindHumanController() extends Controller {
 
   def copy: Controller = new FindHumanController()
 
-  def setup: Unit = {}
+  def setup(mapHeight: Int, mapWidth: Int): Unit = {}
 
   def selectAction(actions: List[String], state: AgentState): String = {
     // Add Current Position to visited cells

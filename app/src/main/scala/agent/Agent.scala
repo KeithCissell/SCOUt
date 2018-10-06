@@ -81,7 +81,7 @@ class Agent(
   def setup: Unit = {
     maxHealth = health
     maxEnergyLevel = energyLevel
-    controller.setup
+    controller.setup(mapHeight, mapWidth)
   }
 
   def shutDown(stateActionPairs: List[StateActionPair]): Unit = {

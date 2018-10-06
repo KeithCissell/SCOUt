@@ -4,6 +4,7 @@ import io.circe._
 import io.circe.syntax._
 
 import scoutagent.Event._
+import scoutagent._
 import scoutagent.State._
 import scoututil.Util._
 
@@ -66,35 +67,5 @@ class LogItem(
   }
 
   def getStateActionPair(): StateActionPair = new StateActionPair(state, action, shortTermScore, longTermScore)
-
-}
-
-class StateActionPair(
-  val state: AgentState,
-  val action: String,
-  val shortTermScore: Double,
-  val longTermScore: Double
-) {
-
-  def toJson(): Json = Json.obj(
-    ("state", state.toJson()),
-    ("action", Json.fromString(action)),
-    ("shortTermScore", Json.fromDoubleOrNull(shortTermScore)),
-    ("longTermScore", Json.fromDoubleOrNull(longTermScore))
-  )
-
-  def toJsonIndexed(): Json = Json.fromValues(List(
-    state.toJsonIndexed(),
-    Json.fromString(action),
-    Json.fromDoubleOrNull(shortTermScore),
-    Json.fromDoubleOrNull(longTermScore)
-  ))
-
-
-  def roundOff(fps: Int): StateActionPair = {
-    val sts = roundDoubleX(shortTermScore, fps)
-    val lts = roundDoubleX(longTermScore, fps)
-    return new StateActionPair(state.roundOff(fps), action, sts, lts)
-  }
 
 }
