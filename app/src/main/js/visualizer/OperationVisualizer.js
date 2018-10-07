@@ -18,7 +18,7 @@ let stateActionPairs
 let actionMessage
 let stateMessage
 let currentSAP
-let actionIndex = -1
+let actionIndex
 
 
 /*******************************************************************************
@@ -87,6 +87,7 @@ function loadOperationVisualizer(targetEnvironment, saps) {
   document.getElementById("display").setAttribute("height", "65%")
   document.getElementById("legend").setAttribute("height", "65%")
 
+  actionIndex = -1
   actionMessage = document.getElementById("action-message")
   stateMessage = document.getElementById("state-message")
 

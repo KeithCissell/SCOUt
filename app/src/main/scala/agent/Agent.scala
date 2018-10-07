@@ -27,7 +27,7 @@ class Agent(
   // Agent Satus Variables
   var internalMap: Grid[Cell] = emptyCellGrid(mapHeight, mapWidth)
   var health: Double = 100.0
-  var energyLevel: Double = 100.0
+  var energyLevel: Double = 250.0
   var clock: Double = 0.0 // in milliseconds
 
   // Universal damage and energy use variables
@@ -36,6 +36,7 @@ class Agent(
   val damageNormal: Double = 0.1
   val energyUseNormal: Double = 0.5
   val movementCost: Double = 0.5
+  val slopeCost: Double = 0.2
 
   // Damage calculations
   val movementSlopeUpperThreshHold: Double = 1.0
@@ -46,10 +47,10 @@ class Agent(
     case _ => Math.abs(slope * dist * (2.0 - movementDamageResistance) * damageNormal)
   }
   def calculateMovementEnergyUse(slope: Double, dist: Double): Double = {
-    (1.0 + slope) * dist * movementCost
+    (1.0 + (slope * slopeCost)) * dist * movementCost
   }
   def calculateMovementTime(slope: Double, dist: Double): Double = {
-    (1.0 + slope) * dist * 1000.0
+    (1.0 + (slope * slopeCost)) * dist * 1000.0
   }
   val temperatureDamageUpperThreshold: Double = 150.0
   val temperatureDamageLowerThreshold: Double = -50.0
@@ -81,7 +82,7 @@ class Agent(
   def setup: Unit = {
     maxHealth = health
     maxEnergyLevel = energyLevel
-    controller.setup
+    controller.setup(mapHeight, mapWidth)
   }
 
   def shutDown(stateActionPairs: List[StateActionPair]): Unit = {

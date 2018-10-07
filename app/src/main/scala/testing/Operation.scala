@@ -57,6 +57,7 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
       val state = agent.getState()
       val action = agent.chooseAction()
       val event = agent.performAction(environment, action)
+      // println(s"Action: $action")
       // Calculate Short-Term Score and Log
       val shortTermScore = scoreEventShortTerm(event)
       eventLogShort += new LogItemShort(state, action, event, shortTermScore)
@@ -116,7 +117,7 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
     val longTermScore = (goalReward + longTermHealthReward + longTermEnergyReward + longTermTimeReward) / longTermWeightsTotal
     for (i <- 0 until eventLogShort.size) {
       val item = eventLogShort(i)
-      val scale = if (i > 10) i / 10 else 1.0
+      val scale = if (eventLogShort.size > 10) eventLogShort.size / 10 else 1.0
       val itemLongTermScore = longTermScore * Math.pow(0.9, i/scale)
       eventLog += new LogItem(item.state, item.action, item.event, item.shortTermScore, longTermScore)
     }

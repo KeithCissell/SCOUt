@@ -35,8 +35,8 @@ object RunSingleOperation {
     // Check if start position is clear of hazards and doesn't start on an anomaly
     validationAgent.calculateHazardDamage(env, startX, startY, 10000) match {
       case d if (d > 0.0) => return getValidStartPosition(env) // Try different start position
-      case d => env.getAnomalies(startX, startY) match {
-        case Some(as) if (as.size > 0) => return getValidStartPosition(env)
+      case d => env.getAnomaliesNeighbors(startX, startY) match {
+        case as if (as.size > 0) => return getValidStartPosition(env)
         case _ => return (startX, startY)
       }
     }
@@ -49,7 +49,7 @@ object RunSingleOperation {
     // val agentName = "Random"
     // val controller = new FindHumanController()
     // val agentName = "Find Human"
-    val controller = new SCOUtController("NormalizedDataTest", "json", true, 10000)
+    val controller = new SCOUtController("DifferenceMethodTest", "json", false, 0)
     val agentName = "SCOUt"
 
     val sensors = List(
@@ -61,7 +61,7 @@ object RunSingleOperation {
     // DEFAULT
     lazy val defaultEnvironment = buildEnvironment("Test Environment", 20, 20, 10.0, ElementSeedList.defaultSeedList(), TerrainModificationList.defaultList(), AnomalyList.defaultList())
     // LOADED
-    val environemtFileName = "10by10NoMods"
+    val environemtFileName = "BeginnerCourse"
     // Environment file
     // val envString = readJsonFile(environemtFileName, environmentPath)
     // val environment = parse(envString) match {
@@ -102,6 +102,8 @@ object RunSingleOperation {
 
     // Run Operation and save data
     operation.run
+    // operation.printActions
+    operation.printOutcome
     val fileName = new DateTime().toString("yyyy-MM-dd-HH-mm") + "-" + agentName
     operation.saveOperation(fileName)
   }

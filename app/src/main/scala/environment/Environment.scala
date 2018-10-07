@@ -107,9 +107,19 @@ class Environment(
     case None     => grid(x)(y) = Some(new Cell(x = x, y = y, anomalies = MutableSet(anomaly)))
   }
   // returns any anomalies found
-  def getAnomalies(x: Int, y: Int): Option[MutableSet[String]] = getCell(x, y) match {
-    case Some(c)  => Some(c.anomalies)
-    case None     => None
+  def getAnomalies(x: Int, y: Int): MutableSet[String] = getCell(x, y) match {
+    case Some(c)  => c.anomalies
+    case None     => MutableSet()
+  }
+  // returns anomalies in cluster
+  def getAnomaliesNeighbors(originX: Int, originY: Int): MutableSet[String] = {
+    var anomalies: MutableSet[String] = MutableSet()
+    val allAnomalies = for {
+      x <- (originX - 1) to (originX + 1)
+      y <- (originY - 1) to (originY + 1)
+      if (inGrid(x,y))
+    } yield anomalies ++= getAnomalies(x,y)
+    return anomalies
   }
   // takes a layer of elements and adds it to the environment
   def setLayer(layer: Layer) = {

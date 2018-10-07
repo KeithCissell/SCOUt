@@ -12,7 +12,7 @@ class RandomController() extends Controller {
 
   def copy: Controller = new RandomController()
 
-  def setup: Unit = {}
+  def setup(mapHeight: Int, mapWidth: Int): Unit = {}
 
   def selectAction(actions: List[String], state: AgentState): String = {
     actions(randomInt(0, actions.length - 1))

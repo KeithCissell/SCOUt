@@ -1,6 +1,7 @@
 package operation
 
 import scoutagent._
+import scoutagent.State._
 import environment._
 import environment.cell._
 import scoututil.Util._
