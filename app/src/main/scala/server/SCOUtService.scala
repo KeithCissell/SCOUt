@@ -144,7 +144,7 @@ object SCOUtService {
     case Right(data) => {
       val name = extractString("name", data).getOrElse("NameNotFound")
       val jsonString = data.toString
-      val fileName = new DateTime().toString("yyyy-MM-dd-HH-mm") + "-" + name
+      val fileName = name // new DateTime().toString("yyyy-MM-dd-HH-mm") + "-" + name
       saveJsonFile(fileName, "src/resources/environment-templates/", jsonString)
       Ok(s"Saved as $fileName")
     }

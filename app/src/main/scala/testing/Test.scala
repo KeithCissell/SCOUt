@@ -116,8 +116,8 @@ class Test(
     // Check if start position is clear of hazards and doesn't start on an anomaly
     validationAgent.calculateHazardDamage(env, startX, startY, 10000) match {
       case d if (d > 0.0) => return getValidStartPosition(env) // Try different start position
-      case d => env.getAnomalies(startX, startY) match {
-        case Some(as) if (as.size > 0) => return getValidStartPosition(env)
+      case d => env.getAnomaliesNeighbors(startX, startY) match {
+        case as if (as.size > 0) => return getValidStartPosition(env)
         case _ => return (startX, startY)
       }
     }

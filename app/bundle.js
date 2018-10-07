@@ -34743,7 +34743,7 @@ var stateActionPairs = void 0;
 var actionMessage = void 0;
 var stateMessage = void 0;
 var currentSAP = void 0;
-var actionIndex = -1;
+var actionIndex = void 0;
 
 /*******************************************************************************
 _____loadVisualizer_____
@@ -34773,6 +34773,7 @@ function loadOperationVisualizer(targetEnvironment, saps) {
   document.getElementById("display").setAttribute("height", "65%");
   document.getElementById("legend").setAttribute("height", "65%");
 
+  actionIndex = -1;
   actionMessage = document.getElementById("action-message");
   stateMessage = document.getElementById("state-message");
 

@@ -6,7 +6,9 @@ app/package-lock.json
 
 **/sandbox/
 
-THESIS/Latex-Paper/*
-!THESIS/Latex-Paper/Thesis-Report.tex
-!THESIS/Latex-Paper/Thesis-Report.pdf
-!THESIS/Latex-Paper/References.bib
+THESIS/**/*.aux
+THESIS/**/*.fdb_latexmk
+THESIS/**/*.fls
+THESIS/**/*.log
+THESIS/**/*.gz
+THESIS/**/*.toc

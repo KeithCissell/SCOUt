@@ -25,23 +25,64 @@ class SCOUtController(
   // ATTRIBUTES
   val memory: AB[StateActionPair] = AB()
   var normalizedMemory: NormalizedStateActionPairs = new NormalizedStateActionPairs(Nil)
-  var saveMemoryLimit: Int = 0
+  val saveLateMemoryLimit: Int = 20
+  val saveEarlyMemoryPercent: Double = 0.05
   val fps = 4 // floating points past decimal to store in memory values
+
+  // DIFFERENCE WEIGHTS
+  val stateDifferenceWeights = new StateDifferenceWeights(
+    healthWeight = 0.0,
+    energyWeight = 0.0,
+    elementStateWeight = 1.0,
+    totalQuadrantWeight = 1.0,
+    elementDifferenceWeights = new ElementDifferenceWeights(
+      indicatorWeight = 1.0,
+      hazardWeight = 1.0,
+      percentKnownInRangeWeight = 5.0,
+      immediateKnownWeight = 2.0
+    ),
+    quadrantDifferenceWeights = new QuadrantDifferenceWeights(
+      percentKnownWeight = 1.0,
+      averageValueWeight = 2.0,
+      immediateValueWeight = 3.0
+    )
+  )
+
+  // SELECTION WEIGHTS
+  val trainingSelectionWeights = new SelectionWeights(
+    predictedShortTermScoreWeight = 1.0,
+    predictedLongTermScoreWeight = 1.5,
+    confidenceWeight = 0.5
+  )
+  val selectionWeights = new SelectionWeights(
+    predictedShortTermScoreWeight = 1.0,
+    predictedLongTermScoreWeight = 1.0,
+    confidenceWeight = 1.0
+  )
 
   def copy: Controller = new SCOUtController(memoryFileName, memoryExtention, training, randomSelectThreshhold)
 
   def setup(mapHeight: Int, mapWidth: Int): Unit = {
-    saveMemoryLimit = (mapHeight * 2) + (mapWidth * 2)
     loadMemory()
     normalizedMemory = new NormalizedStateActionPairs(memory.toList)
   }
 
   def shutDown(stateActionPairs: List[StateActionPair]): Unit = if (training) {
-    val sapsToSave = if (stateActionPairs.length > saveMemoryLimit) {
-      stateActionPairs.slice(stateActionPairs.length - (saveMemoryLimit +1), stateActionPairs.length - 1)
+    val lateMemory: List[StateActionPair] = if (stateActionPairs.length > saveLateMemoryLimit) {
+      stateActionPairs.slice(stateActionPairs.length - (saveLateMemoryLimit +1), stateActionPairs.length - 1)
     } else stateActionPairs
-    memory ++= sapsToSave.map(_.roundOff(fps))
+    val earlyMemory: List[StateActionPair] = if (stateActionPairs.length > saveLateMemoryLimit) {
+      val sampleRate: Int = List(1, ((stateActionPairs.length - saveLateMemoryLimit) * saveEarlyMemoryPercent).toInt).max
+      (for {
+        i <- 0 to (stateActionPairs.length - saveLateMemoryLimit)
+        if (i % sampleRate) == 0.0
+      } yield stateActionPairs(i)).toList
+    } else Nil
+    memory ++= lateMemory.map(_.roundOff(fps)) ++= earlyMemory.map(_.roundOff(fps))
     saveMemory()
+    // println()
+    // println(s"Saving: ${sapsToSave.size}")
+    // println()
   }
 
   // ---------------------------------MEMORY------------------------------------
@@ -51,8 +92,10 @@ class SCOUtController(
       case Left(_) => AB() // Memory not found or invalid
       case Right(jsonData) => extractStateActionMemoryIndexed(jsonData)
     }
-    // println(s"Loaded ${loadedMemory.length} items")
     memory ++= loadedMemory
+    // println()
+    // println(s"Loaded ${loadedMemory.length} items")
+    // println()
   }
 
   def saveMemory() = {
@@ -66,279 +109,114 @@ class SCOUtController(
   // -----------------------------SELECTION-------------------------------------
   def selectAction(actions: List[String], state: AgentState): String = {
     // Randomly select while training and memory size is bellow threshold
-    actions(randomInt(0, actions.length - 1))
-
-    // if (training && memory.size < randomSelectThreshhold) {
-    //   actions(randomInt(0, actions.length - 1))
-    // } else {
-    //   // Get difference between items in memory
-    //   val stateActionDifferences: List[StateActionDifference] = normalizedMemory.calculateStateActionDifferences(state)
-    //   // Select action
-    //   if (training) rouletteSelection(stateActionDifferences)
-    //   else eliteSelection(stateActionDifferences)
-    // }
+    if (training && memory.size < randomSelectThreshhold) randomSelect(actions)
+    else if (training) rouletteSelection(actions, state)
+    else eliteSelection(actions, state)
   }
 
-  def rouletteSelection(stateActionDifferences:  List[StateActionDifference]): String = {
-    // val sizeWeight = 0
-    // val similarityWeight = 1.0
-    // val shortTermScoreWeight = 1.0
-    // val longTermScoreWeight = 1.0
-    // val weightTotals = sizeWeight + similarityWeight + shortTermWeight + longTermWeight
-    // val offset = 0.5 // Ensures every action has a chance for selection
-    // val actionConfidence: Map[String,Double] = for ((a,s) <- actionStateSimilarities) yield {
-    //   val sizeScore = s.numSimilarStates * sizeWeight
-    //   val similarityScore = s.similarity * similarityWeight
-    //   val stsScore = s.shortTermScore * shortTermWeight
-    //   val ltsScore = s.longTermScore * longTermScoreWeight
-    //   val scoreTotal = (sizeScore + similarityScore + stsScore + ltsScore) / weightTotals
-    //   // println()
-    //   // println(a)
-    //   // println(s"Similarity Score: ${similarityScore}")
-    //   // println(s"STS Score: ${stsScore}")
-    //   // println(s"LTS Score: ${ltsScore}")
-    //   // println(s"Total Score: $scoreTotal")
-    //   (a -> (scoreTotal + offset))
-    // }
-    // var selection = randomDouble(0.0, actionConfidence.values.foldLeft(0.0)(_ + _))
-    // for ((action, confidence) <- actionConfidence) {
-    //   if (confidence >= selection) return action
-    //   else selection -= confidence
-    // }
-    return "null"
+  // SELECTION METHODS
+  def randomSelect(actions: List[String]): String = actions(randomInt(0, actions.length - 1))
+
+  def rouletteSelection(actions: List[String], state: AgentState): String = {
+    val predictedActionScores: List[ActionScorePrediction] = predictActionScores(actions, state)
+    // Scores
+    val equalChance = 0.1
+    var scoreTotal = 0.0
+    var actionScores: MutableMap[String,Double] = MutableMap()
+    for (pas <- predictedActionScores) {
+      val score = pas.overallScore(trainingSelectionWeights) + equalChance
+      scoreTotal += score
+      actionScores += (pas.action -> score)
+      // pas.printPrediction
+    }
+    // Roulette Select
+    var selectionValue = randomDouble(0.0, scoreTotal)
+    for ((a, s) <- actionScores) {
+      if (selectionValue <= s) return a
+      else selectionValue -= s
+    }
+    return randomSelect(actions)
   }
 
-  def eliteSelection(stateActionDifferences: List[StateActionDifference]): String = {
-    // val sizeWeight = 0.0
-    // val similarityWeight = 1.0
-    // val shortTermScoreWeight = 1.0
-    // val longTermScoreWeight = 1.0
-    // val weightTotals = sizeWeight + similarityWeight + shortTermWeight + longTermWeight
-    // val actionConfidence: Map[String,Double] = for ((a,s) <- actionStateSimilarities) yield {
-    //   val sizeScore = s.numSimilarStates * sizeWeight
-    //   val similarityScore = s.similarity * similarityWeight
-    //   val stsScore = s.shortTermScore * shortTermWeight
-    //   val ltsScore = s.longTermScore * longTermScoreWeight
-    //   val scoreTotal = (sizeScore + similarityScore + stsScore + ltsScore) / weightTotals
-    //   // println()
-    //   // println(a)
-    //   // println(s"Similarity Score: ${similarityScore}")
-    //   // println(s"STS Score: ${stsScore}")
-    //   // println(s"LTS Score: ${ltsScore}")
-    //   // println(s"Total Score: $scoreTotal")
-    //   (a -> scoreTotal)
-    // }
-    // var bestAction: Option[String] = None
-    // var bestConfidence: Option[Double] = None
-    // for ((action, confidence) <- actionConfidence) bestConfidence match {
-    //   case None => {
-    //     bestAction = Some(action)
-    //     bestConfidence = Some(confidence)
-    //   }
-    //   case Some(bc) if (confidence > bc) => {
-    //     bestAction = Some(action)
-    //     bestConfidence = Some(confidence)
-    //   }
-    //   case _ => // no update
-    // }
-    // return bestAction.getOrElse("null")
-    return "null"
+  def eliteSelection(actions: List[String], state: AgentState): String = {
+    val predictedActionScores: List[ActionScorePrediction] = predictActionScores(actions, state)
+    // Best Action
+    var bestAction = randomSelect(actions)
+    var bestScore = 0.0
+    for (pas <- predictedActionScores) {
+      val score = pas.overallScore(selectionWeights)
+      if (score > bestScore) {
+        bestAction = pas.action
+        bestScore = score
+      }
+      // pas.printPrediction
+    }
+    return bestAction
   }
 
+  // ---------------------SCORE PREDICTIONS--------------------------
+  def predictActionScores(actions: List[String], state: AgentState): List[ActionScorePrediction] = {
+    // Calculate Overall Differences
+    val stateActionDifferences: List[StateActionDifference] = normalizedMemory.calculateStateActionDifferences(state, stateDifferenceWeights)
+    // for (sad <- stateActionDifferences) sad.print
+
+    // Confidence Related Variables
+    val maxDifferenceCompared: Double = 0.4
+    val minimumComparisons: Double = 10.0
+
+    // Score Each Action
+    val actionScorePredictions = for (action <- actions) yield{
+      // Collect Scores of Similar States
+      var shortTermScores: AB[Double] = AB()
+      var longTermScores: AB[Double] = AB()
+      var differences: AB[Double] = AB()
+      // Check Through Memory
+      for (sad <- stateActionDifferences) if (sad.action == action) {
+        if (sad.overallDifference < maxDifferenceCompared) {
+          shortTermScores += sad.shortTermScore
+          longTermScores += sad.longTermScore
+          differences += sad.overallDifference
+        }
+      }
+      // Calculate Scores
+      val predictedShortTermScore = if (shortTermScores.size > 0) shortTermScores.foldLeft(0.0)(_ + _) / shortTermScores.size else 0.5
+      val predictedLongTermScore = if (longTermScores.size > 0) longTermScores.foldLeft(0.0)(_ + _) / longTermScores.size else 0.5
+      val confidence =
+        if (differences.size > minimumComparisons) (1.0 - (differences.foldLeft(0.0)(_ + _) / differences.size))
+        else if (differences.size > 0) (1.0 - (differences.foldLeft(0.0)(_ + _) / differences.size)) * (differences.size.toDouble / minimumComparisons)
+        else 0.0
+      new ActionScorePrediction(action, predictedShortTermScore, predictedLongTermScore, confidence)
+    }
+    return actionScorePredictions
+  }
 
 }
 
+class ActionScorePrediction(
+  val action: String,
+  val predictedShortTermScore: Double,
+  val predictedLongTermScore: Double,
+  val confidence: Double
+) {
+  def overallScore(weights: SelectionWeights): Double = {
+    val sts = predictedShortTermScore * weights.predictedShortTermScoreWeight
+    val lts = predictedLongTermScore * weights.predictedLongTermScoreWeight
+    val c = confidence * weights.confidenceWeight
+    return (sts + lts + c) / weights.total
+  }
+  def printPrediction = {
+    println()
+    println(s"Action:         $action")
+    println(s"Predicted STS:  $predictedShortTermScore")
+    println(s"Predicted LTS:  $predictedLongTermScore")
+    println(s"Confidence:     $confidence")
+  }
+}
 
-
-
-
-
-
-
-
-
-
-
-  // ---------------------------------CONFIDENCE--------------------------------
-
-  // // Action Selection Confidence Equation
-  // val similarityWeight = 1.0
-  // val shortTermWeight = 1.0
-  // val longTermWeight = 1.0
-  // val weightTotals: Double = similarityWeight + shortTermWeight + longTermWeight
-  // // def confidenceEQ(s: Double, sts: Double, lts: Double): Double = (s * similarityWeight + sts * shortTermWeight + lts * longTermWeight) / weightTotals
-  //
-  // // Variables
-  // val scanSimilarityThreshhold = 0.5
-  // val movementSimilarityThreshhold = 0.5
-
-//   // SIMILARITY
-//   // Find similar scan events and accumulate the strongest similarities
-//   // Calculate a confidence score based on the confidence equations
-//   def calculateSimilarity(rawState: AgentState, action: String): SimilarityAverage = {
-//     var similarities: AB[Similarity] = AB()
-//     val movementAction = isMovementAction(action)
-//     val state = normalizedMemory.normalizeState(rawState)
-//     for (sap <- normalizedMemory.normalizedStateActionPairs) if (movementAction == isMovementAction(sap.action)) movementAction match {
-//       case true => {
-//         val similarity = calculateSimilarityMovement(state, action, sap.state, sap.action)
-//         // if (similarity >= movementSimilarityThreshhold)
-//         similarities += new Similarity(similarity, sap.shortTermScore, sap.longTermScore)
-//       }
-//       case false => {
-//         val similarity = calculateSimilarityScan(state, action, sap.state, sap.action)
-//         // if (similarity >= scanSimilarityThreshhold)
-//         similarities += new Similarity(similarity, sap.shortTermScore, sap.longTermScore)
-//       }
-//     }
-//     val avgSimilarity: Double = if (similarities.size > 0) (similarities.map(_.similarity).fold(0.0)(_ + _) / similarities.size) else 0.0
-//     val avgSTS: Double = if (similarities.size > 0) (similarities.map(_.shortTermScore).fold(0.0)(_ + _) / similarities.size) else 0.0
-//     val avgLTS: Double = if (similarities.size > 0) (similarities.map(_.longTermScore).fold(0.0)(_ + _) / similarities.size) else 0.0
-//     // println()
-//     // println(s"Action: $action")
-//     // println(s"Similar States: ${similarities.size}")
-//     // println(s"Average Similarity: $avgSimilarity")
-//     // println(s"Average STS: $avgSTS")
-//     // println(s"Average LTS: $avgLTS")
-//     return new SimilarityAverage(similarities.size, avgSimilarity, avgSTS, avgLTS)
-//   }
-//
-//   // SCAN SIMILARITY
-//   def calculateSimilarityScan(state: AgentState, elementType: String, simState: AgentState, simElementType: String): Double = {
-//     // Weights
-//     val healthWeight = 1.0
-//     val energyWeight = 1.0
-//     val indicatorWeight = 1.0
-//     val hazardWeight = 1.0
-//     val percentKnownWeight = 4.0
-//     val weightTotals = healthWeight + energyWeight + indicatorWeight + hazardWeight + percentKnownWeight
-//     // Calculate differences
-//     val elementState = state.getElementState(elementType)
-//     val simElementState = simState.getElementState(simElementType)
-//     val overallDiff = (elementState, simElementState) match {
-//       case (Some(es), Some(ses)) => {
-//         val healthDiff = Math.abs(state.health - simState.health) * healthWeight
-//         val energyDiff = Math.abs(state.energyLevel - simState.energyLevel) * energyWeight
-//         val indicatorDiff = (if (es.indicator == ses.indicator) 0.0 else 1.0) * indicatorWeight
-//         val hazardDiff = (if (es.hazard == ses.hazard) 0.0 else 1.0) * hazardWeight
-//         val percentKnownDiff = Math.abs(es.percentKnownInRange - ses.percentKnownInRange) * percentKnownWeight
-//         (healthDiff + energyDiff + indicatorDiff + hazardDiff + percentKnownDiff) / weightTotals
-//       }
-//       case _ => 1.0
-//     }
-//     return 1.0 - overallDiff
-//   }
-//
-//   // MOVEMENT SIMILARITY
-//   def calculateSimilarityMovement(state: AgentState, orientation: String, simState: AgentState, simOrientation: String): Double = {
-//     // Weights
-//     val healthWeight = 1.0
-//     val energyWeight = 1.0
-//     val forwardWeight = 2.0
-//     val backWeight = 1.0
-//     val leftWeight = 0.5
-//     val rightWeight = 0.5
-//     val weightTotals = healthWeight + energyWeight + forwardWeight + backWeight + leftWeight + rightWeight
-//     // Get state orientations
-//     val f = orientation
-//     val b = getOppositeOrientation(orientation)
-//     val l = getCounterClockwiseOrientation(orientation)
-//     val r = getClockwiseOrientation(orientation)
-//     // Get similar state orientations
-//     val sf = simOrientation
-//     val sb = getOppositeOrientation(simOrientation)
-//     val sl = getCounterClockwiseOrientation(simOrientation)
-//     val sr = getClockwiseOrientation(simOrientation)
-//     // Calculate differences
-//     val healthDiff = Math.abs(state.health - simState.health) * healthWeight
-//     val energyDiff = Math.abs(state.energyLevel - simState.energyLevel) * energyWeight
-//     val forwardDiff = calculateQuadrantDiff(state, f, simState, sf) * forwardWeight
-//     val backDiff = calculateQuadrantDiff(state, b, simState, sb) * backWeight
-//     // Consider reflection of state
-//     val leftDiff = calculateQuadrantDiff(state, l, simState, sl) * leftWeight
-//     val rightDiff = calculateQuadrantDiff(state, r, simState, sr) * rightWeight
-//     val leftDiffReflect = calculateQuadrantDiff(state, l, simState, sr) * leftWeight
-//     val rightDiffReflect = calculateQuadrantDiff(state, r, simState, sl) * rightWeight
-//     // println()
-//     // println(s"Health: $healthDiff")
-//     // println(s"Energy: $energyDiff")
-//     // println(s"F: $forwardDiff")
-//     // println(s"B: $backDiff")
-//     // println(s"L: $leftDiff")
-//     // println(s"R: $rightDiff")
-//     // println(s"Lr: $leftDiffReflect")
-//     // println(s"Rr: $rightDiffReflect")
-//     // Calculate total direction differences
-//     val directionsDiff = if (leftDiff + rightDiff < leftDiffReflect + rightDiffReflect) {
-//       forwardDiff + backDiff + leftDiff + rightDiff
-//     } else {
-//       forwardDiff + backDiff + leftDiffReflect + rightDiffReflect
-//     }
-//     val overallDiff = (healthDiff + energyDiff + directionsDiff) / weightTotals
-//     return 1.0 - overallDiff
-//   }
-//
-//   // Quadrant State Difference
-//   def calculateQuadrantDiff(state: AgentState, quadrant: String, simState: AgentState, simQuadrant: String): Double = {
-//     // Calculate differences
-//     val esDiffs = for (es <- state.elementStates) yield simState.getElementState(es.elementType) match {
-//       case None => 1.0
-//       case Some(ses) => calculateElementStateDiff(es, quadrant, ses, simQuadrant)
-//     }
-//     val overallDiff = if (esDiffs.length > 0) esDiffs.foldLeft(0.0)(_ + _) / esDiffs.length else 1.0
-//     return overallDiff
-//   }
-//
-//   // Element State Difference
-//   def calculateElementStateDiff(es: ElementState, quadrant: String, ses: ElementState, simQuadrant: String): Double = {
-//     // Weights
-//     val indicatorWeight = 1.0
-//     val hazardWeight = 1.0
-//     val percentKnownWeight = 1.0
-//     val averageValueDifferentialWeight = 1.0
-//     val immediateValueDifferentialWeight = 1.0
-//     val weightTotals = indicatorWeight + hazardWeight + percentKnownWeight + averageValueDifferentialWeight + immediateValueDifferentialWeight
-//     // Important values
-//     val qs = es.getQuadrantState(quadrant)
-//     val sqs = ses.getQuadrantState(simQuadrant)
-//     // Calculate differences
-//     val indicatorDiff = (if (es.indicator == ses.indicator) 0.0 else 1.0) * indicatorWeight
-//     val hazardDiff = (if (es.hazard == ses.hazard) 0.0 else 1.0) * hazardWeight
-//     val percentKnownDiff = Math.abs(qs.percentKnown - sqs.percentKnown) * percentKnownWeight
-//     // Difference between Average vs. Current Value Differentials
-//     val averageValueDifferentialDiff = (qs.averageValueDifferential, sqs.averageValueDifferential) match {
-//       case (Some(avd), Some(savd)) => Math.abs(avd - savd) * averageValueDifferentialWeight
-//       case (None, None) => 0.0
-//       case _ => 1.0
-//     }
-//     // Difference between Immediate vs. Current Value Differentials
-//     val immediateValueDifferentialDiff = (qs.immediateValueDifferential, sqs.immediateValueDifferential) match {
-//       case (Some(ivd), Some(sivd)) => Math.abs(ivd - sivd) * immediateValueDifferentialWeight
-//       case (None, None) => 0.0
-//       case _ => 1.0
-//     }
-//     // println()
-//     // println(s"Indicator: $indicatorDiff")
-//     // println(s"hazard: $hazardDiff")
-//     // println(s"PK: $percentKnownDiff")
-//     // println(s"AVD: $averageValueDifferentialDiff")
-//     // println(s"IMD: $immediateValueDifferentialDiff")
-//     // return overall difference
-//     val overallDiff = (indicatorDiff + hazardDiff + percentKnownDiff + averageValueDifferentialDiff + immediateValueDifferentialDiff) / weightTotals
-//     return overallDiff
-//   }
-//
-// }
-//
-// class Similarity(
-//   val similarity: Double,
-//   val shortTermScore: Double,
-//   val longTermScore: Double
-// ) {}
-//
-// class SimilarityAverage(
-//   val numSimilarStates: Int,
-//   val similarity: Double,
-//   val shortTermScore: Double,
-//   val longTermScore: Double
-// ) {}
+class SelectionWeights(
+  val predictedShortTermScoreWeight: Double,
+  val predictedLongTermScoreWeight: Double,
+  val confidenceWeight: Double
+) {
+  def total: Double = predictedShortTermScoreWeight + predictedLongTermScoreWeight + confidenceWeight
+}

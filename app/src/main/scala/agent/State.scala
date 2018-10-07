@@ -154,6 +154,26 @@ object State {
 
   }
 
+  // --------------------ACTION ANALYSIS-----------------------------
+  def isMovementAction(action: String): Boolean = Set("north","south","west","east").contains(action)
+  def getOppositeOrientation(orientation: String): String = orientation match {
+    case "north" => "south"
+    case "south" => "north"
+    case "west" => "east"
+    case "east" => "west"
+  }
+  def getClockwiseOrientation(orientation: String): String = orientation match {
+    case "north" => "east"
+    case "south" => "west"
+    case "west" => "north"
+    case "east" => "south"
+  }
+  def getCounterClockwiseOrientation(orientation: String): String = orientation match {
+    case "north" => "west"
+    case "south" => "east"
+    case "west" => "south"
+    case "east" => "north"
+  }
 
   // ----------------------------GENORATOR--------------------------------------
   def generateAgentState(agent: Agent): AgentState = {
@@ -343,14 +363,13 @@ object State {
 
 
     // DIFFERENCES
-    def calculateStateActionDifferences(rawState: AgentState): List[StateActionDifference] = {
+    def calculateStateActionDifferences(rawState: AgentState, weights: StateDifferenceWeights): List[StateActionDifference] = {
       // Normalize Raw State
       val state = normalizeState(rawState)
       // Generate list
       val differences: List[StateActionDifference] = for (sap <- normalizedStateActionPairs) yield {
         // Extract State Action Pair Data
         val cState: AgentState = sap.state
-        val cAction: String = sap.action
         val cSTS: Double = sap.shortTermScore
         val cLTS: Double = sap.longTermScore
         // Calculate Differences
@@ -362,7 +381,16 @@ object State {
         val westComparisons: QuadrantComparisons = calculateQuadrantComparisons(state, "west", cState)
         val eastComparisons: QuadrantComparisons = calculateQuadrantComparisons(state, "east", cState)
         val stateDifference = new StateDifference(healthDifference, energyDifference, elementStateDifferences, northComparisons, southComparisons, westComparisons, eastComparisons)
-        new StateActionDifference(stateDifference, cAction, cSTS, cLTS)
+        // Calculate Overall Difference
+        val overallDifference = stateDifference.overallDifference(sap.action, weights)
+        // If movement: Orient Movement Direction relative to current state
+        val cAction = if (isMovementAction(sap.action)) overallDifference._2 match {
+          case "north" => sap.action
+          case "south" => getOppositeOrientation(sap.action)
+          case "west" => getClockwiseOrientation(sap.action)
+          case "east" => getCounterClockwiseOrientation(sap.action)
+        } else sap.action
+        new StateActionDifference(stateDifference, cAction, overallDifference._1, cSTS, cLTS)
       }
       return differences
     }
@@ -439,12 +467,23 @@ object State {
     } else return new GaussianData(0.0, 0.0)
   }
 
+  // DIFFERENCES
   class StateActionDifference(
     val stateDifference: StateDifference,
     val action: String,
+    val overallDifference: Double,
     val shortTermScore: Double,
     val longTermScore: Double
-  ) {}
+  ) {
+    def print = {
+      println()
+      println(s"      Action: $action")
+      println(s"      OverallDiff: $overallDifference")
+      println(s"      STS: $shortTermScore")
+      println(s"      LTS: $longTermScore")
+      println()
+    }
+  }
 
   class StateDifference(
     val healthDifference: Double,
@@ -454,7 +493,70 @@ object State {
     val southComparisons: QuadrantComparisons,
     val westComparisons: QuadrantComparisons,
     val eastComparisons: QuadrantComparisons
-  ) {}
+  ) {
+    def overallDifference(action: String, weights: StateDifferenceWeights): (Double,String) = {
+      if (isMovementAction(action)) movementDifference(weights)
+      else scanDifference(weights)
+    }
+
+    def movementDifference(weights: StateDifferenceWeights): (Double,String) = {
+      val h = healthDifference * weights.healthWeight
+      val e = energyDifference * weights.energyWeight
+      val es = averageElementStateDifference(weights.elementDifferenceWeights) * weights.elementStateWeight
+      val lqd = lowestQuadrantsDifference(weights.quadrantDifferenceWeights)
+      val qd = lqd._1 * weights.totalQuadrantWeight
+      val overallDifference = (h + e + qd) / weights.movementTotal
+      val orientation = lqd._2
+      return (overallDifference, orientation)
+    }
+    def scanDifference(weights: StateDifferenceWeights): (Double,String) = {
+      val h = healthDifference * weights.healthWeight
+      val e = energyDifference * weights.energyWeight
+      val es = averageElementStateDifference(weights.elementDifferenceWeights) * weights.elementStateWeight
+      val overallDifference = (h + e + es) / weights.scanTotal
+      return (overallDifference, "")
+    }
+    def averageElementStateDifference(weights: ElementDifferenceWeights): Double = {
+      val diffs = for (esd <- elementStateDifferences) yield esd.overallDifference(weights)
+      return if (diffs.length > 0) diffs.foldLeft(0.0)(_ + _) / diffs.length else 1.0
+    }
+    def lowestQuadrantsDifference(weights: QuadrantDifferenceWeights): (Double,String) = {
+      val northToNorth = {
+        val n = northComparisons.overallDifference(weights, "north")
+        val e = eastComparisons.overallDifference(weights, "east")
+        val s = southComparisons.overallDifference(weights, "south")
+        val w = westComparisons.overallDifference(weights, "west")
+        ((n + e + s + w) / 4.0, "north")
+      }
+      val northToEast = {
+        val n = northComparisons.overallDifference(weights, "east")
+        val e = eastComparisons.overallDifference(weights, "south")
+        val s = southComparisons.overallDifference(weights, "west")
+        val w = westComparisons.overallDifference(weights, "north")
+        ((n + e + s + w) / 4.0, "east")
+      }
+      val northToSouth = {
+        val n = northComparisons.overallDifference(weights, "south")
+        val e = eastComparisons.overallDifference(weights, "west")
+        val s = southComparisons.overallDifference(weights, "north")
+        val w = westComparisons.overallDifference(weights, "east")
+        ((n + e + s + w) / 4.0, "south")
+      }
+      val northToWest = {
+        val n = northComparisons.overallDifference(weights, "west")
+        val e = eastComparisons.overallDifference(weights, "north")
+        val s = southComparisons.overallDifference(weights, "east")
+        val w = westComparisons.overallDifference(weights, "south")
+        ((n + e + s + w) / 4.0, "west")
+      }
+      // Find Orientation with lowest differnce
+      var lowestDifferenceOrientation = northToNorth
+      for ((s,o) <- List(northToEast, northToSouth, northToWest)) {
+        if (s < lowestDifferenceOrientation._1) lowestDifferenceOrientation = (s,o)
+      }
+      return lowestDifferenceOrientation
+    }
+  }
 
   class ElementStateDifference(
     val elementType: String,
@@ -462,24 +564,82 @@ object State {
     val hazardDifference: Double,
     val percentKnownInRangeDifference: Double,
     val immediateKnownDifference: Double
-  ) {}
+  ) {
+    def overallDifference(weights: ElementDifferenceWeights): Double = {
+      val i = indicatorDifference * weights.indicatorWeight
+      val h = hazardDifference * weights.hazardWeight
+      val pkir = percentKnownInRangeDifference * weights.percentKnownInRangeWeight
+      val ik = immediateKnownDifference * weights.immediateKnownWeight
+      return (i + h + pkir + ik) / weights.total
+    }
+  }
 
   class QuadrantComparisons(
     val northQuadrantDifference: QuadrantDifference,
     val southQuadrantDifference: QuadrantDifference,
     val westQuadrantDifference: QuadrantDifference,
     val eastQuadrantDifference: QuadrantDifference
-  )
+  ) {
+    def overallDifference(weights: QuadrantDifferenceWeights, orientation: String): Double = orientation match {
+      case "north" => northQuadrantDifference.overallDifference(weights)
+      case "south" => southQuadrantDifference.overallDifference(weights)
+      case "west" => westQuadrantDifference.overallDifference(weights)
+      case "east" => eastQuadrantDifference.overallDifference(weights)
+    }
+  }
 
   class QuadrantDifference(
     val quadrantElementStateDifferences: List[QuadrantElementStateDifference]
-  ) {}
+  ) {
+    def overallDifference(weights: QuadrantDifferenceWeights): Double = {
+      val diffs = for (qesd <- quadrantElementStateDifferences) yield qesd.overallDifference(weights)
+      return if (diffs.length > 0) diffs.foldLeft(0.0)(_ + _) / diffs.length else 1.0
+    }
+  }
 
   class QuadrantElementStateDifference(
     val elementType: String,
     val percentKnownDifference: Double,
     val averageValueDifference: Double,
     val immediateValueDifference: Double
-  )
+  ) {
+    def overallDifference(weights: QuadrantDifferenceWeights): Double = {
+      val pk = percentKnownDifference * weights.percentKnownWeight
+      val av = averageValueDifference * weights.averageValueWeight
+      val iv = immediateValueDifference * weights.immediateValueWeight
+      return (pk + av + iv) / weights.total
+    }
+  }
+
+  // WEIGHTS
+  class StateDifferenceWeights(
+    val healthWeight: Double,
+    val energyWeight: Double,
+    val elementStateWeight: Double,
+    val totalQuadrantWeight: Double,
+    val elementDifferenceWeights: ElementDifferenceWeights,
+    val quadrantDifferenceWeights: QuadrantDifferenceWeights
+  ) {
+    def total: Double = healthWeight + energyWeight + elementStateWeight + totalQuadrantWeight
+    def movementTotal: Double = healthWeight + energyWeight + totalQuadrantWeight
+    def scanTotal: Double = healthWeight + energyWeight + elementStateWeight
+  }
+
+  class ElementDifferenceWeights(
+    val indicatorWeight: Double,
+    val hazardWeight: Double,
+    val percentKnownInRangeWeight: Double,
+    val immediateKnownWeight: Double
+  ) {
+    def total: Double = indicatorWeight + hazardWeight + percentKnownInRangeWeight + immediateKnownWeight
+  }
+
+  class QuadrantDifferenceWeights(
+    val percentKnownWeight: Double,
+    val averageValueWeight: Double,
+    val immediateValueWeight: Double
+  ) {
+    def total: Double = percentKnownWeight + averageValueWeight + immediateValueWeight
+  }
 
 }

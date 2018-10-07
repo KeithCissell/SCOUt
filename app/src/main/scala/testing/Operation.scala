@@ -57,6 +57,7 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
       val state = agent.getState()
       val action = agent.chooseAction()
       val event = agent.performAction(environment, action)
+      // println(s"Action: $action")
       // Calculate Short-Term Score and Log
       val shortTermScore = scoreEventShortTerm(event)
       eventLogShort += new LogItemShort(state, action, event, shortTermScore)
