@@ -36,7 +36,7 @@ object SimpleTest {
       controllers = Map(
         "Random" -> new RandomController(),
         "FindHuman" -> new FindHumanController(),
-        "SCOUt" -> new SCOUtController("FreshStart", "json", false, 2500)),
+        "SCOUt" -> new SCOUtController("RandomSelection25000", "json", false)),
       sensors = List(
         new ElevationSensor(false),
         new DecibelSensor(true),

@@ -20,21 +20,23 @@ class SCOUtController(
   val memoryFileName: String,
   val memoryExtention: String = "json",
   val training: Boolean,
-  val randomSelectThreshhold: Int
 ) extends Controller {
 
-  // ATTRIBUTES
+  // MEMORY ATTRIBUTES
   val memory: AB[StateActionPair] = AB()
   var normalizedMemory: NormalizedStateActionPairs = new NormalizedStateActionPairs(Nil)
   val saveLateMemoryLimit: Int = 20
   val saveEarlyMemoryPercent: Double = 0.05
   val fps = 4 // floating points past decimal to store in memory values
 
+  // TRAINING ATTRIBUTES
+  val randomSelectThreshhold: Int = 2500
+
   // EXPLORATION INFLUENCE
   val actionHistory: MutableMap[(Int,Int),MutableSet[String]] = MutableMap()
   val repititionPenalty: Double = 0.5
 
-  // DIFFERENCE WEIGHTS
+  // DIFFERENCE COMPARISON WEIGHTS
   val stateDifferenceWeights = new StateDifferenceWeights(
     healthWeight = 0.0,
     energyWeight = 0.0,
@@ -44,28 +46,24 @@ class SCOUtController(
       indicatorWeight = 4.0,
       hazardWeight = 1.0,
       percentKnownInRangeWeight = 5.0,
-      immediateKnownWeight = 2.0
-    ),
+      immediateKnownWeight = 2.0),
     quadrantDifferenceWeights = new QuadrantDifferenceWeights(
       indicatorWeight = 4.0,
       hazardWeight = 1.0,
       percentKnownWeight = 1.0,
       averageValueWeight = 2.0,
-      immediateValueWeight = 3.0
-    )
-  )
+      immediateValueWeight = 3.0))
 
   // SELECTION WEIGHTS
   val trainingSelectionWeights = new SelectionWeights(
     predictedShortTermScoreWeight = 1.0,
     predictedLongTermScoreWeight = 1.5,
-    confidenceWeight = 0.5
-  )
+    confidenceWeight = 0.5)
+
   val selectionWeights = new SelectionWeights(
     predictedShortTermScoreWeight = 1.0,
     predictedLongTermScoreWeight = 1.0,
-    confidenceWeight = 1.0
-  )
+    confidenceWeight = 1.0)
 
   def copy: Controller = new SCOUtController(memoryFileName, memoryExtention, training, randomSelectThreshhold)
 
