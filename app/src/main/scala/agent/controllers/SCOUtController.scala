@@ -12,6 +12,7 @@ import jsonhandler.Decoder._
 import scoututil.Util._
 
 import scala.collection.mutable.{Map => MutableMap}
+import scala.collection.mutable.{Set => MutableSet}
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
@@ -29,6 +30,10 @@ class SCOUtController(
   val saveEarlyMemoryPercent: Double = 0.05
   val fps = 4 // floating points past decimal to store in memory values
 
+  // EXPLORATION INFLUENCE
+  val actionHistory: MutableMap[(Int,Int),MutableSet[String]] = MutableMap()
+  val repititionPenalty: Double = 0.5
+
   // DIFFERENCE WEIGHTS
   val stateDifferenceWeights = new StateDifferenceWeights(
     healthWeight = 0.0,
@@ -36,12 +41,14 @@ class SCOUtController(
     elementStateWeight = 1.0,
     totalQuadrantWeight = 1.0,
     elementDifferenceWeights = new ElementDifferenceWeights(
-      indicatorWeight = 1.0,
+      indicatorWeight = 4.0,
       hazardWeight = 1.0,
       percentKnownInRangeWeight = 5.0,
       immediateKnownWeight = 2.0
     ),
     quadrantDifferenceWeights = new QuadrantDifferenceWeights(
+      indicatorWeight = 4.0,
+      hazardWeight = 1.0,
       percentKnownWeight = 1.0,
       averageValueWeight = 2.0,
       immediateValueWeight = 3.0
@@ -65,6 +72,10 @@ class SCOUtController(
   def setup(mapHeight: Int, mapWidth: Int): Unit = {
     loadMemory()
     normalizedMemory = new NormalizedStateActionPairs(memory.toList)
+    for {
+      x <- 0 until mapHeight
+      y <- 0 until mapWidth
+    } actionHistory += (x,y) -> MutableSet()
   }
 
   def shutDown(stateActionPairs: List[StateActionPair]): Unit = if (training) {
@@ -108,10 +119,12 @@ class SCOUtController(
 
   // -----------------------------SELECTION-------------------------------------
   def selectAction(actions: List[String], state: AgentState): String = {
-    // Randomly select while training and memory size is bellow threshold
-    if (training && memory.size < randomSelectThreshhold) randomSelect(actions)
-    else if (training) rouletteSelection(actions, state)
-    else eliteSelection(actions, state)
+    val action =  if (training && memory.size < randomSelectThreshhold) randomSelect(actions)
+                  else if (training) rouletteSelection(actions, state)
+                  else eliteSelection(actions, state)
+    // Add action to history
+    actionHistory((state.xPosition, state.yPosition)) += action
+    return action
   }
 
   // SELECTION METHODS
@@ -124,7 +137,12 @@ class SCOUtController(
     var scoreTotal = 0.0
     var actionScores: MutableMap[String,Double] = MutableMap()
     for (pas <- predictedActionScores) {
-      val score = pas.overallScore(trainingSelectionWeights) + equalChance
+      var score = pas.overallScore(trainingSelectionWeights)
+      if (actionHistory((state.xPosition, state.yPosition)).contains(pas.action)) {
+        if (isMovementAction(pas.action)) score *= repititionPenalty
+        else score = 0.0
+      }
+      score += equalChance
       scoreTotal += score
       actionScores += (pas.action -> score)
       // pas.printPrediction
@@ -144,7 +162,11 @@ class SCOUtController(
     var bestAction = randomSelect(actions)
     var bestScore = 0.0
     for (pas <- predictedActionScores) {
-      val score = pas.overallScore(selectionWeights)
+      var score = pas.overallScore(selectionWeights)
+      if (actionHistory((state.xPosition, state.yPosition)).contains(pas.action)) {
+        if (isMovementAction(pas.action)) score *= repititionPenalty
+        else score = 0.0
+      }
       if (score > bestScore) {
         bestAction = pas.action
         bestScore = score

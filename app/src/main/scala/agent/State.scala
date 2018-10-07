@@ -399,13 +399,11 @@ object State {
     def calculateElementStateDifferences(state: AgentState, cState: AgentState): List[ElementStateDifference] = for (es <- state.elementStates) yield {
       val elementType = es.elementType
       cState.getElementState(elementType) match {
-        case None => new ElementStateDifference(elementType, 1.0, 1.0, 1.0, 1.0)
+        case None => new ElementStateDifference(elementType, es.indicator, es.hazard, 1.0, 1.0)
         case Some(ces) => {
-          val indicatorDifference: Double = if (es.indicator == ces.indicator) 0.0 else 1.0
-          val hazardDifference: Double = if (es.indicator == ces.indicator) 0.0 else 1.0
           val percentKnownInRangeDifference: Double = Math.abs(es.percentKnownInRange - ces.percentKnownInRange)
           val immediateKnownDifference: Double = Math.abs(es.immediateValuesKnown - ces.immediateValuesKnown) / 4.0
-          new ElementStateDifference(elementType, indicatorDifference, hazardDifference, percentKnownInRangeDifference, immediateKnownDifference)
+          new ElementStateDifference(elementType, es.indicator, es.hazard, percentKnownInRangeDifference, immediateKnownDifference)
         }
       }
     }
@@ -423,7 +421,7 @@ object State {
       val quadrantElementStateDifferences = for (es <- state.elementStates) yield {
         val elementType = es.elementType
         cState.getElementState(elementType) match {
-          case None => new QuadrantElementStateDifference(elementType, 1.0, 1.0, 1.0)
+          case None => new QuadrantElementStateDifference(elementType, es.indicator, es.hazard, 1.0, 1.0, 1.0)
           case Some(ces) => CalculateQuadrantElementStateDifference(es, orientation, ces, cOrientation)
         }
       }
@@ -444,7 +442,7 @@ object State {
         case (None, None) => 0.0
         case _ => 1.0
       }
-      new QuadrantElementStateDifference(es.elementType, percentKnownDifference, averageValueDifference, immediateValueDifference)
+      new QuadrantElementStateDifference(es.elementType, es.indicator, es.hazard, percentKnownDifference, averageValueDifference, immediateValueDifference)
     }
 
   }
@@ -560,17 +558,18 @@ object State {
 
   class ElementStateDifference(
     val elementType: String,
-    val indicatorDifference: Double,
-    val hazardDifference: Double,
+    val indicator: Boolean,
+    val hazard: Boolean,
     val percentKnownInRangeDifference: Double,
     val immediateKnownDifference: Double
   ) {
     def overallDifference(weights: ElementDifferenceWeights): Double = {
-      val i = indicatorDifference * weights.indicatorWeight
-      val h = hazardDifference * weights.hazardWeight
       val pkir = percentKnownInRangeDifference * weights.percentKnownInRangeWeight
       val ik = immediateKnownDifference * weights.immediateKnownWeight
-      return (i + h + pkir + ik) / weights.total
+      var overallDifference = (pkir + ik) / weights.total
+      if (indicator) overallDifference *= weights.indicatorWeight
+      if (hazard) overallDifference *= weights.hazardWeight
+      return overallDifference / weights.elementTypeTotal
     }
   }
 
@@ -599,6 +598,8 @@ object State {
 
   class QuadrantElementStateDifference(
     val elementType: String,
+    val indicator: Boolean,
+    val hazard: Boolean,
     val percentKnownDifference: Double,
     val averageValueDifference: Double,
     val immediateValueDifference: Double
@@ -607,7 +608,10 @@ object State {
       val pk = percentKnownDifference * weights.percentKnownWeight
       val av = averageValueDifference * weights.averageValueWeight
       val iv = immediateValueDifference * weights.immediateValueWeight
-      return (pk + av + iv) / weights.total
+      var overallDifference = (pk + av + iv) / weights.total
+      if (indicator) overallDifference *= weights.indicatorWeight
+      if (hazard) overallDifference *= weights.hazardWeight
+      return overallDifference / weights.elementTypeTotal
     }
   }
 
@@ -631,15 +635,19 @@ object State {
     val percentKnownInRangeWeight: Double,
     val immediateKnownWeight: Double
   ) {
-    def total: Double = indicatorWeight + hazardWeight + percentKnownInRangeWeight + immediateKnownWeight
+    def total: Double = percentKnownInRangeWeight + immediateKnownWeight
+    def elementTypeTotal: Double = indicatorWeight + hazardWeight
   }
 
   class QuadrantDifferenceWeights(
+    val indicatorWeight: Double,
+    val hazardWeight: Double,
     val percentKnownWeight: Double,
     val averageValueWeight: Double,
     val immediateValueWeight: Double
   ) {
     def total: Double = percentKnownWeight + averageValueWeight + immediateValueWeight
+    def elementTypeTotal: Double = indicatorWeight + hazardWeight
   }
 
 }

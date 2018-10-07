@@ -1,0 +1,6301 @@
+{
+  "environment" : {
+    "environment" : {
+      "name" : "BeginnerCourse",
+      "height" : 10,
+      "width" : 10,
+      "grid" : {
+        "cell.0.0" : {
+          "x" : 0,
+          "y" : 0,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.97,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.0,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.0,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 4.92,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 28.07,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.0.1" : {
+          "x" : 0,
+          "y" : 1,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.97,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00003,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.0,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -4.69,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 27.81,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.0.2" : {
+          "x" : 0,
+          "y" : 2,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.92,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00006,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.0,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 0.78,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 27.1,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.0.3" : {
+          "x" : 0,
+          "y" : 3,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.92,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00009,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.0,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -2.01,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 26.14,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.0.4" : {
+          "x" : 0,
+          "y" : 4,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.09,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00012,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.0,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 4.4,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 25.07,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.0.5" : {
+          "x" : 0,
+          "y" : 5,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.99,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00015,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.0,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 3.16,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 24.0,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.0.6" : {
+          "x" : 0,
+          "y" : 6,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.94,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00018,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.0,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 1.15,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 22.97,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.0.7" : {
+          "x" : 0,
+          "y" : 7,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.01,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00021,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.0,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 2.01,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 22.0,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.0.8" : {
+          "x" : 0,
+          "y" : 8,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.97,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00024,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.0,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 0.36,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 21.1,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.0.9" : {
+          "x" : 0,
+          "y" : 9,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.07,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00027,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.0,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 2.79,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 20.27,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.1.0" : {
+          "x" : 1,
+          "y" : 0,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.93,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.0,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00003,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 0.57,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 30.56,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.1.1" : {
+          "x" : 1,
+          "y" : 1,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.86,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00003,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00003,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -3.92,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 30.1,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.1.2" : {
+          "x" : 1,
+          "y" : 2,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.95,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00006,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00003,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 2.05,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 28.97,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.1.3" : {
+          "x" : 1,
+          "y" : 3,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.96,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00009,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00003,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -2.33,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 27.56,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.1.4" : {
+          "x" : 1,
+          "y" : 4,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.9,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00012,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00003,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -4.25,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 26.14,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.1.5" : {
+          "x" : 1,
+          "y" : 5,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.02,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00015,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00003,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -1.05,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 24.81,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.1.6" : {
+          "x" : 1,
+          "y" : 6,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.05,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00018,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00003,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -0.99,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 23.59,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.1.7" : {
+          "x" : 1,
+          "y" : 7,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.0,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00021,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00003,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -5.26,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 22.49,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.1.8" : {
+          "x" : 1,
+          "y" : 8,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.93,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00024,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00003,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -0.39,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 21.5,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.1.9" : {
+          "x" : 1,
+          "y" : 9,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.05,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00027,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00003,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 2.35,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 20.59,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.2.0" : {
+          "x" : 2,
+          "y" : 0,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.97,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.0,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00006,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 2.8,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 34.07,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.2.1" : {
+          "x" : 2,
+          "y" : 1,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.9,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00003,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00006,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -0.12,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 33.1,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.2.2" : {
+          "x" : 2,
+          "y" : 2,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.01,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00006,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00006,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 0.97,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 31.07,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.2.3" : {
+          "x" : 2,
+          "y" : 3,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.99,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00009,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00006,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -3.55,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 28.97,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.2.4" : {
+          "x" : 2,
+          "y" : 4,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.95,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00012,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00006,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 0.14,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 27.1,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.2.5" : {
+          "x" : 2,
+          "y" : 5,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.03,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00015,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00006,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -2.27,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 25.49,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.2.6" : {
+          "x" : 2,
+          "y" : 6,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.0,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00018,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00006,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -1.72,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 24.1,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.2.7" : {
+          "x" : 2,
+          "y" : 7,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.99,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00021,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00006,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -0.26,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 22.88,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.2.8" : {
+          "x" : 2,
+          "y" : 8,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.98,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00024,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00006,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -3.83,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 21.81,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.2.9" : {
+          "x" : 2,
+          "y" : 9,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.05,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00027,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00006,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -1.12,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 20.84,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.3.0" : {
+          "x" : 3,
+          "y" : 0,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.97,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.0,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00009,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -1.34,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 40.07,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.3.1" : {
+          "x" : 3,
+          "y" : 1,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.91,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00003,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00009,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -4.72,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 37.07,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.3.2" : {
+          "x" : 3,
+          "y" : 2,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.92,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00006,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00009,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -3.84,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 33.1,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.3.3" : {
+          "x" : 3,
+          "y" : 3,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.98,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00009,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00009,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -3.57,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 30.1,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.3.4" : {
+          "x" : 3,
+          "y" : 4,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.03,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00012,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00009,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -0.07,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 27.81,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.3.5" : {
+          "x" : 3,
+          "y" : 5,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.0,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00015,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00009,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 14.76,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 25.97,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.3.6" : {
+          "x" : 3,
+          "y" : 6,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.01,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00018,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00009,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 15.99,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 24.44,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.3.7" : {
+          "x" : 3,
+          "y" : 7,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.02,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00021,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00009,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -3.41,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 23.14,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.3.8" : {
+          "x" : 3,
+          "y" : 8,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.99,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00024,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00009,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -7.48,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 22.0,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.3.9" : {
+          "x" : 3,
+          "y" : 9,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.05,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00027,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00009,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -4.06,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 21.0,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.4.0" : {
+          "x" : 4,
+          "y" : 0,
+          "elements" : {
+            "Temperature" : {
+              "value" : 98.6,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.0,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00012,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 0.64,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 60.0,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+            "Human"
+          ]
+        },
+        "cell.4.1" : {
+          "x" : 4,
+          "y" : 1,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.92,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00003,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00012,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -3.84,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 40.07,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.4.2" : {
+          "x" : 4,
+          "y" : 2,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.96,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00006,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00012,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 0.08,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 34.07,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.4.3" : {
+          "x" : 4,
+          "y" : 3,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.95,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00009,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00012,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -2.03,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 30.56,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.4.4" : {
+          "x" : 4,
+          "y" : 4,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.96,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00012,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00012,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 17.66,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 28.07,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.4.5" : {
+          "x" : 4,
+          "y" : 5,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.99,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00015,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00012,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 16.44,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 26.14,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.4.6" : {
+          "x" : 4,
+          "y" : 6,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.99,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00018,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00012,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -3.57,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 24.56,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.4.7" : {
+          "x" : 4,
+          "y" : 7,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.0,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00021,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00012,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -6.8,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 23.22,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.4.8" : {
+          "x" : 4,
+          "y" : 8,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.02,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00024,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00012,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -3.37,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 22.07,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.4.9" : {
+          "x" : 4,
+          "y" : 9,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.1,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00027,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00012,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -3.93,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 21.05,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.5.0" : {
+          "x" : 5,
+          "y" : 0,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.95,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.0,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00015,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -5.05,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 40.07,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.5.1" : {
+          "x" : 5,
+          "y" : 1,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.95,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00003,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00015,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -4.59,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 37.07,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.5.2" : {
+          "x" : 5,
+          "y" : 2,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.98,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00006,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00015,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -5.39,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 33.1,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.5.3" : {
+          "x" : 5,
+          "y" : 3,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.97,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00009,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00015,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 19.68,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 30.1,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.5.4" : {
+          "x" : 5,
+          "y" : 4,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.98,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00012,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00015,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -0.51,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 27.81,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.5.5" : {
+          "x" : 5,
+          "y" : 5,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.01,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00015,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00015,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 20.0,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 25.97,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.5.6" : {
+          "x" : 5,
+          "y" : 6,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.04,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00018,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00015,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 19.59,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 24.44,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.5.7" : {
+          "x" : 5,
+          "y" : 7,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.07,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00021,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00015,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -4.74,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 23.14,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.5.8" : {
+          "x" : 5,
+          "y" : 8,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.09,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00024,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00015,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -6.3,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 22.0,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.5.9" : {
+          "x" : 5,
+          "y" : 9,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.09,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00027,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00015,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -7.03,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 21.0,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.6.0" : {
+          "x" : 6,
+          "y" : 0,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.05,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.0,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00018,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -0.8,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 34.07,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.6.1" : {
+          "x" : 6,
+          "y" : 1,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.99,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00003,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00018,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -1.6,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 33.1,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.6.2" : {
+          "x" : 6,
+          "y" : 2,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.0,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00006,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00018,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -1.81,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 31.07,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.6.3" : {
+          "x" : 6,
+          "y" : 3,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.97,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00009,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00018,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -2.88,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 28.97,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.6.4" : {
+          "x" : 6,
+          "y" : 4,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.98,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00012,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00018,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 17.06,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 27.1,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.6.5" : {
+          "x" : 6,
+          "y" : 5,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.0,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00015,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00018,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 18.32,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 25.49,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.6.6" : {
+          "x" : 6,
+          "y" : 6,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.01,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00018,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00018,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 22.89,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 24.1,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.6.7" : {
+          "x" : 6,
+          "y" : 7,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.04,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00021,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00018,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 10.32,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 22.88,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.6.8" : {
+          "x" : 6,
+          "y" : 8,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.08,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00024,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00018,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -2.21,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 21.81,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.6.9" : {
+          "x" : 6,
+          "y" : 9,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.15,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00027,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00018,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -6.94,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 20.84,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.7.0" : {
+          "x" : 7,
+          "y" : 0,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.09,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.0,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 35.61,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00021,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -1.18,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 30.56,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.7.1" : {
+          "x" : 7,
+          "y" : 1,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.98,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00003,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00021,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 1.49,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 30.1,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.7.2" : {
+          "x" : 7,
+          "y" : 2,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.03,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00006,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00021,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 1.96,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 28.97,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.7.3" : {
+          "x" : 7,
+          "y" : 3,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.96,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00009,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00021,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -3.72,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 27.56,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.7.4" : {
+          "x" : 7,
+          "y" : 4,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.98,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00012,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00021,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 16.28,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 26.14,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.7.5" : {
+          "x" : 7,
+          "y" : 5,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.04,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00015,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00021,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 21.55,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 24.81,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.7.6" : {
+          "x" : 7,
+          "y" : 6,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.04,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00018,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00021,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 16.69,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 23.59,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.7.7" : {
+          "x" : 7,
+          "y" : 7,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.1,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00021,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00021,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 15.16,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 22.49,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.7.8" : {
+          "x" : 7,
+          "y" : 8,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.16,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00024,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00021,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 18.0,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 21.5,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.7.9" : {
+          "x" : 7,
+          "y" : 9,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.17,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00027,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00021,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -1.83,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 20.59,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.8.0" : {
+          "x" : 8,
+          "y" : 0,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.04,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.0,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 28.17,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00024,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 6.64,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 28.07,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.8.1" : {
+          "x" : 8,
+          "y" : 1,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.09,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00003,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 28.65,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00024,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 2.28,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 27.81,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.8.2" : {
+          "x" : 8,
+          "y" : 2,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.95,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00006,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00024,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 1.35,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 27.1,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.8.3" : {
+          "x" : 8,
+          "y" : 3,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.05,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00009,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00024,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 2.53,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 26.14,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.8.4" : {
+          "x" : 8,
+          "y" : 4,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.95,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00012,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00024,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 2.33,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 25.07,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.8.5" : {
+          "x" : 8,
+          "y" : 5,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.93,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00015,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00024,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 0.28,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 24.0,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.8.6" : {
+          "x" : 8,
+          "y" : 6,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.02,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00018,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00024,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 2.25,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 22.97,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.8.7" : {
+          "x" : 8,
+          "y" : 7,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.03,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00021,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00024,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -2.61,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 22.0,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.8.8" : {
+          "x" : 8,
+          "y" : 8,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.07,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00024,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00024,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -5.0,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 21.1,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.8.9" : {
+          "x" : 8,
+          "y" : 9,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.07,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00027,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00024,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -4.92,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 20.27,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.9.0" : {
+          "x" : 9,
+          "y" : 0,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.11,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.0,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 40.39,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00027,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 6.26,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 26.14,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.9.1" : {
+          "x" : 9,
+          "y" : 1,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.03,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00003,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 45.72,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00027,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -0.09,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 25.97,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.9.2" : {
+          "x" : 9,
+          "y" : 2,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.98,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00006,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 32.08,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00027,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 1.72,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 25.49,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.9.3" : {
+          "x" : 9,
+          "y" : 3,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.98,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00009,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00027,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 2.66,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 24.81,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.9.4" : {
+          "x" : 9,
+          "y" : 4,
+          "elements" : {
+            "Temperature" : {
+              "value" : 59.98,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00012,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00027,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -2.39,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 24.0,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.9.5" : {
+          "x" : 9,
+          "y" : 5,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.08,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00015,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00027,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 5.43,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 23.14,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.9.6" : {
+          "x" : 9,
+          "y" : 6,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.07,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00018,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00027,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -4.47,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 22.28,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.9.7" : {
+          "x" : 9,
+          "y" : 7,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.07,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00021,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00027,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 0.63,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 21.44,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.9.8" : {
+          "x" : 9,
+          "y" : 8,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.12,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00024,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00027,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : 2.88,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 20.64,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        },
+        "cell.9.9" : {
+          "x" : 9,
+          "y" : 9,
+          "elements" : {
+            "Temperature" : {
+              "value" : 60.0,
+              "name" : "Temperature",
+              "unit" : "°F",
+              "constant" : false,
+              "radial" : false
+            },
+            "Latitude" : {
+              "value" : 1.00027,
+              "name" : "Latitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Water Depth" : {
+              "value" : 0.0,
+              "name" : "Water Depth",
+              "unit" : "ft",
+              "constant" : false,
+              "radial" : false
+            },
+            "Longitude" : {
+              "value" : 1.00027,
+              "name" : "Longitude",
+              "unit" : "°",
+              "constant" : true,
+              "radial" : true
+            },
+            "Elevation" : {
+              "value" : -4.55,
+              "name" : "Elevation",
+              "unit" : "ft",
+              "constant" : true,
+              "radial" : false
+            },
+            "Decibel" : {
+              "value" : 19.88,
+              "name" : "Decibel",
+              "unit" : "dB",
+              "constant" : false,
+              "radial" : false
+            }
+          },
+          "anomalies" : [
+          ]
+        }
+      }
+    }
+  },
+  "stateActionPairs" : [
+    {
+      "state" : {
+        "xPosition" : 1,
+        "yPosition" : 2,
+        "health" : 100.0,
+        "energyLevel" : 250.0,
+        "elementStates" : [
+          {
+            "elementType" : "Elevation",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Decibel",
+            "indicator" : true,
+            "hazard" : false,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Temperature",
+            "indicator" : true,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Water Depth",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          }
+        ]
+      },
+      "action" : "Water Depth",
+      "shortTermScore" : 1.1993,
+      "longTermScore" : 0.9763
+    },
+    {
+      "state" : {
+        "xPosition" : 1,
+        "yPosition" : 2,
+        "health" : 100.0,
+        "energyLevel" : 249.5,
+        "elementStates" : [
+          {
+            "elementType" : "Elevation",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Decibel",
+            "indicator" : true,
+            "hazard" : false,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Temperature",
+            "indicator" : true,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Water Depth",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 1.0,
+            "north" : {
+              "percentKnown" : 0.0172,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "south" : {
+              "percentKnown" : 0.3333,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "west" : {
+              "percentKnown" : 0.1429,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "east" : {
+              "percentKnown" : 0.0238,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            }
+          }
+        ]
+      },
+      "action" : "north",
+      "shortTermScore" : 0.9967,
+      "longTermScore" : 0.9763
+    },
+    {
+      "state" : {
+        "xPosition" : 1,
+        "yPosition" : 3,
+        "health" : 100.0,
+        "energyLevel" : 247.0098,
+        "elementStates" : [
+          {
+            "elementType" : "Elevation",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Decibel",
+            "indicator" : true,
+            "hazard" : false,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Temperature",
+            "indicator" : true,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Water Depth",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0161,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.3333,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.3333,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : 0.0
+            }
+          }
+        ]
+      },
+      "action" : "Water Depth",
+      "shortTermScore" : 0.866,
+      "longTermScore" : 0.9763
+    },
+    {
+      "state" : {
+        "xPosition" : 1,
+        "yPosition" : 3,
+        "health" : 100.0,
+        "energyLevel" : 246.5098,
+        "elementStates" : [
+          {
+            "elementType" : "Elevation",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Decibel",
+            "indicator" : true,
+            "hazard" : false,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Temperature",
+            "indicator" : true,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Water Depth",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 1.0,
+            "north" : {
+              "percentKnown" : 0.0323,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "south" : {
+              "percentKnown" : 0.6667,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "west" : {
+              "percentKnown" : 0.3333,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "east" : {
+              "percentKnown" : 0.0303,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            }
+          }
+        ]
+      },
+      "action" : "Decibel",
+      "shortTermScore" : 0.9999,
+      "longTermScore" : 0.9763
+    },
+    {
+      "state" : {
+        "xPosition" : 1,
+        "yPosition" : 3,
+        "health" : 100.0,
+        "energyLevel" : 246.4598,
+        "elementStates" : [
+          {
+            "elementType" : "Elevation",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Decibel",
+            "indicator" : true,
+            "hazard" : false,
+            "percentKnownInRange" : 1.0,
+            "north" : {
+              "percentKnown" : 0.0484,
+              "averageValueDifferential" : -1.4867,
+              "immediateValueDifferential" : -1.41
+            },
+            "south" : {
+              "percentKnown" : 1.0,
+              "averageValueDifferential" : 1.4567,
+              "immediateValueDifferential" : 1.42
+            },
+            "west" : {
+              "percentKnown" : 0.25,
+              "averageValueDifferential" : -1.4867,
+              "immediateValueDifferential" : 1.42
+            },
+            "east" : {
+              "percentKnown" : 0.0909,
+              "averageValueDifferential" : 1.4567,
+              "immediateValueDifferential" : -1.41
+            }
+          },
+          {
+            "elementType" : "Temperature",
+            "indicator" : true,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Water Depth",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 1.0,
+            "north" : {
+              "percentKnown" : 0.0323,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "south" : {
+              "percentKnown" : 0.6667,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "west" : {
+              "percentKnown" : 0.3333,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "east" : {
+              "percentKnown" : 0.0303,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            }
+          }
+        ]
+      },
+      "action" : "south",
+      "shortTermScore" : 0.6627,
+      "longTermScore" : 0.9763
+    },
+    {
+      "state" : {
+        "xPosition" : 1,
+        "yPosition" : 2,
+        "health" : 100.0,
+        "energyLevel" : 243.4914,
+        "elementStates" : [
+          {
+            "elementType" : "Elevation",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Decibel",
+            "indicator" : true,
+            "hazard" : false,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0345,
+              "averageValueDifferential" : -1.05,
+              "immediateValueDifferential" : -2.1
+            },
+            "south" : {
+              "percentKnown" : 0.6667,
+              "averageValueDifferential" : 2.35,
+              "immediateValueDifferential" : 1.87
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : 1.41
+            },
+            "east" : {
+              "percentKnown" : 0.1429,
+              "averageValueDifferential" : 2.14,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Temperature",
+            "indicator" : true,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Water Depth",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 1.0,
+            "north" : {
+              "percentKnown" : 0.0345,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "south" : {
+              "percentKnown" : 0.6667,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "west" : {
+              "percentKnown" : 0.1429,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "east" : {
+              "percentKnown" : 0.0952,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            }
+          }
+        ]
+      },
+      "action" : "south",
+      "shortTermScore" : 0.9966,
+      "longTermScore" : 0.9763
+    },
+    {
+      "state" : {
+        "xPosition" : 1,
+        "yPosition" : 1,
+        "health" : 100.0,
+        "energyLevel" : 240.9274,
+        "elementStates" : [
+          {
+            "elementType" : "Elevation",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Decibel",
+            "indicator" : true,
+            "hazard" : false,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0192,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.3333,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.1731,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Temperature",
+            "indicator" : true,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Water Depth",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0192,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.3333,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : 0.0
+            },
+            "east" : {
+              "percentKnown" : 0.1346,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : null
+            }
+          }
+        ]
+      },
+      "action" : "Water Depth",
+      "shortTermScore" : 0.866,
+      "longTermScore" : 0.9763
+    },
+    {
+      "state" : {
+        "xPosition" : 1,
+        "yPosition" : 1,
+        "health" : 100.0,
+        "energyLevel" : 240.4274,
+        "elementStates" : [
+          {
+            "elementType" : "Elevation",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Decibel",
+            "indicator" : true,
+            "hazard" : false,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0192,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.3333,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.1731,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Temperature",
+            "indicator" : true,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Water Depth",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 1.0,
+            "north" : {
+              "percentKnown" : 0.0385,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "south" : {
+              "percentKnown" : 0.6667,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "west" : {
+              "percentKnown" : 0.3333,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "east" : {
+              "percentKnown" : 0.1346,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            }
+          }
+        ]
+      },
+      "action" : "Decibel",
+      "shortTermScore" : 0.8888,
+      "longTermScore" : 0.9763
+    },
+    {
+      "state" : {
+        "xPosition" : 1,
+        "yPosition" : 1,
+        "health" : 100.0,
+        "energyLevel" : 240.3774,
+        "elementStates" : [
+          {
+            "elementType" : "Elevation",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Decibel",
+            "indicator" : true,
+            "hazard" : false,
+            "percentKnownInRange" : 1.0,
+            "north" : {
+              "percentKnown" : 0.0577,
+              "averageValueDifferential" : -2.6467,
+              "immediateValueDifferential" : -3.0
+            },
+            "south" : {
+              "percentKnown" : 1.0,
+              "averageValueDifferential" : 2.44,
+              "immediateValueDifferential" : 2.29
+            },
+            "west" : {
+              "percentKnown" : 1.0,
+              "averageValueDifferential" : -0.8,
+              "immediateValueDifferential" : 1.13
+            },
+            "east" : {
+              "percentKnown" : 0.1731,
+              "averageValueDifferential" : 2.5311,
+              "immediateValueDifferential" : -0.46
+            }
+          },
+          {
+            "elementType" : "Temperature",
+            "indicator" : true,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Water Depth",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 1.0,
+            "north" : {
+              "percentKnown" : 0.0385,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "south" : {
+              "percentKnown" : 0.6667,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "west" : {
+              "percentKnown" : 0.3333,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "east" : {
+              "percentKnown" : 0.1346,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            }
+          }
+        ]
+      },
+      "action" : "east",
+      "shortTermScore" : 0.9962,
+      "longTermScore" : 0.9763
+    },
+    {
+      "state" : {
+        "xPosition" : 2,
+        "yPosition" : 1,
+        "health" : 100.0,
+        "energyLevel" : 237.4998,
+        "elementStates" : [
+          {
+            "elementType" : "Elevation",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Decibel",
+            "indicator" : true,
+            "hazard" : false,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 1.0,
+              "averageValueDifferential" : 4.7071,
+              "immediateValueDifferential" : 3.0
+            },
+            "west" : {
+              "percentKnown" : 0.6667,
+              "averageValueDifferential" : 0.785,
+              "immediateValueDifferential" : 2.03
+            },
+            "east" : {
+              "percentKnown" : 0.1379,
+              "averageValueDifferential" : 5.4725,
+              "immediateValueDifferential" : -0.97
+            }
+          },
+          {
+            "elementType" : "Temperature",
+            "indicator" : true,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Water Depth",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.8571,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "west" : {
+              "percentKnown" : 0.3333,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : 0.0
+            },
+            "east" : {
+              "percentKnown" : 0.1034,
+              "averageValueDifferential" : 0.0,
+              "immediateValueDifferential" : null
+            }
+          }
+        ]
+      },
+      "action" : "south",
+      "shortTermScore" : 0.9963,
+      "longTermScore" : 0.9763
+    },
+    {
+      "state" : {
+        "xPosition" : 2,
+        "yPosition" : 0,
+        "health" : 100.0,
+        "energyLevel" : 234.7433,
+        "elementStates" : [
+          {
+            "elementType" : "Elevation",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 1.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Decibel",
+            "indicator" : true,
+            "hazard" : false,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 1.0,
+              "averageValueDifferential" : 5.342,
+              "immediateValueDifferential" : 3.51
+            },
+            "west" : {
+              "percentKnown" : 1.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : 0.97
+            },
+            "east" : {
+              "percentKnown" : 0.1618,
+              "averageValueDifferential" : 5.7682,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Temperature",
+            "indicator" : true,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 1.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          },
+          {
+            "elementType" : "Water Depth",
+            "indicator" : false,
+            "hazard" : true,
+            "percentKnownInRange" : 0.0,
+            "north" : {
+              "percentKnown" : 0.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "south" : {
+              "percentKnown" : 0.8,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "west" : {
+              "percentKnown" : 1.0,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            },
+            "east" : {
+              "percentKnown" : 0.1324,
+              "averageValueDifferential" : null,
+              "immediateValueDifferential" : null
+            }
+          }
+        ]
+      },
+      "action" : "east",
+      "shortTermScore" : 0.9967,
+      "longTermScore" : 0.9763
+    }
+  ]
+}
