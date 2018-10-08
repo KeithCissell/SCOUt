@@ -144,10 +144,10 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
   def printOutcome = {
     println()
     println(s"AGENT: ${agent.name}")
-    println(s"Nmber of Events: ${eventLog.size}")
-    println(s"Health: ${agent.health}")
-    println(s"Energy: ${agent.energyLevel}")
-    println(s"Goal Completion: ${goal.percentComplete}")
+    println(s"Actions: ${eventLog.size}")
+    println(s"Health: ${roundDouble2(agent.health)}")
+    println(s"Energy: ${roundDouble2(agent.energyLevel)}")
+    println(s"Goal Completion: ${roundDouble2(goal.percentComplete)}")
   }
 
   //------------------------- SAVE OPERATION -----------------------------------

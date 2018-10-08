@@ -25,12 +25,12 @@ class SCOUtController(
   // MEMORY ATTRIBUTES
   val memory: AB[StateActionPair] = AB()
   var normalizedMemory: NormalizedStateActionPairs = new NormalizedStateActionPairs(Nil)
-  val saveLateMemoryLimit: Int = 20
+  val saveLateMemoryLimit: Int = 10
   val saveEarlyMemoryPercent: Double = 0.05
   val fps = 4 // floating points past decimal to store in memory values
 
   // TRAINING ATTRIBUTES
-  val randomSelectThreshhold: Int = 2500
+  val randomSelectThreshhold: Int = 5000
 
   // EXPLORATION INFLUENCE
   val actionHistory: MutableMap[(Int,Int),MutableSet[String]] = MutableMap()
@@ -56,16 +56,26 @@ class SCOUtController(
 
   // SELECTION WEIGHTS
   val trainingSelectionWeights = new SelectionWeights(
-    predictedShortTermScoreWeight = 1.0,
-    predictedLongTermScoreWeight = 1.5,
-    confidenceWeight = 0.5)
+    movementSelectionWeights = new ActionSelectionWeights(
+      predictedShortTermScoreWeight = 1.0,
+      predictedLongTermScoreWeight = 1.5,
+      confidenceWeight = 0.5),
+    scanSelectionWeights = new ActionSelectionWeights(
+      predictedShortTermScoreWeight = 1.0,
+      predictedLongTermScoreWeight = 1.5,
+      confidenceWeight = 0.5))
 
   val selectionWeights = new SelectionWeights(
-    predictedShortTermScoreWeight = 1.0,
-    predictedLongTermScoreWeight = 1.0,
-    confidenceWeight = 1.0)
+    movementSelectionWeights = new ActionSelectionWeights(
+      predictedShortTermScoreWeight = 2.0,
+      predictedLongTermScoreWeight = 1.0,
+      confidenceWeight = 1.0),
+    scanSelectionWeights = new ActionSelectionWeights(
+      predictedShortTermScoreWeight = 1.0,
+      predictedLongTermScoreWeight = 1.0,
+      confidenceWeight = 1.0))
 
-  def copy: Controller = new SCOUtController(memoryFileName, memoryExtention, training, randomSelectThreshhold)
+  def copy: Controller = new SCOUtController(memoryFileName, memoryExtention, training)
 
   def setup(mapHeight: Int, mapWidth: Int): Unit = {
     loadMemory()
@@ -109,10 +119,8 @@ class SCOUtController(
 
   def saveMemory() = {
     val memoryJson = Json.fromValues(memory.map(_.toJsonIndexed()))
-    // println(s"Memory length: ${memory.size}")
-    // println("Saving file...")
     saveFile(memoryFileName, memoryFilePath, memoryExtention, memoryJson)
-    // println("Save Complete")
+    // println(s"Memory length: ${memory.size}")
   }
 
   // -----------------------------SELECTION-------------------------------------
@@ -135,7 +143,10 @@ class SCOUtController(
     var scoreTotal = 0.0
     var actionScores: MutableMap[String,Double] = MutableMap()
     for (pas <- predictedActionScores) {
-      var score = pas.overallScore(trainingSelectionWeights)
+      var score =
+        if (isMovementAction(pas.action)) pas.overallScore(trainingSelectionWeights.movementSelectionWeights)
+        else pas.overallScore(trainingSelectionWeights.scanSelectionWeights)
+      // reduce score of repetitive actions
       if (actionHistory((state.xPosition, state.yPosition)).contains(pas.action)) {
         if (isMovementAction(pas.action)) score *= repititionPenalty
         else score = 0.0
@@ -160,7 +171,10 @@ class SCOUtController(
     var bestAction = randomSelect(actions)
     var bestScore = 0.0
     for (pas <- predictedActionScores) {
-      var score = pas.overallScore(selectionWeights)
+      var score =
+        if (isMovementAction(pas.action)) pas.overallScore(selectionWeights.movementSelectionWeights)
+        else pas.overallScore(selectionWeights.scanSelectionWeights)
+      // reduce score of repetitive actions
       if (actionHistory((state.xPosition, state.yPosition)).contains(pas.action)) {
         if (isMovementAction(pas.action)) score *= repititionPenalty
         else score = 0.0
@@ -218,7 +232,7 @@ class ActionScorePrediction(
   val predictedLongTermScore: Double,
   val confidence: Double
 ) {
-  def overallScore(weights: SelectionWeights): Double = {
+  def overallScore(weights: ActionSelectionWeights): Double = {
     val sts = predictedShortTermScore * weights.predictedShortTermScoreWeight
     val lts = predictedLongTermScore * weights.predictedLongTermScoreWeight
     val c = confidence * weights.confidenceWeight
@@ -234,6 +248,11 @@ class ActionScorePrediction(
 }
 
 class SelectionWeights(
+  val movementSelectionWeights: ActionSelectionWeights,
+  val scanSelectionWeights: ActionSelectionWeights
+)
+
+class ActionSelectionWeights(
   val predictedShortTermScoreWeight: Double,
   val predictedLongTermScoreWeight: Double,
   val confidenceWeight: Double
