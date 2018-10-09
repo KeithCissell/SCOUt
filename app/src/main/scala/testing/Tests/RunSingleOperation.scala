@@ -49,7 +49,7 @@ object RunSingleOperation {
     // val agentName = "Random"
     // val controller = new FindHumanController()
     // val agentName = "Find Human"
-    val controller = new SCOUtController("DifferenceMethodTest", "json", false)
+    val controller = new SCOUtController("DifferenceMethodTest", "json", false, None)
     val agentName = "SCOUt"
 
     val sensors = List(
@@ -98,7 +98,7 @@ object RunSingleOperation {
 
     val goal = goalTemplate.generateGoal(environment)
 
-    val operation = new Operation(agent, environment, goal)
+    val operation = new Operation(agent, environment, goal, None)
 
     // Run Operation and save data
     operation.run

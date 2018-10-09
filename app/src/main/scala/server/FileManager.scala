@@ -10,6 +10,7 @@ object FileManager {
   val environmentTemplatePath = "src/resources/environment-templates/"
   val memoryFilePath = "src/resources/agent-memory/"
   val operationRunPath = "src/resources/operation-runs/"
+  val gaOutputPath = "src/resources/ga-output/"
 
   def fileExists(fileName: String, path: String, extension: String): Boolean = {
     val filePath = (path + fileName + s".$extension").replace(' ', '_')

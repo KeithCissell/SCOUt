@@ -31,18 +31,19 @@ object SimpleTest {
     val simpleTest = new Test(
       testEnvironments = Map(),
       testTemplates = Map(
-        "10by10NoMods" -> (15, 10),
-        "BeginnerCourse" -> (15, 15)),
+        "10by10NoMods" -> (10, 2),
+        "BeginnerCourse" -> (15, 2)),
       controllers = Map(
         "Random" -> new RandomController(),
         "FindHuman" -> new FindHumanController(),
-        "SCOUt" -> new SCOUtController("HighlyTrained", "json", true)),
+        "SCOUt" -> new SCOUtController("HighlyTrained", "json", false, None)),
       sensors = List(
         new ElevationSensor(false),
         new DecibelSensor(true),
         new TemperatureSensor(true),
         new WaterSensor(false)),
-      goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None))
+      goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None),
+      maxActions = None)
 
     // Run Test
     simpleTest.run

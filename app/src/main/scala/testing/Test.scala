@@ -27,7 +27,8 @@ class Test(
   val testTemplates: Map[String,(Int,Int)], // templateFileName -> (build iterations, test iteration per build)
   val controllers: Map[String,Controller],  // agentName -> controller
   val sensors: List[Sensor],
-  val goalTemplate: GoalTemplate
+  val goalTemplate: GoalTemplate,
+  val maxActions: Option[Int]
 ) {
   // Test Metrics to gather
   val testMetrics: Map[String,TestMetric] = for ((name,controller) <- controllers) yield name -> new TestMetric(name, AB())
@@ -42,9 +43,9 @@ class Test(
     for ((environment, iterations) <- environments) {
       for (i <- 0 until iterations) {
         runNumber += 1
-        println()
-        println()
-        println(s"Running Test $runNumber")
+        // println()
+        // println()
+        // println(s"Running Test $runNumber")
         val startPosition = getValidStartPosition(environment)
         val startX = startPosition._1
         val startY = startPosition._2
@@ -61,19 +62,19 @@ class Test(
             yPosition = startY)
           // OPERATION
           val goal = goalTemplate.generateGoal(environment)
-          val operation = new Operation(agent, environment, goal)
+          val operation = new Operation(agent, environment, goal, maxActions)
           // println(s"Running ${agent.name}")
           operation.run
           testMetrics(name).addRun(operation.runData)
           // operation.printActions
-          operation.printOutcome
+          // operation.printOutcome
           // println(s"Stat Position ($startX, $startY)")
           // println(s"End Position (${operation.eventLog.last.state.xPosition}, ${operation.eventLog.last.state.yPosition})")
           // println()
         }
       }
     }
-    for ((name,data) <- testMetrics) data.printRunResults
+    // for ((name,data) <- testMetrics) data.printRunResults
   }
 
   // Generate Environments: environment -> iterations to run
@@ -127,15 +128,19 @@ class Test(
 
 class TestMetric(controllerName: String, runs: AB[RunData]) {
   def addRun(runData: RunData) = runs += runData
+  def avgGoalCompletion: Double = runs.map(_.goalCompletion).foldLeft(0.0)(_ + _) / runs.size
+  def avgActions: Int = runs.map(_.steps).foldLeft(0)(_ + _) / runs.size
+  def avgRemainingHealth: Double = runs.map(_.remainingHealth).foldLeft(0.0)(_ + _) / runs.size
+  def avgRemainingEnergy: Double = runs.map(_.remainingEnergy).foldLeft(0.0)(_ + _) / runs.size
   def printRunResults = {
     println()
     println(s"Controller: $controllerName")
     println(s"Runs:       ${runs.size}")
     println(s"Successes:  ${runs.filter(_.successful == true).size}")
-    println(s"Avg Success ${runs.map(_.goalCompletion).foldLeft(0.0)(_ + _) / runs.size}")
-    println(s"Avg Steps:  ${runs.map(_.steps).foldLeft(0)(_ + _) / runs.size}")
-    println(s"Avg Remaining Health: ${runs.map(_.remainingHealth).foldLeft(0.0)(_ + _) / runs.size}")
-    println(s"Avg Remaining Energy: ${runs.map(_.remainingEnergy).foldLeft(0.0)(_ + _) / runs.size}")
+    println(s"Avg Success ${avgGoalCompletion}")
+    println(s"Avg Steps:  ${avgActions}")
+    println(s"Avg Remaining Health: ${avgRemainingHealth}")
+    println(s"Avg Remaining Energy: ${avgRemainingEnergy}")
   }
 }
 

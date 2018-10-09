@@ -38,7 +38,7 @@ object SandBox {
     // AGENT
     val testBot = new Agent(
       name = "TestBot",
-      controller = new SCOUtController("stateActionTest", "json", true),
+      controller = new SCOUtController("stateActionTest", "json", true, None),
       sensors = List(
         new ElevationSensor(false),
         new DecibelSensor(true),
@@ -55,7 +55,7 @@ object SandBox {
     // val goal = new MapElements(height, width, List("Elevation"), None)
 
     // OPERATION
-    val operation = new Operation(testBot, testEnv, goal)
+    val operation = new Operation(testBot, testEnv, goal, None)
     operation.run
     operation.printOutcome
 

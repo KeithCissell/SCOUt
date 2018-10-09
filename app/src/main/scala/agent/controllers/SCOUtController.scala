@@ -10,6 +10,7 @@ import scoutagent.Event._
 import filemanager.FileManager._
 import jsonhandler.Decoder._
 import scoututil.Util._
+import weighttuning.WeightTuning._
 
 import scala.collection.mutable.{Map => MutableMap}
 import scala.collection.mutable.{Set => MutableSet}
@@ -20,24 +21,29 @@ class SCOUtController(
   val memoryFileName: String,
   val memoryExtention: String = "json",
   val training: Boolean,
+  val weightsSet: Option[WeightsSet]
 ) extends Controller {
 
   // MEMORY ATTRIBUTES
   val memory: AB[StateActionPair] = AB()
   var normalizedMemory: NormalizedStateActionPairs = new NormalizedStateActionPairs(Nil)
-  val saveLateMemoryLimit: Int = 10
+  val saveLateMemoryLimit: Int = 20
   val saveEarlyMemoryPercent: Double = 0.05
   val fps = 4 // floating points past decimal to store in memory values
 
   // TRAINING ATTRIBUTES
   val randomSelectThreshhold: Int = 5000
 
+  // Confidence Related Variables
+  var maxDifferenceCompared: Double = 0.4
+  var minimumComparisons: Double = 10.0
+
   // EXPLORATION INFLUENCE
   val actionHistory: MutableMap[(Int,Int),MutableSet[String]] = MutableMap()
-  val repititionPenalty: Double = 0.5
+  var repititionPenalty: Double = 0.5
 
   // DIFFERENCE COMPARISON WEIGHTS
-  val stateDifferenceWeights = new StateDifferenceWeights(
+  var stateDifferenceWeights = new StateDifferenceWeights(
     healthWeight = 0.0,
     energyWeight = 0.0,
     elementStateWeight = 1.0,
@@ -55,7 +61,7 @@ class SCOUtController(
       immediateValueWeight = 3.0))
 
   // SELECTION WEIGHTS
-  val trainingSelectionWeights = new SelectionWeights(
+  var trainingSelectionWeights = new SelectionWeights(
     movementSelectionWeights = new ActionSelectionWeights(
       predictedShortTermScoreWeight = 1.0,
       predictedLongTermScoreWeight = 1.5,
@@ -65,7 +71,7 @@ class SCOUtController(
       predictedLongTermScoreWeight = 1.5,
       confidenceWeight = 0.5))
 
-  val selectionWeights = new SelectionWeights(
+  var selectionWeights = new SelectionWeights(
     movementSelectionWeights = new ActionSelectionWeights(
       predictedShortTermScoreWeight = 2.0,
       predictedLongTermScoreWeight = 1.0,
@@ -75,7 +81,7 @@ class SCOUtController(
       predictedLongTermScoreWeight = 1.0,
       confidenceWeight = 1.0))
 
-  def copy: Controller = new SCOUtController(memoryFileName, memoryExtention, training)
+  def copy: Controller = new SCOUtController(memoryFileName, memoryExtention, training, weightsSet)
 
   def setup(mapHeight: Int, mapWidth: Int): Unit = {
     loadMemory()
@@ -84,6 +90,17 @@ class SCOUtController(
       x <- 0 until mapHeight
       y <- 0 until mapWidth
     } actionHistory += (x,y) -> MutableSet()
+    // Set weights
+    weightsSet match {
+      case None => // Use Defaults
+      case Some(ws) => {
+        maxDifferenceCompared = ws.maxDifferenceCompared
+        minimumComparisons = ws.minimumComparisons
+        repititionPenalty = ws.repititionPenalty
+        stateDifferenceWeights = ws.stateDifferenceWeights
+        selectionWeights = ws.selectionWeights
+      }
+    }
   }
 
   def shutDown(stateActionPairs: List[StateActionPair]): Unit = if (training) {
@@ -193,10 +210,6 @@ class SCOUtController(
     // Calculate Overall Differences
     val stateActionDifferences: List[StateActionDifference] = normalizedMemory.calculateStateActionDifferences(state, stateDifferenceWeights)
     // for (sad <- stateActionDifferences) sad.print
-
-    // Confidence Related Variables
-    val maxDifferenceCompared: Double = 0.4
-    val minimumComparisons: Double = 10.0
 
     // Score Each Action
     val actionScorePredictions = for (action <- actions) yield{
