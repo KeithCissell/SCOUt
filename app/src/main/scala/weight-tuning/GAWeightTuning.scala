@@ -20,21 +20,22 @@ import jsonhandler.Encoder._
 import jsonhandler.Decoder._
 import filemanager.FileManager._
 import org.joda.time.DateTime
+import scala.collection.mutable.{Set => MutableSet}
 import scala.collection.mutable.{Map => MutableMap}
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
 object WeightTuning {
   // GA Attributes
-  val runName = "BIGTEST"
-  val populationSize: Int = 10
-  val numGenerations: Int = 100
+  val runName = "OFFICIAL2"
+  val populationSize: Int = 8
+  val numGenerations: Int = 50
   val elites: Int = 2
   val maxHealth: Double = 100.0
   val maxEnergy: Double = 100.0
-  val maxActions: Int = 80
+  val maxActions: Int = 60
   val maxCompared: Double = 30.0 // for special weight "minimumComparisons"
-  def mutationRate(currentGeneration: Int): Double = (currentGeneration / numGenerations)
+  def mutationRate(currentGeneration: Int): Double = (numGenerations.toDouble - currentGeneration.toDouble) / numGenerations.toDouble
 
   // Weights Object
   class WeightsSet(
@@ -98,16 +99,16 @@ object WeightTuning {
       println(s"Avg Remaining Health: ${roundDouble2(avgRemainingHealth.getOrElse(0.0))}")
       println(s"Avg Remaining Energy: ${roundDouble2(avgRemainingEnergy.getOrElse(0.0))}")
       println(s"Avg Goal Completion:        ${roundDouble2(avgGoalCompletion.getOrElse(0.0))}")
+      println(s"FITNESS: ${fitness}")
     }
   }
 
   // Crossover Two Individuals
   def crossover(ind1: Individual, ind2: Individual, mutationRate: Double): Individual = {
-    var swappedIndexes: MutableMap[Int,Double] = MutableMap()
-    val numToSwap: Int = randomInt(0, (ind1.weights.length * mutationRate).toInt - 1)
+    var swappedIndexes: MutableSet[Int] = MutableSet()
+    val numToSwap: Int = randomInt(0, ((ind1.weights.length - 1).toDouble * mutationRate).toInt)
     for (i <- 0 until numToSwap) {
-      val index = randomInt(0, ind1.weights.length - 1)
-      if (!swappedIndexes.contains(index)) swappedIndexes += (index -> ind2.weights(index))
+      swappedIndexes += randomInt(0, ind1.weights.length - 1)
     }
     // Create new individual
     var weights: AB[Double] = AB()
@@ -120,12 +121,12 @@ object WeightTuning {
 
   // Mutate Individual
   def mutate(ind: Individual, mutationRate: Double): Individual = {
-    val chanceToMutate = 0.8 * mutationRate
+    val chanceToMutate = 0.4
     val maxMutation = 0.5 * mutationRate
     val maxMutation2 = 0.5 * maxCompared * mutationRate
     // Mutate
     var weights: AB[Double] = AB()
-    for (i <- 0 until ind.weights.length) if (randomDouble(0.0, 1.0) > chanceToMutate) {
+    for (i <- 0 until ind.weights.length) if (randomDouble(0.0, 1.0) < chanceToMutate) {
       if (i != 21) {
         val change = randomDouble(-maxMutation, maxMutation)
         weights += List(List(0.0, ind.weights(i) + change).max, 1.0).min
@@ -133,7 +134,7 @@ object WeightTuning {
         val change = randomDouble(-maxMutation2, maxMutation2)
         weights += List(List(0.0, ind.weights(21) + change).max, maxCompared).min
       }
-    }
+    } else weights += ind.weights(i)
     return new Individual(weights = weights.toList)
   }
 
@@ -151,15 +152,20 @@ object WeightTuning {
   }
 
   // Run Individual Through Tests
-  def runTests(ind: Individual): Unit = {
+  def runTests(population: List[Individual]): Unit = {
+    // Create a controller for each individual
+    val controllers: Map[String,SCOUtController] = (for (i <- 0 until population.length) yield {
+      val ind = population(i)
+      val name = i.toString
+      (name -> new SCOUtController("FreshStart", "json", false, Some(ind.generateWeightsSet)))
+    }).toMap
     // Setup Test
     val gaTest = new Test(
       testEnvironments = Map(),
       testTemplates = Map(
-        "10by10NoMods" -> (10, 2),
-        "BeginnerCourse" -> (10, 3)),
-      controllers = Map(
-        "SCOUt" -> new SCOUtController("FreshStart", "json", false, Some(ind.generateWeightsSet))),
+        "10by10NoMods" -> (1, 5),
+        "BeginnerCourse" -> (1, 10)),
+      controllers = controllers,
       sensors = List(
         new ElevationSensor(false),
         new DecibelSensor(true),
@@ -171,12 +177,14 @@ object WeightTuning {
     // Run Test
     gaTest.run
 
-    // Set Results to Individual
-    val tm = gaTest.testMetrics("SCOUt")
-    ind.avgActions = Some(tm.avgActions)
-    ind.avgRemainingHealth = Some(tm.avgRemainingHealth)
-    ind.avgRemainingEnergy = Some(tm.avgRemainingEnergy)
-    ind.avgGoalCompletion = Some(tm.avgGoalCompletion)
+    // Set Results to Individuals
+    for ((name,tm) <- gaTest.testMetrics) {
+      val ind = population(name.toInt)
+      ind.avgActions = Some(tm.avgActions)
+      ind.avgRemainingHealth = Some(tm.avgRemainingHealth)
+      ind.avgRemainingEnergy = Some(tm.avgRemainingEnergy)
+      ind.avgGoalCompletion = Some(tm.avgGoalCompletion)
+    }
   }
 
   // Save Population Data to File
@@ -209,16 +217,16 @@ object WeightTuning {
       new Individual(weights = weights.toList)
     }).toList
     // Score initial Individuals
-    for (ind <- population) {
-      runTests(ind)
-    }
+    runTests(population)
 
     // EVOLVE
     for (g <- 0 until numGenerations) {
       println()
+      println()
       println(s"RUNNING GENERATION ${g + 1} / $numGenerations")
+
       // Create Crossovers
-      val crossovers = for (i <- 0 until populationSize) yield {
+      val crossovers = for (i <- 0 until (populationSize / 2)) yield {
         val pop = population.to[AB]
         val ind1 = rouletteSelect(pop.toList)
         val ind2 = rouletteSelect((pop -= ind1).toList)
@@ -226,23 +234,21 @@ object WeightTuning {
       }
 
       // Create Mutated Copies
-      val mutates = for (i <- 0 until populationSize) yield {
+      val mutates = for (i <- 0 until (populationSize / 2)) yield {
         val ind = rouletteSelect(population)
         mutate(ind, mutationRate(g))
       }
 
       // Score Individuals
       var totalPopulation: AB[Individual] = (population ++ crossovers ++ mutates).to[AB]
-      for (ind <- totalPopulation) {
-        runTests(ind)
-      }
+      runTests(totalPopulation.toList)
 
       // Select Survivors
       var newPopulation: AB[Individual] = AB()
       for (i <- 0 until elites) {
         var bestInd = totalPopulation(0)
-        var bestFitness = 1.0
-        for (ind <- totalPopulation) if (ind.fitness < bestFitness) {
+        var bestFitness = bestInd.fitness
+        for (ind <- totalPopulation) if (ind.fitness > bestFitness) {
           bestInd = ind
           bestFitness = ind.fitness
         }
@@ -260,9 +266,7 @@ object WeightTuning {
       population = newPopulation.toList
 
       // Iterative Save
-      if (g % 10 == 0) {
-        savePopulation(s"Gen${g+1}", population)
-      }
+      savePopulation(s"Gen${g+1}", population)
     }
 
     // Save Output

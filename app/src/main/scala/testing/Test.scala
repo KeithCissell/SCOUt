@@ -43,9 +43,9 @@ class Test(
     for ((environment, iterations) <- environments) {
       for (i <- 0 until iterations) {
         runNumber += 1
-        // println()
-        // println()
-        // println(s"Running Test $runNumber")
+        println()
+        println()
+        println(s"Running Test $runNumber")
         val startPosition = getValidStartPosition(environment)
         val startX = startPosition._1
         val startY = startPosition._2
@@ -67,14 +67,14 @@ class Test(
           operation.run
           testMetrics(name).addRun(operation.runData)
           // operation.printActions
-          // operation.printOutcome
+          operation.printOutcome
           // println(s"Stat Position ($startX, $startY)")
           // println(s"End Position (${operation.eventLog.last.state.xPosition}, ${operation.eventLog.last.state.yPosition})")
           // println()
         }
       }
     }
-    // for ((name,data) <- testMetrics) data.printRunResults
+    for ((name,data) <- testMetrics) data.printRunResults
   }
 
   // Generate Environments: environment -> iterations to run
@@ -137,10 +137,10 @@ class TestMetric(controllerName: String, runs: AB[RunData]) {
     println(s"Controller: $controllerName")
     println(s"Runs:       ${runs.size}")
     println(s"Successes:  ${runs.filter(_.successful == true).size}")
-    println(s"Avg Success ${avgGoalCompletion}")
     println(s"Avg Steps:  ${avgActions}")
-    println(s"Avg Remaining Health: ${avgRemainingHealth}")
-    println(s"Avg Remaining Energy: ${avgRemainingEnergy}")
+    println(s"Avg Remaining Health: ${roundDouble2(avgRemainingHealth)}")
+    println(s"Avg Remaining Energy: ${roundDouble2(avgRemainingEnergy)}")
+    println(s"AVG SUCCESS RAGE:     ${roundDouble2(avgGoalCompletion)}")
   }
 }
 

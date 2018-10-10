@@ -47,10 +47,10 @@ object RunSingleOperation {
     // Set Agent Variables
     // val controller = new RandomController()
     // val agentName = "Random"
-    // val controller = new FindHumanController()
-    // val agentName = "Find Human"
-    val controller = new SCOUtController("DifferenceMethodTest", "json", false, None)
-    val agentName = "SCOUt"
+    val controller = new FindHumanController()
+    val agentName = "Find Human"
+    // val controller = new SCOUtController("DifferenceMethodTest", "json", false, None)
+    // val agentName = "SCOUt"
 
     val sensors = List(
       new ElevationSensor(false),

@@ -35,30 +35,30 @@ class SCOUtController(
   val randomSelectThreshhold: Int = 5000
 
   // Confidence Related Variables
-  var maxDifferenceCompared: Double = 0.4
-  var minimumComparisons: Double = 10.0
+  var maxDifferenceCompared: Double = 0.46
+  var minimumComparisons: Double = 3.0
 
   // EXPLORATION INFLUENCE
   val actionHistory: MutableMap[(Int,Int),MutableSet[String]] = MutableMap()
-  var repititionPenalty: Double = 0.5
+  var repititionPenalty: Double = 0.55
 
   // DIFFERENCE COMPARISON WEIGHTS
   var stateDifferenceWeights = new StateDifferenceWeights(
-    healthWeight = 0.0,
-    energyWeight = 0.0,
-    elementStateWeight = 1.0,
-    totalQuadrantWeight = 1.0,
+    healthWeight = 0.28,
+    energyWeight = 0.82,
+    elementStateWeight = 0.67,
+    totalQuadrantWeight = 0.4,
     elementDifferenceWeights = new ElementDifferenceWeights(
-      indicatorWeight = 4.0,
-      hazardWeight = 1.0,
-      percentKnownInRangeWeight = 5.0,
-      immediateKnownWeight = 2.0),
+      indicatorWeight = 0.43,
+      hazardWeight = 0.47,
+      percentKnownInRangeWeight = 0.23,
+      immediateKnownWeight = 0.75),
     quadrantDifferenceWeights = new QuadrantDifferenceWeights(
-      indicatorWeight = 4.0,
-      hazardWeight = 1.0,
-      percentKnownWeight = 1.0,
-      averageValueWeight = 2.0,
-      immediateValueWeight = 3.0))
+      indicatorWeight = 0.49,
+      hazardWeight = 0.18,
+      percentKnownWeight = 0.2,
+      averageValueWeight = 0.46,
+      immediateValueWeight = 0.46))
 
   // SELECTION WEIGHTS
   var trainingSelectionWeights = new SelectionWeights(
@@ -73,13 +73,13 @@ class SCOUtController(
 
   var selectionWeights = new SelectionWeights(
     movementSelectionWeights = new ActionSelectionWeights(
-      predictedShortTermScoreWeight = 2.0,
-      predictedLongTermScoreWeight = 1.0,
-      confidenceWeight = 1.0),
+      predictedShortTermScoreWeight = 0.28,
+      predictedLongTermScoreWeight = 0.52,
+      confidenceWeight = 0.4),
     scanSelectionWeights = new ActionSelectionWeights(
-      predictedShortTermScoreWeight = 1.0,
-      predictedLongTermScoreWeight = 1.0,
-      confidenceWeight = 1.0))
+      predictedShortTermScoreWeight = 0.88,
+      predictedLongTermScoreWeight = 0.62,
+      confidenceWeight = 0.01))
 
   def copy: Controller = new SCOUtController(memoryFileName, memoryExtention, training, weightsSet)
 
