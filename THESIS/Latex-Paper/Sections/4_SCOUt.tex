@@ -5,18 +5,97 @@ The project’s simulation consists of three main components: environments, agen
 A wide range of diversity is required for both the environments and agents represented in simulation.
 
 
+% ==============================================================================
+% PLATFORMS
+% ==============================================================================
+\section{Platforms}
 
-% ==============================================================================
-% DATA STRUCTURES
-% ==============================================================================
-\section{Data Structures}
+
+\subsection{Simulation Back-End}
+% -----------------------------------------------------------------------------------------------
+\todo{Reword / Integrate}
 After finalizing my project idea, I began back end development on the environment’s data structure.
 I chose to use Scala as my programming language for storage and manipulation of data on the back end.
 Scala is a multiparadigm language that combines both functional and object oriented programming styles.
 This made it ideal for the back end as I can limit the mutability of my data structures using functional approaches, while still taking advantage of abstraction used in OO programming styles.
 The flexibility of Scala also plays a role in creating a concurrent form of communication to the GUI, but more on that later.
+% -----------------------------------------------------------------------------------------------
 
-\subsection{Environment}
+
+\subsection{Visualization Front-End}
+% ----------------------------------------------------------------------------------------------------------------------------------------
+\todo{reword/integrate}
+2.2 GUI (Front-End)
+2.2.1 GUI Structure
+This GUI is handled with JavaScript, HTML and CSS.
+In order to encapsulate SCOUt into its own application, I used Electron which emulates a browser window as a standalone desktop application.
+All of these components are handled together using Node Package Manager (NPM).
+NPM allows simple commands to be run in a terminal to launch the entire SCOUt application, or just specific parts.
+JavaScript handles HTTP communication with the SCOUt server, as well as all data storage, HTML manipulation and user input handling for the GUI.
+
+2.2.2 Communication
+JavaScript uses the “fetch” command to make HTTP requests to SCOUt’s local server and handle the responses.
+
+2.2.3 Environment Data Structure
+When data is received from the SCOUt server, the JSON is parse and a data structure is created on the JavaScript side.
+The data structures strongly resemble the same exact layout as the Scala data structures.
+The only difference is the restriction to edit data. The only time that the data on this front-end will be edited, is when handling an HTTP response that confirms a change was made to the data structure on the back-end.
+
+2.2.4 Environment Visualization
+Visualization is currently very minimal and does not reflect the final implementation.
+Once an Environment has been created, an interactive visualization will be loaded.
+Each Layer of Elements can be viewed one at a time.
+The current Layer’s name will be displayed and there will be forward and backward buttons to allow the user to flip through the different layers.
+Each layer is currently only displayed as a heatmap.
+D3’s Heatmap open source project is currently used to take JSON data of the layer and create a visualization based on the value at each Cartesian point.
+% -------------------------------------------------------------------------------------------------------------------------------------
+% ----------------------------------------------------------------------------------------------------------------------------------------
+\todo{Reword}
+I spent the majority of the semester working on the visualizer portion of the GUI.
+I had already worked with D3 libraries within JavaScript to make basic contour maps.
+My new goal was to create a way to logically display the different layers of elements within the environment using these libraries.
+The visualizer also needed to incorporate a way for the user to control which layer(s) were being displayed, and present proper information corresponding to the environment.
+To do so, I created a “Visualizer” page to my application. This page is divided into four main sections: display, toolbar, legend, and navigation bar.
+The display is an SVG element that holds graphing data for the environment.
+It will display specified layers of the environment as well as a grid representing each “cell” within the environment.
+The toolbar allows the user to select the current element layer(s) that are displayed.
+The legend displays information on the environment in three areas: general information, information for the currently selected layer and information of a single cell in the grid.
+A cell’s information will be displayed within the legend when selected.
+A cell can be selected by clicking its corresponding position in the SVG display.
+The selected cell will also be highlighted within the display when selected.
+The navigation bar will be populated with controls for the robot once it is incorporated into the application in my future work.
+Currently, the only item in the navigation bar is a button to return the user to the “Builder” page which allows the creation of an environment.
+% ----------------------------------------------------------------------------------------------------------------------------------------
+
+
+\subsection{Communication}
+Communication between the back and front ends are setup in a client server setup.
+The back end is setup as a local server that handles several specific requests.
+The front end acts as the client, requesting data or passing commands to the back end server.
+
+The SCOUt Server was created with the assistance of HTTP4S, a Scala open source library. \todo{Cite HTTP4S}
+HTTP4S allows easy setup and use of an HTTP request handler.
+For this project, the server runs on localhost:8080.
+The localhost is then accessible by any applications running locally on the same computer via HTTP requests.
+A service is setup on the back end to handle specific incoming requests.
+If a request has a proper URL and request method type (Get and Post), the service calls Scala functions to attempt completion of the request, and then returns an HTTP response.
+
+\todo{Format Server Table}
+Method	Path	Response
+GET	/ping	Responds “pong”
+GET	/current_state	Returns JSON of Environment’s current state
+POST	/new_random_environment	Takes dimensions and returns a procedurally generated Environment
+
+The server must both receive parameters as well as send data structures to a client operating in a different language.
+For this reason, all communication is formatted into JSON data structures in the request and response bodies.
+In cases that parameters are passed in with a request, the JSON must properly be constructed for the service to handle it.
+
+
+
+% ==============================================================================
+% ENVIRONMENT
+% ==============================================================================
+\section{Environment}
 Representing any environment is a tricky process.
 A simulation needs to balance simplicity and coverage when modeling an environment.
 Leave out too much from the model and it won’t reflect real word scenarios.
@@ -34,6 +113,7 @@ class Environment {
 	name: String
   height: Int
   width: Int
+  scale: Double
 	grid: Array[Array[Cell]]
 }
 
@@ -90,17 +170,168 @@ class Layer {
 	layer: Array[Array[Element]]
 }
 
-\subsection{Agent}
+
+
+% ==============================================================================
+% AGENT
+% ==============================================================================
+\section{Agent Representation}
+Agents within this experiment have a core set of attributes and abilities, along with a set of sensors and a controller.
+The core attributes for an agent are health, energy level, a system clock, an internal map and its current position.
+Because SCOUt is focused on purely observational interactions with its environment, an agent only has two categories of actions that can be taken: movement and scanning.
+The agent can attempt to move one cell at a time in any of the cardinal directions.
+This allows the agent to reassess after each movement attempt.
+Scanning collects information about the agent's immediate environment and updates internal map.
+The list of scan actions that an agent can perform is based on the set of sensors the agent is equipped with.
+The controller is in charge of analyzing the current state of the agent and deciding the next action to be performed.
+This project focuses on creating a single controller (SCOUt) that is highly adaptable to wide ranges of agent configurations, environments and goals.
+
+An agent is considered operational as long as it has remaining health and energy.
+Health is effected by....
+Energy is effected by....
+
+
+\subsection{Sensor}
+
+
+\subsection{Actions}
+An agent's movement is simplified to stepping from its current cell to one of its four neighboring cells.
+Movement to a neighboring cell is denoted as "north", "south", "west" or "east" based on the orientation of the x, y grid of cells that make up the environment.
+Moving a single cell at a time gives the agent the opportunity to reassess its current state before continuing movement.
+Distance covered by successful movement will inherently scale to the size of the cells within the environment representation.
+Each time an agent attempts to move to a new cell, Elevation levels will be compared between the current and new cell to check if movement is possible or if it results in damage.
+After the attempt has been made, changes to health, energy level and the system clock are calculated and then updated.
+If the movement action is successfully completed, the current position is also updated.
+
+A sensor is an object that allows an agent to gather data about one specific Element Type within an environment.
+Each sensor has set attributes for the element type that it can detect, the range, the energy required to run and the time required to run.
+Additionally two flags are passed to a sensor when it is first setup.
+One of these flags denote if the sensor is being used to detect "hazard" elements in the environment.
+Whether an element is hazardous typically depends on the setup of the agent.
+For example, water could be considered hazardous to most robots, however if the agent was designed for aqueous missions, water could no longer be a concern.
+The other flag denotes if the sensor is being used to detect "indicator" elements in the environment.
+Indicator elements are any element that are associated to the agent's goal.
+An example is if the agent is searching for a human within the environment, their heat signature might be significantly different than the surrounding environment, so temperature would be considered an indicator.
+
+When a sensor is used, it does a full 360° sweep of surrounding cells in the environment.
+This creates a search circle with radius equal to the sensor's range and the center located at the agent's current position.
+For each cell that fall within this search circle, the value for the sensor's given element type is extracted.
+These values are then added to the agent's internal map if they did not previously exist there.
+Through repeated scanning, the agent will begin to map out its surrounding environment.
+This map can be then be used by the controller to determine what actions would be most beneficial to the goal at hand.
+
+\subsection{State Representation}
+For controllers to intelligently select when to perform what actions, they need to have sufficient data about the agent and the known surrounding environment.
+The agent's health and energy level can easily be stored, but the internal map containing the known environment can become a very large data structure to work with.
+For this reason the data structure is stripped down in order to reduce memory usage and computational effort required to analyze a state.
+Instead of a 2-D array of cells, \todo{reference cell structure diagram?} the internal map is represented as a list of element states for each element type that there is a sensor present for.
+
+Each element state is comprised of the value at the agents current position (if known), a flag for whether the element type is considered a hazard element, a flag for whether the element type is considered an indicator element, and then four quadrant states for each cardinal direction.
+Because agent movement is split into north, south, west and east, we can collapse information about the element type into four quadrants \todo{Image of quadrants}.
+A quadrant state contains the percent of cells where the value for the element type is known, the neighboring cell's value (if known) and the average of all known cell values in the quadrant.
+These metrics allow us to generate useful information that ties the current state with consequences that may come from each action.
+Particularly...\todo{add state comparison equations?}
 
 
 
 % ==============================================================================
-% ENVIRONMENTS
+% CONTROLLER
 % ==============================================================================
-\section{Environments}
+\section{Controller}
+In this experiment three different controllers are created and compared for their performance.
+
+\subsection{Base Line Controllers}
+Talk about Random and Heuristic Controllers.
+
+\subsection{Intelligent Controller}
+Talk about SCOUt controller using machine learning.
+
+Memory Storage
+
+State Comparison
+
+Action Selection
 
 
-\subsection{Environment Generation}
+
+% ==============================================================================
+% OPERATIONS
+% ==============================================================================
+\section{Operations}
+To explore the usefulness and robustness of the intelligent controller, many different scenarios need to be explored.
+All scenarios are made up of three main components: an agent, a goal and the environment.
+Different configurations of each component's variables allows us to create a vast variety of scenarios.
+These three components are chosen and then fed into a simulation process called an operation. \todo{Operation Diagram}
+Each operation simulates the agent attempting to complete a goal within an environment.
+Interactions between the agent and its environment are played out and data will is collected to record decisions made by the agent and the outcome of each decision.
+Data collection takes place on a low level and a high level during each operation.
+
+Low level data is collected each time the agent performs an action.
+- The agent's state when the action was selected
+- Any changes to the agent's internal state (health or energy reduction)
+- If the action performed was successful (could it move, did it have enough energy to complete the action)
+- A short term reward for the outcome of the action
+
+
+High level data is only collected once at the simulated operation ends.
+- Status of internal variables (health and energy)
+- Number of actions taken during operation
+- Level of goal completion
+- An overall long term reward
+- Long term reward given to each action taken
+
+
+\subsection{Goals}
+An operation is run with a given end goal for the agent to achieve.
+SCOUt is designed for the observational and exploration portion of a task.
+If the entire task of a robot was to traverse a hazardous area to find a certain mineral for extraction.
+SCOUt would be used to guide exploration in the environment and detect the mineral.
+When the mineral is found, SCOUt's process would then be completed successfully and another process could take over for the actual extraction, or the location could be recorded and another agent could be sent in.
+Following this, the SCOUt agent could continue to search for more deposits of the mineral or return to base.
+Using this distinction, we classify goals into two catagories for testing SCOUt's exploration and observation abilities, anomaly searching and element mapping.
+Anomaly searching requires an agent to find a given anomaly within an environment.
+This tests SCOUt's ability to use environmental clues to track down the anomaly.
+For example, if the agent was looking for a human after a natural disaster, it could use data such as temperature readings and decibel readings to track down the person.
+Element mapping is fairly strait forward.
+The agent must map out as much readings of a certain element as possible.
+This gives SCOUt the opportunity to discover correlations between the element is searching for and other elements present in the environment.
+For example, you are move likely to find water in a valley rather than a hill.
+
+
+\subsection{Rewards}
+In addition to goal completion, an agent also has to be observant of its health and energy.
+The more efficiently an agent can complete an objective the better.
+The overall performance of an agent is measured by both its ability to complete the task at hand and the efficiency of the actions taken.
+These performance measurements are calculated on a short and long term basis, and come in the form of "rewards".
+In addition to measuring the performance of an agent, rewards can be used as a learning metric for an intelligent agent.
+When an intelligent agent finds itself in a similar state as before, it can look at the action it took in the past and the reward that was given to decide if it should perform that action again.
+
+\subsubsection{Short Term Rewards}
+\todo{Add STS Equation}
+Short term rewards are given each time an agent performs an action to reflect the immediate outcome of the action.
+Energy and health depletion are major factors in this reward.
+If the action required an excessive amount of energy or resulted in damage to the agent, the reward is decreased.
+Other factors that come into play depend on the specific action taken.
+If the agent attempted to move to a new area and fail entirely to move (a hill was too steep to climb) a deduction is made.
+A small increase in reward is also applied if the agent moves into an unexplored area.
+If the agent uses a scanner, the reward is adjusted to reflect the amount of new data learned.
+This penalizes the agent from using a scanner twice in a row or after small movements as it is not efficient use of energy.
+
+\subsubsection{Long Term Rewards}
+Long term rewards are calculated once the operation is over.
+This could mean that the agent has successfully completed its goal, or it is depleted of health or energy.
+To reflect these scenarios, the reward is determined by the goal completion, remaining health and remaining energy. \todo{Add LTS Equation}
+Even if a goal is completed, the agent could receive a low score if it was "reckless" and took lots of damage or used large amounts of energy.
+The long term reward is then propagated backwards through all the actions that were taken.
+The actions performed immediately before the end of the operation are given highest score.
+Previous actions then receive diminishing reward based on \todo{LTS reward distribution equation}.
+
+
+
+% ==============================================================================
+% ENVIRONMENT GENERATION
+% ==============================================================================
+\section{Environment Generation}
 The SCOUt environment build tool captures important details that are necessary for agent-environment interactions to be simulated, while remaining simple to implement and understand.
 The tool is also highly abstracted so that more details can easily be added as needed while still maintaining a defined build process.
 
@@ -122,6 +353,8 @@ Element seeds require input variables to be provided in order to drive their pop
 
 The process to generate each environment is divided into two main phases: terrain formation and layer initialization, anomaly placement and effect radiation.
 
+
+\subsection{Element Seeds}
 % ----------------------------------------------------------------------------------------------------------------------------------------
 \todo{Reword/Integrate}
 Once I had a way to represent an environment, I developed a way to generate an environment on demand.
@@ -164,7 +397,6 @@ Layers such as sound Decibel are much trickier.
 A Decibel layer requires a noise source to first be given a value, then the values of all other positions must take sound dampening into account in all directions.
 % ----------------------------------------------------------------------------------------------------------------------------------------
 
-
 Phase one is the most intensive process that relies on the element seed data and terrain modifications provided by the user to influence the procedural generation of the base environment.
 Following a similar process laid out by Doran and Parberry\ref{doran_controlled_2010}, desired traits are incorporated into the environment while allowing unique formations to develop.
 Their controlled procedural generation process is used to produce landmasses that potentially have bodies and channels of water.
@@ -186,7 +418,12 @@ For example, a "Human" anomaly would radiate heat and noise.
 To account for this, a radiation function \todo{radiation function} is applied to the temperature and decibel values of cells in the effected radius.
 The resulting grid of cells containing all specified element types, modifications and anomalies is wrapped into an instance of the Environment class returned to the requesting party.
 
-\subsection{Environment Build Tool}
+
+
+% ==============================================================================
+% VISUALIZATION TOOL
+% ==============================================================================
+\section{Visualization Tool}
 The environment build tool provides a Graphical User Interface (GUI) for creating and visualizing environments.
 Electron \todo{Possibly cite Electron} is used to simulate a web page contained within a standalone desktop application.
 This allows the front end to be written in JavaScript, HTML and CSS and handle communication to the back end via http over a localhost network.
@@ -194,37 +431,12 @@ Scala library http4s \todo{Possibly cite http4s} is used to create a server on a
 This architecture allows all data creation and manipulation to be isolated in Scala on the back end, while allowing user interactions with the data to take place on the front end.
 Launching the app starts up the Scala server in a new terminal and opens the Electron window which will begin attempts to establish communication with the server.
 
+
+\subsection{Home Page}
 Once connection between the server and GUI have been established the user can choose to generate a random environment, build a custom environment, load in an environment or view an operation. \todo{More on operations later}
 For a random environment, the user only inputs the name and size of the environment and all other variables are selected by the server.
 Building a custom environment steps the user through a series of form pages to create an environment template.
 Loading an environment allows the user to select a previously built environment or a saved template to use.
-
-% ----------------------------------------------------------------------------------------------------------------------------------------
-\todo{reword/integrate}
-2.2 GUI (Front-End)
-2.2.1 GUI Structure
-This GUI is handled with JavaScript, HTML and CSS.
-In order to encapsulate SCOUt into its own application, I used Electron which emulates a browser window as a standalone desktop application.
-All of these components are handled together using Node Package Manager (NPM).
-NPM allows simple commands to be run in a terminal to launch the entire SCOUt application, or just specific parts.
-JavaScript handles HTTP communication with the SCOUt server, as well as all data storage, HTML manipulation and user input handling for the GUI.
-
-2.2.2 Communication
-JavaScript uses the “fetch” command to make HTTP requests to SCOUt’s local server and handle the responses.
-
-2.2.3 Environment Data Structure
-When data is received from the SCOUt server, the JSON is parse and a data structure is created on the JavaScript side.
-The data structures strongly resemble the same exact layout as the Scala data structures.
-The only difference is the restriction to edit data. The only time that the data on this front-end will be edited, is when handling an HTTP response that confirms a change was made to the data structure on the back-end.
-
-2.2.4 Environment Visualization
-Visualization is currently very minimal and does not reflect the final implementation.
-Once an Environment has been created, an interactive visualization will be loaded.
-Each Layer of Elements can be viewed one at a time.
-The current Layer’s name will be displayed and there will be forward and backward buttons to allow the user to flip through the different layers.
-Each layer is currently only displayed as a heatmap.
-D3’s Heatmap open source project is currently used to take JSON data of the layer and create a visualization based on the value at each Cartesian point.
-% -------------------------------------------------------------------------------------------------------------------------------------
 
 % ----------------------------------------------------------------------------------------------------------------------------------------
 \todo{Reword}
@@ -246,164 +458,16 @@ When submitted, the front end data is gathered and sent in a request to the SCOU
 An environment is then created with these specs and returned to the front end to be loaded into the Visualizer.
 % ---------------------------------------------------------------------------------------------------------------------------------------
 
-\subsection{Visualizer}
-% ----------------------------------------------------------------------------------------------------------------------------------------
-\todo{Reword}
-I spent the majority of the semester working on the visualizer portion of the GUI.
-I had already worked with D3 libraries within JavaScript to make basic contour maps.
-My new goal was to create a way to logically display the different layers of elements within the environment using these libraries.
-The visualizer also needed to incorporate a way for the user to control which layer(s) were being displayed, and present proper information corresponding to the environment.
-To do so, I created a “Visualizer” page to my application. This page is divided into four main sections: display, toolbar, legend, and navigation bar.
-The display is an SVG element that holds graphing data for the environment.
-It will display specified layers of the environment as well as a grid representing each “cell” within the environment.
-The toolbar allows the user to select the current element layer(s) that are displayed.
-The legend displays information on the environment in three areas: general information, information for the currently selected layer and information of a single cell in the grid.
-A cell’s information will be displayed within the legend when selected.
-A cell can be selected by clicking its corresponding position in the SVG display.
-The selected cell will also be highlighted within the display when selected.
-The navigation bar will be populated with controls for the robot once it is incorporated into the application in my future work.
-Currently, the only item in the navigation bar is a button to return the user to the “Builder” page which allows the creation of an environment.
-% ----------------------------------------------------------------------------------------------------------------------------------------
+
+\subsection{Visualization Page}
 
 
+\subsubsection{Display}
 
-% ==============================================================================
-% AGENT
-% ==============================================================================
-\section{Agent Representation}
-Agents within this experiment have a core set of attributes and abilities, along with a set of sensors and a controller.
-The core attributes for an agent are health, energy level, a system clock, an internal map and its current position.
-Because SCOUt is focused on purely observational interactions with its environment, an agent only has two categories of actions that can be taken: movement and scanning.
-The agent can attempt to move one cell at a time in any of the cardinal directions.
-This allows the agent to reassess after each movement attempt.
-Scanning collects information about the agent's immediate environment and updates internal map.
-The list of scan actions that an agent can perform is based on the set of sensors the agent is equipped with.
-The controller is in charge of analyzing the current state of the agent and deciding the next action to be performed.
-This project focuses on creating a single controller (SCOUt) that is highly adaptable to wide ranges of agent configurations, environments and goals.
+\subsubsection{Navigation Bar}
 
-An agent is considered operational as long as it has remaining health and energy.
-Health is effected by....
-Energy is effected by....
+\subsubsection{Tool Bar}
 
-\subsection{Actions}
-An agent's movement is simplified to stepping from its current cell to one of its four neighboring cells.
-Movement to a neighboring cell is denoted as "north", "south", "west" or "east" based on the orientation of the x, y grid of cells that make up the environment.
-Moving a single cell at a time gives the agent the opportunity to reassess its current state before continuing movement.
-Distance covered by successful movement will inherently scale to the size of the cells within the environment representation.
-Each time an agent attempts to move to a new cell, Elevation levels will be compared between the current and new cell to check if movement is possible or if it results in damage.
-After the attempt has been made, changes to health, energy level and the system clock are calculated and then updated.
-If the movement action is successfully completed, the current position is also updated.
+\subsubsection{Legend}
 
-A sensor is an object that allows an agent to gather data about one specific Element Type within an environment.
-Each sensor has set attributes for the element type that it can detect, the range, the energy required to run and the time required to run.
-Additionally two flags are passed to a sensor when it is first setup.
-One of these flags denote if the sensor is being used to detect "hazard" elements in the environment.
-Whether an element is hazardous typically depends on the setup of the agent.
-For example, water could be considered hazardous to most robots, however if the agent was designed for aqueous missions, water could no longer be a concern.
-The other flag denotes if the sensor is being used to detect "indicator" elements in the environment.
-Indicator elements are any element that are associated to the agent's goal.
-An example is if the agent is searching for a human within the environment, their heat signature might be significantly different than the surrounding environment, so temperature would be considered an indicator.
-
-When a sensor is used, it does a full 360° sweep of surrounding cells in the environment.
-This creates a search circle with radius equal to the sensor's range and the center located at the agent's current position.
-For each cell that fall within this search circle, the value for the sensor's given element type is extracted.
-These values are then added to the agent's internal map if they did not previously exist there.
-Through repeated scanning, the agent will begin to map out its surrounding environment.
-This map can be then be used by the controller to determine what actions would be most beneficial to the goal at hand.
-
-\subsection{State Representation}
-For controllers to intelligently select when to perform what actions, they need to have sufficient data about the agent and the known surrounding environment.
-The agent's health and energy level can easily be stored, but the internal map containing the known environment can become a very large data structure to work with.
-For this reason the data structure is stripped down in order to reduce memory usage and computational effort required to analyze a state.
-Instead of a 2-D array of cells, \todo{reference cell structure diagram?} the internal map is represented as a list of element states for each element type that there is a sensor present for.
-
-Each element state is comprised of the value at the agents current position (if known), a flag for whether the element type is considered a hazard element, a flag for whether the element type is considered an indicator element, and then four quadrant states for each cardinal direction.
-Because agent movement is split into north, south, west and east, we can collapse information about the element type into four quadrants \todo{Image of quadrants}.
-A quadrant state contains the percent of cells where the value for the element type is known, the neighboring cell's value (if known) and the average of all known cell values in the quadrant.
-These metrics allow us to generate useful information that ties the current state with consequences that may come from each action.
-Particularly...\todo{add state comparison equations?}
-
-\todo{talk about normalization}
-
-
-
-% ==============================================================================
-% CONTROLLERS
-% ==============================================================================
-\section{Controllers}
-In this experiment three different controllers are created and compared for their performance.
-
-\subsection{Random}
-\subsection{Heuristic}
-\subsection{Machine Learning}
-
-
-% ==============================================================================
-% OPERATIONS
-% ==============================================================================
-\section{Operations}
-To explore the usefulness and robustness of the intelligent controller, many different scenarios need to be explored.
-All scenarios are made up of three main components: an agent, a goal and the environment.
-Different configurations of each component's variables allows us to create a vast variety of scenarios.
-These three components are chosen and then fed into a simulation process called an operation. \todo{Operation Diagram}
-Each operation simulates the agent attempting to complete a goal within an environment.
-Interactions between the agent and its environment are played out and data will is collected to record decisions made by the agent and the outcome of each decision.
-Data collection takes place on a low level and a high level during each operation.
-
-Low level data is collected each time the agent performs an action.
-- The agent's state when the action was selected
-- Any changes to the agent's internal state (health or energy reduction)
-- If the action performed was successful (could it move, did it have enough energy to complete the action)
-- A short term reward for the outcome of the action
-
-
-High level data is only collected once at the simulated operation ends.
-- Status of internal variables (health and energy)
-- Number of actions taken during operation
-- Level of goal completion
-- An overall long term reward
-- Long term reward given to each action taken
-
-\subsection{Goals}
-An operation is run with a given end goal for the agent to achieve.
-SCOUt is designed for the observational and exploration portion of a task.
-If the entire task of a robot was to traverse a hazardous area to find a certain mineral for extraction.
-SCOUt would be used to guide exploration in the environment and detect the mineral.
-When the mineral is found, SCOUt's process would then be completed successfully and another process could take over for the actual extraction, or the location could be recorded and another agent could be sent in.
-Following this, the SCOUt agent could continue to search for more deposits of the mineral or return to base.
-Using this distinction, we classify goals into two catagories for testing SCOUt's exploration and observation abilities, anomaly searching and element mapping.
-Anomaly searching requires an agent to find a given anomaly within an environment.
-This tests SCOUt's ability to use environmental clues to track down the anomaly.
-For example, if the agent was looking for a human after a natural disaster, it could use data such as temperature readings and decibel readings to track down the person.
-Element mapping is fairly strait forward.
-The agent must map out as much readings of a certain element as possible.
-This gives SCOUt the opportunity to discover correlations between the element is searching for and other elements present in the environment.
-For example, you are move likely to find water in a valley rather than a hill.
-
-\subsection{Rewards}
-In addition to goal completion, an agent also has to be observant of its health and energy.
-The more efficiently an agent can complete an objective the better.
-The overall performance of an agent is measured by both its ability to complete the task at hand and the efficiency of the actions taken.
-These performance measurements are calculated on a short and long term basis, and come in the form of "rewards".
-In addition to measuring the performance of an agent, rewards can be used as a learning metric for an intelligent agent.
-When an intelligent agent finds itself in a similar state as before, it can look at the action it took in the past and the reward that was given to decide if it should perform that action again.
-
-\subsubsection{Short Term Rewards}
-\todo{Add STS Equation}
-Short term rewards are given each time an agent performs an action to reflect the immediate outcome of the action.
-Energy and health depletion are major factors in this reward.
-If the action required an excessive amount of energy or resulted in damage to the agent, the reward is decreased.
-Other factors that come into play depend on the specific action taken.
-If the agent attempted to move to a new area and fail entirely to move (a hill was too steep to climb) a deduction is made.
-A small increase in reward is also applied if the agent moves into an unexplored area.
-If the agent uses a scanner, the reward is adjusted to reflect the amount of new data learned.
-This penalizes the agent from using a scanner twice in a row or after small movements as it is not efficient use of energy.
-
-\subsubsection{Long Term Rewards}
-Long term rewards are calculated once the operation is over.
-This could mean that the agent has successfully completed its goal, or it is depleted of health or energy.
-To reflect these scenarios, the reward is determined by the goal completion, remaining health and remaining energy. \todo{Add LTS Equation}
-Even if a goal is completed, the agent could receive a low score if it was "reckless" and took lots of damage or used large amounts of energy.
-The long term reward is then propagated backwards through all the actions that were taken.
-The actions performed immediately before the end of the operation are given highest score.
-Previous actions then receive diminishing reward based on \todo{LTS reward distribution equation}.
+\subsubsection{Operation Tool Bar}
