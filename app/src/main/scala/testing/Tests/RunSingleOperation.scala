@@ -35,7 +35,7 @@ object RunSingleOperation {
     // Check if start position is clear of hazards and doesn't start on an anomaly
     validationAgent.calculateHazardDamage(env, startX, startY, 10000) match {
       case d if (d > 0.0) => return getValidStartPosition(env) // Try different start position
-      case d => env.getAnomaliesNeighbors(startX, startY) match {
+      case d => env.getAnomaliesCluster(startX, startY, 3) match {
         case as if (as.size > 0) => return getValidStartPosition(env)
         case _ => return (startX, startY)
       }
@@ -65,7 +65,7 @@ object RunSingleOperation {
     // Environment file
     // val envString = readJsonFile(environemtFileName, environmentPath)
     // val environment = parse(envString) match {
-    //   case Left(_) => defaultEnvironment// Load or parse failure
+    //   case Left(_) => defaultEnvironment // Load or parse failure
     //   case Right(envJson) => extractEnvironment(envJson)
     // }
     // Environment template file

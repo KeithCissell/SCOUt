@@ -1,71 +1,59 @@
 
 
 \chapter{SCOUt}
-The project’s simulation consists of three main components: environments, agents and the interactions between the two.
-A wide range of diversity is required for both the environments and agents represented in simulation.
+This project explores the reliability and flexibility of using a single intelligent controller to complete surveillance based operations in diverse environments.
+The Surveillance Coordination and Operation Utility (SCOUt) is used to generalize environments, agents, states and actions into simple data structures.
+This data then builds a platform for creating controllers, running simulations, and easy visualization.
+
+
+
 
 
 % ==============================================================================
 % PLATFORMS
 % ==============================================================================
 \section{Platforms}
+Several coding languages and libraries are used in this project to provide simple and expandable utility.
+The utility is laid out in a client-server architecture to allow separation of data handling and data visualization.
+The server portion provides full functionality to generate unique environments, build agents and controllers, run test operations, and collect results.
+Data structures on the server side are implemented using an object-oriented approach that allows objects to be extended, while keeping a single abstract component to easily maintain the parent object's behavior.
+This feature is crucial when it comes to long term code maintenance and encasement.
+For example, an Element is a data structure that defines the types of data that an agent could detect in the environment.
+If a future project wanted to utilize this tool with an agent that could detect Ultra Violet rays in their environment, they could create an "UltraViolet" class that extends the Element object by defining a set of predefined attributes within the class.
+The "UltraViolet" class can then effortlessly be integrated with all other pre-existing data structures as it will be handled as the general Element object that it extends.
+These generalized data structures also provide simple handling for the client portion of the utility.
+The client portion acts as a Graphical User Interface (GUI) for requesting certain actions to be performed on the server, and visualizing the data structures used on the server.
 
 
-\subsection{Simulation Back-End}
-% -----------------------------------------------------------------------------------------------
-\todo{Reword / Integrate}
-After finalizing my project idea, I began back end development on the environment’s data structure.
-I chose to use Scala as my programming language for storage and manipulation of data on the back end.
-Scala is a multiparadigm language that combines both functional and object oriented programming styles.
-This made it ideal for the back end as I can limit the mutability of my data structures using functional approaches, while still taking advantage of abstraction used in OO programming styles.
-The flexibility of Scala also plays a role in creating a concurrent form of communication to the GUI, but more on that later.
-% -----------------------------------------------------------------------------------------------
+\subsection{Simulation Back End}
+The back end is written in the Scala language.
+Scala is a Java based, paradigm language that combines object-oriented and functional programming methods.
+Object-oriented programming provides the flexibility needed to create abstracted data structures, while functional programming provides data immutability while working with large sets of diverse data.
+All data storage and manipulation takes place on the back end of the platform to ensures data consistency.
+Data is exported from the back end in two scenarios.
+The first scenario is when data is saved to a file for long term usage.
+The second is when data is passed to the client for visualization.
+In both cases, the data is first encoded into Json data structures.
+Data is imported to the back end when loading a file or when a request is received from the client.
+Imported data is expected as a Json object which is immediately decoded and parsed into Scala data structures before usage.
+The circe Scala library \todo{Reference circe} is used for the encoding and decoding of Json data.
+Circe provides encoding and decoding of Json files, and a seamless integration of Json data into the Scala language.
 
 
-\subsection{Visualization Front-End}
-% ----------------------------------------------------------------------------------------------------------------------------------------
-\todo{reword/integrate}
-2.2 GUI (Front-End)
-2.2.1 GUI Structure
-This GUI is handled with JavaScript, HTML and CSS.
-In order to encapsulate SCOUt into its own application, I used Electron which emulates a browser window as a standalone desktop application.
-All of these components are handled together using Node Package Manager (NPM).
-NPM allows simple commands to be run in a terminal to launch the entire SCOUt application, or just specific parts.
-JavaScript handles HTTP communication with the SCOUt server, as well as all data storage, HTML manipulation and user input handling for the GUI.
-
-2.2.2 Communication
-JavaScript uses the “fetch” command to make HTTP requests to SCOUt’s local server and handle the responses.
-
-2.2.3 Environment Data Structure
-When data is received from the SCOUt server, the JSON is parse and a data structure is created on the JavaScript side.
-The data structures strongly resemble the same exact layout as the Scala data structures.
-The only difference is the restriction to edit data. The only time that the data on this front-end will be edited, is when handling an HTTP response that confirms a change was made to the data structure on the back-end.
-
-2.2.4 Environment Visualization
-Visualization is currently very minimal and does not reflect the final implementation.
-Once an Environment has been created, an interactive visualization will be loaded.
-Each Layer of Elements can be viewed one at a time.
-The current Layer’s name will be displayed and there will be forward and backward buttons to allow the user to flip through the different layers.
-Each layer is currently only displayed as a heatmap.
-D3’s Heatmap open source project is currently used to take JSON data of the layer and create a visualization based on the value at each Cartesian point.
-% -------------------------------------------------------------------------------------------------------------------------------------
-% ----------------------------------------------------------------------------------------------------------------------------------------
-\todo{Reword}
-I spent the majority of the semester working on the visualizer portion of the GUI.
-I had already worked with D3 libraries within JavaScript to make basic contour maps.
-My new goal was to create a way to logically display the different layers of elements within the environment using these libraries.
-The visualizer also needed to incorporate a way for the user to control which layer(s) were being displayed, and present proper information corresponding to the environment.
-To do so, I created a “Visualizer” page to my application. This page is divided into four main sections: display, toolbar, legend, and navigation bar.
-The display is an SVG element that holds graphing data for the environment.
-It will display specified layers of the environment as well as a grid representing each “cell” within the environment.
-The toolbar allows the user to select the current element layer(s) that are displayed.
-The legend displays information on the environment in three areas: general information, information for the currently selected layer and information of a single cell in the grid.
-A cell’s information will be displayed within the legend when selected.
-A cell can be selected by clicking its corresponding position in the SVG display.
-The selected cell will also be highlighted within the display when selected.
-The navigation bar will be populated with controls for the robot once it is incorporated into the application in my future work.
-Currently, the only item in the navigation bar is a button to return the user to the “Builder” page which allows the creation of an environment.
-% ----------------------------------------------------------------------------------------------------------------------------------------
+\subsection{Visualization Front End}
+The platform's front end is built around Electron, \todo{Reference Electron} a framework that allows building a native desktop application with JavaScript, HTML and CSS.
+The GUI is written using all three of these languages in addition to SVG, an XML-Based format for vector graphics.
+HTML structures the page within Electron, CSS provides styling and JavaScript handles all of the logic.
+A few JavaScript libraries are utilized within the framework to generate visual representation for data and communicate with the back end.
+The SCOUt platform uses D3, node-fetch and JQuerry. \todo{reference Node packages}
+D3 (Data-Driven Documents) is a visualization library that uses HTML, SVG and CSS to create graphical representation for data.
+Node-fetch is used for Http communication with the back end through XMLHttp request and response handling.
+JQuerry provides integration with Json data that is passed back and forth between the client and server, as well as several functions to simplify working with DOM elements within HTML.
+To manage all of the dependencies between Electron, the languages and their libraries, Node Package Manager (NPM) \todo{Reference NPM} is used.
+In addition to dependency management, NPM has packages of its own that simplify the process to compile all of your code into one file for Electron to handle.
+JavaScript is compiled into a browser friendly format using the Babel package, and the resulting JavaScript is then integrated into the HTML code structure using webpack.
+Our GUI can then be launched using a single NPM script which will compile all of our code into a single HTML file, launch electron and load the content.
+The resulting GUI then provides an interactive platform for a user to load, create and visualize data.
 
 
 \subsection{Communication}
@@ -83,12 +71,12 @@ If a request has a proper URL and request method type (Get and Post), the servic
 \todo{Format Server Table}
 Method	Path	Response
 GET	/ping	Responds “pong”
-GET	/current_state	Returns JSON of Environment’s current state
+GET	/current_state	Returns Json of Environment’s current state
 POST	/new_random_environment	Takes dimensions and returns a procedurally generated Environment
 
 The server must both receive parameters as well as send data structures to a client operating in a different language.
-For this reason, all communication is formatted into JSON data structures in the request and response bodies.
-In cases that parameters are passed in with a request, the JSON must properly be constructed for the service to handle it.
+For this reason, all communication is formatted into Json data structures in the request and response bodies.
+In cases that parameters are passed in with a request, the Json must properly be constructed for the service to handle it.
 
 
 
@@ -438,6 +426,30 @@ For a random environment, the user only inputs the name and size of the environm
 Building a custom environment steps the user through a series of form pages to create an environment template.
 Loading an environment allows the user to select a previously built environment or a saved template to use.
 
+% ----------------------------------------------------------------------------------------------------------------------------------------
+\todo{Reword}
+Visualization is currently very minimal and does not reflect the final implementation.
+Once an Environment has been created, an interactive visualization will be loaded.
+Each Layer of Elements can be viewed one at a time.
+The current Layer’s name will be displayed and there will be forward and backward buttons to allow the user to flip through the different layers.
+Each layer is currently only displayed as a heatmap.
+D3’s Heatmap open source project is currently used to take Json data of the layer and create a visualization based on the value at each Cartesian point.
+
+I spent the majority of the semester working on the visualizer portion of the GUI.
+I had already worked with D3 libraries within JavaScript to make basic contour maps.
+My new goal was to create a way to logically display the different layers of elements within the environment using these libraries.
+The visualizer also needed to incorporate a way for the user to control which layer(s) were being displayed, and present proper information corresponding to the environment.
+To do so, I created a “Visualizer” page to my application. This page is divided into four main sections: display, toolbar, legend, and navigation bar.
+The display is an SVG element that holds graphing data for the environment.
+It will display specified layers of the environment as well as a grid representing each “cell” within the environment.
+The toolbar allows the user to select the current element layer(s) that are displayed.
+The legend displays information on the environment in three areas: general information, information for the currently selected layer and information of a single cell in the grid.
+A cell’s information will be displayed within the legend when selected.
+A cell can be selected by clicking its corresponding position in the SVG display.
+The selected cell will also be highlighted within the display when selected.
+The navigation bar will be populated with controls for the robot once it is incorporated into the application in my future work.
+Currently, the only item in the navigation bar is a button to return the user to the “Builder” page which allows the creation of an environment.
+% ----------------------------------------------------------------------------------------------------------------------------------------
 % ----------------------------------------------------------------------------------------------------------------------------------------
 \todo{Reword}
 The “Builder” page took the remaining time of the semester.

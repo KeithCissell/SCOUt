@@ -43,9 +43,9 @@ class Test(
     for ((environment, iterations) <- environments) {
       for (i <- 0 until iterations) {
         runNumber += 1
-        println()
-        println()
-        println(s"Running Test $runNumber")
+        // println()
+        // println()
+        // println(s"Running Test $runNumber")
         val startPosition = getValidStartPosition(environment)
         val startX = startPosition._1
         val startY = startPosition._2
@@ -67,14 +67,14 @@ class Test(
           operation.run
           testMetrics(name).addRun(operation.runData)
           // operation.printActions
-          operation.printOutcome
+          // operation.printOutcome
           // println(s"Stat Position ($startX, $startY)")
           // println(s"End Position (${operation.eventLog.last.state.xPosition}, ${operation.eventLog.last.state.yPosition})")
           // println()
         }
       }
     }
-    for ((name,data) <- testMetrics) data.printRunResults
+    // for ((name,data) <- testMetrics) data.printRunResults
   }
 
   // Generate Environments: environment -> iterations to run
@@ -117,7 +117,7 @@ class Test(
     // Check if start position is clear of hazards and doesn't start on an anomaly
     validationAgent.calculateHazardDamage(env, startX, startY, 10000) match {
       case d if (d > 0.0) => return getValidStartPosition(env) // Try different start position
-      case d => env.getAnomaliesNeighbors(startX, startY) match {
+      case d => env.getAnomaliesCluster(startX, startY, 3) match {
         case as if (as.size > 0) => return getValidStartPosition(env)
         case _ => return (startX, startY)
       }
@@ -140,7 +140,7 @@ class TestMetric(controllerName: String, runs: AB[RunData]) {
     println(s"Avg Steps:  ${avgActions}")
     println(s"Avg Remaining Health: ${roundDouble2(avgRemainingHealth)}")
     println(s"Avg Remaining Energy: ${roundDouble2(avgRemainingEnergy)}")
-    println(s"AVG SUCCESS RAGE:     ${roundDouble2(avgGoalCompletion)}")
+    println(s"AVG SUCCESS RATE:     ${roundDouble2(avgGoalCompletion)}")
   }
 }
 

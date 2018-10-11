@@ -27,15 +27,15 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 
 object WeightTuning {
   // GA Attributes
-  val runName = "OFFICIAL2"
+  val runName = "OFFICIALTEST"
   val populationSize: Int = 8
   val numGenerations: Int = 50
   val elites: Int = 2
   val maxHealth: Double = 100.0
   val maxEnergy: Double = 100.0
-  val maxActions: Int = 60
+  val maxActions: Int = 75
   val maxCompared: Double = 30.0 // for special weight "minimumComparisons"
-  def mutationRate(currentGeneration: Int): Double = (numGenerations.toDouble - currentGeneration.toDouble) / numGenerations.toDouble
+  def mutationRate(currentGeneration: Int): Double = List(((numGenerations.toDouble * 1.2) - currentGeneration.toDouble), numGenerations.toDouble).min / numGenerations.toDouble
 
   // Weights Object
   class WeightsSet(
@@ -104,17 +104,15 @@ object WeightTuning {
   }
 
   // Crossover Two Individuals
-  def crossover(ind1: Individual, ind2: Individual, mutationRate: Double): Individual = {
-    var swappedIndexes: MutableSet[Int] = MutableSet()
-    val numToSwap: Int = randomInt(0, ((ind1.weights.length - 1).toDouble * mutationRate).toInt)
-    for (i <- 0 until numToSwap) {
-      swappedIndexes += randomInt(0, ind1.weights.length - 1)
-    }
+  def crossover(ind1: Individual, ind2: Individual): Individual = {
+    val cut1: Int = randomInt(0, ind1.weights.length - 1)
+    val cut2: Int = randomInt(cut1 + 1, ind1.weights.length - 1)
     // Create new individual
     var weights: AB[Double] = AB()
-    for (i <- 0 until ind1.weights.length) swappedIndexes.contains(i) match {
-      case true   => weights += ind2.weights(i)
-      case false  => weights += ind1.weights(i)
+    for (i <- 0 until ind1.weights.length) i match {
+      case i if i < cut1 => weights += ind1.weights(i)
+      case i if i < cut2 => weights += ind2.weights(i)
+      case _ => weights += ind1.weights(i)
     }
     return new Individual(weights = weights.toList)
   }
@@ -163,8 +161,8 @@ object WeightTuning {
     val gaTest = new Test(
       testEnvironments = Map(),
       testTemplates = Map(
-        "10by10NoMods" -> (1, 5),
-        "BeginnerCourse" -> (1, 10)),
+        "10by10NoMods" -> (5, 2),
+        "BeginnerCourse" -> (10, 2)),
       controllers = controllers,
       sensors = List(
         new ElevationSensor(false),
@@ -180,10 +178,22 @@ object WeightTuning {
     // Set Results to Individuals
     for ((name,tm) <- gaTest.testMetrics) {
       val ind = population(name.toInt)
-      ind.avgActions = Some(tm.avgActions)
-      ind.avgRemainingHealth = Some(tm.avgRemainingHealth)
-      ind.avgRemainingEnergy = Some(tm.avgRemainingEnergy)
-      ind.avgGoalCompletion = Some(tm.avgGoalCompletion)
+      ind.avgActions match {
+        case Some(v) => ind.avgActions = Some((v + tm.avgActions) / 2)
+        case None => ind.avgActions = Some(tm.avgActions)
+      }
+      ind.avgRemainingHealth match {
+        case Some(v) => ind.avgRemainingHealth = Some((v + tm.avgRemainingHealth) / 2.0)
+        case None => ind.avgRemainingHealth = Some(tm.avgRemainingHealth)
+      }
+      ind.avgRemainingEnergy match {
+        case Some(v) => ind.avgRemainingEnergy = Some((v + tm.avgRemainingEnergy) / 2.0)
+        case None => ind.avgRemainingEnergy = Some(tm.avgRemainingEnergy)
+      }
+      ind.avgGoalCompletion match {
+        case Some(v) => ind.avgGoalCompletion = Some((v + tm.avgGoalCompletion) / 2.0)
+        case None => ind.avgGoalCompletion = Some(tm.avgGoalCompletion)
+      }
     }
   }
 
@@ -199,6 +209,16 @@ object WeightTuning {
     )
     val jsonData = Json.fromValues(jsonInds)
     val fileName = runName + "-" + fileTag + "-" + new DateTime().toString("yyyy-MM-dd-HH-mm")
+    saveJsonFile(fileName, gaOutputPath, jsonData)
+  }
+
+  // Save Average Generation Fitness's
+  def saveGenerations(af: List[Double], afp: List[Double]): Unit = {
+    val jsonData = Json.obj(
+      ("averageFitnessTotalPopulation", Json.fromValues(af.map(a => Json.fromDoubleOrNull(a)))),
+      ("averageFitnessNewPopulation", Json.fromValues(afp.map(a => Json.fromDoubleOrNull(a))))
+    )
+    val fileName = runName + "-Averages-" + new DateTime().toString("yyyy-MM-dd-HH-mm")
     saveJsonFile(fileName, gaOutputPath, jsonData)
   }
 
@@ -219,6 +239,10 @@ object WeightTuning {
     // Score initial Individuals
     runTests(population)
 
+    // Collect Generation Run Fitness
+    var avgFitnesses: AB[Double] = AB()
+    var avgFitnessesPop: AB[Double] = AB()
+
     // EVOLVE
     for (g <- 0 until numGenerations) {
       println()
@@ -230,7 +254,7 @@ object WeightTuning {
         val pop = population.to[AB]
         val ind1 = rouletteSelect(pop.toList)
         val ind2 = rouletteSelect((pop -= ind1).toList)
-        crossover(ind1, ind2, mutationRate(g))
+        crossover(ind1, ind2)
       }
 
       // Create Mutated Copies
@@ -242,6 +266,15 @@ object WeightTuning {
       // Score Individuals
       var totalPopulation: AB[Individual] = (population ++ crossovers ++ mutates).to[AB]
       runTests(totalPopulation.toList)
+
+      // Find Average Fitness of Generation
+      val avgFitness: Double = totalPopulation.map(_.fitness).foldLeft(0.0)(_ + _) / totalPopulation.size
+      avgFitnesses += avgFitness
+      println()
+      println(s"AVERAGE FITNESS: ${roundDoubleX(avgFitness, 4)}")
+      println()
+      println("Best Individual Stats")
+      println()
 
       // Select Survivors
       var newPopulation: AB[Individual] = AB()
@@ -262,6 +295,12 @@ object WeightTuning {
         totalPopulation -= selectedInd
       }
 
+      // Save New Population Average Fitness
+      val avgFitnessPop: Double = newPopulation.map(_.fitness).foldLeft(0.0)(_ + _) / newPopulation.size
+      avgFitnessesPop += avgFitnessPop
+      println()
+      println(s"AVERAGE FITNESS NEW POPULATION: ${roundDoubleX(avgFitnessPop, 4)}")
+
       // Set new population
       population = newPopulation.toList
 
@@ -271,6 +310,7 @@ object WeightTuning {
 
     // Save Output
     savePopulation("FINAL", population)
+    saveGenerations(avgFitnesses.toList, avgFitnessesPop.toList)
 
     println("FINAL RESULTS")
     for (ind <- population) ind.print

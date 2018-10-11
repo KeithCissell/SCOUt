@@ -1,6 +1,38 @@
 [
   {
     "weights" : [
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      4.0,
+      1.0,
+      5.0,
+      2.0,
+      4.0,
+      1.0,
+      1.0,
+      2.0,
+      3.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.5,
+      0.4,
+      10.0
+    ],
+    "avgActions" : null,
+    "avgRemainingHealth" : null,
+    "avgRemainingEnergy" : null,
+    "avgGoalCompletion" : null,
+    "fitness" : null,
+    "NOTE" : "Original Hand Selected Weights"
+  },
+  {
+    "weights" : [
       0.47,
       0.26,
       0.03,
@@ -63,5 +95,37 @@
     "fitness" : 0.94,
     "NOTE" : "Was not evolved properly but consistantly yielded high results every time",
     "NOTE2" : "THIS MAY THE KING HOLY MOLY"
+  },
+  {
+    "weights" : [
+      0.71,
+      0.88,
+      0.9,
+      0.58,
+      0.54,
+      0.53,
+      0.87,
+      0.08,
+      0.78,
+      0.55,
+      0.27,
+      0.46,
+      0.17,
+      0.51,
+      0.01,
+      0.95,
+      0.2,
+      0.94,
+      0.28,
+      0.46,
+      0.66,
+      13.26
+    ],
+    "avgActions" : 6,
+    "avgRemainingHealth" : 93.33,
+    "avgRemainingEnergy" : 93.13,
+    "avgGoalCompletion" : 93.33,
+    "fitness" : 0.93,
+    "NOTE" : "ONe of the better results from first full attempt at GA"
   }
 ]
