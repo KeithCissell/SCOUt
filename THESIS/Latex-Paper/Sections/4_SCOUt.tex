@@ -38,6 +38,7 @@ Data is imported to the back end when loading a file or when a request is receiv
 Imported data is expected as a Json object which is immediately decoded and parsed into Scala data structures before usage.
 The circe Scala library \todo{Reference circe} is used for the encoding and decoding of Json data.
 Circe provides encoding and decoding of Json files, and a seamless integration of Json data into the Scala language.
+Communication for the SCOUt server uses the library HTTP4s \todo{Reference HTTP4s} to create a local service to handle Http requests from the front end, and return an Http response.
 
 
 \subsection{Visualization Front End}
@@ -56,29 +57,6 @@ Our GUI can then be launched using a single NPM script which will compile all of
 The resulting GUI then provides an interactive platform for a user to load, create and visualize data.
 
 
-\subsection{Communication}
-Communication between the back and front ends are setup in a client server setup.
-The back end is setup as a local server that handles several specific requests.
-The front end acts as the client, requesting data or passing commands to the back end server.
-
-The SCOUt Server was created with the assistance of HTTP4S, a Scala open source library. \todo{Cite HTTP4S}
-HTTP4S allows easy setup and use of an HTTP request handler.
-For this project, the server runs on localhost:8080.
-The localhost is then accessible by any applications running locally on the same computer via HTTP requests.
-A service is setup on the back end to handle specific incoming requests.
-If a request has a proper URL and request method type (Get and Post), the service calls Scala functions to attempt completion of the request, and then returns an HTTP response.
-
-\todo{Format Server Table}
-Method	Path	Response
-GET	/ping	Responds “pong”
-GET	/current_state	Returns Json of Environment’s current state
-POST	/new_random_environment	Takes dimensions and returns a procedurally generated Environment
-
-The server must both receive parameters as well as send data structures to a client operating in a different language.
-For this reason, all communication is formatted into Json data structures in the request and response bodies.
-In cases that parameters are passed in with a request, the Json must properly be constructed for the service to handle it.
-
-
 
 % ==============================================================================
 % ENVIRONMENT
@@ -88,7 +66,7 @@ Representing any environment is a tricky process.
 A simulation needs to balance simplicity and coverage when modeling an environment.
 Leave out too much from the model and it won’t reflect real word scenarios.
 Trying to model too much can consume time and effort that could instead be used to run real world experiments.
-For this experiment, an environment is represented by a single, high level object that contains a few general attributes and a lot of low level objects within it to model a static grid-ed layout of a real world environment.
+For this experiment, an environment is represented by a single, high level object that contains a few general attributes and a lot of low level objects within it to model a static, Cartesian grid layout of a real world environment.
 The lower level objects contain specific details about the contents within the environment.
 
 Each \textbf{Environment} created is represented as an n x m 2D grid of uniformly sized s x s square \textbf{Cell}, whose size is specified by a scaling factor.
@@ -106,26 +84,35 @@ class Environment {
 }
 
 \subsubsection{Cell}
+A Cell holds an x and y coordinate for its position within the Environment's grid attribute.
+These coordinates do not reflect the actual scaled size of the environment, only an index value for the order they appear within the 2-D array data structure.
+The scale can easily be applied to the physical location of a Cell as it is a shared global attribute within the Environment object.
+If an element type or an anomaly is present and falls within the area that the cell covers in the environment, it appears in their respective lists for the cell.
 
 class Cell {
   x: Int
   y: Int
   elements: Array[Element]
-  anomalies: Set[Anomaly]
+  anomalies: Array[Anomaly]
 }
 
-Element and Anomaly are abstract data structures that each provide a basic object that is then extended to create specific instances.
-They all share core members that allow manipulation and interactions with them to be generalized.
-Each instance also has an associated seeding process to automate their population within the environment.
-Seeding processes are specific to each instance of an Element or Anomaly.
-
 \subsubsection{Element}
+An element is any measurable attributes within an environment.
+For example, temperature, elevation and decibel levels are all attributes of the environment whose values can be sampled.
+Different types of elements are all generalized into one abstract trait, Element.
+Element can be extended into classes that represent specific element types within the environment.
+The trait has a set of defined attributes that an extended class must define to identify the element type and how it behaves.
+Name and unit are used for identification and displaying the element type.
+The value attribute holds a numerical value for the element.
+This way, when a cell holds an Element, it can store the value for the given position.
+For example, the Elevation class would store the elevation level of the area within the cell as an Element of name "Elevation" and the unit would indicate the measurement unit used.
+The radial flag, lowerBound and upperBound attributes guide and limit the values that can be set for the element type.
+It is mostly used when generating an environment. \todo{reference environment gen section}
 
 trait Element {
   name: String
   value: Double
   unit: String
-  constant: Boolean
   radial: Boolean
   lowerBound: Double
   upperBound: Double
@@ -133,7 +120,16 @@ trait Element {
 
 \subsubsection{Anomaly}
 An anomaly is any object that may be of significance to the robot such as a human or precious mineral.
-Anomalies have their own effects on the environment around them and this then leads to phase three.
+Anomalies have their own effects on elements in the environment around them.
+The variety of anomalies and the effects they can have are represented as data structures that follow the same extendable trait format as Element.
+An Anomaly class can have an area that extends multiple cells, but must exist in at least one cell in an environment.
+Anomalies can also have effects on multiple element types in its surrounding environment, which are in a list attribute.
+Each Effect class defines a "seed" Element class and a range of the effect.
+The seed attribute holds a specific instance of an Element class that will represent the value of that element type in the area that the attribute exists within the environment.
+The range then defines the radius of the area beyond the attribute's position that the effect will "radiate".
+The term radiate is used because the effect will alter the element type's values in surrounding based upon how close they are to the source of the effect (where the anomaly exists).
+For example, Human is an anomaly that takes the area of a single cell, and effects Temperature and Decibel values in their environment.
+If Human is much louder than the static noise level in the environment, you will see a sharp spike in Decibel values in cells nearest the Human, and the increase in value above the environment's static level will diminish the further away you move from the Human.
 
 trait Anomaly {
   name: String
@@ -428,6 +424,15 @@ Loading an environment allows the user to select a previously built environment 
 
 % ----------------------------------------------------------------------------------------------------------------------------------------
 \todo{Reword}
+
+\todo{Format Server Table}
+Method	Path	Response
+GET	/ping	Responds “pong”
+GET	/current_state	Returns Json of Environment’s current state
+POST	/new_random_environment	Takes dimensions and returns a procedurally generated Environment
+
+
+
 Visualization is currently very minimal and does not reflect the final implementation.
 Once an Environment has been created, an interactive visualization will be loaded.
 Each Layer of Elements can be viewed one at a time.

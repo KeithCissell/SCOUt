@@ -32,7 +32,7 @@ class SCOUtController(
   val fps = 4 // floating points past decimal to store in memory values
 
   // TRAINING ATTRIBUTES
-  val randomSelectThreshhold: Int = 5000
+  val randomSelectThreshhold: Int = 2000
 
   // EXPLORATION INFLUENCE
   val actionHistory: MutableMap[(Int,Int),MutableSet[String]] = MutableMap()

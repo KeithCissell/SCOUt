@@ -6,11 +6,12 @@ import scala.io.Source
 
 object FileManager {
   // File Paths
+  val memoryFilePath = "src/resources/agent-memory/"
   val environmentPath = "src/resources/environments/"
   val environmentTemplatePath = "src/resources/environment-templates/"
-  val memoryFilePath = "src/resources/agent-memory/"
-  val operationRunPath = "src/resources/operation-runs/"
   val gaOutputPath = "src/resources/ga-output/"
+  val operationRunPath = "src/resources/operation-runs/"
+  val trainingPerformanceDataPath = "src/resources/training-performance-data/"
 
   def fileExists(fileName: String, path: String, extension: String): Boolean = {
     val filePath = (path + fileName + s".$extension").replace(' ', '_')

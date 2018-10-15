@@ -127,5 +127,37 @@
     "avgGoalCompletion" : 93.33,
     "fitness" : 0.93,
     "NOTE" : "ONe of the better results from first full attempt at GA"
+  },
+  {
+    "weights" : [
+      0.73,
+      0.18,
+      0.88,
+      0.83,
+      1.0,
+      0.68,
+      0.15,
+      0.74,
+      0.6,
+      0.33,
+      0.98,
+      0.11,
+      0.97,
+      0.22,
+      0.65,
+      0.67,
+      0.71,
+      0.57,
+      1.0,
+      0.41,
+      1.0,
+      21.73
+    ],
+    "avgActions" : 32,
+    "avgRemainingHealth" : 80.56,
+    "avgRemainingEnergy" : 86.45,
+    "avgGoalCompletion" : 79.63,
+    "fitness" : 0.78,
+    "note" : "Consistantly good. From long GA run."
   }
 ]

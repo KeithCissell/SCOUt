@@ -28,7 +28,8 @@ class Test(
   val controllers: Map[String,Controller],  // agentName -> controller
   val sensors: List[Sensor],
   val goalTemplate: GoalTemplate,
-  val maxActions: Option[Int]
+  val maxActions: Option[Int],
+  val verbose: Boolean = false
 ) {
   // Test Metrics to gather
   val testMetrics: Map[String,TestMetric] = for ((name,controller) <- controllers) yield name -> new TestMetric(name, AB())
@@ -43,9 +44,11 @@ class Test(
     for ((environment, iterations) <- environments) {
       for (i <- 0 until iterations) {
         runNumber += 1
-        // println()
-        // println()
-        // println(s"Running Test $runNumber")
+        if (verbose) {
+          println()
+          println()
+          println(s"Running Test $runNumber")
+        }
         val startPosition = getValidStartPosition(environment)
         val startX = startPosition._1
         val startY = startPosition._2
@@ -67,14 +70,14 @@ class Test(
           operation.run
           testMetrics(name).addRun(operation.runData)
           // operation.printActions
-          // operation.printOutcome
-          // println(s"Stat Position ($startX, $startY)")
+          if (verbose) operation.printOutcome
+          // println(s"Start Position ($startX, $startY)")
           // println(s"End Position (${operation.eventLog.last.state.xPosition}, ${operation.eventLog.last.state.yPosition})")
           // println()
         }
       }
     }
-    // for ((name,data) <- testMetrics) data.printRunResults
+    if (verbose) for ((name,data) <- testMetrics) data.printRunResults
   }
 
   // Generate Environments: environment -> iterations to run
