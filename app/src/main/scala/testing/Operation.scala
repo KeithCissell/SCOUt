@@ -15,7 +15,7 @@ import filemanager.FileManager._
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
-class Operation(agent: Agent, environment: Environment, goal: Goal) {
+class Operation(agent: Agent, environment: Environment, goal: Goal, maxActions: Option[Int]) {
 
   //------------------------ VARIABLES --------------------------------
 
@@ -52,18 +52,35 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
     agent.setup
     // Have the agent explore until it completes its goal is inoperational
     // println("Agent run started...")
-    while(agent.operational && !goal.isComplete) {
-    // for (i <- 0 until 15) {
-      val state = agent.getState()
-      val action = agent.chooseAction()
-      val event = agent.performAction(environment, action)
-      // println(s"Action: $action")
-      // Calculate Short-Term Score and Log
-      val shortTermScore = scoreEventShortTerm(event)
-      eventLogShort += new LogItemShort(state, action, event, shortTermScore)
-      // Update Goal
-      goal.update(environment, agent)
+    maxActions match {
+      case None => {
+        while (agent.operational && !goal.isComplete) {
+          val state = agent.getState()
+          val action = agent.chooseAction()
+          val event = agent.performAction(environment, action)
+          // println(s"Action: $action")
+          // Calculate Short-Term Score and Log
+          val shortTermScore = scoreEventShortTerm(event)
+          eventLogShort += new LogItemShort(state, action, event, shortTermScore)
+          // Update Goal
+          goal.update(environment, agent)
+        }
+      }
+      case Some(ma) => {
+        for (i <- 0 until ma ) if (agent.operational && !goal.isComplete) {
+          val state = agent.getState()
+          val action = agent.chooseAction()
+          val event = agent.performAction(environment, action)
+          // println(s"Action: $action")
+          // Calculate Short-Term Score and Log
+          val shortTermScore = scoreEventShortTerm(event)
+          eventLogShort += new LogItemShort(state, action, event, shortTermScore)
+          // Update Goal
+          goal.update(environment, agent)
+        }
+      }
     }
+
     // Propagate Long-Term Score
     // println("Calculating Scores...")
     scoreEventsLongTerm()
@@ -144,10 +161,10 @@ class Operation(agent: Agent, environment: Environment, goal: Goal) {
   def printOutcome = {
     println()
     println(s"AGENT: ${agent.name}")
-    println(s"Nmber of Events: ${eventLog.size}")
-    println(s"Health: ${agent.health}")
-    println(s"Energy: ${agent.energyLevel}")
-    println(s"Goal Completion: ${goal.percentComplete}")
+    println(s"Actions: ${eventLog.size}")
+    println(s"Health: ${roundDouble2(agent.health)}")
+    println(s"Energy: ${roundDouble2(agent.energyLevel)}")
+    println(s"Goal Completion: ${roundDouble2(goal.percentComplete)}")
   }
 
   //------------------------- SAVE OPERATION -----------------------------------

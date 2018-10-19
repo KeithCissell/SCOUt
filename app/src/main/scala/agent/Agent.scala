@@ -27,14 +27,14 @@ class Agent(
   // Agent Satus Variables
   var internalMap: Grid[Cell] = emptyCellGrid(mapHeight, mapWidth)
   var health: Double = 100.0
-  var energyLevel: Double = 250.0
+  var energyLevel: Double = 100.0
   var clock: Double = 0.0 // in milliseconds
 
   // Universal damage and energy use variables
   var maxHealth: Double = 0.0
   var maxEnergyLevel: Double = 0.0
   val damageNormal: Double = 0.1
-  val energyUseNormal: Double = 0.5
+  val energyUseNormal: Double = 0.2
   val movementCost: Double = 0.5
   val slopeCost: Double = 0.2
 

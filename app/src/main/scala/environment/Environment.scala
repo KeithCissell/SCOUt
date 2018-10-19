@@ -112,11 +112,11 @@ class Environment(
     case None     => MutableSet()
   }
   // returns anomalies in cluster
-  def getAnomaliesNeighbors(originX: Int, originY: Int): MutableSet[String] = {
+  def getAnomaliesCluster(originX: Int, originY: Int, range: Int): MutableSet[String] = {
     var anomalies: MutableSet[String] = MutableSet()
     val allAnomalies = for {
-      x <- (originX - 1) to (originX + 1)
-      y <- (originY - 1) to (originY + 1)
+      x <- (originX - range) to (originX + range)
+      y <- (originY - range) to (originY + range)
       if (inGrid(x,y))
     } yield anomalies ++= getAnomalies(x,y)
     return anomalies
