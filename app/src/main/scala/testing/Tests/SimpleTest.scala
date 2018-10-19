@@ -32,18 +32,20 @@ object SimpleTest {
       testEnvironments = Map(),
       testTemplates = Map(
         "10by10NoMods" -> (10, 2),
-        "BeginnerCourse" -> (15, 2)),
+        "BeginnerCourse" -> (25, 2)),
       controllers = Map(
         "Random" -> new RandomController(),
         "FindHuman" -> new FindHumanController(),
-        "SCOUt" -> new SCOUtController("NewLongTermScoreTest", "json", false, None)),
+        "SCOUt" -> new SCOUtController("ElevationTest", "json", false, None)),
       sensors = List(
-        new ElevationSensor(false),
-        new DecibelSensor(true),
-        new TemperatureSensor(true),
+        new ElevationSensor(true),
+        new DecibelSensor(false),
+        new TemperatureSensor(false),
         new WaterSensor(false)),
-      goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None),
-      maxActions = None)
+      // goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None),
+      goalTemplate = new MapElementsTemplate(List("Elevation"), None),
+      maxActions = None,
+      verbose = true)
 
     // Run Test
     simpleTest.run

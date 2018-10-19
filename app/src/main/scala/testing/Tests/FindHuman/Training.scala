@@ -29,10 +29,10 @@ object FindHumanTraining {
   def main(args: Array[String]): Unit = {
 
     // Training Setup
-    val trainingIterations = 100
+    val trainingIterations = 25
     val testingFrequency = 1
     val controllerName = "SCOUt"
-    val memoryFileName = "FindHumanTEST"
+    val memoryFileName = "FindHumanTEST5"
 
     val agentSensors = List(
       new ElevationSensor(false),
@@ -131,8 +131,8 @@ object FindHumanTraining {
       val iterationTest = new Test(
         testEnvironments = Map(),
         testTemplates = Map(
-          "10by10NoMods" -> (5, 1),
-          "BeginnerCourse" -> (5, 1)),
+          "10by10NoMods" -> (25, 1),
+          "BeginnerCourse" -> (25, 1)),
         controllers = Map(
           "Random" -> new RandomController(),
           controllerName -> new SCOUtController(memoryFileName, "json", false, None)),

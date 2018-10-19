@@ -58,14 +58,14 @@ class MapElements(mapHeight: Int, mapWidth: Int, elementsToMap: List[String], ti
   var internalMap: Grid[Cell] = emptyCellGrid(mapHeight, mapWidth)
 
   def percentComplete: Double = {
-    var percentsTotal = 0.0
+    var percentsTotal: Double = 0.0
     for (elementType <- elementsToMap) percentsTotal += calculateTypeDiscovered(elementType)
     return percentsTotal / elementsToMap.length.toDouble
   }
 
   def calculateTypeDiscovered(elementType: String): Double = {
-    var dataAvail = 0.0
-    var dataKnown = 0.0
+    var dataAvail: Double = 0.0
+    var dataKnown: Double = 0.0
     for {
       x <- 0 until mapHeight
       y <- 0 until mapWidth

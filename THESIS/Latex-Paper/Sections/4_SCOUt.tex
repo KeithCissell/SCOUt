@@ -65,11 +65,11 @@ The resulting GUI then provides an interactive platform for a user to load, crea
 Representing any environment is a tricky process.
 A simulation needs to balance simplicity and coverage when modeling an environment.
 Leave out too much from the model and it won’t reflect real word scenarios.
-Trying to model too much can consume time and effort that could instead be used to run real world experiments.
-For this experiment, an environment is represented by a single, high level object that contains a few general attributes and a lot of low level objects within it to model a static, Cartesian grid layout of a real world environment.
-The lower level objects contain specific details about the contents within the environment.
+Trying to model too much can consume time and effort that could instead be spent running real world experiments.
+For this experiment, an environment is represented by a single, high level object that contains a few general attributes and a collection of low level objects within it to model a static, Cartesian grid layout of a real world environment.
+The lower level objects then contain specific details about the contents within the environment.
 
-Each \textbf{Environment} created is represented as an n x m 2D grid of uniformly sized s x s square \textbf{Cell}, whose size is specified by a scaling factor.
+Each \textbf{Environment} created is represented as an n x m 2D grid of uniformly sized s x s square \textbf{Cells}, whose size is specified by a scaling factor.
 Along with positional data, each \textbf{Cell} contains information about the different elements and anomalies present within the s x s area it represents.
 An \textbf{Element} is a generalized object that represents one specific environmental attribute such as the elevation or temperature.
 An \textbf{Anomaly} represents some object present within the cell that could be of interest.
@@ -161,7 +161,7 @@ class Layer {
 % ==============================================================================
 \section{Agent Representation}
 Agents within this experiment have a core set of attributes and abilities, along with a set of sensors and a controller.
-The core attributes for an agent are health, energy level, a system clock, an internal map and its current position.
+The core attributes for an agent are health, energy level, a system clock, an internal map and its current position relative to the internal map.
 Because SCOUt is focused on purely observational interactions with its environment, an agent only has two categories of actions that can be taken: movement and scanning.
 The agent can attempt to move one cell at a time in any of the cardinal directions.
 This allows the agent to reassess after each movement attempt.
@@ -170,32 +170,73 @@ The list of scan actions that an agent can perform is based on the set of sensor
 The controller is in charge of analyzing the current state of the agent and deciding the next action to be performed.
 This project focuses on creating a single controller (SCOUt) that is highly adaptable to wide ranges of agent configurations, environments and goals.
 
-An agent is considered operational as long as it has remaining health and energy.
-Health is effected by....
-Energy is effected by....
+class Agent {
+  name: String
+  controller: Controller
+  sensors: List[Sensor]
+  internalMap: Grid[Cell]
+  xPosition: Int
+  yPosition: Int
+  health: Double
+  energyLevel: Double
+  clock: Double
+}
 
 
 \subsection{Sensor}
+Sensors are created from a single trait, similar to Elements and Anomalies.
+A single instance of a sensor represents a scientific instrument that could be used to gather data measurements for a specific element type.
+Each sensor defines the element type it is able to measures, the energy and time costs to perform a "scan" action and its effective range.
+When performing a scan, the sensor will sweep 360 degrees around the agents location and gather data in a circular area.
+The circular area is calculated with the sensors range as the radius and the agents position as the center.
+The element type's values discovered will then be added to the agents internal map if it was not previously known.
+
+class Sensor {
+  elementType: String
+  range: Double
+  energyExpense: Double
+  runTime: Double
+}
+
+
+\subsection{Mobility and Durability}
+When an agent is created, there are several attributes that can be defined to dictate how an agent will interact with different elements in the environment.
+The mobility of an agent will determine what level of movement the agent is capable of within an environment, how quickly an agent can move and how much energy is required.
+For example, if a drone was defined as the agent, it would have higher mobility, but would likely sacrifice the amount of sensors that could be carried.
+A wheeled robot loaded with multiple sensors would have decreased mobility, but could collect a wider variety of data.
+Mobility is defined by the maximum slope an agent can climb, the minimum slope an agent can traverse before taking "fall damage", and a resistance factor.
+The resistance factor ties into durability and scales the amount of "fall damage" that the agent receives.
+
+movementSlopeUpperThreshHold: Double
+movementSlopeLowerThreshHold: Double
+movementDamageResistance: Double
+
+Durability factors are also considered.
+This represents an agent's versatility within an environment and is directly related to specific element types.
+An example is an environment with pools of water in it.
+Most robots would be damaged when emerged in water, but a robot could be designed amphibiously and would therefore be impervious to damage when in contact with water.
+Like many other data structures seen, these durability factors are defined per element type.
+Durability is defined by an upper and lower value threshold and a resistance factor.
+The thresholds define what levels of an element type that the agent can be exposed to before it begins to damage equipment.
+The resistance factor then influences how much damage the agent will take at levels exceeding the threshold.
+
+damageUpperThreshold: Double
+damageLowerThreshold: Double
+damageResistance: Double
 
 
 \subsection{Actions}
-An agent's movement is simplified to stepping from its current cell to one of its four neighboring cells.
-Movement to a neighboring cell is denoted as "north", "south", "west" or "east" based on the orientation of the x, y grid of cells that make up the environment.
+An agent's actions are simplified to either movement or scanning actions.
+These two categories cover the exploration and research aspects that would be expected from a surveillance agent.
+Actions are performed in a loop where the controller assesses the agent's state and then decides an appropriate action.
+
+In simulation, movement is handled by changing the agent's current position to an adjacent cell in one of four direction.
+Movement to an adjacent cell is denoted as "north", "south", "west" or "east" based on the orientation of the x, y grid of cells that make up the environment.
 Moving a single cell at a time gives the agent the opportunity to reassess its current state before continuing movement.
-Distance covered by successful movement will inherently scale to the size of the cells within the environment representation.
+Distance covered by successful movement will inherently be equal to the size of the cells within the simulated environment.
 Each time an agent attempts to move to a new cell, Elevation levels will be compared between the current and new cell to check if movement is possible or if it results in damage.
 After the attempt has been made, changes to health, energy level and the system clock are calculated and then updated.
 If the movement action is successfully completed, the current position is also updated.
-
-A sensor is an object that allows an agent to gather data about one specific Element Type within an environment.
-Each sensor has set attributes for the element type that it can detect, the range, the energy required to run and the time required to run.
-Additionally two flags are passed to a sensor when it is first setup.
-One of these flags denote if the sensor is being used to detect "hazard" elements in the environment.
-Whether an element is hazardous typically depends on the setup of the agent.
-For example, water could be considered hazardous to most robots, however if the agent was designed for aqueous missions, water could no longer be a concern.
-The other flag denotes if the sensor is being used to detect "indicator" elements in the environment.
-Indicator elements are any element that are associated to the agent's goal.
-An example is if the agent is searching for a human within the environment, their heat signature might be significantly different than the surrounding environment, so temperature would be considered an indicator.
 
 When a sensor is used, it does a full 360° sweep of surrounding cells in the environment.
 This creates a search circle with radius equal to the sensor's range and the center located at the agent's current position.
@@ -204,37 +245,67 @@ These values are then added to the agent's internal map if they did not previous
 Through repeated scanning, the agent will begin to map out its surrounding environment.
 This map can be then be used by the controller to determine what actions would be most beneficial to the goal at hand.
 
+
 \subsection{State Representation}
-For controllers to intelligently select when to perform what actions, they need to have sufficient data about the agent and the known surrounding environment.
-The agent's health and energy level can easily be stored, but the internal map containing the known environment can become a very large data structure to work with.
-For this reason the data structure is stripped down in order to reduce memory usage and computational effort required to analyze a state.
-Instead of a 2-D array of cells, \todo{reference cell structure diagram?} the internal map is represented as a list of element states for each element type that there is a sensor present for.
+For controllers to intelligently decide when to perform what actions, they need to have sufficient data about the agent and the known surrounding environment.
+The agent's position, health and energy level can easily be analyzed, but the internal map containing the known environment can become a very large data structure to analyze each time the controller has to decide upon an action.
+For this reason the data structure is simplified in order to reduce memory usage and computational effort required to assess a state.
+What we are left with is a minimal data structure that still contains all of the useful information necessary for a controller to make intelligent decisions.
+Instead of a 2-D array of cells, the internal map is represented as a list of element states, where each element state is a summary of the data known about a specific element type.
 
-Each element state is comprised of the value at the agents current position (if known), a flag for whether the element type is considered a hazard element, a flag for whether the element type is considered an indicator element, and then four quadrant states for each cardinal direction.
-Because agent movement is split into north, south, west and east, we can collapse information about the element type into four quadrants \todo{Image of quadrants}.
-A quadrant state contains the percent of cells where the value for the element type is known, the neighboring cell's value (if known) and the average of all known cell values in the quadrant.
-These metrics allow us to generate useful information that ties the current state with consequences that may come from each action.
-Particularly...\todo{add state comparison equations?}
+AgentState {
+  xPosition: Int
+  yPosition: Int
+  health: Double
+  energyLevel: Double
+  elementStates: List[ElementState]
+}
+
+ElementState {
+  elementType: String
+  indicator: Boolean
+  hazard: Boolean
+  percentKnownInSensorRange: Double
+  northQuadrant: QuadrantState
+  southQuadrant: QuadrantState
+  westQuadrant: QuadrantState
+  eastQuadrant: QuadrantState
+}
+
+Element states contain useful information about how the specific element type was being studied during the operation and then technical information about known values.
+The indicator flag tells the controller whether this element type was being collected in order to progress the goal at hand.
+If the goal was to map out the elevation, the elevation ElementState would be flagged true.
+If the goal was to find a human, the Temperature and Decibel ElementStates would be marked true, as their values could help indicate the presence of the human.
+The hazard flag is used to mark any element that could potentially cause harm to the agent.
+For example: the presence of water, high drops in elevation and extreme temperatures could potentially cause damage, and would be flagged as hazardous.
+We also track the percent of known element values that are within the range of the corresponding sensor.
+Technical information of each ElementState is divided into four quadrants, where each quadrant has its own state.
+Because agent movement is limited to north, south, west and east, we can collapse known information from the internal map into four quadrants \todo{Image of quadrants}.
+
+QuadrantState {
+  percentKnown: Double
+  averageValueDifferential: Option[Double]
+  immediateValueDifferential: Option[Double]
+}
+
+The first thing that a QuadrantState looks at is the percent of values that are already known in all the cells within the quadrant.
+Then, the QuadrantState stores the average and immediate known values into two "Options".
+These are denoted as Options because there are instances where none of the values within the quadrant are known.
+Average and immediate values are recorded relative to the value of the current cell.
+Average differential takes the difference between the current value and the average of all known values in the quadrant's cells.
+Immediate differential takes the difference between the current value and the cell immediately adjacent to it.
+So when considering elevation values within the north quadrant, the immediate differential would be the difference between the elevation at the agents current position and the elevation within the cell directly above the current position.
 
 
+\subsection{Controller}
+The design of an agent is created so that as it operates within an environment, it can explore and gather data from the environment while keeping track of its location and internal status.
+The controller is an autonomous decision making schema for moving the agent and using available sensors to update the internal map.
+Each action that the agent takes has an effect on its internal state.
+Moving in the environment requires energy usage and can result in damage (for example falling down a cliff or driving into water).
+Use of sensors also requires energy and the data gathered will be stored in the internal map.
+For intelligent controllers, data collected can be used by the controller to decide the next action that should be taken.
+The specific controllers used are discussed in \ref{controllers}.
 
-% ==============================================================================
-% CONTROLLER
-% ==============================================================================
-\section{Controller}
-In this experiment three different controllers are created and compared for their performance.
-
-\subsection{Base Line Controllers}
-Talk about Random and Heuristic Controllers.
-
-\subsection{Intelligent Controller}
-Talk about SCOUt controller using machine learning.
-
-Memory Storage
-
-State Comparison
-
-Action Selection
 
 
 
@@ -309,6 +380,135 @@ Even if a goal is completed, the agent could receive a low score if it was "reck
 The long term reward is then propagated backwards through all the actions that were taken.
 The actions performed immediately before the end of the operation are given highest score.
 Previous actions then receive diminishing reward based on \todo{LTS reward distribution equation}.
+
+
+
+% ==============================================================================
+% CONTROLLER
+% ==============================================================================
+\section{Controllers} \label{controllers}
+Experiments in this paper compare three different types of controllers: random, heuristic and intelligent.
+The random controller will simply select a valid action at random until it is no longer operational, or it has completed the goal.
+Heuristic controllers follow a set of logical steps to decide which action is taken.
+Each heuristic controller has to be created specifically for the task at hand.
+These controllers are expected to perform at the same rate of success for each operation as they have no learning qualities about them.
+A single intelligent controller is created to study how it can operate across multiple environments and achieve multiple types of goals.
+To test the usefulness of the intelligent controller, its performance is compared against the heuristic controllers and the random controller.
+
+
+\subsection{Heuristic Controllers}
+Talk about Random and Heuristic Controllers.
+
+
+\subsection{Intelligent Controller}
+The SCOUt controller operates using memory based reinforcement learning.
+After each operation, the SCOUt controller will store state-action pairs into its memory for later reference.
+A state-action pair (SAP) contains the action that the agent took, the state that the agent was in when it decided to take this action, and the short and long term rewards that the action received.
+In future operations, the SCOUt controller will try to find state-action pairs where the SAP's state is similar to the agent's current state.
+Next, the controller will look at what action was performed and what rewards were given for the outcome, and use this to predict the best action it should perform in its current operation.
+
+\subsubsection{Memory}
+Memory is built from running simulated operations.
+Each time the SCOUt controller finishes an operation and attributes short and long term rewards to each action, it selects which actions to store in its memory.
+For experiments in this paper, the last 20 actions performed are saved, and then a uniform sampling of 5 percent of all actions early in the operation are stored.
+The entire memory set is not saved to cut back on memory loads and computational time when searching for similar states.
+The last 20 actions are always saved because they typically are the most important events leading up to success or failure of the goal at hand.
+The remaining actions taken prior to these last 20 are then uniformly sampled so that the memory will also contain information related to the agent's initial searching behavior.
+Each action is then stored as a stat-action pair in a Json file for future use.
+
+
+\subsubsection{State Comparisons}
+When a SCOUt controller begins an operation, it will first load in state-action pairs from a specified memory file.
+The states within the existing memory is then normalized to make variances within each state's data relative to all other states in the memory set.
+For each state, normalization takes place for all numerical values stored within the AgentState class.
+This includes:
+
+\todo{format list}
+- health
+- energyLevel
+- each ElementState's:
+  - percentKnownInSensorRange
+  - each QuadrantState's
+    - percentKnown
+    - averageValueDifferential
+    - immediateValueDifferential
+
+Normalization follows this Guassian distribution equation suggested by \ref{mccaffrey_how_nodate}.
+
+\todo{normalization eq}
+
+This makes data values that are more meaningful when studied by the agent.
+For example, if a controller was seeking out a human, it may look for increases in decibel values.
+In order for the controller to determine how much of an increase in decibel readings is accurate, it needs to have an idea of what is normal variation in decibel values versus a significant increase.
+Gaussian distribution provides this functionality through the calculated average and standard deviation within a data set.
+If the agent has gathered decibel readings in its north quadrant that are well above the standard deviation of readings it has stored in its memory, it should be considered significant.
+
+Once the internal memory has been loaded and normalized, the controller can use the states of SAPs to compare against the agent's current state and predict the best action.
+Each time the controller is used to decide upon an action, it will compare its current state to states within its memory.
+State comparisons are calculated using the following algorithm:
+Comparison follows this algorithm:
+
+\todo{style algo}
+1. Normalize the current state (how many STDs it falls outside of the average)
+2. Calculate the difference for:
+  a. health
+  b. energyLevel
+  c. elementStateDifferences = for each element state:
+    i. hazardDifference = if (current == SAP) 1 else 0
+    ii. indicatorDifference = if (current == SAP) 1 else 0
+    iii. percentKnownInSensorRangeDifference = abs(SAP - current)
+    iv. immediateValuesKnownDifference = abs(SAP - current) / 4
+  d. quadrantToQuadrantStateDifferences = for each current quadrant:
+    i. quadrantStateDifferences = for each SAP quadrant:
+      a. quadrantElementStateDifferences = for each element type:
+        i. hazardDifference = if (current == SAP) 1 else 0
+        ii. indicatorDifference = if (current == SAP) 1 else 0
+        iii. percentKnownDifference = abs(SAP - current)
+        iv. averageValueDifferentialDifference = if (current known && SAP known) abs(SAP - current) else (if current known == if SAP knonw) 1 else 0)
+        v. immediateValueDifferentialDifference = if (current known && SAP known) abs(SAP - current) else (if current known == if SAP knonw) 1 else 0)
+
+The state comparison algorithm generates difference calculations with movement and scanning action types in mind.
+The elementStateDifferences (item c) are used when comparing the current state againts and SAP who's action was a scan action.
+For each elementStateDifference, the algorithm compares the similarity between how the elemet type is being studied (for hazard detection and goal related inication), as well as the percent of the element type known in range of the sensor and how many of the four adjacent cell's values are known.
+The hazard and indicator differences guide the controller to determine the importance and usage of the element types data.
+The percent known and immediate values known difference guide the controller to decide whether usage of an element type's sensor is efficient, or necessary.
+For example, if an agent does not have knowledge of the Elevation in adjacent cells, it couldn't confidently determine whether moving into one of those cells would result in taking fall damage.
+The quadrantStateDiffernces (item d) are used when the SAP's action was a movement action.
+Each quadrant for the current state is compared against every quadrant in the SAP's state.
+In doing so, this allows the controller to consider all orientations between the two states.
+\todo{orientation diagram}
+Each orientation is important to consider because SOMETHING SOMETHING WORDS.
+Within each quadrant to quadrant comparison, the controller will consider the differences between values for each element type.
+These quadrantElementStateDifferences look at values related to the specific quadrant instead of the entire internal map as elementStateDifference compares.
+
+Once these specific differences have been calculated, the controller must collapse them into a single, overall state difference to help predict the reward the agent will receive for each possible actions.
+To collapse the collection of state differences, the controller must apply different weights to each individual difference, and average the total of them all.
+There are two differnt calculations for overall state differences.
+The first is if the SAP's action was a scanning action, and the second is if is was a movement action.
+The equations for this weight-based difference calculation are as follows:
+
+\todo{equationzzz}
+overallStateDifference(scanning) = (health * Whealth + energyLevel * Wenergylevel + overallElementStateDifferences * WelementStates) / 3
+
+overallElementStateDifferences = sum(for each elementStateDifference: overallElementStateDifference * WelementState) / number of elementStateDifferences
+
+overallElementStateDifference = (hazardDifference * Whazard + indicatorDifference * Windicator + percentKnownInSensorRangeDifference * WpercentKnownInSensorRange + immediateValuesKnownDifference * WimmediateValuesKnonw) / 4
+
+overallStateDifference(movement) = (health * Whealth + energyLevel * Wenergylevel + overallQuadrantDifferences * Wquadrants) / 3
+
+overallQuadrantDifferences = min(for each orientation: overallOrientationDifference)
+
+overallOrientationDifference = (overallQuadrantDifference1 * Wquadrant + overallQuadrantDifference2 * Wquadrant + overallQuadrantDifference3 * Wquadrant + overallQuadrantDifference4 * Wquadrant) / 4
+
+overallQuadrantDifference = sum(for each quadrantElementStateDifference: overallQuadrantElementStateDifference * WquadrantState) / number of quadrantElementStateDifferences
+
+overallQuadrantElementStateDifference = (hazardDifference * Whazard + indicatorDifference * Windicator + percentKnownDifference * WpercentKnown + averageValueDifferentialDifference * WaverageValue + immediateValueDifferentialDifference * WimmediateValue) / 5
+
+
+
+
+
+Action Selection
 
 
 

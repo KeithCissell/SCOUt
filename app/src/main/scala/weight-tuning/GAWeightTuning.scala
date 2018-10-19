@@ -27,15 +27,21 @@ import scala.collection.mutable.{ArrayBuffer => AB}
 
 object WeightTuning {
   // GA Attributes
-  val runName = "OFFICIALTEST"
+  val runName = "MapWaterTest"
   val populationSize: Int = 8
-  val numGenerations: Int = 50
+  val numGenerations: Int = 20
   val elites: Int = 2
   val maxHealth: Double = 100.0
   val maxEnergy: Double = 100.0
   val maxActions: Int = 75
   val maxCompared: Double = 30.0 // for special weight "minimumComparisons"
   def mutationRate(currentGeneration: Int): Double = List(((numGenerations.toDouble * 1.2) - currentGeneration.toDouble), numGenerations.toDouble).min / numGenerations.toDouble
+
+  // Test stuff
+  // val goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None)
+  // val memoryFileName = "FreshStart"
+  val goalTemplate = new MapElementsTemplate(List("Water Depth"), None)
+  val memoryFileName = "MapWaterTest"
 
   // Weights Object
   class WeightsSet(
@@ -155,21 +161,21 @@ object WeightTuning {
     val controllers: Map[String,SCOUtController] = (for (i <- 0 until population.length) yield {
       val ind = population(i)
       val name = i.toString
-      (name -> new SCOUtController("FreshStart", "json", false, Some(ind.generateWeightsSet)))
+      (name -> new SCOUtController(memoryFileName, "json", false, Some(ind.generateWeightsSet)))
     }).toMap
     // Setup Test
     val gaTest = new Test(
       testEnvironments = Map(),
       testTemplates = Map(
-        "10by10NoMods" -> (5, 2),
-        "BeginnerCourse" -> (10, 2)),
+        "10by10NoMods" -> (2, 1),
+        "BeginnerCourse" -> (4, 1)),
       controllers = controllers,
       sensors = List(
         new ElevationSensor(false),
-        new DecibelSensor(true),
-        new TemperatureSensor(true),
-        new WaterSensor(false)),
-      goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None),
+        new DecibelSensor(false),
+        new TemperatureSensor(false),
+        new WaterSensor(true)),
+      goalTemplate = goalTemplate,
       maxActions = Some(maxActions))
 
     // Run Test
