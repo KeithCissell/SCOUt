@@ -19,6 +19,7 @@ import scoututil.Util._
 import jsonhandler.Encoder._
 import jsonhandler.Decoder._
 import filemanager.FileManager._
+import bestweights._
 import scala.collection.mutable.{Map => MutableMap}
 import scala.collection.mutable.{ArrayBuffer => AB}
 
@@ -31,19 +32,26 @@ object SimpleTest {
     val simpleTest = new Test(
       testEnvironments = Map(),
       testTemplates = Map(
-        "10by10NoMods" -> (10, 2),
-        "BeginnerCourse" -> (25, 2)),
+        "EASY" -> (25, 1),
+        "MEDIUM" -> (15, 1),
+        "HARD" -> (10, 1)),
       controllers = Map(
         "Random" -> new RandomController(),
         "FindHuman" -> new FindHumanController(),
-        "SCOUt" -> new SCOUtController("ElevationTest", "json", false, None)),
+        "MapWater" -> new MapWaterController(),
+        "SCOUt" -> new SCOUtController("MWOfficialTemplatesTEST2", "json", false)),
+      // sensors = List(
+      //   new ElevationSensor(false),
+      //   new DecibelSensor(true),
+      //   new TemperatureSensor(true),
+      //   new WaterSensor(false)),
+      // goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None),
       sensors = List(
-        new ElevationSensor(true),
+        new ElevationSensor(false),
         new DecibelSensor(false),
         new TemperatureSensor(false),
-        new WaterSensor(false)),
-      // goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None),
-      goalTemplate = new MapElementsTemplate(List("Elevation"), None),
+        new WaterSensor(true)),
+      goalTemplate = new MapElementsTemplate(List("Water Depth"), None),
       maxActions = None,
       verbose = true)
 
