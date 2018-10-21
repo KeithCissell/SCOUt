@@ -49,7 +49,7 @@ object RunSingleOperation {
     // val agentName = "Random"
     // val controller = new FindHumanController()
     // val agentName = "Find Human"
-    val controller = new SCOUtController("FreshStart", "json", false, None)
+    val controller = new SCOUtController("FreshStart", "json", false)
     val agentName = "SCOUt"
 
     val sensors = List(
@@ -57,11 +57,16 @@ object RunSingleOperation {
       new DecibelSensor(true),
       new TemperatureSensor(true),
       new WaterSensor(false))
+    // val sensors = List(
+    //   new ElevationSensor(false),
+    //   new DecibelSensor(false),
+    //   new TemperatureSensor(false),
+    //   new WaterSensor(true))
 
     // DEFAULT
     lazy val defaultEnvironment = buildEnvironment("Test Environment", 20, 20, 10.0, ElementSeedList.defaultSeedList(), TerrainModificationList.defaultList(), AnomalyList.defaultList())
     // LOADED
-    val environemtFileName = "BeginnerCourse"
+    val environemtFileName = "MEDIUM"
     // Environment file
     // val envString = readJsonFile(environemtFileName, environmentPath)
     // val environment = parse(envString) match {
@@ -80,6 +85,7 @@ object RunSingleOperation {
 
     // Set Goal
     val goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None)
+    // val goalTemplate = new MapElementsTemplate(List("Water Depth"), None)
 
     // Setup Operation
     val startPosition = getValidStartPosition(environment)

@@ -118,7 +118,7 @@ class FindHumanController() extends Controller {
     val immediateValueWeight = 2.0
     val weightTotals = percentKnownWeight + averageValueWeight + immediateValueWeight
     // Scores
-    val pkScore = qs.percentKnown * percentKnownWeight
+    val pkScore = (1.0 - qs.percentKnown) * percentKnownWeight
     val avScore = 0.0 * averageValueWeight
     val imScore = qs.immediateValueDifferential match {
       case Some(v) if (Math.abs(v) > 12.0) => 0.0
@@ -136,7 +136,7 @@ class FindHumanController() extends Controller {
     val immediateValueWeight = 2.0
     val weightTotals = percentKnownWeight + averageValueWeight + immediateValueWeight
     // Scores
-    val pkScore = qs.percentKnown * percentKnownWeight
+    val pkScore = (1.0 - qs.percentKnown) * percentKnownWeight
     val avScore = qs.averageValueDifferential match {
       case Some(v) if (v >= 0.0) => 1.0
       case Some(_) => 0.0
@@ -158,7 +158,7 @@ class FindHumanController() extends Controller {
     val immediateValueWeight = 2.0
     val weightTotals = percentKnownWeight + averageValueWeight + immediateValueWeight
     // Scores
-    val pkScore = qs.percentKnown * percentKnownWeight
+    val pkScore = (1.0 - qs.percentKnown) * percentKnownWeight
     val avScore = qs.averageValueDifferential match {
       case Some(v) if (v >= 0.0) => 1.0
       case Some(_) => 0.0
@@ -180,7 +180,7 @@ class FindHumanController() extends Controller {
     val immediateValueWeight = 2.0
     val weightTotals = percentKnownWeight + averageValueWeight + immediateValueWeight
     // Scores
-    val pkScore = qs.percentKnown * percentKnownWeight
+    val pkScore = (1.0 - qs.percentKnown) * percentKnownWeight
     val avScore = qs.averageValueDifferential match {
       case Some(v) if (v > 0.0) => 0.25
       case Some(_) => 1.0

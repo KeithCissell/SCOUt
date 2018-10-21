@@ -82,9 +82,12 @@ class Test(
 
   // Generate Environments: environment -> iterations to run
   def generateEnvironments: Map[Environment,Int] = {
+    if (verbose) println("GENERATING ENVIRONMENTS...")
     var environments: MutableMap[Environment,Int] = MutableMap()
     // Load environment files
+    if (verbose) println("LOADING FROM FILES...")
     for ((fName, iterations) <- testEnvironments) {
+      if (verbose) println(s"Loading from: $fName")
       val envString = readJsonFile(fName, environmentPath)
       parse(envString) match {
         case Left(_) => // Load or parse failure
@@ -95,7 +98,9 @@ class Test(
       }
     }
     // Load template files
+    if (verbose) println("LOADING FROM TEMPLATES...")
     for ((fName, iterations) <- testTemplates) {
+      if (verbose) println(s"Loading from: $fName")
       val templateString = readJsonFile(fName, environmentTemplatePath)
       val buildIterations = iterations._1
       val testIterations = iterations._2
@@ -104,6 +109,7 @@ class Test(
         case Right(templateJson) => {
           val template = extractEnvironmentTemplate(templateJson)
           for (i <- 0 until buildIterations) {
+            if (verbose) println(s"    loading ${i+1} / $buildIterations")
             val env = buildEnvironment(template)
             environments += (env -> testIterations)
           }

@@ -1,0 +1,137 @@
+
+
+\chapter{SCOUt}
+
+
+% ==============================================================================
+% CONTROLLER
+% ==============================================================================
+\section{Controllers} \label{controllers}
+Experiments in this paper compare three different types of controllers: random, heuristic and intelligent.
+The random controller will simply select a valid action at random until it is no longer operational, or it has completed the goal.
+Heuristic controllers follow a set of logical steps to decide which action is taken.
+Each heuristic controller has to be created specifically for the task at hand.
+These controllers are expected to perform at the same rate of success for each operation as they have no learning qualities about them.
+A single intelligent controller is created to study how it can operate across multiple environments and achieve multiple types of goals.
+To test the usefulness of the intelligent controller, its performance is compared against the heuristic controllers and the random controller.
+
+
+\subsection{Heuristic Controllers}
+Talk about Random and Heuristic Controllers.
+
+
+\subsection{Intelligent Controller}
+The SCOUt controller operates using memory based reinforcement learning.
+After each operation, the SCOUt controller will store state-action pairs into its memory for later reference.
+A state-action pair (SAP) contains the action that the agent took, the state that the agent was in when it decided to take this action, and the short and long term rewards that the action received.
+In future operations, the SCOUt controller will try to find state-action pairs where the SAP's state is similar to the agent's current state.
+Next, the controller will look at what action was performed and what rewards were given for the outcome, and use this to predict the best action it should perform in its current operation.
+
+\subsubsection{Memory}
+Memory is built from running simulated operations.
+Each time the SCOUt controller finishes an operation and attributes short and long term rewards to each action, it selects which actions to store in its memory.
+For experiments in this paper, the last 20 actions performed are saved, and then a uniform sampling of 5 percent of all actions early in the operation are stored.
+The entire memory set is not saved to cut back on memory loads and computational time when searching for similar states.
+The last 20 actions are always saved because they typically are the most important events leading up to success or failure of the goal at hand.
+The remaining actions taken prior to these last 20 are then uniformly sampled so that the memory will also contain information related to the agent's initial searching behavior.
+Each action is then stored as a stat-action pair in a Json file for future use.
+
+
+\subsubsection{State Comparisons}
+When a SCOUt controller begins an operation, it will first load in state-action pairs from a specified memory file.
+The states within the existing memory is then normalized to make variances within each state's data relative to all other states in the memory set.
+For each state, normalization takes place for all numerical values stored within the AgentState.
+This includes:
+
+\todo{format list}
+- health
+- energyLevel
+- each ElementState's:
+  - percentKnownInSensorRange
+  - each QuadrantState's
+    - percentKnown
+    - averageValueDifferential
+    - immediateValueDifferential
+
+Normalization follows this Guassian distribution equation suggested by \ref{mccaffrey_how_nodate}.
+
+\todo{normalization eq}
+
+This makes data values that are more meaningful when studied by the agent.
+For example, if a controller was seeking out a human, it may look for increases in decibel values.
+In order for the controller to determine how much of an increase in decibel readings is accurate, it needs to have an idea of what is normal variation in decibel values versus a significant increase.
+Gaussian distribution provides this functionality through the calculated average and standard deviation within a data set.
+If the agent has gathered decibel readings in its north quadrant that are well above the standard deviation of readings it has stored in its memory, it should be considered significant.
+
+Once the internal memory has been loaded and normalized, the controller can use the states of SAPs to compare against the agent's current state and predict the best action.
+Each time the controller is used to decide upon an action, it will compare its current state to states within its memory.
+State comparisons are calculated using the following algorithm:
+Comparison follows this algorithm:
+
+\todo{style algo}
+1. Normalize the current state (how many STDs it falls outside of the average)
+2. Calculate the difference for:
+  a. health
+  b. energyLevel
+  c. elementStateDifferences = for each element state:
+    i. hazardDifference = if (current == SAP) 1 else 0
+    ii. indicatorDifference = if (current == SAP) 1 else 0
+    iii. percentKnownInSensorRangeDifference = abs(SAP - current)
+    iv. immediateValuesKnownDifference = abs(SAP - current) / 4
+  d. quadrantToQuadrantStateDifferences = for each current quadrant:
+    i. quadrantStateDifferences = for each SAP quadrant:
+      a. quadrantElementStateDifferences = for each element type:
+        i. hazardDifference = if (current == SAP) 1 else 0
+        ii. indicatorDifference = if (current == SAP) 1 else 0
+        iii. percentKnownDifference = abs(SAP - current)
+        iv. averageValueDifferentialDifference = if (current known && SAP known) abs(SAP - current) else (if current known == if SAP knonw) 1 else 0)
+        v. immediateValueDifferentialDifference = if (current known && SAP known) abs(SAP - current) else (if current known == if SAP knonw) 1 else 0)
+
+The state comparison algorithm generates difference calculations with movement and scanning action types in mind.
+The elementStateDifferences (item c) are used when comparing the current state againts and SAP who's action was a scan action.
+For each elementStateDifference, the algorithm compares the similarity between how the elemet type is being studied (for hazard detection and goal related inication), as well as the percent of the element type known in range of the sensor and how many of the four adjacent cell's values are known.
+The hazard and indicator differences guide the controller to determine the importance and usage of the element types data.
+The percent known and immediate values known difference guide the controller to decide whether usage of an element type's sensor is efficient, or necessary.
+For example, if an agent does not have knowledge of the Elevation in adjacent cells, it couldn't confidently determine whether moving into one of those cells would result in taking fall damage.
+The quadrantStateDiffernces (item d) are used when the SAP's action was a movement action.
+Each quadrant for the current state is compared against every quadrant in the SAP's state.
+In doing so, this allows the controller to consider all orientations between the two states.
+
+\todo{orientation diagram}
+
+Each orientation is important to consider because SOMETHING SOMETHING WORDS.
+Within each quadrant to quadrant comparison, the controller will consider the differences between values for each element type.
+These quadrantElementStateDifferences look at values related to the specific quadrant instead of the entire internal map as elementStateDifference compares.
+
+Once these specific differences have been calculated, the controller must collapse them into a single, overall state difference to help predict the reward the agent will receive for each possible actions.
+To collapse the collection of state differences, the controller must apply different weights to each individual difference, and average the total of them all.
+There are two differnt calculations for overall state differences.
+The first is if the SAP's action was a scanning action, and the second is if is was a movement action.
+The equations for this weight-based difference calculation are as follows:
+
+\todo{equationzzz}
+overallStateDifference(scanning) = (health * Whealth + energyLevel * Wenergylevel + overallElementStateDifferences * WelementStates) / 3
+
+overallElementStateDifferences = sum(for each elementStateDifference: overallElementStateDifference * WelementState) / number of elementStateDifferences
+
+overallElementStateDifference = (hazardDifference * Whazard + indicatorDifference * Windicator + percentKnownInSensorRangeDifference * WpercentKnownInSensorRange + immediateValuesKnownDifference * WimmediateValuesKnonw) / 4
+
+overallStateDifference(movement) = (health * Whealth + energyLevel * Wenergylevel + overallQuadrantDifferences * Wquadrants) / 3
+
+overallQuadrantDifferences = min(for each orientation: overallOrientationDifference)
+
+overallOrientationDifference = (overallQuadrantDifference1 * Wquadrant + overallQuadrantDifference2 * Wquadrant + overallQuadrantDifference3 * Wquadrant + overallQuadrantDifference4 * Wquadrant) / 4
+
+overallQuadrantDifference = sum(for each quadrantElementStateDifference: overallQuadrantElementStateDifference * WquadrantState) / number of quadrantElementStateDifferences
+
+overallQuadrantElementStateDifference = (hazardDifference * Whazard + indicatorDifference * Windicator + percentKnownDifference * WpercentKnown + averageValueDifferentialDifference * WaverageValue + immediateValueDifferentialDifference * WimmediateValue) / 5
+
+
+
+\subsubsection{Action Selection}
+Once an overall difference has been calculated between the agent's current state and states in memory, the controller can predict the reward that will be received for each possible action.
+An action's short and long term rewards are predicted from the averages of SAPs where: A) the considered action was selected, and B) the state difference from the current state is below a certain threshold.
+In addition to these predicted rewards, we also calculate a confidence value for the predictions.
+\todo{confidence EQ}
+The lower the difference is between the current and SAP states, the higher the confidence will be.
+Additionally, the more SAPs that are considered in the prediction, the more confident the controller can be in the predicted reward.

@@ -31,14 +31,14 @@ class Operation(agent: Agent, environment: Environment, goal: Goal, maxActions: 
   // SHORT-TERM SCORE WEIGHTS
   val movementRewardWeight = 1.0
   val scanRewardWeight = 1.0
-  val healthRewardWeight = 1.0
+  val healthRewardWeight = 2.0
   val energyRewardWeight = 1.0
   val timeRewardWeight = if (timeLimit == None) 0.0 else 1.0
   val statusWeightsTotal = healthRewardWeight + energyRewardWeight + timeRewardWeight
 
   // LONG-TERM SCORE WEIGHTS
   val goalRewardWeight = 1.0
-  val longTermHealthRewardWeight = 1.0
+  val longTermHealthRewardWeight = 2.0
   val longTermEnergyRewardWeight = 1.0
   val longTermTimeRewardWeight = if (timeLimit == None) 0.0 else 1.0
   val longTermWeightsTotal = goalRewardWeight + longTermHealthRewardWeight + longTermEnergyRewardWeight + longTermTimeRewardWeight

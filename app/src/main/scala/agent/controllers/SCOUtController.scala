@@ -10,6 +10,7 @@ import scoutagent.Event._
 import filemanager.FileManager._
 import jsonhandler.Decoder._
 import scoututil.Util._
+import bestweights._
 import weighttuning.WeightTuning._
 
 import scala.collection.mutable.{Map => MutableMap}
@@ -21,7 +22,7 @@ class SCOUtController(
   val memoryFileName: String,
   val memoryExtention: String = "json",
   val training: Boolean,
-  val weightsSet: Option[WeightsSet]
+  val weightsSet: WeightsSet = BestWeights.handTuned
 ) extends Controller {
 
   // MEMORY ATTRIBUTES
@@ -36,14 +37,19 @@ class SCOUtController(
 
   // EXPLORATION INFLUENCE
   val actionHistory: MutableMap[(Int,Int),MutableSet[String]] = MutableMap()
-  // var repititionPenalty: Double = 0.55
-  var repititionPenalty: Double = 0.46
+
+  // WEIGHTS
+  val maxDifferenceCompared = weightsSet.maxDifferenceCompared
+  val minimumComparisons = weightsSet.minimumComparisons
+  val repititionPenalty = weightsSet.repititionPenalty
+  val stateDifferenceWeights = weightsSet.stateDifferenceWeights
+  val selectionWeights = weightsSet.selectionWeights
 
   // Confidence Related Variables
   // var maxDifferenceCompared: Double = 0.46
   // var minimumComparisons: Double = 3.0
-  var maxDifferenceCompared: Double = 0.66
-  var minimumComparisons: Double = 13.0
+  // var maxDifferenceCompared: Double = 0.66
+  // var minimumComparisons: Double = 13.0
 
   // DIFFERENCE COMPARISON WEIGHTS
   // var stateDifferenceWeights = new StateDifferenceWeights(
@@ -62,34 +68,35 @@ class SCOUtController(
   //     percentKnownWeight = 0.2,
   //     averageValueWeight = 0.46,
   //     immediateValueWeight = 0.46))
-  var stateDifferenceWeights = new StateDifferenceWeights(
-    healthWeight = 0.71,
-    energyWeight = 0.88,
-    elementStateWeight = 0.9,
-    totalQuadrantWeight = 0.58,
-    elementDifferenceWeights = new ElementDifferenceWeights(
-      indicatorWeight = 0.54,
-      hazardWeight = 0.53,
-      percentKnownInRangeWeight = 0.87,
-      immediateKnownWeight = 0.08),
-    quadrantDifferenceWeights = new QuadrantDifferenceWeights(
-      indicatorWeight = 0.78,
-      hazardWeight = 0.55,
-      percentKnownWeight = 0.27,
-      averageValueWeight = 0.46,
-      immediateValueWeight = 0.17))
+  // var stateDifferenceWeights = new StateDifferenceWeights(
+  //   healthWeight = 0.71,
+  //   energyWeight = 0.88,
+  //   elementStateWeight = 0.9,
+  //   totalQuadrantWeight = 0.58,
+  //   elementDifferenceWeights = new ElementDifferenceWeights(
+  //     indicatorWeight = 0.54,
+  //     hazardWeight = 0.53,
+  //     percentKnownInRangeWeight = 0.87,
+  //     immediateKnownWeight = 0.08),
+  //   quadrantDifferenceWeights = new QuadrantDifferenceWeights(
+  //     indicatorWeight = 0.78,
+  //     hazardWeight = 0.55,
+  //     percentKnownWeight = 0.27,
+  //     averageValueWeight = 0.46,
+  //     immediateValueWeight = 0.17))
 
   // SELECTION WEIGHTS
-  var trainingSelectionWeights = new SelectionWeights(
-    movementSelectionWeights = new ActionSelectionWeights(
-      predictedShortTermScoreWeight = 1.0,
-      predictedLongTermScoreWeight = 1.5,
-      confidenceWeight = 0.5),
-    scanSelectionWeights = new ActionSelectionWeights(
-      predictedShortTermScoreWeight = 1.0,
-      predictedLongTermScoreWeight = 1.5,
-      confidenceWeight = 0.5))
+  // var trainingSelectionWeights = new SelectionWeights(
+  //   movementSelectionWeights = new ActionSelectionWeights(
+  //     predictedShortTermScoreWeight = 1.0,
+  //     predictedLongTermScoreWeight = 1.5,
+  //     confidenceWeight = 0.5),
+  //   scanSelectionWeights = new ActionSelectionWeights(
+  //     predictedShortTermScoreWeight = 1.0,
+  //     predictedLongTermScoreWeight = 1.5,
+  //     confidenceWeight = 0.5))
 
+  // var selectionWeights = trainingSelectionWeights
   // var selectionWeights = new SelectionWeights(
   //   movementSelectionWeights = new ActionSelectionWeights(
   //     predictedShortTermScoreWeight = 0.28,
@@ -99,15 +106,15 @@ class SCOUtController(
   //     predictedShortTermScoreWeight = 0.88,
   //     predictedLongTermScoreWeight = 0.62,
   //     confidenceWeight = 0.01))
-  var selectionWeights = new SelectionWeights(
-    movementSelectionWeights = new ActionSelectionWeights(
-      predictedShortTermScoreWeight = 0.51,
-      predictedLongTermScoreWeight = 0.01,
-      confidenceWeight = 0.95),
-    scanSelectionWeights = new ActionSelectionWeights(
-      predictedShortTermScoreWeight = 0.2,
-      predictedLongTermScoreWeight = 0.94,
-      confidenceWeight = 0.28))
+  // var selectionWeights = new SelectionWeights(
+  //   movementSelectionWeights = new ActionSelectionWeights(
+  //     predictedShortTermScoreWeight = 0.51,
+  //     predictedLongTermScoreWeight = 0.01,
+  //     confidenceWeight = 0.95),
+  //   scanSelectionWeights = new ActionSelectionWeights(
+  //     predictedShortTermScoreWeight = 0.2,
+  //     predictedLongTermScoreWeight = 0.94,
+  //     confidenceWeight = 0.28))
 
   def copy: Controller = new SCOUtController(memoryFileName, memoryExtention, training, weightsSet)
 
@@ -118,17 +125,6 @@ class SCOUtController(
       x <- 0 until mapHeight
       y <- 0 until mapWidth
     } actionHistory += (x,y) -> MutableSet()
-    // Set weights
-    weightsSet match {
-      case None => // Use Defaults
-      case Some(ws) => {
-        maxDifferenceCompared = ws.maxDifferenceCompared
-        minimumComparisons = ws.minimumComparisons
-        repititionPenalty = ws.repititionPenalty
-        stateDifferenceWeights = ws.stateDifferenceWeights
-        selectionWeights = ws.selectionWeights
-      }
-    }
   }
 
   def shutDown(stateActionPairs: List[StateActionPair]): Unit = if (training) {
@@ -189,8 +185,8 @@ class SCOUtController(
     var actionScores: MutableMap[String,Double] = MutableMap()
     for (pas <- predictedActionScores) {
       var score =
-        if (isMovementAction(pas.action)) pas.overallScore(trainingSelectionWeights.movementSelectionWeights)
-        else pas.overallScore(trainingSelectionWeights.scanSelectionWeights)
+        if (isMovementAction(pas.action)) pas.overallScore(selectionWeights.movementSelectionWeights)
+        else pas.overallScore(selectionWeights.scanSelectionWeights)
       // reduce score of repetitive actions
       if (actionHistory((state.xPosition, state.yPosition)).contains(pas.action)) {
         if (isMovementAction(pas.action)) score *= repititionPenalty
@@ -211,6 +207,10 @@ class SCOUtController(
   }
 
   def eliteSelection(actions: List[String], state: AgentState): String = {
+    // println()
+    // println()
+    // println("PREDICTING ACTION REWARDS")
+    // println()
     val predictedActionScores: List[ActionScorePrediction] = predictActionScores(actions, state)
     // Best Action
     var bestAction = randomSelect(actions)
@@ -229,6 +229,7 @@ class SCOUtController(
         bestScore = score
       }
       // pas.printPrediction
+      // println(s"OVERALL SCORE:  $score")
     }
     return bestAction
   }

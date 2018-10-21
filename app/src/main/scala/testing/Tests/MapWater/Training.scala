@@ -19,6 +19,7 @@ import scoututil.Util._
 import jsonhandler.Encoder._
 import jsonhandler.Decoder._
 import filemanager.FileManager._
+import bestweights._
 import weighttuning.WeightTuning._
 import scala.collection.mutable.{Map => MutableMap}
 import scala.collection.mutable.{ArrayBuffer => AB}
@@ -29,74 +30,43 @@ object MapWaterTraining {
   def main(args: Array[String]): Unit = {
 
     // Training Setup
-    val trainingIterations = 50
-    val testingFrequency = 1
+    val trainingIterations = 25
     val controllerName = "SCOUt"
-    val memoryFileName = "MapWaterTEST1"
+    val memoryFileName = "MWOfficialTemplatesTEST2"
+    val weightsSet = BestWeights.handTuned
 
     val agentSensors = List(
       new ElevationSensor(false),
-      // new DecibelSensor(false),
+      new DecibelSensor(false),
       new TemperatureSensor(false),
       new WaterSensor(true))
 
-    val goalTemplate = new MapElementsTemplate(List("Water Depth"), None)
+    val testEnvironments: Map[String,Int] = Map()
+    val testTemplates: Map[String,(Int,Int)] = Map(
+      "EASY" -> (1, 1)
+      // "MEDIUM" -> (15, 1),
+      // "HARD" -> (10, 1)
+    )
 
-    // Weight Set
-    val handTuned = new Individual(weights = List(
-      0.0,
-      0.0,
-      1.0,
-      1.0,
-      4.0,
-      1.0,
-      5.0,
-      2.0,
-      4.0,
-      1.0,
-      1.0,
-      2.0,
-      3.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      1.0,
-      0.5,
-      0.4,
-      10.0
-    ))
-    val gaResult = new Individual(weights = List(
-      0.73,
-      0.18,
-      0.88,
-      0.83,
-      1.0,
-      0.68,
-      0.15,
-      0.74,
-      0.6,
-      0.33,
-      0.98,
-      0.11,
-      0.97,
-      0.22,
-      0.65,
-      0.67,
-      0.71,
-      0.57,
-      1.0,
-      0.41,
-      1.0,
-      21.73
-    ))
+    val trainingEnvironments: Map[String,Int] = Map()
+    val trainingTemplates = Map(
+      "EASY" -> (1, 1),
+      "MEDIUM" -> (1, 1),
+      "HARD" -> (1, 1)
+    )
+
+    val goalTemplate = new MapElementsTemplate(List("Water Depth"), None)
 
     // Training Performance Data
     var avgSuccess: AB[Double] = AB()
     var avgActions: AB[Int] = AB()
     var avgRemainingHealth: AB[Double] = AB()
     var avgRemainingEnergy: AB[Double] = AB()
+
+    var hAvgSuccess: AB[Double] = AB()
+    var hAvgActions: AB[Int] = AB()
+    var hAvgRemainingHealth: AB[Double] = AB()
+    var hAvgRemainingEnergy: AB[Double] = AB()
 
     var rAvgSuccess: AB[Double] = AB()
     var rAvgActions: AB[Int] = AB()
@@ -111,12 +81,10 @@ object MapWaterTraining {
       println()
       println(s"********** TRAINING ${i+1} ***********")
       val training = new Test(
-        testEnvironments = Map(),
-        testTemplates = Map(
-          // "10by10NoMods" -> (1, 1),
-          "BeginnerCourse" -> (1, 1)),
+        testEnvironments = trainingEnvironments,
+        testTemplates = trainingTemplates,
         controllers = Map(
-          controllerName -> new SCOUtController(memoryFileName, "json", true, Some(handTuned.generateWeightsSet))),
+          controllerName -> new SCOUtController(memoryFileName, "json", true, weightsSet)),
         sensors = agentSensors,
         goalTemplate = goalTemplate,
         maxActions = None
@@ -127,15 +95,14 @@ object MapWaterTraining {
       // Test Controller
       println()
       println()
-      println(s"********** TEST ${i+1} ***********")
+      println(s"********** TESTING ${i+1} ***********")
       val iterationTest = new Test(
-        testEnvironments = Map(),
-        testTemplates = Map(
-          // "10by10NoMods" -> (15, 1),
-          "BeginnerCourse" -> (15, 1)),
+        testEnvironments = testEnvironments,
+        testTemplates = testTemplates,
         controllers = Map(
           "Random" -> new RandomController(),
-          controllerName -> new SCOUtController(memoryFileName, "json", false, None)),
+          "Heuristic" -> new MapWaterController(),
+          controllerName -> new SCOUtController(memoryFileName, "json", false, weightsSet)),
         sensors = agentSensors,
         goalTemplate = goalTemplate,
         maxActions = None,
@@ -150,6 +117,12 @@ object MapWaterTraining {
       avgActions += iterationTest.testMetrics(controllerName).avgActions
       avgRemainingHealth += iterationTest.testMetrics(controllerName).avgRemainingHealth
       avgRemainingEnergy += iterationTest.testMetrics(controllerName).avgRemainingEnergy
+
+      hAvgSuccess += iterationTest.testMetrics("Heuristic").avgGoalCompletion
+      hAvgActions += iterationTest.testMetrics("Heuristic").avgActions
+      hAvgRemainingHealth += iterationTest.testMetrics("Heuristic").avgRemainingHealth
+      hAvgRemainingEnergy += iterationTest.testMetrics("Heuristic").avgRemainingEnergy
+
       rAvgSuccess += iterationTest.testMetrics("Random").avgGoalCompletion
       rAvgActions += iterationTest.testMetrics("Random").avgActions
       rAvgRemainingHealth += iterationTest.testMetrics("Random").avgRemainingHealth
@@ -161,18 +134,24 @@ object MapWaterTraining {
     val fileName = controllerName + memoryFileName
 
     val jsonData = Json.obj(
+      ("Random", Json.obj(
+        ("Average Successes", Json.fromValues(rAvgSuccess.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
+        ("Average Actions", Json.fromValues(rAvgActions.map(v => Json.fromInt(v)))),
+        ("Average Remaining Health", Json.fromValues(rAvgRemainingHealth.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
+        ("Average remainingEnergy", Json.fromValues(rAvgRemainingEnergy.map(v => Json.fromDoubleOrNull(roundDouble2(v)))))
+      )),
+      ("Heuristic", Json.obj(
+        ("Average Successes", Json.fromValues(hAvgSuccess.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
+        ("Average Actions", Json.fromValues(hAvgActions.map(v => Json.fromInt(v)))),
+        ("Average Remaining Health", Json.fromValues(hAvgRemainingHealth.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
+        ("Average remainingEnergy", Json.fromValues(hAvgRemainingEnergy.map(v => Json.fromDoubleOrNull(roundDouble2(v)))))
+      )),
       (controllerName, Json.obj(
         ("Memory File Name", Json.fromString(memoryFileName)),
         ("Average Successes", Json.fromValues(avgSuccess.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
         ("Average Actions", Json.fromValues(avgActions.map(v => Json.fromInt(v)))),
         ("Average Remaining Health", Json.fromValues(avgRemainingHealth.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
         ("Average remainingEnergy", Json.fromValues(avgRemainingEnergy.map(v => Json.fromDoubleOrNull(roundDouble2(v)))))
-      )),
-      ("Random", Json.obj(
-        ("Average Successes", Json.fromValues(rAvgSuccess.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
-        ("Average Actions", Json.fromValues(rAvgActions.map(v => Json.fromInt(v)))),
-        ("Average Remaining Health", Json.fromValues(rAvgRemainingHealth.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
-        ("Average remainingEnergy", Json.fromValues(rAvgRemainingEnergy.map(v => Json.fromDoubleOrNull(roundDouble2(v)))))
       ))
     )
 
