@@ -386,16 +386,19 @@ Previous actions then receive diminishing reward based on \todo{LTS reward distr
 % ==============================================================================
 % ENVIRONMENT GENERATION
 % ==============================================================================
-\section{Environment Generation}
+\section{Environment Builder}
 Various environments must be modeled for simulating how an agent's controller would perform for a given task.
 The SCOUt environment build tool captures important details that are necessary for agent-environment interactions, while remaining simple to implement and understand.
 The tool is highly abstracted so that more details can easily be added as needed while still maintaining a defined build process.
+Environments are procedurally gerated based upon a collection of parameters called an environment template.
+These templates require minimal input from the user while providing a dynamic range of possible creation.
+An Environment can be tweaked or even built entirely by hand, but the procedural generation process removes this overhead.
 
-Build Process
+Procedural Generation Process
 \begin{enumerate}
-  \item User Fills out dynamically generated template. \todo{separate diagram?}
+  \item Environment Template is passed in
   \item	Builder initializes a grid of empty cells
-  \item	Element seeds are used to populate each present element type into the gird of cells
+  \item	ElementSeeds are used to populate each present element type into the gird of cells
   \item	Terrain modifications are applied to manipulate their related element(s)
   \item	Anomalies are placed randomly within the environment
   \item	Anomaly effect(s) are applied to corresponding element(s) in neighboring cells
@@ -403,81 +406,177 @@ Build Process
 
 
 \subsection{Environment Templates}
-Environment generation is guided by an environment template that holds the necessary data to build a specific environment.
-Each template created will act as a guide in the creation of an Environment object in memory.
+An Environment Template holds all the necessary data to build a specific environment.
+Each template created will act as a guide in the creation of an instance of the Environment class.
 A template can create similar, but unique environments each time it is used as the environment builder's guide.
 This allows testing and training agent controllers multiple times in similar conditions, while still providing a dynamic range of scenarios that it may face in each environment.
-Each template will provide a user with the options to build an environment with any element type, terrain modification and anomaly type defined in SCOUt's back end.
+Each template is comprised of the name, dimensions and scale of the environment along with lists of element seeds, terrain modifications and anomalies.
 
+\todo{format}
+class EnvironmentTemplate (
+  name: String
+  height: Int
+  width: Int
+  scale: Double
+  elementSeeds: List[ElementSeed]
+  terrainModification: List[TerrainModification]
+  anomalies: List[Anomaly]
+)
 
 
 \subsection{Element Seeds}
-Element seeds require input variables to be provided in order to drive their population process within the environment.
-% ----------------------------------------------------------------------------------------------------------------------------------------
-\todo{Reword/Integrate}
-Once I had a way to represent an environment, I developed a way to generate an environment on demand.
-Because an environment will be able to hold very large amounts of data, I needed way to procedurally generate an environment.
-Because SCOUt’s AI will be training on these environments, the procedural generation needed to produce unique environments each time.
-The solution that I came up with was to build an environment one Layer of Elements at a time using Seed objects.
-Each Element object has a companion object called a Seed that holds parameters used to produce a Layer of its Element.
-The generation of each Layer is modeled on how the element may vary in a real-world scenario.
-Parameters within each Seed are set to a default value but can also be passed in to change how the Layer may vary throughout.
-An environment generator function is passed a list of these seeds along with the length and width of the 2D environment’s grid.
-The environment generator then passes each seed to the appropriate layer generator function to create each Element layer
-For an example, let’s look at the Seed for producing the Elevation Layer.
+The environment builder begins by procedurally generating one Layer of Elements at a time.
+Each Element object has a companion object called an ElementSeed which holds parameters used to produce a Layer of its element type and a unique function defining how procedural generation will take place to produce the Layer.
+The generation of each Layer is modeled on how the element type's values may vary in a real-world scenario.
+Parameters within each Seed are set to a default value that can also be defined by creating a new instance of the ElementSeed to change how the values within the Layer will vary.
 
-Class ElevationSeed {
-	elementName: String = "Elevation",
-    	dynamic: Boolean = false,
-    	average: Double = 0.0,
-    	deviation: Double = 0.15 * scale
+trait ElementSeed (
+  elementType: String
+  function buildLayer(height, width, scale)
+)
+
+The environment builder will use each ElementSeed to produce a Layer of Elements.
+Each resulting Layer will be temporarily stored in a list for the remainder of the build process so they can be easily manipulated before being stored into their corresponding Cells within the Environment grid.
+For an example, let’s look at the ElementSeed for producing the Elevation Layer.
+
+\todo{format}
+Class ElevationSeed (
+	elementType: String = "Elevation"
+  average: Double = 0.0
+  deviation: Double = 1.0
+) {
+  function buildLayer(height, width, scale) {
+    val layer: Layer = new Layer(AB.fill(height)(AB.fill(width)(None)))
+    for {
+      x <- 0 until height
+      y <- 0 until width
+    } {
+      val value = randomDeviation(average)
+      layer.setElement(x, y, new Elevation(value))
+    }
+    layer.smoothLayer(3, 3)
+    return layer
+  }
+
+  function randomDeviation(average) {
+    val lowerBound = average - deviation
+    val upperBound = average + deviation
+    return randomDouble(lowerBound, upperBound)
+  }
 }
 
-Note: ‘scale’ is a global value used by all Seeds to maintain consistency.
 
-When the environment generator finds an Elevation Seed, it passes it to the elevation layer generator.
-This particular generator first creates an Elevation object at Layers the (0,0) Cartesian position set to the average value held in the seed.
-For each proceeding, Cartesian position, the generator creates a new Elevation object and uses an algorithm to determine what value it is set to.
-The elevation layer’s algorithm looks at the neighboring cluster of Elevation objects and calculates the mean elevation value.
-The new Elevation object is then set to a random value within deviation of its neighboring object’s mean value.
-Once every Cartesian position has been given an Elevation object with an assigned value, it is returned to the environment generator.
-The environment generator then takes the Elevation object in the Layer, matches it to the Cell in the corresponding position in the Environment’s grid and adds the Elevation object to the Cell’s elements list.
+The ElevationSeed’s buildLayer algorithm first initializes an empty Layer.
+Next, it sets each (x,y) coordinate within the Layer to an Elevation object with a random value between a standard deviation of the average value provided [(average - deviation), (average + deviation)].
+Once every Cartesian position has been set to an Elevation object with an assigned value, the layer is then smoothed.
+Smoothing is a function defined within the Layer class that will reduce strong variations of Element values within the Layer.
+For Elevation, this would equate to transforming a highly rigid surface into a smoother, more natural surface.
+
+\todo{smoothing algo}
+
 Most layer generators follow this same pattern.
 
+\todo{format}
 1.	Receive a Seed
-2.	Initialize a few positions
-3.	Set all remaining positions using an algorithm that looks at the initialized positions
-4.	Returns the Layer to be injected into the Environment’s grid
+2.	Initialize an empty Layer
+3.	Initialize all Element values
+4.	Smooth the Layer
 
 Some layers are far easier to generate than others.
-Latitude and Longitude layers can simply be generated by linearly increasing or decreasing the values as they distance from the initialized value.
-Layers such as sound Decibel are much trickier.
-A Decibel layer requires a noise source to first be given a value, then the values of all other positions must take sound dampening into account in all directions.
-% ----------------------------------------------------------------------------------------------------------------------------------------
+Latitude and Longitude layers can simply be generated by calculating the distance each cell is from the origin point on the Environment grid (cell (0,0)).
 
 
-The process to generate each environment is divided into two main phases: terrain formation and layer initialization, anomaly placement and effect radiation.
-
-Phase one is the most intensive process that relies on the element seed data and terrain modifications provided by the user to influence the procedural generation of the base environment.
-Following a similar process laid out by Doran and Parberry\ref{doran_controlled_2010}, desired traits are incorporated into the environment while allowing unique formations to develop.
+\subsection{Terrain Modifications}
+Terrain modifications are provided by the user to influence the basic landscape of the environment.
+Each modification represents a sevear alteration of one or more element type Layers within the environment.
+Following a similar process laid out by Doran and Parberry\ref{doran_controlled_2010}, desired alterations are incorporated into the environment while still allowing unique variations of each alteration to develop.
 Their controlled procedural generation process is used to produce landmasses that potentially have bodies and channels of water.
-SCOUt's environment builder generalizes this process and extends it to allow multitudes of element types to be generated on top of the structural/terrain layers (Elevation and Water Depth).
-To begin, the element seed for Elevation is used to create a base layer which we can begin to build upon.
-Next terrain modifications are applied one after the other, taking care not to overlap modifications (for example, we wouldn't want a hill to overlap with a valley and cancel each other out).
-Each terrain modification picks a random, unmodified cell in the environment to begin at, and updates the value of the given element type.
-The modifier then performs "walks" to random, unmodified neighboring cells, updating their values.
-These walks continue until the user specified coverage size has been met, or until there are no neighboring cells that can be modified.
-Smoothing is then applied with a sloping factor to the modified cells and immediate surrounding cells to reduce rigidity and give a more natural change in values between neighboring cells.
-Finally, once all terrain modifications have been applied, layers of all non structural element types (examples: temperature and decibel levels) are generated from their corresponding element seeds, and then added to the environment.
+SCOUt's environment builder generalizes this process and extends it to allow multitudes of element types to be modified.
+The TerrainModification trait provides an extendable template for all types of modifications that can be applied.
 
-Phase two then places anomalies into the environment.
-Each user specified anomaly is randomly placed into cell(s).
-For anomalies that occupy more than one cell, neighboring cells are chosen at random until the anomaly coverage area is met, or there are no neighboring cells that can contain the environment.
-Each cell containing an anomaly is updated so that the given anomaly appears in the _anomalies_ list for reference.
-After an anomaly has been placed, each of the anomalies effects are applied to update element values in the occupied and surrounding cells.
-For example, a "Human" anomaly would radiate heat and noise.
+trait TerrainModification (
+  name: String
+  elementTypes: List[String]
+) {
+  function modify(layers: List[Layer])
+}
+
+After each ElementSeed has produced a layer for the Environment, TerrainModifications are applied one after the other, taking care not to overlap modifications (for example, we wouldn't want a hill to overlap with a valley and cancel each other out).
+
+For an example, lets look at Elevation again.
+
+\todo{format}
+class ElevationModification (
+  name: String = "Elevation Modification"
+  elementType: List[String] = List("Elevation")
+  modification: Double
+  deviation: Double
+  coverage: Double
+  slope: Double
+) {
+  def modify(layer: Layer, constructionLayer: ConstructionLayer) = constructionLayer.getRandomUnmodified() match {
+    case None => // No unmodified cells
+    case Some(startCell) => {
+      // Set local variables
+      var modifiedCells: AB[(Int,Int)] = AB()
+      val numCellsToMod = Math.round(coverage * constructionLayer.cellCount).toInt
+      // Initial modification
+      val startX = startCell._1
+      val startY = startCell._2
+      layer.setElementValue(startX, startY, modification)
+      constructionLayer.setToModified(startX, startY, "elevation")
+      modifiedCells.append((startX, startY))
+      // Move to random, unmodified neighbors and modify
+      for (i <- 0 until numCellsToMod) constructionLayer.getNextUnmodifiedNeighbor(modifiedCells) match {
+        case None => // No neighbor cells to modify
+        case Some((x,y)) => {
+          val currentValue = layer.getElementValue(x, y).getOrElse(0.0)
+          val mod = randomDouble((modification - deviation), (modification + deviation))
+          val newValue = currentValue + mod
+          layer.setElementValue(x, y, newValue)
+          constructionLayer.setToModified(x, y, "elevation")
+          modifiedCells.append((x, y))
+        }
+      }
+      // Apply sloping factor to modified area through smoothing
+      val effectedRadius = Math.abs(Math.round(modification / slope).toInt)
+      for (i <- 0 until modifiedCells.length) {
+        val randomIndex = randomInt(0, modifiedCells.length - 1)
+        val c = modifiedCells.remove(randomIndex)
+        val originX = c._1
+        val originY = c._2
+        for {
+          x <- (originX - effectedRadius) to (originX + effectedRadius)
+          y <- (originY - effectedRadius) to (originY + effectedRadius)
+          if dist(x, y, originX, originY) != 0
+          if dist(x, y, originX, originY) <= effectedRadius
+        } layer.smooth(x, y, 2, dist(originX, originY, x, y))
+      }
+    }
+  }
+}
+
+Here we have an ElevationModification which will allow us to create hills and valleys within the environment.
+Again following the approach of \ref{doran_controlled_2010}, random, unmodified (x,y) positions are selected from the Layer to begin with and updates its value by the specified modification value.
+The modifier then performs "walks" to random, unmodified neighboring Elements, updating their values by a standard deviation of the specified modification value by the deviation provided.
+These walks continue until the specified coverage area has been modified, or until there are no neighboring cells that can be modified.
+A special Layer smoothing is then applied to the modified Elevation values in the modified area as well as the immediate surrounding area to reduce rigidity and give a more natural change in values between neighboring cells.
+This type of smoothing applies a given slopping factor within the modified area, allowing the ElevationModification to generate gentle hills or valleys or sharp cliffs depending on the slope defined.
+
+
+\subsection{Anomaly Placement}
+Once all TerrainModifications have been applied, anomalies are placed into the environment.
+Each specified anomaly is randomly placed into cell(s) in the Environment.
+For anomalies that occupy more than one cell, neighboring cells are chosen at random until the Anomaly's coverage area is met, or there are no neighboring cells that can contain the Anomaly.
+Each cell containing an anomaly is updated so that the given anomaly appears in the Environment anomalies list for reference.
+After an anomaly has been placed, each of the anomalies Effects are applied to update Element values in the corresponding Layers.
+An Effect will alter the Element values for the occupied and surrounding positions in the effected Layer.
+These alterations are typically applied as a "radiation".
+For example, a "Human" anomaly might radiate heat and sound.
 To account for this, a radiation function \todo{radiation function} is applied to the temperature and decibel values of cells in the effected radius.
-The resulting grid of cells containing all specified element types, modifications and anomalies is wrapped into an instance of the Environment class returned to the requesting party.
+
+Now that all ElementSeeds, TerrainModifications and Anomaly placements have occured, the resulting Layers containing thier respective Elementss are populated into their corresponding (x,y) Cell location within the Environment grid.
+The resulting instance of an Environment class is then returned by the builder to the requesting party.
 
 
 
@@ -508,20 +607,25 @@ In the case that the user selected an operation, the user will additionally be a
 \todo{add photos}
 To create a template, the user will be presented with a series of form input form fields.
 The forms are generated based on the available Element, TerrainModification and Anomaly classes that are defined in SCOUt's back end.
-As the user selects which which classes will be present in the environment, more forms will be presented to them for defining seed data (for Elements and Anomalies), or parameter definitions (for TerrainModifications).
-The user is presented with an overview of all the form data they have filled out before the final submission.
-Once the form data is submitted, it is converted into Json data and sent to the SCOUt server to build and return an environment.
-The returned environment is then displayed in the environment visualizer.
-From here, the user can go back and tweak the template, regenerate an environment based on the same template or save the template into a Json file for later use.
+The first form will ask the user which element types, terrain modification and anomaly types it would like to include.
+Some elements (environment, latitude and longitude) are required in all environments.
+As the user selects what will be present in the environment, more forms will be generated for them to provide seed data (for Elements and Anomalies), or parameter definitions (for TerrainModifications).
+Each form within this process will save the user’s input data on the front end.
+This allows the user to go back and edit form data while moving through the different form pages, as well as go back and edit the form data when returning from the \ref{Visualizer Page}.
+Form data is also set within required bounds and checked before submission.
+Once the user has filled out all required form info, they can review their entire form entry from a single page and then submit it.
+When submitted, the front end data is converted into Json data and sent in a request to the SCOUt server via a JavaScript fetch request.
+An environment is then built based on this template on the back end and returned to the front end to be loaded into the \ref{Visualizer Page}.
+
 
 Template Form Sections
 \begin{enumerate}
   \item Environment Name and Size
   \item Element Types Present
-  \item Element Seeds
   \item Terrain Modifications Present
-  \item Terrain Modification Templates
   \item Anomalies Present
+  \item Element Seeds
+  \item Terrain Modification Templates
   \item Anomaly Seeds
 \end{enumerate}
 
@@ -529,69 +633,58 @@ Template Form Sections
 \subsection{Visualization Page}
 \todo{add photos}
 The visualization page provides an interactive overview of any given environment.
-The main focus is on the display section where the entire environment grid is represented using heat and contour maps.
+The main focus is on the display section where the entire environment grid is represented using heatmaps.
 Different element type layers can be viewed independently, anomaly locations can be highlighted and specific element type values of a single cell can be viewed.
 A main menu is also present to allow a user to perform higher level actions.
 All of these interactive features are controlled by buttons, toggles and radio buttons within different sections the visualization page.
+The primary use of the visualization page is for creating environment templates and for debugging.
+Debugging usage ranges from analyzing an environment that was used for testing an agent-controller setup, to adding new features to the SCOUt platform.
+New features can be adding new classes such as a new Element type, or improving the process in which environments are generated and stored in the back end.
+
+
+\subsubsection{Main Menu}
+The main menu provides high level functions to perform while using the environment build tool.
+The main menu options are displayed at the top of the visualizer as a series of buttons.
+The user can select buttons to return to the home page, regenerate the current environment (if an environment template is being used), save the current environment that is displayed, or save the current template being used (if a template is being used).
+If the user wants to tweak the current template that is in use, they can simply return to the ref{Home Page} via the home button, and choose "Custom Environment" again.
+Their previous form data will be saved in memory during their session.
 
 
 \subsubsection{Display}
 The display is laid out in a grid of cells corresponding to the environment's cell grid.
 A display layer is created for each element type present within the environment using the D3 library.
-D3's heat map provides a way to visually differentiate each cell's value within the layer relative to all other cells.
-Heat maps are displayed where a higher value is indicated by a darker section in the map.
-For example, when viewing the elevation's heat map, a hill will appear darker than a valley.
-The display also grid cells select....
+D3's heatmap creates a graphical representation of data values over a 2-dimentional space, providing a solution for visually differentiating each cell's value within the environment cell grid.
+Heatmaps are displayed where a higher value is indicated by a darker section in the map.
+For example, when viewing the elevation's heatmap, a hill will appear darker than a valley.
+The user also has the ability to select individual cells by clicking on their region in the displayed cell grid.
+The display will highlight a cell once it has been selected and then load the cells data into the \ref{Legend}.
 
-
-\subsubsection{Main Menu}
 
 \subsubsection{Tool Bar}
+The tool bar is divided into three subsections: Toggle Layers, Current Layer and Current Anomaly.
+The Toggle Layers subsection provides two toggle buttons for the user to turn on and off the display of the Elevation layer and the Grid layer.
+The Environment layer is a grey-scale contour map of the Elevation layer created by D3 heatmap (a contour map is the same as a heatmap, with the distinction of boarder lines between each value layer).
+Because Elevation is the most fundamental piece to any environment, it is the only element type whose layer has the option of always being displayed.
+The grid layer displays solid black lines between each cell within the cell grid.
+The Current Layer subsection provides a list of radio buttons for all element types (excluding elevation) present within the environment.
+When one of these radio buttons is selected, a green-scale, transparent heatmap of the selected element type will be populated into the display.
+This element type layer will be displayed on top of the Elevation layer (if Elevation is toggled on).
+Only one element type layer can be viewed at a time to prevent crowding the display.
+The Current Anomaly subsection is also a set of radio buttons for each anomaly type present in the environment.
+Selecting one of these will highlight all cells containing the given anomaly type in red.
+Just as the case with element type layers, only one anomaly type can be viewed at a time.
+
 
 \subsubsection{Legend}
+The legend provides an overview of the environment in three main subsection: environment, layer and cell.
+For the environment subsection, the name of the current environment is displayed along with the dimensions and minimum and maximum elevation within the environment.
+The layer subsection displays the minimum and maximum values of the selected element type layer that is being displayed, as well as the value at the selected cell (if a cell is selected).
+When a cell is selected, the values of all element types of the given cell are presented in a list, as well as the cell's relative coordinates.
+
 
 \subsubsection{Operation Log}
-
-
-% ------------------------------------------------------------------------------------------------------------------------
-\todo{Reword}
-Once an Environment has been created, an interactive visualization will be loaded.
-Each Layer of Elements can be viewed one at a time.
-The current Layer’s name will be displayed and there will be forward and backward buttons to allow the user to flip through the different layers.
-Each layer is currently only displayed as a heatmap.
-D3’s Heatmap open source project is currently used to take Json data of the layer and create a visualization based on the value at each Cartesian point.
-
-I spent the majority of the semester working on the visualizer portion of the GUI.
-I had already worked with D3 libraries within JavaScript to make basic contour maps.
-My new goal was to create a way to logically display the different layers of elements within the environment using these libraries.
-The visualizer also needed to incorporate a way for the user to control which layer(s) were being displayed, and present proper information corresponding to the environment.
-To do so, I created a “Visualizer” page to my application. This page is divided into four main sections: display, toolbar, legend, and navigation bar.
-The display is an SVG element that holds graphing data for the environment.
-It will display specified layers of the environment as well as a grid representing each “cell” within the environment.
-The toolbar allows the user to select the current element layer(s) that are displayed.
-The legend displays information on the environment in three areas: general information, information for the currently selected layer and information of a single cell in the grid.
-A cell’s information will be displayed within the legend when selected.
-A cell can be selected by clicking its corresponding position in the SVG display.
-The selected cell will also be highlighted within the display when selected.
-The navigation bar will be populated with controls for the robot once it is incorporated into the application in my future work.
-Currently, the only item in the navigation bar is a button to return the user to the “Builder” page which allows the creation of an environment.
-% ---------------------------------------------------------------------------------------------------------------------------------
-% ---------------------------------------------------------------------------------------------------------------------------------
-\todo{Reword}
-The “Builder” page took the remaining time of the semester.
-It is the starting point of my application.
-When the app is launched, a user will be presented a screen with a few basic form fields to build an environment and two options: “Generate Random Environment” or “Build Custom Environment”.
-The basic fields will allow the user to enter the name and dimensions of the environment to be created.
-These fields are required regardless of the user’s build option.
-If the random environment build option is selected, a request will be made to the SCOUt server to create and return an environment based on the default environment parameters and will contain layers of every optional element type.
-If the custom environment option is selected, the user will then walk through several pages of forms to provide the “seed” data for each element layer.
-The first form will ask the user which elements it would like to include.
-Some elements (environment, latitude and longitude) are required in all environments.
-For each layer that the user has selected, they will then be given a form page that asks for “seed” data for each of the element types.
-Each form within this process will save the user’s input data on the front end.
-This allows the user to go back and edit while moving through the different form pages, as well as go back and edit the data if they select “New Environment” from the Visualizer page.
-Form data is also set within required bounds and checked before submission.
-Once the user has filled out all required form info, they can review their data and then submit it.
-When submitted, the front end data is gathered and sent in a request to the SCOUt server.
-An environment is then created with these specs and returned to the front end to be loaded into the Visualizer.
-% ----------------------------------------------------------------------------------------------------------------------------
+The operation log section is a special section that only appears in the visualizer when the user loads an operation run.
+This section has buttons that allow the user to step through each event that took place during the given agent's operation.
+The user can select to step forward or backwards by 1 or 10 events.
+When each event is loaded into the visualizer, the display section will update by selecting the cell where the agent is currently located.
+The operation section will display text that shows what number event is currently being viewed, the action that was chosen, the health and energy of the agent during this event, and the rewards that were received.

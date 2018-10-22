@@ -32,7 +32,7 @@ object FindHumanTraining {
     // Training Setup
     val trainingIterations = 25
     val controllerName = "SCOUt"
-    val memoryFileName = "FHOfficialTemplatesTEST"
+    val memoryFileName = "FHOfficialTemplatesTEST2"
     val weightsSet = BestWeights.handTuned
 
     val agentSensors = List(
