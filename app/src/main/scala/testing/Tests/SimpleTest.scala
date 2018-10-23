@@ -32,26 +32,29 @@ object SimpleTest {
     val simpleTest = new Test(
       testEnvironments = Map(),
       testTemplates = Map(
-        "EASY" -> (25, 1),
-        "MEDIUM" -> (15, 1),
-        "HARD" -> (10, 1)),
+        // "EASY" -> (50, 1)),
+        // "MEDIUM" -> (50, 1)),
+        "HARD" -> (50, 1)),
       controllers = Map(
         "Random" -> new RandomController(),
         "FindHuman" -> new FindHumanController(),
         "MapWater" -> new MapWaterController(),
-        "SCOUt" -> new SCOUtController("MWOfficialTemplatesTEST2", "json", false)),
-      // sensors = List(
-      //   new ElevationSensor(false),
-      //   new DecibelSensor(true),
-      //   new TemperatureSensor(true),
-      //   new WaterSensor(false)),
-      // goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None),
+        "SCOUt1" -> new SCOUtController("FHOfficialTemplatesTEST2", "json", false),
+        "SCOUt2" -> new SCOUtController("FHOfficialTemplatesTEST2", "json", false, BestWeights.findHumanLongRun)),
       sensors = List(
         new ElevationSensor(false),
-        new DecibelSensor(false),
-        new TemperatureSensor(false),
-        new WaterSensor(true)),
-      goalTemplate = new MapElementsTemplate(List("Water Depth"), None),
+        new DecibelSensor(true),
+        new TemperatureSensor(true),
+        new WaterSensor(false)),
+      goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None),
+      //   "SCOUt1" -> new SCOUtController("MWOfficialTemplatesTEST2", "json", false),
+      //   "SCOUt2" -> new SCOUtController("MWOfficialTemplatesTEST2", "json", false, BestWeights.mapWaterLongRun)), // winner winner chicken dinner
+      // sensors = List(
+      //   new ElevationSensor(false),
+      //   new DecibelSensor(false),
+      //   new TemperatureSensor(false),
+      //   new WaterSensor(true)),
+      // goalTemplate = new MapElementsTemplate(List("Water Depth"), None),
       maxActions = None,
       verbose = true)
 

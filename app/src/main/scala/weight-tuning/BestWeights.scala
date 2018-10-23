@@ -177,4 +177,56 @@ object BestWeights {
   )).generateWeightsSet
 
 
+  val findHumanLongRun: WeightsSet = new Individual(weights = List(
+    0.96,
+    0.45,
+    0.02,
+    0.37,
+    0.94,
+    0.04,
+    0.67,
+    0.68,
+    0.67,
+    0.12,
+    0.77,
+    0.23,
+    0.85,
+    0.22,
+    0.81,
+    0.68,
+    0.73,
+    0.02,
+    0.48,
+    0.3,
+    0.76,
+    24.92
+  )).generateWeightsSet
+
+
+  val mapWaterLongRun: WeightsSet = new Individual(weights = List(
+    0.35,
+    0.05,
+    0.4,
+    0.83,
+    0.98,
+    0.69,
+    0.37,
+    0.96,
+    0.37,
+    0.79,
+    0.86,
+    0.35,
+    1.0,
+    0.04,
+    0.52,
+    0.55,
+    0.25,
+    0.25,
+    0.4,
+    0.35,
+    0.54,
+    15.48
+  )).generateWeightsSet
+
+
 }
