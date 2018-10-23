@@ -33,20 +33,22 @@ object SimpleTest {
       testEnvironments = Map(),
       testTemplates = Map(
         // "EASY" -> (50, 1)),
-        "MEDIUM" -> (50, 1)),
-        // "HARD" -> (10, 1)),
+        // "MEDIUM" -> (50, 1)),
+        "HARD" -> (50, 1)),
       controllers = Map(
         "Random" -> new RandomController(),
         "FindHuman" -> new FindHumanController(),
         "MapWater" -> new MapWaterController(),
-        "SCOUt1" -> new SCOUtController("FHOfficialTemplatesTEST", "json", false),
-        "SCOUt2" -> new SCOUtController("FHOfficialTemplatesTEST2", "json", false)),
+        "SCOUt1" -> new SCOUtController("FHOfficialTemplatesTEST2", "json", false),
+        "SCOUt2" -> new SCOUtController("FHOfficialTemplatesTEST2", "json", false, BestWeights.findHumanLongRun)),
       sensors = List(
         new ElevationSensor(false),
         new DecibelSensor(true),
         new TemperatureSensor(true),
         new WaterSensor(false)),
       goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None),
+      //   "SCOUt1" -> new SCOUtController("MWOfficialTemplatesTEST2", "json", false),
+      //   "SCOUt2" -> new SCOUtController("MWOfficialTemplatesTEST2", "json", false, BestWeights.mapWaterLongRun)), // winner winner chicken dinner
       // sensors = List(
       //   new ElevationSensor(false),
       //   new DecibelSensor(false),
