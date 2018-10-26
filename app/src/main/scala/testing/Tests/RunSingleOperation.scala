@@ -19,6 +19,7 @@ import scoututil.Util._
 import jsonhandler.Encoder._
 import jsonhandler.Decoder._
 import filemanager.FileManager._
+import bestweights._
 import scala.collection.mutable.{Map => MutableMap}
 import scala.collection.mutable.{ArrayBuffer => AB}
 import org.joda.time.DateTime
@@ -49,7 +50,8 @@ object RunSingleOperation {
     // val agentName = "Random"
     // val controller = new FindHumanController()
     // val agentName = "Find Human"
-    val controller = new SCOUtController("FreshStart", "json", false)
+    // val controller = new SCOUtController("FHOfficialTemplatesTEST2", "json", false, BestWeights.findHumanLongRun)
+    val controller = new SCOUtController("MWOfficialTemplatesTEST2", "json", false, BestWeights.mapWaterLongRun)
     val agentName = "SCOUt"
 
     val sensors = List(
@@ -76,7 +78,7 @@ object RunSingleOperation {
     // Environment template file
     val templateString = readJsonFile(environemtFileName, environmentTemplatePath)
     val environment = parse(templateString) match {
-      case Left(_) => defaultEnvironment// Load or parse failure
+      case Left(_) => defaultEnvironment // Load or parse failure
       case Right(templateJson) => {
         val template = extractEnvironmentTemplate(templateJson)
         buildEnvironment(template)
@@ -84,8 +86,8 @@ object RunSingleOperation {
     }
 
     // Set Goal
-    val goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None)
-    // val goalTemplate = new MapElementsTemplate(List("Water Depth"), None)
+    // val goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None)
+    val goalTemplate = new MapElementsTemplate(List("Water Depth"), None)
 
     // Setup Operation
     val startPosition = getValidStartPosition(environment)
