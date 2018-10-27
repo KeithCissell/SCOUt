@@ -31,10 +31,10 @@ object MapWaterTesting {
 
     // Testing Setup
     val testTemplate = "EASY"
-    val numEnvironments = 50
-    val numTestsPerEnvironment = 2
+    val numEnvironments = 200
+    val numTestsPerEnvironment = 5
 
-    val memoryFileName = "MWOfficialTemplatesTEST2"
+    val memoryFileName = "MapWater"
     val weightsSet = BestWeights.hybridLongRun
 
     val agentSensors = List(

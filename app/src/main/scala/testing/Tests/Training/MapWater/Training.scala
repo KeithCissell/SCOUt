@@ -30,9 +30,9 @@ object MapWaterTraining {
   def main(args: Array[String]): Unit = {
 
     // Training Setup
-    val trainingIterations = 25
+    val trainingIterations = 30
     val controllerName = "SCOUt"
-    val memoryFileName = "MWOfficialTemplatesTEST2"
+    val memoryFileName = "MapWater"
     val weightsSet = BestWeights.hybridLongRun
 
     val agentSensors = List(
@@ -41,9 +41,9 @@ object MapWaterTraining {
 
     val testEnvironments: Map[String,Int] = Map()
     val testTemplates: Map[String,(Int,Int)] = Map(
-      "EASY" -> (1, 1)
-      // "MEDIUM" -> (15, 1),
-      // "HARD" -> (10, 1)
+      "EASY" -> (20, 1),
+      "MEDIUM" -> (20, 1),
+      "HARD" -> (20, 1)
     )
 
     val trainingEnvironments: Map[String,Int] = Map()
