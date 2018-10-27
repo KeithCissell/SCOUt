@@ -31,14 +31,17 @@ object GoalChangeMapWaterTesting {
 
     // Testing Setup
     val testTemplate = "EASY"
-    val numEnvironments = 50
-    val numTestsPerEnvironment = 2
+    val numEnvironments = 200
+    val numTestsPerEnvironment = 5
     val weightsSet = BestWeights.hybridLongRun
+
+    // Memory Files
+    val fhMemory = "FindHuman"
+    val hMemory = "Hybrid"
+    val mwMemory = "MapWater"
 
     val agentSensors = List(
       new ElevationSensor(false),
-      new DecibelSensor(false),
-      new TemperatureSensor(false),
       new WaterSensor(true))
 
     val testEnvironments: Map[String,Int] = Map()
@@ -52,9 +55,9 @@ object GoalChangeMapWaterTesting {
       "Random" -> new RandomController(),
       "FindHuman" -> new FindHumanController(),
       "MapWater" -> new MapWaterController(),
-      "SCOUt-MapWater" -> new SCOUtController("MWOfficialTemplatesTEST2", "json", false, weightsSet),
-      "SCOUt-Hybrid" -> new SCOUtController("HybridOfficialTEST", "json", false, weightsSet),
-      "SCOUt-FindHuman" -> new SCOUtController("FHOfficialTemplatesTEST2", "json", false, weightsSet))
+      "SCOUt-MapWater" -> new SCOUtController(mwMemory, "json", false, weightsSet),
+      "SCOUt-Hybrid" -> new SCOUtController(hMemory, "json", false, weightsSet),
+      "SCOUt-FindHuman" -> new SCOUtController(fhMemory, "json", false, weightsSet))
 
     // Test Controllers
     val testingSuite = new Test(

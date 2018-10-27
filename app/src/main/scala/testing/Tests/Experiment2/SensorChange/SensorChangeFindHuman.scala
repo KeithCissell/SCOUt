@@ -31,10 +31,10 @@ object SensorChangeFindHumanTesting {
 
     // Testing Setup
     val testTemplate = "EASY"
-    val numEnvironments = 50
-    val numTestsPerEnvironment = 2
+    val numEnvironments = 200
+    val numTestsPerEnvironment = 5
 
-    val memoryFileName = "FHOfficialTemplatesTEST2"
+    val memoryFileName = "FindHuman"
     val weightsSet = BestWeights.hybridLongRun
 
     val agentSensors = List(
