@@ -70,10 +70,10 @@ object AdditionalTrainingFindHuman {
     var ogAvgRemainingHealth: AB[Double] = AB()
     var ogAvgRemainingEnergy: AB[Double] = AB()
 
-    var fhAvgSuccess: AB[Double] = AB()
-    var fhAvgActions: AB[Int] = AB()
-    var fhAvgRemainingHealth: AB[Double] = AB()
-    var fhAvgRemainingEnergy: AB[Double] = AB()
+    var mwAvgSuccess: AB[Double] = AB()
+    var mwAvgActions: AB[Int] = AB()
+    var mwAvgRemainingHealth: AB[Double] = AB()
+    var mwAvgRemainingEnergy: AB[Double] = AB()
 
     var hAvgSuccess: AB[Double] = AB()
     var hAvgActions: AB[Int] = AB()
