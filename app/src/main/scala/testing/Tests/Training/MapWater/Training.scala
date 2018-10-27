@@ -25,21 +25,19 @@ import scala.collection.mutable.{Map => MutableMap}
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
-object FindHumanTraining {
+object MapWaterTraining {
 
   def main(args: Array[String]): Unit = {
 
     // Training Setup
     val trainingIterations = 25
     val controllerName = "SCOUt"
-    val memoryFileName = "FHOfficialTemplatesTEST2"
-    val weightsSet = BestWeights.handTuned
+    val memoryFileName = "MWOfficialTemplatesTEST2"
+    val weightsSet = BestWeights.hybridLongRun
 
     val agentSensors = List(
       new ElevationSensor(false),
-      new DecibelSensor(true),
-      new TemperatureSensor(true),
-      new WaterSensor(false))
+      new WaterSensor(true))
 
     val testEnvironments: Map[String,Int] = Map()
     val testTemplates: Map[String,(Int,Int)] = Map(
@@ -55,7 +53,7 @@ object FindHumanTraining {
       "HARD" -> (1, 1)
     )
 
-    val goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None)
+    val goalTemplate = new MapElementsTemplate(List("Water Depth"), None)
 
     // Training Performance Data
     var avgSuccess: AB[Double] = AB()
@@ -101,7 +99,7 @@ object FindHumanTraining {
         testTemplates = testTemplates,
         controllers = Map(
           "Random" -> new RandomController(),
-          "Heuristic" -> new FindHumanController(),
+          "Heuristic" -> new MapWaterController(),
           controllerName -> new SCOUtController(memoryFileName, "json", false, weightsSet)),
         sensors = agentSensors,
         goalTemplate = goalTemplate,
@@ -131,7 +129,8 @@ object FindHumanTraining {
     }
 
     // Save Training Performance Data
-    val fileName = controllerName + memoryFileName
+    val fileName = "Training"
+    val filePath = "src/main/scala/testing/Tests/Training/MapWater/Results/"
 
     val jsonData = Json.obj(
       ("Random", Json.obj(
@@ -155,7 +154,7 @@ object FindHumanTraining {
       ))
     )
 
-    saveJsonFile(fileName, trainingPerformanceDataPath, jsonData)
+    saveJsonFile(fileName, filePath, jsonData)
 
   }
 

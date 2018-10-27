@@ -1,33 +1,49 @@
 
 
-\chapter{SCOUt}
+\chapter{Controllers} \label{controllers}
 
-
-% ==============================================================================
-% CONTROLLER
-% ==============================================================================
-\section{Controllers} \label{controllers}
-Experiments in this paper compare three different types of controllers: random, heuristic and intelligent.
+The SCOUt project is focused on creating a single intelligent controller that can be used across multiple environments to achieve multiple goals.
+This chapter covers how the intelligent controller's schema works and the heuristic controller schemas it is compared against.
+Heuristic controllers follow a set of logical steps to decide upon an action based on the given agent state.
+An individual heuristic controller must be created for goal and agent setup.
+The experiments in this project look at two different goals.
+The first is an anomaly searching goal to find a Human within an environment: FindHuman.
+The second is an element mapping goal to map out water presence in an environment: MapWater.
+A heuristic controllers are created for each of these goals.
+For a comparison base line, a random controller is also compared.
 The random controller will simply select a valid action at random until it is no longer operational, or it has completed the goal.
-Heuristic controllers follow a set of logical steps to decide which action is taken.
-Each heuristic controller has to be created specifically for the task at hand.
-These controllers are expected to perform at the same rate of success for each operation as they have no learning qualities about them.
-A single intelligent controller is created to study how it can operate across multiple environments and achieve multiple types of goals.
-To test the usefulness of the intelligent controller, its performance is compared against the heuristic controllers and the random controller.
+All three controller types (random, heuristic and intelligent), are designed to operate within unknown environments using whatever sensors they have at hand.
 
 
-\subsection{Heuristic Controllers}
-Talk about Random and Heuristic Controllers.
+
+\section{Heuristic Controllers}
+FindHumanController and MapWaterController are the two different heuristic controllers designed for achieving their respective goals.
+Both use a similar action decision schema for completing an Operation.
+When the controller is called to choose an action, each valid action is given a score by analyzing values within the AgentState.
+The action with the highest score is then selected for the Agent to take.
+Valid scanning actions are all scored using the same function, scoreScanAction. \todo{add function}
+Scoring valid movement actions involves several sub-functions tied to each element type in the Environment, but is used to score movement in the four cardinal directions.
+Each of the sub-functions within scoreMovmentAction \todo{add function} calculate a sub-score for their corresponding element type using threshold analysis on the given QuadrantState corresponding to the movement direction. \todo{example sub-function}
+Once each sub-score has been returned to the scoreMovmentAction function, an overall score is determined for moving in that direction.
+Heuristic controllers also keep track of each action taken during an Operation.
+This action history is used to discourage the controller from repetitive action selection.
+
+The difference between the two heuristic controllers is found in their movement scoring functions.
+Scan actions are all scored using the same scoreScanAction function.
+The FindHumanController influences movement to cells that have higher decibel and temperature differentials as a Human Anomaly will likely be indicated by increased values in these element types.
+The MapWaterController focuses movement into quadrants that have fewer known WaterDepth values so it can move to these areas and scan for data.
+Both controllers' movement is also influenced by the presence of water and large elevation differentials.
+This will discourage the Agent from attempting moves that could result in damage.
 
 
-\subsection{Intelligent Controller}
+\section{Intelligent Controller}
 The SCOUt controller operates using memory based reinforcement learning.
 After each operation, the SCOUt controller will store state-action pairs into its memory for later reference.
 A state-action pair (SAP) contains the action that the agent took, the state that the agent was in when it decided to take this action, and the short and long term rewards that the action received.
 In future operations, the SCOUt controller will try to find state-action pairs where the SAP's state is similar to the agent's current state.
 Next, the controller will look at what action was performed and what rewards were given for the outcome, and use this to predict the best action it should perform in its current operation.
 
-\subsubsection{Memory}
+\subsection{Memory}
 Memory is built from running simulated operations.
 Each time the SCOUt controller finishes an operation and attributes short and long term rewards to each action, it selects which actions to store in its memory.
 For experiments in this paper, the last 20 actions performed are saved, and then a uniform sampling of 5 percent of all actions early in the operation are stored.
@@ -37,7 +53,7 @@ The remaining actions taken prior to these last 20 are then uniformly sampled so
 Each action is then stored as a stat-action pair in a Json file for future use.
 
 
-\subsubsection{State Comparisons}
+\subsection{State Comparisons}
 When a SCOUt controller begins an operation, it will first load in state-action pairs from a specified memory file.
 The states within the existing memory is then normalized to make variances within each state's data relative to all other states in the memory set.
 For each state, normalization takes place for all numerical values stored within the AgentState.
@@ -128,7 +144,7 @@ overallQuadrantElementStateDifference = (hazardDifference * Whazard + indicatorD
 
 
 
-\subsubsection{Action Selection}
+\subsection{Action Selection}
 Once an overall difference has been calculated between the agent's current state and states in memory, the controller can predict the reward that will be received for each possible action.
 An action's short and long term rewards are predicted from the averages of SAPs where: A) the considered action was selected, and B) the state difference from the current state is below a certain threshold.
 In addition to these predicted rewards, we also calculate a confidence value for the predictions.

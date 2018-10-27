@@ -229,4 +229,30 @@ object BestWeights {
   )).generateWeightsSet
 
 
+  val hybridLongRun: WeightsSet = new Individual(weights = List(
+    0.41,
+    0.78,
+    0.61,
+    0.16,
+    0.31,
+    0.07,
+    1.0,
+    0.41,
+    0.38,
+    0.23,
+    0.2,
+    0.19,
+    0.29,
+    0.87,
+    0.45,
+    0.25,
+    0.61,
+    0.34,
+    1.0,
+    0.1,
+    0.26,
+    9.84
+  )).generateWeightsSet
+
+
 }
