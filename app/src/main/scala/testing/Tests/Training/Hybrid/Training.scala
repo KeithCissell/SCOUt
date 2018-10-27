@@ -25,21 +25,25 @@ import scala.collection.mutable.{Map => MutableMap}
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
-object FindHumanTraining {
+object HybridTraining {
 
   def main(args: Array[String]): Unit = {
 
     // Training Setup
     val trainingIterations = 25
     val controllerName = "SCOUt"
-    val memoryFileName = "FHOfficialTemplatesTEST2"
-    val weightsSet = BestWeights.handTuned
+    val memoryFileName = "HybridOfficialTEST"
+    val weightsSet = BestWeights.hybridLongRun
 
-    val agentSensors = List(
+    val agentSensors1 = List(
       new ElevationSensor(false),
       new DecibelSensor(true),
       new TemperatureSensor(true),
       new WaterSensor(false))
+
+    val agentSensors2 = List(
+      new ElevationSensor(false),
+      new WaterSensor(true))
 
     val testEnvironments: Map[String,Int] = Map()
     val testTemplates: Map[String,(Int,Int)] = Map(
@@ -50,12 +54,13 @@ object FindHumanTraining {
 
     val trainingEnvironments: Map[String,Int] = Map()
     val trainingTemplates = Map(
-      "EASY" -> (1, 1),
+      "EASY" -> (1, 1), // note: half the number of tests as non-hybrid (bc. it's run twice)
       "MEDIUM" -> (1, 1),
       "HARD" -> (1, 1)
     )
 
-    val goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None)
+    val goalTemplate1 = new FindAnomaliesTemplate(Map("Human" -> 1), None)
+    val goalTemplate2 = new MapElementsTemplate(List("Water Depth"), None)
 
     // Training Performance Data
     var avgSuccess: AB[Double] = AB()
@@ -80,13 +85,15 @@ object FindHumanTraining {
       println()
       println()
       println(s"********** TRAINING ${i+1} ***********")
+      val trainingSensors = if (i % 2 == 0) agentSensors1 else agentSensors2
+      val trainingGoal = if (i % 2 == 0) goalTemplate1 else goalTemplate2
       val training = new Test(
         testEnvironments = trainingEnvironments,
         testTemplates = trainingTemplates,
         controllers = Map(
           controllerName -> new SCOUtController(memoryFileName, "json", true, weightsSet)),
-        sensors = agentSensors,
-        goalTemplate = goalTemplate,
+        sensors = trainingSensors,
+        goalTemplate = trainingGoal,
         maxActions = None
       )
 
@@ -96,42 +103,68 @@ object FindHumanTraining {
       println()
       println()
       println(s"********** TESTING ${i+1} ***********")
-      val iterationTest = new Test(
+      val iterationTest1 = new Test(
         testEnvironments = testEnvironments,
         testTemplates = testTemplates,
         controllers = Map(
           "Random" -> new RandomController(),
           "Heuristic" -> new FindHumanController(),
           controllerName -> new SCOUtController(memoryFileName, "json", false, weightsSet)),
-        sensors = agentSensors,
-        goalTemplate = goalTemplate,
+        sensors = agentSensors1,
+        goalTemplate = goalTemplate1,
+        maxActions = None,
+        verbose = true
+      )
+      val iterationTest2 = new Test(
+        testEnvironments = testEnvironments,
+        testTemplates = testTemplates,
+        controllers = Map(
+          "Random" -> new RandomController(),
+          "Heuristic" -> new FindHumanController(),
+          controllerName -> new SCOUtController(memoryFileName, "json", false, weightsSet)),
+        sensors = agentSensors2,
+        goalTemplate = goalTemplate2,
         maxActions = None,
         verbose = true
       )
 
       // Run Test
-      iterationTest.run
+      iterationTest1.run
+      iterationTest2.run
 
       // Gather Performance Data
-      avgSuccess += iterationTest.testMetrics(controllerName).avgGoalCompletion
-      avgActions += iterationTest.testMetrics(controllerName).avgActions
-      avgRemainingHealth += iterationTest.testMetrics(controllerName).avgRemainingHealth
-      avgRemainingEnergy += iterationTest.testMetrics(controllerName).avgRemainingEnergy
+      avgSuccess += iterationTest1.testMetrics(controllerName).avgGoalCompletion
+      avgSuccess += iterationTest2.testMetrics(controllerName).avgGoalCompletion
+      avgActions += iterationTest1.testMetrics(controllerName).avgActions
+      avgActions += iterationTest2.testMetrics(controllerName).avgActions
+      avgRemainingHealth += iterationTest1.testMetrics(controllerName).avgRemainingHealth
+      avgRemainingHealth += iterationTest2.testMetrics(controllerName).avgRemainingHealth
+      avgRemainingEnergy += iterationTest1.testMetrics(controllerName).avgRemainingEnergy
+      avgRemainingEnergy += iterationTest2.testMetrics(controllerName).avgRemainingEnergy
 
-      hAvgSuccess += iterationTest.testMetrics("Heuristic").avgGoalCompletion
-      hAvgActions += iterationTest.testMetrics("Heuristic").avgActions
-      hAvgRemainingHealth += iterationTest.testMetrics("Heuristic").avgRemainingHealth
-      hAvgRemainingEnergy += iterationTest.testMetrics("Heuristic").avgRemainingEnergy
+      hAvgSuccess += iterationTest1.testMetrics("Heuristic").avgGoalCompletion
+      hAvgSuccess += iterationTest2.testMetrics("Heuristic").avgGoalCompletion
+      hAvgActions += iterationTest1.testMetrics("Heuristic").avgActions
+      hAvgActions += iterationTest2.testMetrics("Heuristic").avgActions
+      hAvgRemainingHealth += iterationTest1.testMetrics("Heuristic").avgRemainingHealth
+      hAvgRemainingHealth += iterationTest2.testMetrics("Heuristic").avgRemainingHealth
+      hAvgRemainingEnergy += iterationTest1.testMetrics("Heuristic").avgRemainingEnergy
+      hAvgRemainingEnergy += iterationTest2.testMetrics("Heuristic").avgRemainingEnergy
 
-      rAvgSuccess += iterationTest.testMetrics("Random").avgGoalCompletion
-      rAvgActions += iterationTest.testMetrics("Random").avgActions
-      rAvgRemainingHealth += iterationTest.testMetrics("Random").avgRemainingHealth
-      rAvgRemainingEnergy += iterationTest.testMetrics("Random").avgRemainingEnergy
+      rAvgSuccess += iterationTest1.testMetrics("Random").avgGoalCompletion
+      rAvgSuccess += iterationTest2.testMetrics("Random").avgGoalCompletion
+      rAvgActions += iterationTest1.testMetrics("Random").avgActions
+      rAvgActions += iterationTest2.testMetrics("Random").avgActions
+      rAvgRemainingHealth += iterationTest1.testMetrics("Random").avgRemainingHealth
+      rAvgRemainingHealth += iterationTest2.testMetrics("Random").avgRemainingHealth
+      rAvgRemainingEnergy += iterationTest1.testMetrics("Random").avgRemainingEnergy
+      rAvgRemainingEnergy += iterationTest2.testMetrics("Random").avgRemainingEnergy
 
     }
 
     // Save Training Performance Data
-    val fileName = controllerName + memoryFileName
+    val fileName = "Training"
+    val filePath = "src/main/scala/testing/Tests/Training/Hybrid/Results/"
 
     val jsonData = Json.obj(
       ("Random", Json.obj(
@@ -155,7 +188,7 @@ object FindHumanTraining {
       ))
     )
 
-    saveJsonFile(fileName, trainingPerformanceDataPath, jsonData)
+    saveJsonFile(fileName, filePath, jsonData)
 
   }
 

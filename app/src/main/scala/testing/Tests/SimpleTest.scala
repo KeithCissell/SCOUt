@@ -39,16 +39,18 @@ object SimpleTest {
         "Random" -> new RandomController(),
         "FindHuman" -> new FindHumanController(),
         "MapWater" -> new MapWaterController(),
-      //   "SCOUt1" -> new SCOUtController("FHOfficialTemplatesTEST2", "json", false, BestWeights.hybridLongRun),
-      //   "SCOUt2" -> new SCOUtController("FHOfficialTemplatesTEST2", "json", false, BestWeights.findHumanLongRun)),
+      //   "SCOUt1" -> new SCOUtController("FHOfficialTemplatesTEST2", "json", false, BestWeights.findHumanLongRun),
+      //   "SCOUt2" -> new SCOUtController("FHOfficialTemplatesTEST2", "json", false, BestWeights.hybridLongRun),
+      //   "SCOUt3" -> new SCOUtController("HybridOfficialTEST", "json", false, BestWeights.hybridLongRun)),
       // sensors = List(
       //   new ElevationSensor(false),
       //   new DecibelSensor(true),
       //   new TemperatureSensor(true),
       //   new WaterSensor(false)),
       // goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None),
-        "SCOUt1" -> new SCOUtController("MWOfficialTemplatesTEST2", "json", false, BestWeights.hybridLongRun),
-        "SCOUt2" -> new SCOUtController("MWOfficialTemplatesTEST2", "json", false, BestWeights.mapWaterLongRun)), // winner winner chicken dinner
+        "SCOUt1" -> new SCOUtController("MWOfficialTemplatesTEST2", "json", false, BestWeights.mapWaterLongRun),
+        "SCOUt2" -> new SCOUtController("MWOfficialTemplatesTEST2", "json", false, BestWeights.hybridLongRun),
+        "SCOUt3" -> new SCOUtController("HybridOfficialTEST", "json", false, BestWeights.hybridLongRun)),
       sensors = List(
         new ElevationSensor(false),
         new DecibelSensor(false),

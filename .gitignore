@@ -12,3 +12,5 @@ THESIS/**/*.fls
 THESIS/**/*.log
 THESIS/**/*.gz
 THESIS/**/*.toc
+THESIS/**/*.bbl
+THESIS/**/*.blg

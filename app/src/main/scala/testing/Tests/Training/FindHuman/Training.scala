@@ -25,21 +25,21 @@ import scala.collection.mutable.{Map => MutableMap}
 import scala.collection.mutable.{ArrayBuffer => AB}
 
 
-object MapWaterTraining {
+object FindHumanTraining {
 
   def main(args: Array[String]): Unit = {
 
     // Training Setup
     val trainingIterations = 25
     val controllerName = "SCOUt"
-    val memoryFileName = "MWOfficialTemplatesTEST2"
-    val weightsSet = BestWeights.handTuned
+    val memoryFileName = "FHOfficialTemplatesTEST2"
+    val weightsSet = BestWeights.hybridLongRun
 
     val agentSensors = List(
       new ElevationSensor(false),
-      new DecibelSensor(false),
-      new TemperatureSensor(false),
-      new WaterSensor(true))
+      new DecibelSensor(true),
+      new TemperatureSensor(true),
+      new WaterSensor(false))
 
     val testEnvironments: Map[String,Int] = Map()
     val testTemplates: Map[String,(Int,Int)] = Map(
@@ -55,7 +55,7 @@ object MapWaterTraining {
       "HARD" -> (1, 1)
     )
 
-    val goalTemplate = new MapElementsTemplate(List("Water Depth"), None)
+    val goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None)
 
     // Training Performance Data
     var avgSuccess: AB[Double] = AB()
@@ -101,7 +101,7 @@ object MapWaterTraining {
         testTemplates = testTemplates,
         controllers = Map(
           "Random" -> new RandomController(),
-          "Heuristic" -> new MapWaterController(),
+          "Heuristic" -> new FindHumanController(),
           controllerName -> new SCOUtController(memoryFileName, "json", false, weightsSet)),
         sensors = agentSensors,
         goalTemplate = goalTemplate,
@@ -131,7 +131,8 @@ object MapWaterTraining {
     }
 
     // Save Training Performance Data
-    val fileName = controllerName + memoryFileName
+    val fileName = "Training"
+    val filePath = "src/main/scala/testing/Tests/Training/FindHuman/Results/"
 
     val jsonData = Json.obj(
       ("Random", Json.obj(
@@ -155,7 +156,7 @@ object MapWaterTraining {
       ))
     )
 
-    saveJsonFile(fileName, trainingPerformanceDataPath, jsonData)
+    saveJsonFile(fileName, filePath, jsonData)
 
   }
 

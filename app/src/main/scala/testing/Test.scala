@@ -29,7 +29,8 @@ class Test(
   val sensors: List[Sensor],
   val goalTemplate: GoalTemplate,
   val maxActions: Option[Int],
-  val verbose: Boolean = false
+  val verbose: Boolean = false,
+  val sensorLists: Map[String,List[Sensor]] = Map()
 ) {
   // Test Metrics to gather
   val testMetrics: Map[String,TestMetric] = for ((name,controller) <- controllers) yield name -> new TestMetric(name, AB())
@@ -54,10 +55,14 @@ class Test(
         val startY = startPosition._2
         // Setup agent and run operation
         for ((name, controller) <- controllers) {
+          val agentSensors = sensorLists.get(name) match {
+            case Some(sl) => sl
+            case None => sensors
+          }
           val agent = new Agent(
             name = name,
             controller = controller.copy,
-            sensors = sensors,
+            sensors = agentSensors,
             mapHeight = environment.height,
             mapWidth = environment.width,
             mapScale = environment.scale,
@@ -135,7 +140,7 @@ class Test(
 
 }
 
-class TestMetric(controllerName: String, runs: AB[RunData]) {
+class TestMetric(val controllerName: String, val runs: AB[RunData]) {
   def addRun(runData: RunData) = runs += runData
   def avgGoalCompletion: Double = runs.map(_.goalCompletion).foldLeft(0.0)(_ + _) / runs.size
   def avgActions: Int = runs.map(_.steps).foldLeft(0)(_ + _) / runs.size
@@ -149,7 +154,7 @@ class TestMetric(controllerName: String, runs: AB[RunData]) {
     println(s"Avg Steps:  ${avgActions}")
     println(s"Avg Remaining Health: ${roundDouble2(avgRemainingHealth)}")
     println(s"Avg Remaining Energy: ${roundDouble2(avgRemainingEnergy)}")
-    println(s"AVG SUCCESS RATE:     ${roundDouble2(avgGoalCompletion)}")
+    println(s"AVG GOAL COMPLETION:  ${roundDouble2(avgGoalCompletion)}")
   }
 }
 
