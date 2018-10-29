@@ -350,13 +350,18 @@ object State {
       val normalizedHealth = healthGaussianData.normalize(state.health)
       val normalizedEnergy = energyGaussianData.normalize(state.energyLevel)
       val normalizedElementStates = for (es <- state.elementStates) yield {
-        val avdsGaussianData = elementsGaussianData.get(es.elementType).get._1
-        val ivdsGaussianData = elementsGaussianData.get(es.elementType).get._2
-        val normalizedNQ = new QuadrantState(es.northQuadrant.percentKnown, avdsGaussianData.normalize(es.northQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.northQuadrant.immediateValueDifferential))
-        val normalizedSQ = new QuadrantState(es.southQuadrant.percentKnown, avdsGaussianData.normalize(es.southQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.southQuadrant.immediateValueDifferential))
-        val normalizedWQ = new QuadrantState(es.westQuadrant.percentKnown, avdsGaussianData.normalize(es.westQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.westQuadrant.immediateValueDifferential))
-        val normalizedEQ = new QuadrantState(es.eastQuadrant.percentKnown, avdsGaussianData.normalize(es.eastQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.eastQuadrant.immediateValueDifferential))
-        new ElementState(es.elementType, es.indicator, es.hazard, es.percentKnownInRange, normalizedNQ, normalizedSQ, normalizedWQ, normalizedEQ)
+        elementsGaussianData.get(es.elementType) match {
+          case Some(gd) => {
+            val avdsGaussianData = gd._1
+            val ivdsGaussianData = gd._2
+            val normalizedNQ = new QuadrantState(es.northQuadrant.percentKnown, avdsGaussianData.normalize(es.northQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.northQuadrant.immediateValueDifferential))
+            val normalizedSQ = new QuadrantState(es.southQuadrant.percentKnown, avdsGaussianData.normalize(es.southQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.southQuadrant.immediateValueDifferential))
+            val normalizedWQ = new QuadrantState(es.westQuadrant.percentKnown, avdsGaussianData.normalize(es.westQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.westQuadrant.immediateValueDifferential))
+            val normalizedEQ = new QuadrantState(es.eastQuadrant.percentKnown, avdsGaussianData.normalize(es.eastQuadrant.averageValueDifferential), ivdsGaussianData.normalize(es.eastQuadrant.immediateValueDifferential))
+            new ElementState(es.elementType, es.indicator, es.hazard, es.percentKnownInRange, normalizedNQ, normalizedSQ, normalizedWQ, normalizedEQ)
+          }
+          case None => es
+        }
       }
       new AgentState(state.xPosition, state.yPosition, normalizedHealth, normalizedEnergy, normalizedElementStates)
     }
@@ -456,7 +461,7 @@ object State {
     }
   }
 
-  // Find the Gaussin Distribution of data values
+  // Find the Gaussian Distribution of data values
   def calculateGaussianDistribution(values: List[Double]): GaussianData = {
     if (values.length > 0) {
       val mean = values.foldLeft(0.0)(_ + _) / values.length
