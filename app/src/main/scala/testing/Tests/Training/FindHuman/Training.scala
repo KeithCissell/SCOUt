@@ -30,7 +30,7 @@ object FindHumanTraining {
   def main(args: Array[String]): Unit = {
 
     // Training Setup
-    val trainingIterations = 30
+    val trainingIterations = 120
     val controllerName = "SCOUt"
     val memoryFileName = "FindHuman"
     val weightsSet = BestWeights.hybridLongRun
@@ -46,13 +46,6 @@ object FindHumanTraining {
       "EASY" -> (20, 1),
       "MEDIUM" -> (20, 1),
       "HARD" -> (20, 1)
-    )
-
-    val trainingEnvironments: Map[String,Int] = Map()
-    val trainingTemplates = Map(
-      "EASY" -> (1, 1),
-      "MEDIUM" -> (1, 1),
-      "HARD" -> (1, 1)
     )
 
     val goalTemplate = new FindAnomaliesTemplate(Map("Human" -> 1), None)
@@ -80,9 +73,14 @@ object FindHumanTraining {
       println()
       println()
       println(s"********** TRAINING ${i+1} ***********")
+      val templateName = i match {
+        case i if (i > trainingIterations * 2 / 3) => "HARD"
+        case i if (i > trainingIterations / 3)     => "MEDIUM"
+        case _                                     => "EASY"
+      }
       val training = new Test(
-        testEnvironments = trainingEnvironments,
-        testTemplates = trainingTemplates,
+        testEnvironments = Map(),
+        testTemplates = Map(templateName -> (1, 1)),
         controllers = Map(
           controllerName -> new SCOUtController(memoryFileName, "json", true, weightsSet)),
         sensors = agentSensors,

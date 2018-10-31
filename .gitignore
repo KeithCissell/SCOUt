@@ -14,3 +14,10 @@ THESIS/**/*.gz
 THESIS/**/*.toc
 THESIS/**/*.bbl
 THESIS/**/*.blg
+THESIS/**/*.idx
+THESIS/**/*.ilg
+THESIS/**/*.ind
+THESIS/**/*.loa
+THESIS/**/*.lof
+THESIS/**/*.lot
+THESIS/**/*.out

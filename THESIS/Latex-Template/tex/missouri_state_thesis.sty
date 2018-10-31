@@ -1,0 +1,277 @@
+% You should not change anything in this file unless you really know
+% what you are doing.
+\RequirePackage{graphicx}
+\RequirePackage{algorithmic}
+\RequirePackage{algorithm}
+\RequirePackage{amsthm}
+\RequirePackage{amsmath}
+\RequirePackage[body={6in,9 in}, top=1 in, left=1.5in, bottom=1.5in, right=1.0in, nohead]{geometry}
+\RequirePackage{times}
+\RequirePackage{cite}
+\RequirePackage{url}
+\RequirePackage{listings}
+\RequirePackage[final, colorlinks, linkcolor=black, citecolor=blue, urlcolor=blue]{hyperref}
+\RequirePackage{titlesec}
+\RequirePackage[titles]{tocloft}
+
+% Prevent math from being upcased
+% http://tex.stackexchange.com/questions/46525/preventing-makeuppercase-from-affecting-mathematics
+\RequirePackage{textcase}
+
+% Definition macros
+\def\csc{Department of Computer Science}
+\def\msu{Missouri State University}
+
+% % sets spacing between paragraphs
+% \parskip 2.5mm           
+
+% Clever referencing
+\RequirePackage{cleveref}
+
+% Caption setup
+\RequirePackage{caption} 
+\captionsetup[table]{skip=2.50mm}
+
+% double spacing
+\RequirePackage[doublespacing]{setspace}
+\doublespacing
+\RequirePackage{xspace}  
+
+
+% Read and store student names in DB
+\RequirePackage{datatool}
+\DTLloaddb[noheader]{ThesisStudent}{parameters/student.txt}
+\DTLloaddb[noheader]{Supervisor}{parameters/supervisor.txt}
+
+% Thesis parameters
+\def\thesisstudent{Thesis Student Name}
+\def\thesisdate{\input{parameters/thesis_date.txt}}
+\def\thesistitle{\input{parameters/thesis_title.txt}}
+\def\thesiskeywords{\input{parameters/keywords.txt}}
+\def\thesissupervisor{\input{parameters/supervisor.txt}}
+\def\thesisdegree{Master of Science}
+
+\renewcommand{\theequation}{\arabic{section}.\arabic{equation}}
+
+\newfam\msbmfam
+\font\twelvemsbm=msbm10 scaled
+\magstep1\font\tenmsbm=msbm10
+\textfont\msbmfam\twelvemsbm\scriptfont\msbmfam\tenmsbm
+\def\msbm{\fam\msbmfam\twelvemsbm}
+
+\def\RR{{\mathbb R}}
+\def\CC{{\mathbb C}}
+\def\NN{{\mathbb N}}
+\def\ep{\varepsilon}
+\def\iint{{\displaystyle{\int\!\!\int}}}
+
+\def\curl{\mathop{\rm curl}\nolimits}
+\def\div{{\rm div}}
+\def\Div{{\rm Div}}
+\def\im{\mathop{\rm Im}\nolimits}
+\def\pv{\mathop{\rm p.v.}\nolimits}
+\def\Null{\mathop{\rm Null}\nolimits}
+\def\Tr{\mathop{\rm Tr}\nolimits}
+
+\def\Vol{{\rm Vol}}
+\def\diag{\rm diag}
+\def\om{\Omega}
+\def\Ombar{\overline{\Omega}}
+\def\bd{{\partial\Omega}}
+\def\gr{\nabla}
+\def\qc{q_o}
+\def\iavl{-\!\!\!\!\!\!\!\!\!\int}
+\def\iav{-\!\!\!\!\!\!\int}
+\def\half{{\textstyle \frac12}}
+
+\newcommand{\dsp}{\displaystyle}
+\newcommand{\ihat}{{\bf{i}}}
+\newcommand{\jhat}{{\bf{j}}}
+\newcommand{\khat}{{\bf{k}}}
+\newcommand{\Fhat}{{\bf{F}}}
+
+% \setlength{\RaggedRightParindent}{\parindent}
+\newcommand*{\justifyheading}{\raggedright}
+\titleformat{\chapter}{\normalfont\bfseries\centering}{\MakeUppercase{\thechapter}}{.25cm}{ }[ ]
+\titleformat{\section}{\normalfont\bfseries\justifyheading}{\thesection}{1em}{}
+
+% \titlespacing*{commandi}{lefti}{before-sepi}{after-sepi}[right-sepi]
+\titlespacing{\chapter}{0.5\textwidth}{0pt}{25pt}
+\titlespacing{\section}{0pt}{25pt}{5pt}
+
+% \doublespacing
+
+\newtheoremstyle{newthm} % name
+     {3pt}%      Space above
+     {3pt}%      Space below
+     {}%         Body font
+     {}%         Indent amount (empty = no indent, \parindent = para indent)
+     {\scshape}%         Thm head font
+     {:}%        Punctuation after thm head
+     {.5em}%     Space after thm head: " " = normal interword space; \newline = linebreak
+     {}%         Thm head spec (can be left empty, meaning `normal')
+
+\theoremstyle{newthm}
+\newtheorem{lem}{LEMMA}[section]
+\newtheorem{prop}[lem]{PROPOSITION}
+\newtheorem{thm}[lem]{THEOREM}
+\newtheorem{fact}[lem]{FACT}
+\newtheorem{defn}[lem]{DEFINITION}
+\newtheorem{cor}[lem]{COROLLARY}
+\newtheorem{exm}[lem]{EXAMPLE}
+\newtheorem{rem}[lem]{REMARK}
+\newtheorem{con}[lem]{CONJECTURE}
+
+%\numberwithin{thm}{chapter}
+\newcommand{\g}{\text{G.E.}}
+\newcommand{\degr}[1]{\text{deg}(#1)}
+\newcommand{\bz}{\ensuremath{\mathbb{Z}}}
+\newcommand{\bn}[1]{\ensuremath{\mathbb{N}_{\leq #1}}}
+\newcommand{\zpn}{\ensuremath{\mathbb{Z}_{p^{n}}[x] }}
+\newcommand{\zpnox}{\ensuremath{\mathbb{Z}_{p^{n}} }}
+\newcommand{\zpt}{\ensuremath{\mathbb{Z}_{p^{2}}[x] }}
+\newcommand{\zp}{\ensuremath{\mathbb{Z}_{p}[x] }}
+\newcommand{\ldegr}[1]{\text{ldeg}(#1)}
+\newcommand{\luv}[1]{\text{L}(#1)}
+\newcommand{\lxtm}{\ensuremath{\L(x^{m}) }}
+
+
+% sets leading space for paragraphs
+\setlength{\parindent}{.5in}
+\setlength{\footskip}{.4in}
+
+\def\thesection{\arabic{section}}
+
+% Thesis title page 
+\def\thesistitlepage{\input{titlepage.tex}}
+
+% Thesis copyright page
+\def\thesiscopyrightpage{\input{copyright.tex}}
+
+% Thesis abstract page
+\def\thesisabstractpage{\input{abstract.tex}}
+
+% Thesis approval page
+\def\thesisapprovalpage{\input{acceptance.tex}}
+
+% Inclusion of lof and lot in toc
+% \RequirePackage[nottoc,notbib, notlof, notlot]{tocbibind}
+% \RequirePackage{tocloft}
+
+
+\RequirePackage{etoolbox}
+\newtoggle{suppress@lof}
+\newtoggle{suppress@lot}
+\newtoggle{suppress@lo@}
+
+\def\suppresslistoffigures{\global\toggletrue{suppress@lof}}
+\def\suppresslistoftables{\global\toggletrue{suppress@lot}}
+\def\suppresslistofalgorithms{\global\toggletrue{suppress@lo@}}
+
+
+\def\listsandtoc{
+  % Table of contents
+  \renewcommand{\contentsname}{TABLE OF CONTENTS}
+  \renewcommand{\listfigurename}{LIST OF FIGURES}
+  \renewcommand{\listtablename}{LIST OF TABLES}
+  \renewcommand{\listalgorithmname}{LIST OF ALGORITHMS}
+  \setcounter{secnumdepth}{0}
+  \renewcommand{\cfttoctitlefont}{\normalfont\Large}% Remove \bfseries from ToC title
+  \renewcommand{\cftchapfont}{}
+  \renewcommand{\cftchappagefont}{}
+  \renewcommand{\cftsecfont}{}% Remove \bfseries from section titles in ToC
+  \renewcommand{\cftsecpagefont}{}% Remove \bfseries from section titles' page in ToC
+  \renewcommand\cftchapdotsep{\cftdotsep}
+
+  \begin{singlespace}
+    \tableofcontents
+  \end{singlespace}
+
+  % List of figures, if not suppressed
+  \cleardoublepage
+  \listoffigures
+
+  % List of tables, if not suppressed
+  \cleardoublepage
+  \listoftables
+
+  % List of algorithms, if not suppressed
+  \cleardoublepage
+  \listofalgorithms
+}
+
+% Starting materials
+\def\st@rtingm@teri@ls{
+  \pagenumbering{roman}
+  \thesistitlepage
+
+  \cleardoublepage
+  \thesiscopyrightpage
+  
+  \thesisabstractpage
+  \cleardoublepage
+  \thesisapprovalpage
+
+  \cleardoublepage
+  \input {acknowledgements.tex}
+
+  \cleardoublepage
+  \listsandtoc
+}
+
+
+% Fancy page style
+\RequirePackage{fancyhdr}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0 pt}
+% \renewcommand{\footrulewidth}{0.0mm}
+% \fancyheadoffset[R]{0.075\textwidth}
+\fancyhead[C]{}
+\fancyhead[L]{}
+\fancyhead[R]{}
+\fancyfoot[C]{\thepage}
+
+% Starting materials
+\AtBeginDocument{\st@rtingm@teri@ls
+  \cleardoublepage
+  \pagestyle{fancy}
+  \pagenumbering{arabic}
+  \setcounter{page}{1}
+}
+
+% For index creation
+\RequirePackage{imakeidx}
+
+% Versionn information at the end
+\RequirePackage[nofancy,notoday]{rcsinfo}
+\rcsInfo $Id: missouri_state_university.sty,v 1.3 2018/09/30 12:51:13 dipto Exp $
+\RequirePackage{datetime}
+
+\AtEndDocument{%
+  \clearpage
+  \pagestyle{plain}
+  
+  \begingroup
+  
+  \flushright
+
+  \vspace*{0.0mm}
+  \vfill\vfill\vfill\vfill\vfill
+  \sffamily
+
+  Generated using Graduate Thesis \LaTeX\xspace Template,
+  Version~\rcsInfoRevision. \csc, \msu, Springfield, Missouri, USA.
+
+  \bigskip
+
+  \settimeformat{ampmtime}
+
+  This thesis was generated on~\today\xspace at~\currenttime.
+
+  \vfill
+
+  \endgroup}
+
+
+
+\endinput

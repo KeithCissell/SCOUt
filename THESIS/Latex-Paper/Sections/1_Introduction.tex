@@ -2,34 +2,39 @@
 
 \chapter{Introduction}
 As research in the fields of autonomous systems and robotics have become more extensive, it is evident that there are a wide range of application for robots with integrated autonomy.
-There are rovers, drones and even aquatic robots that are capable of decision making in their own environments.
-The tasks that these robots carry out can greatly vary as well.
-This variance can cause a demand for distinct software and hardware to achieve each robot’s given task.
-However, almost all autonomous robots operate similarly through their use of observation (typically with external sensors) and analytics of the data that is observed.
+There are rovers, drones and even aquatic robots capable of intelligently selecting actions to perform in their environments.
+The tasks that these robots carry out greatly vary based on the robot's abilities and the environmental limitations.
+This variance causes a demand for distinct software and hardware that is required to achieve each robot's given task.
+Many similarities can be drawn from the wide rang of robots and their usage.
+Almost all autonomous robots operate through their use of observational sensors to gather data and a control schema to analyze the data collected and plan actions.
 
-A great deal of research has been done in hybrid robots and creating hardware that is multifunctional to various tasks
+A great deal of research has been done in hybrid robots which use adaptive hardware that is multifunctional to various tasks.
 However, there is not an extensive amount of research on software with the capability to integrate with multiple robot compositions and tasks.
 Most of this is due to the fact that each robot has unique capabilities that do not overlap with many other robots.
-Autonomous robots seem to focus in on a certain niche and require their systems to be built from the ground up each time.
+Autonomous robots tend to focus in on a certain niche that require their systems to be built from the ground up for each task presented.
 This leaves the question of what pieces of autonomous control can be abstracted.
 
-There are many evolutionary computing approaches that can be applied to decision making processes.
-These methods are commonly used in situations when there are a known number of controllable variables and a wide solution space to be explored.
-This makes them great candidates for creating a system which drives the decision-making process of autonomous robots.
-In particular, neural networks and deep neural networks trained in simulations seem to be a promising architecture for finding optimal control patterns in the diverse applications of autonomous robots.
+There are many intelligent approaches that can be applied to decision making processes.
+The field of autonomous robotics has benefited tremendously through the growing field of artificial intelligence (AI).
+AI methods are commonly used in situations when there is a known number of controllable variables and a wide solution space to be explored.
+This makes them great candidates for creating a system which drives the decision-making process of an autonomous robots.
+In particular, neural networks and reinforcement learning architectures trained in simulations have yielded promising results for finding optimal control patterns in the diverse applications of autonomous robots.
 
-This project approaches the problem from the bottom up.
-It looks at the very basics of autonomous robotics.
-This is: the collection of data from sensors, analytics of incoming data, and the output of response controls.
-Additionally, these three steps are repetitively being performed to achieve a given objective.
-I have broken this project into three phases.
-The first phase involves setting up a simulation environment to be used for training the autonomous system.
-Next, a graphical interphase will be integrated with the simulation data to allow for easy debugging.
-Finally, an Artificially Intelligent system will be trained to take in various sets of environmental data as inputs, make decisions based on these inputs and its current objective, and produce a response.
+The Surveillance Coordination and Operations Utility (SCOUt) system takes a top down approach to create an adaptive control schema for diverse robotic agents and their uses by abstracting the very basics of autonomous robotics.
+SCOUt is both a control schema and a simulation platform.
+This control schema repeatedly follows the process of collecting of data from sensors, analyzing the agent's state, and the outputting response controls to complete surveillance based operations.
+SCOUt uses memory based reinforcement learning to make state based action decisions.
+The abstraction of this process allows the collected memory pool to be used adaptively across varying environments and robot setups.
+The simulation platform provides tools for the setup of agents, procedural generation of environments, definition of goals and training and testing of the SCOUt control schema.
+The platform is built with an abstracted architecture for easy extendibility across operation setups.
+Robotic sensors, environmental variables and goals can be added or tweaked within the SCOUt simulation platform.
+Interactions between goal driven robot agents and the environment can be simulated and viewed in a graphical user interface (GUI).
 
-The project is still a work in progress and this paper will only present phases one and two.
-These phases cover the procedural environment generator and the graphical interface that pairs with it.
-The implementation of the abstracted autonomous system will come in future work.
-The main topic covered looks at the representation and formulaic production of data that will be used to represent an environment.
-The graphical interfaces capabilities will also be touched on.
-For the AI component, we will look at the various evolutionary methods that hold great potential for our given problem setup.
+In this experiment, the SCOUt control schema is tested in various procedurally generated environments.
+The controller's adaptability between changing environments, goals and agent setups are all examined.
+
+
+% I have broken this project into three phases.
+% The first phase involves setting up a simulation environment to be used for training the autonomous system.
+% Next, a graphical interphase will be integrated with the simulation data to allow for easy debugging.
+% Finally, an Artificially Intelligent system will be trained to take in various sets of environmental data as inputs, make decisions based on these inputs and its current objective, and produce a response.

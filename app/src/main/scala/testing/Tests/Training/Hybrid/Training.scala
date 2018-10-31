@@ -30,7 +30,7 @@ object HybridTraining {
   def main(args: Array[String]): Unit = {
 
     // Training Setup
-    val trainingIterations = 30
+    val trainingIterations = 120
     val controllerName = "SCOUt"
     val memoryFileName = "Hybrid"
     val weightsSet = BestWeights.hybridLongRun
@@ -52,31 +52,41 @@ object HybridTraining {
       "HARD" -> (20, 1)
     )
 
-    val trainingEnvironments: Map[String,Int] = Map()
-    val trainingTemplates = Map(
-      "EASY" -> (1, 1), // note: half the number of tests as non-hybrid (bc. it's run twice)
-      "MEDIUM" -> (1, 1),
-      "HARD" -> (1, 1)
-    )
-
     val goalTemplate1 = new FindAnomaliesTemplate(Map("Human" -> 1), None)
     val goalTemplate2 = new MapElementsTemplate(List("Water Depth"), None)
 
     // Training Performance Data
-    var avgSuccess: AB[Double] = AB()
-    var avgActions: AB[Int] = AB()
-    var avgRemainingHealth: AB[Double] = AB()
-    var avgRemainingEnergy: AB[Double] = AB()
+    // Find Human
+    var avgSuccessFH: AB[Double] = AB()
+    var avgActionsFH: AB[Int] = AB()
+    var avgRemainingHealthFH: AB[Double] = AB()
+    var avgRemainingEnergyFH: AB[Double] = AB()
 
-    var hAvgSuccess: AB[Double] = AB()
-    var hAvgActions: AB[Int] = AB()
-    var hAvgRemainingHealth: AB[Double] = AB()
-    var hAvgRemainingEnergy: AB[Double] = AB()
+    var hAvgSuccessFH: AB[Double] = AB()
+    var hAvgActionsFH: AB[Int] = AB()
+    var hAvgRemainingHealthFH: AB[Double] = AB()
+    var hAvgRemainingEnergyFH: AB[Double] = AB()
 
-    var rAvgSuccess: AB[Double] = AB()
-    var rAvgActions: AB[Int] = AB()
-    var rAvgRemainingHealth: AB[Double] = AB()
-    var rAvgRemainingEnergy: AB[Double] = AB()
+    var rAvgSuccessFH: AB[Double] = AB()
+    var rAvgActionsFH: AB[Int] = AB()
+    var rAvgRemainingHealthFH: AB[Double] = AB()
+    var rAvgRemainingEnergyFH: AB[Double] = AB()
+
+    // Map Water
+    var avgSuccessMW: AB[Double] = AB()
+    var avgActionsMW: AB[Int] = AB()
+    var avgRemainingHealthMW: AB[Double] = AB()
+    var avgRemainingEnergyMW: AB[Double] = AB()
+
+    var hAvgSuccessMW: AB[Double] = AB()
+    var hAvgActionsMW: AB[Int] = AB()
+    var hAvgRemainingHealthMW: AB[Double] = AB()
+    var hAvgRemainingEnergyMW: AB[Double] = AB()
+
+    var rAvgSuccessMW: AB[Double] = AB()
+    var rAvgActionsMW: AB[Int] = AB()
+    var rAvgRemainingHealthMW: AB[Double] = AB()
+    var rAvgRemainingEnergyMW: AB[Double] = AB()
 
     // TRAINING LOOP
     for (i <- 0 until trainingIterations) {
@@ -87,9 +97,14 @@ object HybridTraining {
       println(s"********** TRAINING ${i+1} ***********")
       val trainingSensors = if (i % 2 == 0) agentSensors1 else agentSensors2
       val trainingGoal = if (i % 2 == 0) goalTemplate1 else goalTemplate2
+      val templateName = i match {
+        case i if (i > trainingIterations * 2 / 3) => "HARD"
+        case i if (i > trainingIterations / 3)     => "MEDIUM"
+        case _                                     => "EASY"
+      }
       val training = new Test(
-        testEnvironments = trainingEnvironments,
-        testTemplates = trainingTemplates,
+        testEnvironments = Map(),
+        testTemplates = Map(templateName -> (1, 1)),
         controllers = Map(
           controllerName -> new SCOUtController(memoryFileName, "json", true, weightsSet)),
         sensors = trainingSensors,
@@ -133,32 +148,32 @@ object HybridTraining {
       iterationTest2.run
 
       // Gather Performance Data
-      avgSuccess += iterationTest1.testMetrics(controllerName).avgGoalCompletion
-      avgSuccess += iterationTest2.testMetrics(controllerName).avgGoalCompletion
-      avgActions += iterationTest1.testMetrics(controllerName).avgActions
-      avgActions += iterationTest2.testMetrics(controllerName).avgActions
-      avgRemainingHealth += iterationTest1.testMetrics(controllerName).avgRemainingHealth
-      avgRemainingHealth += iterationTest2.testMetrics(controllerName).avgRemainingHealth
-      avgRemainingEnergy += iterationTest1.testMetrics(controllerName).avgRemainingEnergy
-      avgRemainingEnergy += iterationTest2.testMetrics(controllerName).avgRemainingEnergy
+      avgSuccessFH += iterationTest1.testMetrics(controllerName).avgGoalCompletion
+      avgSuccessMW += iterationTest2.testMetrics(controllerName).avgGoalCompletion
+      avgActionsFH += iterationTest1.testMetrics(controllerName).avgActions
+      avgActionsMW += iterationTest2.testMetrics(controllerName).avgActions
+      avgRemainingHealthFH += iterationTest1.testMetrics(controllerName).avgRemainingHealth
+      avgRemainingHealthMW += iterationTest2.testMetrics(controllerName).avgRemainingHealth
+      avgRemainingEnergyFH += iterationTest1.testMetrics(controllerName).avgRemainingEnergy
+      avgRemainingEnergyMW += iterationTest2.testMetrics(controllerName).avgRemainingEnergy
 
-      hAvgSuccess += iterationTest1.testMetrics("Heuristic").avgGoalCompletion
-      hAvgSuccess += iterationTest2.testMetrics("Heuristic").avgGoalCompletion
-      hAvgActions += iterationTest1.testMetrics("Heuristic").avgActions
-      hAvgActions += iterationTest2.testMetrics("Heuristic").avgActions
-      hAvgRemainingHealth += iterationTest1.testMetrics("Heuristic").avgRemainingHealth
-      hAvgRemainingHealth += iterationTest2.testMetrics("Heuristic").avgRemainingHealth
-      hAvgRemainingEnergy += iterationTest1.testMetrics("Heuristic").avgRemainingEnergy
-      hAvgRemainingEnergy += iterationTest2.testMetrics("Heuristic").avgRemainingEnergy
+      hAvgSuccessFH += iterationTest1.testMetrics("Heuristic").avgGoalCompletion
+      hAvgSuccessMW += iterationTest2.testMetrics("Heuristic").avgGoalCompletion
+      hAvgActionsFH += iterationTest1.testMetrics("Heuristic").avgActions
+      hAvgActionsMW += iterationTest2.testMetrics("Heuristic").avgActions
+      hAvgRemainingHealthFH += iterationTest1.testMetrics("Heuristic").avgRemainingHealth
+      hAvgRemainingHealthMW += iterationTest2.testMetrics("Heuristic").avgRemainingHealth
+      hAvgRemainingEnergyFH += iterationTest1.testMetrics("Heuristic").avgRemainingEnergy
+      hAvgRemainingEnergyMW += iterationTest2.testMetrics("Heuristic").avgRemainingEnergy
 
-      rAvgSuccess += iterationTest1.testMetrics("Random").avgGoalCompletion
-      rAvgSuccess += iterationTest2.testMetrics("Random").avgGoalCompletion
-      rAvgActions += iterationTest1.testMetrics("Random").avgActions
-      rAvgActions += iterationTest2.testMetrics("Random").avgActions
-      rAvgRemainingHealth += iterationTest1.testMetrics("Random").avgRemainingHealth
-      rAvgRemainingHealth += iterationTest2.testMetrics("Random").avgRemainingHealth
-      rAvgRemainingEnergy += iterationTest1.testMetrics("Random").avgRemainingEnergy
-      rAvgRemainingEnergy += iterationTest2.testMetrics("Random").avgRemainingEnergy
+      rAvgSuccessFH += iterationTest1.testMetrics("Random").avgGoalCompletion
+      rAvgSuccessMW += iterationTest2.testMetrics("Random").avgGoalCompletion
+      rAvgActionsFH += iterationTest1.testMetrics("Random").avgActions
+      rAvgActionsMW += iterationTest2.testMetrics("Random").avgActions
+      rAvgRemainingHealthFH += iterationTest1.testMetrics("Random").avgRemainingHealth
+      rAvgRemainingHealthMW += iterationTest2.testMetrics("Random").avgRemainingHealth
+      rAvgRemainingEnergyFH += iterationTest1.testMetrics("Random").avgRemainingEnergy
+      rAvgRemainingEnergyMW += iterationTest2.testMetrics("Random").avgRemainingEnergy
 
     }
 
@@ -167,24 +182,47 @@ object HybridTraining {
     val filePath = "src/main/scala/testing/Tests/Training/Hybrid/Results/"
 
     val jsonData = Json.obj(
-      ("Random", Json.obj(
-        ("Average Successes", Json.fromValues(rAvgSuccess.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
-        ("Average Actions", Json.fromValues(rAvgActions.map(v => Json.fromInt(v)))),
-        ("Average Remaining Health", Json.fromValues(rAvgRemainingHealth.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
-        ("Average remainingEnergy", Json.fromValues(rAvgRemainingEnergy.map(v => Json.fromDoubleOrNull(roundDouble2(v)))))
+      ("Find Human", Json.obj(
+        ("Random", Json.obj(
+          ("Average Successes", Json.fromValues(rAvgSuccessFH.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
+          ("Average Actions", Json.fromValues(rAvgActionsFH.map(v => Json.fromInt(v)))),
+          ("Average Remaining Health", Json.fromValues(rAvgRemainingHealthFH.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
+          ("Average remainingEnergy", Json.fromValues(rAvgRemainingEnergyFH.map(v => Json.fromDoubleOrNull(roundDouble2(v)))))
+        )),
+        ("Heuristic", Json.obj(
+          ("Average Successes", Json.fromValues(hAvgSuccessFH.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
+          ("Average Actions", Json.fromValues(hAvgActionsFH.map(v => Json.fromInt(v)))),
+          ("Average Remaining Health", Json.fromValues(hAvgRemainingHealthFH.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
+          ("Average remainingEnergy", Json.fromValues(hAvgRemainingEnergyFH.map(v => Json.fromDoubleOrNull(roundDouble2(v)))))
+        )),
+        (controllerName, Json.obj(
+          ("Memory File Name", Json.fromString(memoryFileName)),
+          ("Average Successes", Json.fromValues(avgSuccessFH.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
+          ("Average Actions", Json.fromValues(avgActionsFH.map(v => Json.fromInt(v)))),
+          ("Average Remaining Health", Json.fromValues(avgRemainingHealthFH.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
+          ("Average remainingEnergy", Json.fromValues(avgRemainingEnergyFH.map(v => Json.fromDoubleOrNull(roundDouble2(v)))))
+        ))
       )),
-      ("Heuristic", Json.obj(
-        ("Average Successes", Json.fromValues(hAvgSuccess.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
-        ("Average Actions", Json.fromValues(hAvgActions.map(v => Json.fromInt(v)))),
-        ("Average Remaining Health", Json.fromValues(hAvgRemainingHealth.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
-        ("Average remainingEnergy", Json.fromValues(hAvgRemainingEnergy.map(v => Json.fromDoubleOrNull(roundDouble2(v)))))
-      )),
-      (controllerName, Json.obj(
-        ("Memory File Name", Json.fromString(memoryFileName)),
-        ("Average Successes", Json.fromValues(avgSuccess.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
-        ("Average Actions", Json.fromValues(avgActions.map(v => Json.fromInt(v)))),
-        ("Average Remaining Health", Json.fromValues(avgRemainingHealth.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
-        ("Average remainingEnergy", Json.fromValues(avgRemainingEnergy.map(v => Json.fromDoubleOrNull(roundDouble2(v)))))
+      ("Map Water", Json.obj(
+        ("Random", Json.obj(
+          ("Average Successes", Json.fromValues(rAvgSuccessMW.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
+          ("Average Actions", Json.fromValues(rAvgActionsMW.map(v => Json.fromInt(v)))),
+          ("Average Remaining Health", Json.fromValues(rAvgRemainingHealthMW.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
+          ("Average remainingEnergy", Json.fromValues(rAvgRemainingEnergyMW.map(v => Json.fromDoubleOrNull(roundDouble2(v)))))
+        )),
+        ("Heuristic", Json.obj(
+          ("Average Successes", Json.fromValues(hAvgSuccessMW.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
+          ("Average Actions", Json.fromValues(hAvgActionsMW.map(v => Json.fromInt(v)))),
+          ("Average Remaining Health", Json.fromValues(hAvgRemainingHealthMW.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
+          ("Average remainingEnergy", Json.fromValues(hAvgRemainingEnergyMW.map(v => Json.fromDoubleOrNull(roundDouble2(v)))))
+        )),
+        (controllerName, Json.obj(
+          ("Memory File Name", Json.fromString(memoryFileName)),
+          ("Average Successes", Json.fromValues(avgSuccessMW.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
+          ("Average Actions", Json.fromValues(avgActionsMW.map(v => Json.fromInt(v)))),
+          ("Average Remaining Health", Json.fromValues(avgRemainingHealthMW.map(v => Json.fromDoubleOrNull(roundDouble2(v))))),
+          ("Average remainingEnergy", Json.fromValues(avgRemainingEnergyMW.map(v => Json.fromDoubleOrNull(roundDouble2(v)))))
+        ))
       ))
     )
 

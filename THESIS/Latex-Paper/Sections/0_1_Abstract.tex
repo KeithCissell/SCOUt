@@ -1,13 +1,15 @@
 
 
 \begin{abstract}
-  % ----------------------------------------------------------------------------------------------------------------------------------
-  \todo{Reword/Expand}
-  The purpose of this project is to create an artificially intelligent "mind" to make observational decisions for a mobile robot.
-  The mobile robot will have a set of sensors with which it can survey its surrounding environment. It will store this observed data, perform an analysis and plan its next move accordingly.
-  The plan is to drop a robot into unfamiliar environments with a set goal to achieve and let it learn on its own the best way to approach the given situation.
-  Usages can be as simple as mapping out an unknown area, to as difficult as searching for survivors after a natural disaster.
-  The robot will have internal and external limitations it must work with such as battery life and terrain obstacles.
-  The goal is to create AI that can learn how to use its observational skills to achieve a goal within a dynamic environment.
-  % ------------------------------------------------------------------------------------------------------------------------------------
+  Recently, the use of autonomous robots for exploration has drastically expanded--largely due to innovations in both hardware technology and the development of new artificial intelligence (AI) methods.
+  The wide variety of robotic agents and operating environments has led to the creation of many unique control strategies that cater to each specific agent and their goal within an environment.
+  Most control strategies are single purpose, meaning they are built from the ground up for each given operation.
+  Here we present a single, reinforcement learning control solution for autonomous exploration intended to work across multiple agent types, goals, and environments.
+  Our solution includes a memory of past actions and rewards to efficiently analyze an agent’s current state when planning future actions.
+  The agent’s objective is to safely navigate an environment and collect data to achieve a defined goal.
+  The control solution is first compared with random and heuristic control schemas.
+  To test the controller for adaptability, the controller is next subjected to changes in the agent’s sensors, environments, and goals.
+  Control strategies are compared by examining  goal completion rates, the number of actions taken, and the agent’s remaining health and energy at the end of a simulation.
+  Results indicate that our newly developed control strategy is adaptable to new situations.
+  A reinforcement-learning based controller, such as the one presented in this research, could help provide a universal solution for controlling autonomous robots in the field of exploration.
 \end{abstract}

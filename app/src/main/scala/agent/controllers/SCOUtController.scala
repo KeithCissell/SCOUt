@@ -45,77 +45,7 @@ class SCOUtController(
   val stateDifferenceWeights = weightsSet.stateDifferenceWeights
   val selectionWeights = weightsSet.selectionWeights
 
-  // Confidence Related Variables
-  // var maxDifferenceCompared: Double = 0.46
-  // var minimumComparisons: Double = 3.0
-  // var maxDifferenceCompared: Double = 0.66
-  // var minimumComparisons: Double = 13.0
-
-  // DIFFERENCE COMPARISON WEIGHTS
-  // var stateDifferenceWeights = new StateDifferenceWeights(
-  //   healthWeight = 0.28,
-  //   energyWeight = 0.82,
-  //   elementStateWeight = 0.67,
-  //   totalQuadrantWeight = 0.4,
-  //   elementDifferenceWeights = new ElementDifferenceWeights(
-  //     indicatorWeight = 0.43,
-  //     hazardWeight = 0.47,
-  //     percentKnownInRangeWeight = 0.23,
-  //     immediateKnownWeight = 0.75),
-  //   quadrantDifferenceWeights = new QuadrantDifferenceWeights(
-  //     indicatorWeight = 0.49,
-  //     hazardWeight = 0.18,
-  //     percentKnownWeight = 0.2,
-  //     averageValueWeight = 0.46,
-  //     immediateValueWeight = 0.46))
-  // var stateDifferenceWeights = new StateDifferenceWeights(
-  //   healthWeight = 0.71,
-  //   energyWeight = 0.88,
-  //   elementStateWeight = 0.9,
-  //   totalQuadrantWeight = 0.58,
-  //   elementDifferenceWeights = new ElementDifferenceWeights(
-  //     indicatorWeight = 0.54,
-  //     hazardWeight = 0.53,
-  //     percentKnownInRangeWeight = 0.87,
-  //     immediateKnownWeight = 0.08),
-  //   quadrantDifferenceWeights = new QuadrantDifferenceWeights(
-  //     indicatorWeight = 0.78,
-  //     hazardWeight = 0.55,
-  //     percentKnownWeight = 0.27,
-  //     averageValueWeight = 0.46,
-  //     immediateValueWeight = 0.17))
-
-  // SELECTION WEIGHTS
-  // var trainingSelectionWeights = new SelectionWeights(
-  //   movementSelectionWeights = new ActionSelectionWeights(
-  //     predictedShortTermScoreWeight = 1.0,
-  //     predictedLongTermScoreWeight = 1.5,
-  //     confidenceWeight = 0.5),
-  //   scanSelectionWeights = new ActionSelectionWeights(
-  //     predictedShortTermScoreWeight = 1.0,
-  //     predictedLongTermScoreWeight = 1.5,
-  //     confidenceWeight = 0.5))
-
-  // var selectionWeights = trainingSelectionWeights
-  // var selectionWeights = new SelectionWeights(
-  //   movementSelectionWeights = new ActionSelectionWeights(
-  //     predictedShortTermScoreWeight = 0.28,
-  //     predictedLongTermScoreWeight = 0.52,
-  //     confidenceWeight = 0.4),
-  //   scanSelectionWeights = new ActionSelectionWeights(
-  //     predictedShortTermScoreWeight = 0.88,
-  //     predictedLongTermScoreWeight = 0.62,
-  //     confidenceWeight = 0.01))
-  // var selectionWeights = new SelectionWeights(
-  //   movementSelectionWeights = new ActionSelectionWeights(
-  //     predictedShortTermScoreWeight = 0.51,
-  //     predictedLongTermScoreWeight = 0.01,
-  //     confidenceWeight = 0.95),
-  //   scanSelectionWeights = new ActionSelectionWeights(
-  //     predictedShortTermScoreWeight = 0.2,
-  //     predictedLongTermScoreWeight = 0.94,
-  //     confidenceWeight = 0.28))
-
+  
   def copy: Controller = new SCOUtController(memoryFileName, memoryExtention, training, weightsSet)
 
   def setup(mapHeight: Int, mapWidth: Int): Unit = {

@@ -37,56 +37,126 @@ This will discourage the Agent from attempting moves that could result in damage
 
 
 \section{Intelligent Controller}
-The SCOUt controller operates using memory based reinforcement learning.
+The SCOUtController operates using memory based reinforcement learning.
 After each operation, the SCOUt controller will store state-action pairs into its memory for later reference.
-A state-action pair (SAP) contains the action that the agent took, the state that the agent was in when it decided to take this action, and the short and long term rewards that the action received.
-In future operations, the SCOUt controller will try to find state-action pairs where the SAP's state is similar to the agent's current state.
-Next, the controller will look at what action was performed and what rewards were given for the outcome, and use this to predict the best action it should perform in its current operation.
+A state-action pair (SAP) contains the action that the agent took, the state that the agent was in when it chose this action, and the short and long term rewards that the action received.
+In future operations, the SCOUt controller can search in its memory to find state-action pairs where the state is similar to the agent's current state.
+Once the controller has gathered SAPs with similar states, it will look at what actions were performed and the rewards that were given to predict the best action it should perform in its current state.
+
+The calculations made for action decisions rely on several weights to assist in the comparison and decision making processes.
+Because of the large number of weights required for these calculations, a basic genetic algorithm (GA) was used to generate and evolve the values within the entire set of weights.
+The GA initialized a population of 10 weight sets and evolved them for 50 generations.
+Each generation creates five mutated copies and five crossover copies of individuals in the current population, where the copied individual(s) are chosen using roulette selection. \todo{ref roulette selection?}
+The resulting 20 individuals are then given a fitness score based on their performance within a series of 50 Operations.
+Ten survivors are then selected for the next generation.
+Survivor selection keeps the top two individuals and uses roulette selection for the remaining seven.
+The weight set with the highest fitness in the final generation was selected for use in this projects experimentation and are listed in \todo{ref table}.
+
 
 \subsection{Memory}
-Memory is built from running simulated operations.
-Each time the SCOUt controller finishes an operation and attributes short and long term rewards to each action, it selects which actions to store in its memory.
-For experiments in this paper, the last 20 actions performed are saved, and then a uniform sampling of 5 percent of all actions early in the operation are stored.
-The entire memory set is not saved to cut back on memory loads and computational time when searching for similar states.
+Memory is gathered from every operation that the SCOUtController is used in.
+When an operation has finished and long term rewards have been assigned to each action, the controller creates SAPs for every action that was chosen and selects a sub-set of them to be stored in memory.
+Saving only this sub-set cuts back on the size of the memory file and the computational time required while searching through memory for similar states.
+The current memory selectin method in this project will save the last 20 SAPs and then a uniform sampled sub-set of 5 percent of remaining SAPs from the operation.
 The last 20 actions are always saved because they typically are the most important events leading up to success or failure of the goal at hand.
-The remaining actions taken prior to these last 20 are then uniformly sampled so that the memory will also contain information related to the agent's initial searching behavior.
-Each action is then stored as a stat-action pair in a Json file for future use.
+The remaining actions taken prior to these last 20 are uniformly sampled so that the memory will also contain information related to the agent's initial searching behavior.
+Each state-action pair is saved in the memory file as a Json object that can be decoded the next time the controller's memory is loaded.
 
 
-\subsection{State Comparisons}
-When a SCOUt controller begins an operation, it will first load in state-action pairs from a specified memory file.
-The states within the existing memory is then normalized to make variances within each state's data relative to all other states in the memory set.
-For each state, normalization takes place for all numerical values stored within the AgentState.
+\subsection{Memory Normalization}
+SAP memory is loaded into the controller before an operation begins.
+Once loaded, the states within the memory are all normalized to make variances within each state's data relative to all other states in the memory set.
+Normalization takes place for all numerical values stored within the AgentState.
 This includes:
 
-\todo{format list}
-- health
-- energyLevel
-- each ElementState's:
-  - percentKnownInSensorRange
-  - each QuadrantState's
-    - percentKnown
-    - averageValueDifferential
-    - immediateValueDifferential
+\begin{itemize}
+\item health
+\item energyLevel
+\item elementState.percentKnownInSensorRange
+\item elementState[i].quadrantStateX.percentKnown
+\item elementState[i].quadrantStateX.averageValueDifferential
+\item elementState[i].quadrantStateX.immediateValueDifferential
+\end{itemize}
 
-Normalization follows this Guassian distribution equation suggested by \ref{mccaffrey_how_nodate}.
+Normalization follows this Guassian distribution equation suggested by \cite{mccaffrey_how_nodate}.
 
 \todo{normalization eq}
 
-This makes data values that are more meaningful when studied by the agent.
+Normalization is applied to help make data values more meaningful when studied by the agent.
 For example, if a controller was seeking out a human, it may look for increases in decibel values.
-In order for the controller to determine how much of an increase in decibel readings is accurate, it needs to have an idea of what is normal variation in decibel values versus a significant increase.
-Gaussian distribution provides this functionality through the calculated average and standard deviation within a data set.
-If the agent has gathered decibel readings in its north quadrant that are well above the standard deviation of readings it has stored in its memory, it should be considered significant.
+In order for the controller to determine how much of an increase in decibel readings is significant enough to investigate, it needs to first have an idea of the normal variations values.
+Gaussian distribution provides this functionality through the calculation of average and standard deviation within a data set.
+If the agent has gathered decibel readings in its north quadrant that are well outside the standard deviation of readings it has stored in its memory, it should be considered significant.
 
-Once the internal memory has been loaded and normalized, the controller can use the states of SAPs to compare against the agent's current state and predict the best action.
-Each time the controller is used to decide upon an action, it will compare its current state to states within its memory.
+Now when comparing values in two normalized states, the difference between the values is based upon their standard deviation from the average value found in the memory pool.
+This is denoted as a Guassian difference and is calculated by x(normalized) - y(normalized) = Gaussian difference. \todo{format}
+If two values are identical, they will have the same normalized value because they both will have the same deviation from the average and their Gaussian difference will be 0.
+
+\todo{mathematical proof?}
+\begin{listings}
+Example:
+Gaussian mean = 10
+Gaussian standard deviation = 1
+
+x = 12
+y = 12
+x = y
+
+x(normalized) = (x - Gaussain mean) / Gaussian standard deviation
+x(normalized) = (12 - 10) / 1
+x(normalized) = 2 / 1
+x(normalized) = 2
+
+y(normalized) = (y - Gaussain mean) / Gaussian standard deviation
+y(normalized) = (12 - 10) / 1
+y(normalized) = 2 / 1
+y(normalized) = 2
+
+x(normalized) = y(normalized)
+
+Gaussian difference (x,y) = |x - y|
+Gaussian difference (x,y) = |2 - 2|
+Gaussian difference (x,y) = 0
+\end{listings}
+
+Now, as two compared values become increasingly different from each other, they will receive increasingly larger Gaussian difference scores.
+
+\todo{another proof?}
+\begin{listings}
+Example:
+Gaussian mean = 10
+Gaussian standard deviation = 1
+
+x = 12
+y = 7
+
+x(normalized) = (x - Gaussain mean) / Gaussian standard deviation
+x(normalized) = (12 - 10) / 1
+x(normalized) = 2 / 1
+x(normalized) = 2
+
+y(normalized) = (y - Gaussain mean) / Gaussian standard deviation
+y(normalized) = (7 - 10) / 1
+y(normalized) = -3 / 1
+y(normalized) = -3
+
+Gaussian difference (x,y) = |x - y|
+Gaussian difference (x,y) = |2 - -3|
+Gaussian difference (x,y) = 5
+\end{listings}
+
+Following this principal, the controller can compare normalized states and determine similarities based upon how close Gaussian difference scores are to 0.
+
+
+\subsection{State Comparisons}
+Once the internal memory has been loaded and normalized, the controller can compare these SAP's AgentStates with current AgentStates to calculate a similarity between the two.
+Each time the current AgentState is tested for similarity, it will also be normalized using the \ref{equation} with the same Gaussian mean and standard deviation values used to normalize the memory pool.
 State comparisons are calculated using the following algorithm:
-Comparison follows this algorithm:
 
 \todo{style algo}
+\begin{listings}
 1. Normalize the current state (how many STDs it falls outside of the average)
-2. Calculate the difference for:
+2. Calculate the Gaussian difference for:
   a. health
   b. energyLevel
   c. elementStateDifferences = for each element state:
@@ -102,30 +172,54 @@ Comparison follows this algorithm:
         iii. percentKnownDifference = abs(SAP - current)
         iv. averageValueDifferentialDifference = if (current known && SAP known) abs(SAP - current) else (if current known == if SAP knonw) 1 else 0)
         v. immediateValueDifferentialDifference = if (current known && SAP known) abs(SAP - current) else (if current known == if SAP knonw) 1 else 0)
+3. Sum all differences together using weighted values for each Gaussian difference.
+  a. Movement state difference
+  b. Scan state difference
+\end{listings}
 
-The state comparison algorithm generates difference calculations with movement and scanning action types in mind.
-The elementStateDifferences (item c) are used when comparing the current state againts and SAP who's action was a scan action.
-For each elementStateDifference, the algorithm compares the similarity between how the elemet type is being studied (for hazard detection and goal related inication), as well as the percent of the element type known in range of the sensor and how many of the four adjacent cell's values are known.
-The hazard and indicator differences guide the controller to determine the importance and usage of the element types data.
-The percent known and immediate values known difference guide the controller to decide whether usage of an element type's sensor is efficient, or necessary.
-For example, if an agent does not have knowledge of the Elevation in adjacent cells, it couldn't confidently determine whether moving into one of those cells would result in taking fall damage.
-The quadrantStateDiffernces (item d) are used when the SAP's action was a movement action.
-Each quadrant for the current state is compared against every quadrant in the SAP's state.
-In doing so, this allows the controller to consider all orientations between the two states.
+The overall state difference is a sum of all Gaussian differences, influenced by weight factors for each difference.
+Weight factors influence which attributes of the AgentState are most important when comparing state similarity.
+Different weight sets for calculating overall state differences depending on the SAP's action type (movement or scanning).
+The weight sets chosen for this project were selected by evolving combinations of weights using a Genetic Algorithm (GA) (see \ref{GA Section}).
+
+When the SAP's action is a scan action, overall state difference is calculated using health, energy and elementStateDifferences.
+For each elementStateDifference, the algorithm compares the similarity between how the element type is being studied (for hazard detection and goal related indication), as well as the percent of the element type known in range of the sensor and how many of the four adjacent cell's values are known.
+The hazard and indicator differences Help the controller to determine the importance and usage of the element types data being collected.
+The percent known and immediate values known difference help the controller decide whether usage of an element type's sensor is efficient, or necessary.
+For example, if an agent does not have knowledge of the Elevation in adjacent cells, it couldn't confidently determine whether moving into one of those cells would result in a successful move without taking damage.
+
+If the action type was movement, overall state difference is calculated using health, energy and quadrantToQuadrantStateDifferences.
+The quadrantToQuadrantStateDifferences holds a collection of each quadrant in the current state, compared to each quadrant in the SAP state.
+Not every quadrant-to-quadrant comparison will be used in the overall state difference calculation, but by comparing each of these it allows the controller to consider quadrant differences regardless of differing orientation.
+The following diagram shows how each possible orientation of the SAPs quadrants could be compared against the current state's quadrants:
 
 \todo{orientation diagram}
 
-Each orientation is important to consider because SOMETHING SOMETHING WORDS.
-Within each quadrant to quadrant comparison, the controller will consider the differences between values for each element type.
-These quadrantElementStateDifferences look at values related to the specific quadrant instead of the entire internal map as elementStateDifference compares.
+Each orientation is important to consider because the controller is only concerned with moving towards interesting features in an Environment, regardless of the cardinal direction it moves in.
+After each quadrant-to-quadrant comparison is made, the orientation that yields the highest similarity is used for the overall comparison.
+As an example, consider if the SAP's highest matching orientation is found when rotating the quadrants 180 degrees (matching the SAP's South quadrant to the current state's North quadrant and so on).
+If the SAP held record that the agent had chosen to move East and received a high reward for doing so, the current agent should be encouraged to chose the same action to receive a potentially high reward as well.
+To do so, the agent would need to move West, as the highest similar orientation was found by rotating the SAP's quadrants by 180 degrees.
+\todo{maybe another diagram for the example}
 
-Once these specific differences have been calculated, the controller must collapse them into a single, overall state difference to help predict the reward the agent will receive for each possible actions.
-To collapse the collection of state differences, the controller must apply different weights to each individual difference, and average the total of them all.
-There are two differnt calculations for overall state differences.
-The first is if the SAP's action was a scanning action, and the second is if is was a movement action.
-The equations for this weight-based difference calculation are as follows:
 
-\todo{equationzzz}
+Each quadrant-to-quadrant comparison considers the Gaussian differences between values in each ElementState present in the current AgentState.
+The comparisons are denoted as quadrantElementStateDifferences as they only look one quadrant of each state, and not the entire ElementState.
+For example, making a North-to-South quadrant comparison would consider data in the current states North quadrant against data in the SAP's South quadrant.
+When making these comparisons, it is not guaranteed that the current state and SAP state will share all of the same types of ElementStates.
+If the current state contains Decibel data and the SAP state does not, it will receive a Gaussian difference score of 1.0 as there is no calculable similarity.
+Because we are only comparing against ElementStates in the current AgentState, if the SAP contains ElementStates not present in the SAP state, they are simply ignored in the quadrantToQuadrantStateDifferences calculation.
+
+Once these Gaussian differences have been calculated, the controller must collapse them into a single, overall difference for calculating reward predictions for each valid action that the current Agent can take.
+To collapse the collection of Gaussian differences, the controller calculates a weighted summation of a set of Gaussian differences found in step 2 of the \ref{state comparison process}.
+The summation equation used depends on the SAP's action type.
+For scanning actions, overallStateDifference(scanning) is used.
+For movement actions, overallStateDifference(movement) is used.
+Both equations require sets of weights corresponding to each Gaussian difference to be passed in.
+The entire collection of weights is called denoted as WeightsSet and is described in full detail in \ref{weights}.
+
+\todo{convert to summation equations}
+\begin{listings}
 overallStateDifference(scanning) = (health * Whealth + energyLevel * Wenergylevel + overallElementStateDifferences * WelementStates) / 3
 
 overallElementStateDifferences = sum(for each elementStateDifference: overallElementStateDifference * WelementState) / number of elementStateDifferences
@@ -141,13 +235,45 @@ overallOrientationDifference = (overallQuadrantDifference1 * Wquadrant + overall
 overallQuadrantDifference = sum(for each quadrantElementStateDifference: overallQuadrantElementStateDifference * WquadrantState) / number of quadrantElementStateDifferences
 
 overallQuadrantElementStateDifference = (hazardDifference * Whazard + indicatorDifference * Windicator + percentKnownDifference * WpercentKnown + averageValueDifferentialDifference * WaverageValue + immediateValueDifferentialDifference * WimmediateValue) / 5
+\end{listings}
+
+
+Because the resulting overallStateDifference value calculated for each SAP is a summation of Gaussian differences, it will hold true that the closer the value is to 0.0, the higher the similarity is between the SAP state and current state.
+A StateActionDifference class instance is then used to store the overallStateDifference score and the SAP's action taken, short term reward and long term reward.
+This state comparison is repeated for every SAP in the memory pool, and the resulting collection of StateActionDifference instances is passed to the action reward prediction algorithm. \todo{reward prediction algorithm}
+
+\begin{listings}
+class StateActionDifference(
+  action: String
+  overallStateDifference: Double
+  shortTermScore: Double
+  longTermScore: Double
+)
+\end{listings}
+
+
+An action is then selected based on one of two methods.
+If the controller is training, roulette selection is used.
+Otherwise, the action with the highest score is always selected.
+The action is then returned to the agent to perform.
+If the Operation is still ongoing and the Agent is operational, the process restarts from step \todo{step #} using the Agent's new state.
+If this results in completion or failure of the Operation, the process ends and the Operation event log is added into the controller's memory file for later reference.
 
 
 
-\subsection{Action Selection}
-Once an overall difference has been calculated between the agent's current state and states in memory, the controller can predict the reward that will be received for each possible action.
-An action's short and long term rewards are predicted from the averages of SAPs where: A) the considered action was selected, and B) the state difference from the current state is below a certain threshold.
-In addition to these predicted rewards, we also calculate a confidence value for the predictions.
-\todo{confidence EQ}
-The lower the difference is between the current and SAP states, the higher the confidence will be.
-Additionally, the more SAPs that are considered in the prediction, the more confident the controller can be in the predicted reward.
+
+% \subsection{Action Reward Prediction}
+% Action reward prediction first calculates three factors for each valid action being considered: predicted short term reward, predicted long term reward and confidence.
+% These factors are determined by StateActionDifference that hold the same action as the current action whose reward is being predicted.
+% Only a list of similar StateActionDifferences are considered in these calculations.
+% This list is made up of StateActionDifferences with an overall difference below a the set minDifferenceThreshold.
+% Predicted short and long term rewards are calculated by the average of short and long term scores within the list of similar StateActionDifferences.
+%
+% If there are no StateActionDifferences in the list, the action being considered will receive a predicted short term reward and long term reward of 0.5 and a confidence of 0.
+
+
+% An action's short and long term rewards are predicted from the averages of SAPs where: A) the considered action was selected, and B) the state difference from the current state is below a certain threshold.
+% In addition to these predicted rewards, we also calculate a confidence value for the predictions.
+% \todo{confidence EQ}
+% The lower the difference is between the current and SAP states, the higher the confidence will be.
+% Additionally, the more SAPs that are considered in the prediction, the more confident the controller can be in the predicted reward.
