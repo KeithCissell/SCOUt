@@ -124,7 +124,7 @@ class Operation(agent: Agent, environment: Environment, goal: Goal, maxActions: 
 
   //------------------------ LONG-TERM SCORE ---------------------------------
   def scoreEventsLongTerm(): Unit = {
-    val goalReward = (goal.percentComplete / 100.0) * goalRewardWeight
+    val goalReward = if (agent.health > 0.0) (goal.percentComplete / 100.0) * goalRewardWeight else 0.0
     val longTermHealthReward = (agent.health / maxHealth) * longTermHealthRewardWeight
     val longTermEnergyReward = (agent.energyLevel / maxEnergyLevel) * longTermEnergyRewardWeight
     val longTermTimeReward = timeLimit match {

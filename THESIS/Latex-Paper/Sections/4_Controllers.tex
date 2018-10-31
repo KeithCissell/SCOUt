@@ -43,6 +43,15 @@ A state-action pair (SAP) contains the action that the agent took, the state tha
 In future operations, the SCOUt controller can search in its memory to find state-action pairs where the state is similar to the agent's current state.
 Once the controller has gathered SAPs with similar states, it will look at what actions were performed and the rewards that were given to predict the best action it should perform in its current state.
 
+The calculations made for action decisions rely on several weights to assist in the comparison and decision making processes.
+Because of the large number of weights required for these calculations, a basic genetic algorithm (GA) was used to generate and evolve the values within the entire set of weights.
+The GA initialized a population of 10 weight sets and evolved them for 50 generations.
+Each generation creates five mutated copies and five crossover copies of individuals in the current population, where the copied individual(s) are chosen using roulette selection. \todo{ref roulette selection?}
+The resulting 20 individuals are then given a fitness score based on their performance within a series of 50 Operations.
+Ten survivors are then selected for the next generation.
+Survivor selection keeps the top two individuals and uses roulette selection for the remaining seven.
+The weight set with the highest fitness in the final generation was selected for use in this projects experimentation and are listed in \todo{ref table}.
+
 
 \subsection{Memory}
 Memory is gathered from every operation that the SCOUtController is used in.
@@ -69,7 +78,7 @@ This includes:
 \item elementState[i].quadrantStateX.immediateValueDifferential
 \end{itemize}
 
-Normalization follows this Guassian distribution equation suggested by \ref{mccaffrey_how_nodate}.
+Normalization follows this Guassian distribution equation suggested by \cite{mccaffrey_how_nodate}.
 
 \todo{normalization eq}
 
@@ -231,7 +240,7 @@ overallQuadrantElementStateDifference = (hazardDifference * Whazard + indicatorD
 
 Because the resulting overallStateDifference value calculated for each SAP is a summation of Gaussian differences, it will hold true that the closer the value is to 0.0, the higher the similarity is between the SAP state and current state.
 A StateActionDifference class instance is then used to store the overallStateDifference score and the SAP's action taken, short term reward and long term reward.
-This state comparison is repeated for every SAP in the memory pool, and the resulting collection of StateActionDifference instances is passed to the action reward prediction algorithm.
+This state comparison is repeated for every SAP in the memory pool, and the resulting collection of StateActionDifference instances is passed to the action reward prediction algorithm. \todo{reward prediction algorithm}
 
 \begin{listings}
 class StateActionDifference(
@@ -243,11 +252,28 @@ class StateActionDifference(
 \end{listings}
 
 
+An action is then selected based on one of two methods.
+If the controller is training, roulette selection is used.
+Otherwise, the action with the highest score is always selected.
+The action is then returned to the agent to perform.
+If the Operation is still ongoing and the Agent is operational, the process restarts from step \todo{step #} using the Agent's new state.
+If this results in completion or failure of the Operation, the process ends and the Operation event log is added into the controller's memory file for later reference.
 
-\subsection{Action Reward Prediction}
-Once an overall difference has been calculated between the agent's current state and states in memory, the controller can predict the reward that will be received for each possible action.
-An action's short and long term rewards are predicted from the averages of SAPs where: A) the considered action was selected, and B) the state difference from the current state is below a certain threshold.
-In addition to these predicted rewards, we also calculate a confidence value for the predictions.
-\todo{confidence EQ}
-The lower the difference is between the current and SAP states, the higher the confidence will be.
-Additionally, the more SAPs that are considered in the prediction, the more confident the controller can be in the predicted reward.
+
+
+
+% \subsection{Action Reward Prediction}
+% Action reward prediction first calculates three factors for each valid action being considered: predicted short term reward, predicted long term reward and confidence.
+% These factors are determined by StateActionDifference that hold the same action as the current action whose reward is being predicted.
+% Only a list of similar StateActionDifferences are considered in these calculations.
+% This list is made up of StateActionDifferences with an overall difference below a the set minDifferenceThreshold.
+% Predicted short and long term rewards are calculated by the average of short and long term scores within the list of similar StateActionDifferences.
+%
+% If there are no StateActionDifferences in the list, the action being considered will receive a predicted short term reward and long term reward of 0.5 and a confidence of 0.
+
+
+% An action's short and long term rewards are predicted from the averages of SAPs where: A) the considered action was selected, and B) the state difference from the current state is below a certain threshold.
+% In addition to these predicted rewards, we also calculate a confidence value for the predictions.
+% \todo{confidence EQ}
+% The lower the difference is between the current and SAP states, the higher the confidence will be.
+% Additionally, the more SAPs that are considered in the prediction, the more confident the controller can be in the predicted reward.

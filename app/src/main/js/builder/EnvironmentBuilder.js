@@ -56,7 +56,7 @@ function loadEnvironmentBuilderPage(name = "My Environment", height = "50", widt
       <button class="submit-button" id="random-environment-button">Random Env</button>
       <button class="submit-button" id="custom-environment-button">Custom Env</button>
       <button class="submit-button" id="load-environment-button">Load Env</button>
-      <button class="submit-button" id="load-environment-template-button">Load Env Template</button>
+      <button class="submit-button" id="load-environment-template-button">Load Template</button>
       <button class="submit-button" id="load-operation-button">Load Operation</button>
     </div>
   </div>

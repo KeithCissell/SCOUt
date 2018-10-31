@@ -240,7 +240,7 @@ For example, if a drone was modeled as the agent, it would have a higher range o
 A wheeled robot loaded with multiple sensors would likely have decreased mobility, but could collect a wider variety of data.
 Mobility is defined by maximum slope an agent can climb, the minimum slope an agent can traverse before taking "fall damage", a resistance factor and the energy cost required for movement.
 The resistance factor is used to scales the amount of damage that the agent may take (for example if it fell off of a cliff).
-Movement cost is used to calculate how much energy is used when attempting a movement action.
+Movement cost and slope cost used to calculate how much energy is used when attempting a movement action.
 The total cost calculated is scaled based on the distance moved, and the slope of the elevation between the agent's current position and the position that it attempts to move to.
 
 
@@ -250,6 +250,7 @@ class Mobility (
   movementSlopeLowerThreshHold: Double
   movementDamageResistance: Double
   movementCost: Double
+  slopeCost: Double
 )
 \end{lstlisting}
 
@@ -263,7 +264,8 @@ The thresholds define what levels of an element type that the agent can be expos
 The resistance factor then influences how much damage the agent will take at levels exceeding the threshold.
 
 \begin{lstlisting}[language=Scala]
-trait Duribility (
+class Duribility (
+  elementType: String
   damageUpperThreshold: Double
   damageLowerThreshold: Double
   damageResistance: Double
@@ -551,7 +553,7 @@ For Elevation, this would equate to transforming a highly rigid surface into a s
 Terrain modifications influence the basic landscape of the environment.
 After each ElementSeed has produced a layer for the Environment, TerrainModifications are applied one after the other, taking care not to overlap modifications (for example, we wouldn't want a hill to overlap with a valley and cancel each other out).
 Each modification represents a severe alteration of one or more element type Layers within the environment.
-Following a similar process laid out by Doran and Parberry\ref{doran_controlled_2010}, desired alterations are incorporated into the environment while allowing unique variations of each to develop.
+Following a similar process laid out by Doran and Parberry\cite{doran_controlled_2010}, desired alterations are incorporated into the environment while allowing unique variations of each to develop.
 Their controlled procedural generation process is used to produce landmasses that potentially have bodies and channels of water.
 SCOUt's environment builder generalizes this process and extends it to allow multitudes of element types to be modified.
 The TerrainModification trait provides an extendable template from which all types of modifications that can be applied.
@@ -622,7 +624,7 @@ class ElevationModification (
 \todo{turn into pseudo-code}
 
 Here we have an ElevationModification which will allow us to create hills and valleys within the environment.
-Again following the approach of \ref{doran_controlled_2010}, random, unmodified (x,y) positions are selected from the Layer to begin with and updates their value to the specified modification value.
+Again following the approach of \cite{doran_controlled_2010}, random, unmodified (x,y) positions are selected from the Layer to begin with and updates their value to the specified modification value.
 The modifier then performs "walks" to random, unmodified neighboring Elements, updating their values within a standard deviation of the specified modification value.
 These walks continue until the specified coverage area has been modified, or until there are no neighboring cells that can be modified.
 A special Layer smoothing algorithm is then applied to the Elevation values in the modified area, as well as the immediate surrounding unmodified area to reduce rigidity and give a more natural change in values between neighboring cells.
