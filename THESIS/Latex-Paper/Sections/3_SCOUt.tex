@@ -73,10 +73,10 @@ If too much is left out of the model, it won’t reflect real word scenarios.
 On the other hand, attempting to model too much can be impractical as it consumes effort and resources that could instead be spent running real world experiments.
 For this experiment, environments are modeled as a high level class containing a collection of lower level classes that together form a cleverly simplified representation of a real world environment.
 
-The \textbf{Environment} class holds an n x m 2D grid of uniformly sized s x s square \textbf{Cells}, where n x m is the total area of the environment and s x s is the area each Cell represents within the environment.
-Along with positional data, each \textbf{Cell} contains information about the different elements and anomalies present within the s x s area it covers.
-An \textbf{Element} is a generalized object that represents one specific environmental attribute, such as the elevation or temperature.
-An \textbf{Anomaly} represents some object present within the environment that could be of interest.
+The \texttt{Environment} class holds an $n x m$ 2D grid of uniformly sized $s x s$ square cells, where $n x m$ is the total area of the \texttt{Environment} and $s x s$ is the area each \texttt{Cell} represents within the \texttt{Environment}.
+Along with positional data, each \texttt{Cell} contains information about the different elements and anomalies present within the $s x s$ area it covers.
+An \texttt{Element} is a generalized object that represents one specific environmental attribute, such as the elevation or temperature.
+An \texttt{Anomaly} represents some object present within an \texttt{Environment} that could be of interest.
 Anomalies often have an effect on element values in their surrounding area which makes them “traceable”.
 
 \todo{add a diagram}
@@ -92,10 +92,10 @@ class Environment (
 \end{lstlisting}
 
 \subsubsection{Cell}
-A Cell holds x and y coordinate for its relative position within the Environment's grid.
+A \texttt{Cell} holds $x$ and $y$ coordinate for its relative position within the \texttt{Environment}'s grid.
 These coordinates do not reflect the actual size of the Cell, only an index value for the order they appear within the 2-dimensional array data structure.
-The Environment's scale can easily be applied to the physical location of a Cell as it is a shared global attribute within the Environment object.
-If an element type or an anomaly is present within the area that the cell covers in the environment grid, it will appear in its respective list.
+The \texttt{Environment}'s scale can easily be applied to the physical location of a Cell as it is a shared global attribute within the \texttt{Environment} class.
+If an element type or an anomaly is present within the area that the cell covers in the \texttt{Environment} grid, it will appear in its respective list.
 
 \begin{lstlisting}[language=Scala]
 class Cell (
@@ -108,7 +108,7 @@ class Cell (
 
 \subsubsection{Element}
 An element can be any measurable attributes within an environment.
-For example: temperature, elevation and decibel levels are all attributes of the environment whose values can be measured.
+For example: temperature, elevation and decibel levels are all attributes of the \texttt{Environment} whose values can be measured.
 All element types are all generalized by the abstract trait, Element.
 The trait has a set of defined attributes that an inheriting class must define to identify the element type and how it behaves.
 Name and unit are used for identification and displaying the element type.
