@@ -428,7 +428,7 @@ These performance measurements are calculated on a short and long term basis, an
 In addition to measuring the performance of an agent, rewards can be used as a learning metric for an intelligent Controller (\todo{ref controller schema}).
 
 \subsubsection{Short Term Rewards}
-Short term rewards are given each time an agent performs an action to reflect the immediate outcome of the action.
+Short term rewards are given each time an agent performs an action to reflect the event that occurs.
 Energy and health depletion are major factors in this reward.
 If the action required an excessive amount of energy or resulted in damage to the agent, the reward is decreased.
 Other factors that come into play depend on the specific action taken.
@@ -436,7 +436,52 @@ If the agent attempted to move to a new area and failed to move (ex: a hill was 
 A small increase in reward is applied if the agent moves into an unexplored area.
 If the agent uses a scanner, the reward is adjusted to reflect the amount of new data learned.
 This penalizes the agent from using a scanner twice in a row or after small movements as it is not efficient use of energy.
-\todo{Add STR Equation}
+
+\todo{pseudo-code?}
+\begin{lstlisting}[language=Scala, label=code:short_term_reward]
+  //------------------------ SHORT-TERM REWARD --------------------------------
+  def rewardEventShortTerm(event: Event): Double = event match {
+    case e: Fatal => 0.0
+    case e: Unsuccessful => statusRewards(e) / statusWeightsTotal
+    case e: ScanSuccessful => (scanReward(e) + statusRewards(e)) / (scanRewardWeight + statusWeightsTotal)
+    case e: MovementSuccessful => (movementReward(e) + statusRewards(e)) / (movementRewardWeight + statusWeightsTotal)
+  }
+
+  def scanReward(scanEvent: ScanSuccessful): Double = (scanEvent.newDiscoveries.toDouble / scanEvent.cellsScanned.toDouble) * scanRewardWeight
+
+  def movementReward(movementEvent: MovementSuccessful): Double = (if (visitedBefore(movementEvent.x, movementEvent.y)) 0.0 else 1.0) * movementRewardWeight
+
+  def statusRewards(event: Event): Double = healthReward(event) + energyReward(event) + timeReward(event)
+
+  def healthReward(event: Event): Double = ((maxHealth - damageTaken(event)) / maxHealth) * healthRewardWeight
+
+  def energyReward(event: Event): Double = ((maxEnergyLevel - energyUse(event)) / maxEnergyLevel) * energyRewardWeight
+
+  def timeReward(event: Event): Double = timeLimit match {
+    case None => 0.0
+    case Some(tl) => ((tl - timeElapsed(event)) / tl) * timeRewardWeight
+  }
+
+  def visitedBefore(x: Int, y: Int): Boolean = {
+    for (item <- eventLogShort) if (item.event.x == x && item.event.y == y) return true
+    return false
+  }
+
+  def damageTaken(event: Event): Double = eventLogShort.lastOption match {
+    case Some(item) => item.event.health - event.health
+    case None => maxHealth - event.health
+  }
+
+  def energyUse(event: Event): Double = eventLogShort.lastOption match {
+    case Some(item) => item.event.energyLevel - event.energyLevel
+    case None => maxHealth - event.energyLevel
+  }
+
+  def timeElapsed(event: Event): Double = eventLogShort.lastOption match {
+    case Some(item) => event.timeStamp - item.event.timeStamp
+    case None => event.timeStamp
+  }
+\end{lstlisting}
 
 \subsubsection{Long Term Rewards}
 Long term rewards are calculated once the operation is over.
@@ -446,8 +491,27 @@ Even if a goal is completed, the agent could receive a low score if it was "reck
 The long term reward is then propagated backwards through all the actions that were taken.
 The actions performed immediately before the end of the operation are given highest score.
 Previous actions then receive diminishing reward based on \todo{LTS reward distribution equation}.
-\todo{Add LTR Equation}
 
+\todo{pseudo code?}
+\begin{lstlisting}[language=Scala, label=code:long_term_reward]
+  //------------------------ LONG-TERM REWARD ---------------------------------
+  def rewardEventsLongTerm(): Unit = {
+    val goalReward = if (agent.health > 0.0) (goal.percentComplete / 100.0) * goalRewardWeight else 0.0
+    val longTermHealthReward = (agent.health / maxHealth) * longTermHealthRewardWeight
+    val longTermEnergyReward = (agent.energyLevel / maxEnergyLevel) * longTermEnergyRewardWeight
+    val longTermTimeReward = timeLimit match {
+      case None => 0.0
+      case Some(tl) => Math.max(((tl - agent.clock) / tl), 0.0) * longTermTimeRewardWeight
+    }
+    val longTermScore = (goalReward + longTermHealthReward + longTermEnergyReward + longTermTimeReward) / longTermWeightsTotal
+    for (i <- 0 until eventLogShort.size) {
+      val item = eventLogShort(i)
+      val scale = if (eventLogShort.size > 10) eventLogShort.size / 10 else 1.0
+      val itemLongTermScore = longTermScore * Math.pow(0.9, i/scale)
+      eventLog += new LogItem(item.state, item.action, item.event, item.shortTermScore, longTermScore)
+    }
+  }
+\end{lstlisting}
 
 
 % ==============================================================================

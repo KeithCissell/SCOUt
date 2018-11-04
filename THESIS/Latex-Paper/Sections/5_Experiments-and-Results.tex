@@ -1,43 +1,286 @@
 
 
-\chapter{Experiments and Results}
-To analyze the adaptability of the SCOUt control schema, three instances of a SCOUtController are trained and then tested and tested in two experiments.
-The first experiment compares the performance of each SCOUtController against a random and heuristic controller to observe if they can in fact exhibit intelligent behavior when attempting to complete a goal.
-The second experiment tests the adaptability of the controllers' performances when sensors it was trained with are removed, or the goal of the agent is changed.
-Two different goals are used in these experiments: Find Human and Map Water.
-Find Human requires the agent to search an environment to find a Human anomaly.
-Goal completion is either 100 percent for successfully locating the Human, or 0 percent for failing to find the human before depleting health or energy.
-For the goal to be successfully completed, the controller must be in one of the eight adjacent cells to the Human anomaly's location in the environment. \todo{photo of human discovery zone}
-Map Water tests the controller's ability to navigate an environment and collect as much data for water depth as possible.
-Map Water operations will run until the entire area has been mapped, or the agent has depleted its health or energy.
-Goal completion is then reward based on the percentage of the environment that was mapped for Water presence.
-Training and testing are both conducted using three different EnvironmentTemplates.
-Each template differs in difficulty to navigate due to the modifications present within them.
+\chapter{Experiments and Results} \label{experiments_and_results}
+To analyze usefulness and adaptability of the SCOUt control schema, three instances of a \texttt{SCOUtController} are trained and tested in two experiments.
+The first experiment compares the performance of each \texttt{SCOUtController} against a random and heuristic controller to determine if they exhibit intelligent behavior when attempting to complete a given goal.
+The second experiment tests the adaptability of the controllers' performances by removing sensors form the agent, or changing the goal.
+This will create new situations that the controllers have not been trained for.
+Two different goals are used in these experiments: \textit{Find Human} and \textit{Map Water}.
+\textit{Find Human} requires the agent to search an environment to find the Human anomaly randomly placed within the environment.
+Goal completion is either 100 percent for successfully locating the Human, or 0 percent for failing to find the human before health or energy has been depleted.
+For the goal to be successfully completed, the controller must navigate to one of the eight cells adjacent to the Human anomaly's location in the environment. \todo{photo of human discovery zone}
+\textit{Map Water} tests the controller's ability to navigate an environment and collect as much water depth data as possible.
+\textit{Map Water} operations will run until the entire area has been scanned for water depth, or the agent has depleted its health or energy.
+Goal completion is then reward based on the percentage of the environment that was scanned for water depth.
+Training and testing are both conducted using three different \texttt{EnvironmentTemplates}.
+Each template differs in their difficulty to navigate due to the modifications present within them.
 
-During both training and experimentation, tests are conducted to observe the performance of the controllers.
-Each test will compare the intelligent SCOUtController(s) against both random and heuristic controllers.
-Two heuristic controllers are used for testing with each goal.
-$Heuristic_{FH}$ and $Heuristic_{MW}$ are used for Find Human and Map Water respectively.
-The random and heuristic controllers will provide a base line for performance metrics.
-This base line is important as the procedural generation of environments could yield conditions that vary the difficulty of achieving the goal, or even prevent goal completion entirely.
-When tested against each other, all controllers are given the exact same starting conditions.
-Their performances will be compared for the same goal, Environment instance and starting position.
+During both training and experimentation, tests are conducted to measure the performance of each controller.
+A test is a series of operations that an agent will attempt to complete using a set of controllers.
+Operation setups are repeated many times throughout the series, but each instance will yield a new situation for the agent due to the various environments that are created through procedural generation.
+Each operation will be run once per controller, where each run is completely identical: same goal, same environment instance, same starting position, and same agent setup (aside from the controller that is used).
+The only exception to this is in experiment 2, when sensors are removed from the SCOUt controller's agent to test adaptability.
+Tests will measure the performance of each controller in these identical operations to see how they compare.
+Each test will include at least one random, one heuristic and one SCOUt controller.
+Two different heuristic controllers are used in testing depending on the goal of the operation.
+$Heuristic_{FH}$ and $Heuristic_{MW}$ are used for \textit{Find Human} and \textit{Map Water} respectively.
+The random and heuristic controllers will provide base lines for performance of the SCOUt controllers.
+These base lines are important as the difficulty of an operation is unpredictable.
+Different instances of the same operation setup can yield unique environments and starting positions that will alter the difficulty of goal completion, or even prevent it entirely.
 Performance is measured in four categories: goal completion, the number of actions taken, remaining health and remaining energy.
-Additionally, the starting location of the controllers for each test will be chosen in a location that does not result in damage (ex: starting in a cell with water present) or immediate goal completion (ex: starting right next to the Human).
-The following sections cover the agent setup, environments used and the setup of each test and their results.
+Additionally, the agent's starting location for each operation will be chosen in a location that does not result in damage (ex: starting in a cell with water present) or immediate goal completion (ex: starting next to the Human anomaly).
+The specific agent setups and \texttt{EnvironmentTemplates} used for training and experimentation are covered in sections ~\ref{sec:agent_setups} and ~\ref{sec:test_environment_templates}.
+Sections ~\ref{sec:training}, ~\ref{sec:experiment1} and ~\ref{sec:experiment2} then cover the setup and results for training, experiment 1 and experiment 2 respective.
 
 
-\section{Agent}
-Similar Agent setup is used for every operation run in training and testing.
+\section{Agent} \label{sec:agent_setups}
+A similar agent setup is used for every operation run in training and testing.
 The only variation is in the controller being used and the sensor types present.
-All health, energy, mobility and durability variables will be set to the same value throughout.
-This will assure that no advantage or disadvantage is given to any controller when navigating the environment.
-The performance of each controller will then be based solely on the control schema's usage of available sensors and collected environment data.
-When sensors are available for an agent's use, the same instance of the sensor type is used.
-The exception to this being that the indicator flag for each sensor will differ for the two goals.
-For Find Human Temperature and Decibel sensors will be flagged true, and for Map Water the Water sensor will be flagged true.
-Each Agent will always begin an Operation with an empty internalMap, 100.0 health and 100.0 energyLevel.
-The Agent Mobility and Durabilities and each sensor instance used in experimentation are defined below.
+All health, energy, mobility and durability variables will be set to the same value throughout training and experimentation.
+This will assure that no advantage or disadvantage is given to any controller when navigating the agent through an environment.
+The performance of each controller will then be based solely on the their usage of available sensors, and analyses of the data they collect.
+Different sensors are available for use depending on the goal, or in the unique case of a test in experiment 1, depending on the test setup.
+Four sensors are used throughout testing: elevation, temperature, decibel and water.
+When sensors are available for an agent to use, the indicator flag will reflect their usage for the present goal.
+For \textit{Find Human} the temperature and decibel sensors will be flagged as indicators, and for \textit{Map Water} the water sensor will be flagged as an indicator.
+Water and elevation sensors are always flagged as hazard since the agent durability and mobility defined make the agent susceptible to water and fall damage.
+Each Agent will always begin an operation with an empty \texttt{internalMap}, 100.0 \texttt{health} and 100.0 \texttt{energyLevel}.
+The instances of the \texttt{Agent}, \texttt{Mobility}, \texttt{Durabilities}, and each \texttt{Sensor} are found in the appendix (item \todo{ref appendix})
+
+
+\section{Environment Templates} \label{sec:test_environment_templates}
+Three \texttt{EnvironmentTemplate}s with increasing difficulty are created for use in training and experimentation (\textit{EASY}, \textit{MEDIUM}, and \textit{HARD}).
+Change in difficulty is achieved by adjusting: environment size, presence of \texttt{TerrainModification}s, average and deviation values of each \texttt{ElementSeed}, and values of each \texttt{Effect} of any \texttt{Anomaly}.
+Increased environment size creates a wider area that an agent will have to search within, or map to achieve its goal.
+More \texttt{TerrainModification}s makes each environment potentially more hazardous.
+Changing the average and deviation values of \texttt{ElementSeed}s used to generate the \texttt{Environment} instance has a couple of effects.
+As an example, by increasing the average decibel values in the environment, the distinction of the Human's decibel \texttt{Effect} is dampened, and the agent will need to be closer to detect any noise produced.
+Also, if the variance in decibel values increases, it becomes more difficult for an agent to distinguish what level of increase is considered significant enough to investigate.
+Last, adjusting the values within \texttt{Anomaly} \texttt{Effect}s, it can become harder for an intelligent controller to detect the \texttt{Anomaly} from a distance.
+For example, by reducing the decibel effect of a \texttt{Human Anomaly}, the radiation of the effect will cover less area in the environment, meaning the agent will have to search longer before it may pick up on the effect.
+
+Each environment template has one \texttt{Human} that will be placed into it at random in a non-hazardous zone (so not in water).
+The same templates will then be used for both the \textit{Find Human} and \textit{Map Water} goals.
+In the case that the goal is \textit{Map Water}, a \texttt{Human Anomaly} will still be present within the environment, but it will be ignored by the agent.
+Each of these \texttt{EnvironmentTemplate}s are listed in Json format in the appendix (\textit{EASY}, \textit{MEDIUM}, and \textit{HARD} \todo{ref appendix}).
+This Json format is what appears in each template's respective file.
+When a template is used in training or experimentation, it will be loaded in from its file, converted to a Scala object, and passed to the \texttt{EnvironmentBuilder}.
+The resulting \texttt{Environment} instance can then be used in one or more test operations.
+
+
+\section{Training} \label{sec:training}
+Three separate \texttt{SCOUtController}s are trained to accumulated memory pools of SAPs.
+Each of the three controllers are trained with different goal configurations.
+One is trained using the \textit{Find Human} goal, the second using the \textit{Map Water} goal and the third is a hybrid, trained using both goals.
+They are named $SCOUt_{FH}$, $SCOUt_{MW}$ and $SCOUt_{H}$ respectively.
+
+Each controller is trained for 30 iterations, where an iteration runs one operation per environment template.
+Once training has completed, each controller will have collected SAPs from a total of 90 operations (30 on EASY, 30 on MEDIUM and 30 on HARD).
+Every operation that $SCOUt_{FH}$ is run in will be with the \textit{Find Human} goal and every operation for $SCOUt_{MW}$ will be with the \textit{Map Water} goal.
+$SCOUt_{H}$ will alternate goals for each iterations.
+In total it will have run 45 operations with the \textit{Find Human} goal and 45 operations with the \textit{Map Water} goal (15 on EASY, 15 on MEDIUM and 15 on HARD for each).
+
+After each training iteration, the controller is tested with its current memory to track performance improvements.
+Testing at each iteration runs a series of simulated operations to collect performance data.
+Each series uses the controller's respective goal(s) and is run on each testing environment template 20 times (20 on EASY, 20 on MEDIUM, and 20 on HARD).
+The controller tested will have access to its current memory pool that it has gathered during all of the training operations it has completed so far.
+As the purpose of iteration testing is to measure the \textit{current} performance level of the controller, no SAPs will be gathered during these tests and the memory will be left un-altered.
+For a base line, the $Random$ controller is run through the same series of tests.
+Results from the 60 total operations will be averaged in each of the four performance categories.
+The averaged results of the learning SCOUt controller will then be differenced against the averaged results of the $Random$ controller.
+By differencing the averages, we are observing how much better or worse the SCOUt controller was able to perform than the $Random$ controller in the same testing conditions.
+This also removes the discrepancy between each iteration test that is run, as one iteration text may have generated a series of exceptionally difficult or easy operations.
+It is expected that as training continues, the goal completion, remaining health and remaining energy performances of SCOUt will increase, and the number of actions performed will decrease when compared against the $Random$ controller.
+
+Results for $SCOUt_{FH}$ training (figure ~\ref{fig:findhuman_training_results}) show the desired trends of increased performance over training iterations.
+Average goal completion and average remaining energy begin at the same performance levels as $Random$ and increase to be consistently better than random over time.
+The average number of actions performed begins slightly below $Random$ and continue to decrease before leveling out roughly two-thirds of the way through training.
+This demonstrates that the controller is learning to perform more efficiently over time as both average goal completion and average remaining health show major performance boosts, while fewer actions are being used.
+The average remaining health of $SCOUt_{FH}$ shows slight increase over training, but for the most part is equivalent to that of the $Random$ controller.
+
+\begin{figure}[h]
+  \includegraphics[width=1.0\columnwidth]{Figures/Results/Training/SCOUt-FindHuman.JPG}
+  \caption{Training performance results for $SCOUt_{FH}$}
+  \label{fig:findhuman_training_results}
+\end{figure}
+
+Results for $SCOUt_{MW}$ (figure ~\ref{fig:mapwater_training_results} are less impressive.
+Average goal completion and average remaining health both decrease during the first half of training, but begin to show upward trends toward the end.
+While the average goal completion of $SCOUt_{MW}$ is consistantly Better than $Random$'s, the average remaining health actually performs worse throughout iteration testing.
+$SCOUt_{MS}$ does perform well in the average number of actions taken per operation, however this is likely partially due to the fact that health is depleted (agent navigating into water) and the operation is ended early.
+The same can be said for the remaining energy, as there will be a large amount of energy remaining after an operation is ended due to depletion of health.
+The reason for these poor performance results seem to be tied with the agents inability to avoid hazardous areas containing water.
+Training was repeaded using different configurations of the long term reward function (code ~\ref{code:long_term_reward}, agent \texttt{energyLevel}, and iteration training.
+Results (found in appendix items ~\ref{fig:mapwater_training_variation_1} and ~\ref{fig:mapwater_training_variation_1}) showed similar performance issues as the results shown bellow.
+Despite these short comings, $SCOUt_{MW}$ still performs well in the tests to follow.
+
+\begin{figure}[h]
+  \includegraphics[width=1.0\columnwidth]{Figures/Results/Training/SCOUt-MapWater.JPG}
+  \caption{Training performance results for $SCOUt_{MW}$}
+  \label{fig:mapwater_training_results}
+\end{figure}
+
+$SCOUt_{H}$ does not show any change in performance throughout training.
+This can likely be attributed to the cancelation of good performance on \textit{Find Human} mixed with poor performance on \textit{Map Water}.
+Iteration testing is done with both goals and results from operations with both goal types are averaged together.
+Outside of average remaining health, the hybrid controller does consistently perform better than $Random$.
+Performance levels are still not as high as seen in $SCOUt_{FH}$, likely due to the same issue discussed in $SCOUt_{MW}$'s results. Training was repeated using the same variations that were conducted for $SCOUt_{MW}$.
+Results (found in appendix items....\todo{results of second round training}) .....
+
+\begin{figure}[h]
+  \includegraphics[width=1.0\columnwidth]{Figures/Results/Training/SCOUt-Hybrid.JPG}
+  \caption{Training performance results for $SCOUt_{H}$}
+  \label{fig:hybrid_training_results}
+\end{figure}
+
+
+
+\section{Experiment 1} \label{sec:experiment1}
+Once training was completed, the resulting SCOUt controllers were individually tested against $Random$ and their respective heuristic controller(s).
+Tests in Experiment 1 ran a series of 1000 operations per environment template.
+The environment template is used to generate 200 unique environments, each of which is used in 5 operations.
+Results are averaged for each controller's performance within each of the environment difficulties they were tested in.
+We expect to find that the SCOUt controllers perform better than $Random$ and as good or better than the heuristic controllers.
+Again, this would be seen in higher average goal completion, average remaining health and average remaining energy, and lower average actions performed.
+
+Results for $SCOUt_{FH}$ (figure ~\ref{fig:findhuman_test_results}) show clear superiority across almost every test.
+The only area where scout under-performed was in average remaining health.
+In the medium difficulty environments, $SCOUt_{FH}$ came in second, right behind $Heuristic_{FH}$, but all three controllers performed within the same ~5 percent range.
+In the hard difficulty environments, $SCOUt_{FH}$ came in last out of the three, but only by a margin of ~2 percent.
+Average goal completion in every environment difficulty was about double the performance of $Heuristic_{FH}$, and triple the performance of $Random$.
+$SCOUt_{FH}$ also outperformed $Heuristic_{FH}$ and $Random$ in both average actions taken and average remaining health.
+We also see in these results that the heuristic controller was able to perform better than $Random$ in most tests.
+The margin of performance difference between $Heuristic_{FH}$ and $Random$ tends to shrink as the environment difficulty is increased.
+While goal completion consistently remained above that of $Random$, we can see that $Heuristic_{FH}$ is having to use more actions to achieve the goal.
+
+\todo{add performance measure type to titles}
+\begin{figure}[h]
+  \includegraphics[width=1.0\columnwidth]{Figures/Results/Experiment1/FindHuman.JPG}
+  \caption{Performance results for $Random$, $Heuristic_{FH}$ and $SCOUt_{FH}$ on \textit{Find Human} goal in different environment difficulties.}
+  \label{fig:findhuman_test_results}
+\end{figure}
+
+
+$SCOUt_{MW}$'s results (figure ~\ref{fig:mapwater_test_results}) show performance levels that are superior to $Heuristic_{MW}$ and $Random$ for the most part, but it does not exhibit as large of margins as seen in $SCOUt_{FH}$'s results.
+Again, the area where the SCOUt controller is lacking in performance is the average remaining health.
+In the easy difficulty environment, $SCOUt_{MW}$ suffers tremendously with an average remaining health of ~9 percent.
+Interestingly, the average remaining health increases as environment difficulty increases.
+Reasons behind this behavior are unclear as other performance trends increase and decrease as expected with changing environment difficulty.
+$Heuristic_{MW}$ ranks as expected.
+The performance values are consistently better than $Random$ in every category outside of average remaining energy.
+In this category, $Heuristic_{MW}$ only under performs $Random$ with a margin of ~2 percent.
+This shows that the heuristic model is useful, but not necessarily efficient.
+
+\todo{remove controller from graphs :(}
+\begin{figure}[h]
+  \includegraphics[width=1.0\columnwidth]{Figures/Results/Experiment1/MapWater.JPG}
+  \caption{Performance results for $Random$, $Heuristic_{MW}$ and $SCOUt_{MW}$ on \textit{Map Water} goal in different environment difficulties.}
+  \label{fig:mapwater_test_results}
+\end{figure}
+
+
+$Hybrid$ was tested in both \textit{Find Human} and \textit{Map Water}.
+The results for each goal type are found in figures ~\ref{fig:hybrid_findhuman_test_results} and ~\ref{fig:hybrid_mapwater_test_results} respectively.
+Results for in \textit{Find Human} show trends similar to the results for the $SCOUt_{FH}$ controller, except with smaller margins of increased performance against $Heuristic_{FH}$ and $Random$.
+In environments of hard difficulty, $Hybrid$ shows performance levels that match with the heuristic controller.
+This is likely caused by the fact that it was only trained on \textit{Find Human} for 15 iterations, and the dilution of having a mixed memory set (from training on both goals).
+
+\begin{figure}[h]
+  \includegraphics[width=1.0\columnwidth]{Figures/Results/Experiment1/HybridFindHuman.JPG}
+  \caption{Performance results for $Random$, $Heuristic_{FH}$ and $SCOUt_{H}$ on \textit{Find Human} goal in different environment difficulties.}
+  \label{fig:hybrid_findhuman_test_results}
+\end{figure}
+
+Results in \textit{Map Water} for the hybrid controller are nearly identical to the results seen in figure ~\ref{fig:mapwater_test_results}.
+The only notable difference is that average remaining health in easy environments was ~21 percent instead of ~9 percent.
+Outside of this, performance scores and trends of all three controllers are roughly the same.
+This suggests that operations based on mapping an element type are far more difficult than would be expected.
+
+\begin{figure}[h]
+  \includegraphics[width=1.0\columnwidth]{Figures/Results/Experiment1/HybridMapWater.JPG}
+  \caption{Performance results for $Random$, $Heuristic_{MW}$ and $SCOUt_{H}$ on \textit{Map Water} goal in different environment difficulties.}
+  \label{fig:hybrid_mapwater_test_results}
+\end{figure}
+
+
+\section{Experiment 2} \label{sec:experiment2}
+The second experiment is broken into three tests: goal changing, sensor set changing, and additional training.
+Goal changing and sensor set changing are both designed to investigate the adaptability of each SCOUt controller.
+Heuristic and random controllers are still used as base lines, but we also begin to use SCOUt controllers as a base line.
+By comparing SCOUt controllers that were trained for the specific goal (in the case of goal changing) or un-altered (in the case of sensor set changing), we can study how performance changes when a SCOUt controller is applied in unexpected scenarios.
+Following this, the $SCOUt_{FH}$ and $SCOUt_{MW}$ are put through additional training on the goal they were not originally trained on, to build two new instances of a \texttt{SCOUtController}.
+$SCOUt_{FH+}$ is the result of training on \textit{Map Water}, beginning with a copy of $SCOUt_{FH}$'s existing memory.
+$SCOUt_{MW+}$ is the result of training on \textit{Find Human}, beginning with a copy of $SCOUt_{MW}$'s existing memory.
+
+\subsection{Goal Changing}
+Goal changing tests the performance of $SCOUt_{FH}$ on the \textit{Map Water} goal, and the performance of $SCOUt_{MW}$ on the \textit{Find Human} goal.
+The SCOUt controllers have no training on the new goal they are tested within, so behaviors are based purely on the controller's existing memory.
+Every controller used in experimentation thus far are compared in these tests.
+Tests are run in the same fashion (1000 operations per environment: 200 environments generated, each used 5 times), but in the results we display, performance is averaged for each controller across all three environment difficulties.
+This is done because we have already seen that each controller's performance scores show a relatively linear trend as difficulty increases (outside of the case with $SCOUt_{MW}$'s average remaining health).
+
+Results for the \textit{Find Human} goal are shown in figure ~\ref{fig:goal_change_findhuman}.
+Unsurprisingly, $SCOUt_{FH}$ takes the lead in every performance category, followed by $Hybrid$.
+What we are primarily interested in here is $SCOUt_{MW}$'s ability to outperform $Heuristic_{FH}$.
+We do see higher averages the number of actions performed and remaining energy, but this is likely due to the same hazard avoidance caveat discussed in experiment 1 (section ~\ref{sec:experiment1}).
+This is also reflected in the fact that $SCOUt_{MW}$ has the lowest average remaining health out of all controllers, followed by $Hybrid$ (again, likely suffering from the same caveat).
+However, even though the average goal completion for $SCOUt_{MW}$ is less than $Heuristic_{FH}$, the margin of difference is only ~1.5 percent.
+This does lead to the idea that adaptability is present within SCOUt's control schema.
+Using no prior training for how to find a human within an environment, the controller was still able to perform on par with a heuristic model.
+Additionally, $SCOUt_{MW}$ also outperforms $Heuristic_{MW}$ in all categories excluding average remaining health.
+This supports the primary focus of this paper, which is: demonstrating how autonomous control schemas built for one specific task are not inherently adaptable to new tasks, while there still exists underlying features of autonomous control that can be abstracted to create a unified control schema capable of achieving a variety of tasks.
+
+\todo{FIGure}
+
+Goal change tests for the \textit{Map Water} goal (figure ~\ref{fig:goal_change_mapwater}) hold some interesting results.
+All three SCOUt controllers outperformed $Random$ and both heuristic controllers in every category except for average remaining health.
+The fact that even $SCOUt_{FH}$ falls victim to poor performance in hazard avoidance suggests that there is level of inevitability for this control schema to eventually choose a detrimental action.
+On the positive side, the goal completion rates for all three show superiority over the other controllers, with $SCOUt_{FH}$ taking the lead.
+This could possibly be attributed to $SCOUt_{FH}$ having training where efficient sensor usage is highly rewarded.
+Another interesting note is that $Heuristic_{FH}$ follows closely behind $Heuristic_{MW}$ in performance, and even takes the lead in average remaining health.
+This data speaks more toward the goal at hand than the control schema.
+As stated previously in section ~\ref{sec:experiment1}, element type mapping is likely a trickier task than expected.
+The fact that the range of goal completion of heuristic and SCOUt controllers was ~24 - 28 percent suggests this idea.
+
+\todo{fig-nuton}
+
+
+\subsection{Sensor Set Changing}
+Sensor set changing analyzes how a SCOUt controller is able to handle the goal they were trained for after removing a sensor that it learned to use for the given task.
+Tests are conducted in the same manor as the goal change tests, where 1000 tests per environment difficulty are run, and performance results are averaged across each difficulty level.
+The controllers used in each test are $Random$, the heuristic controller designed for the given goal, the original SCOUt controller trained on the goal (denoted as $<controller-name> - All$), and the same SCOUt controller with agent(s) using a variation of sensors.
+
+First up, we will examine the results for the \textit{Map Water} goal (figure ~\ref{fig:change_sensors_mapwater}).
+Because only water and elevation sensors are used in \textit{Map Water} operations, and elimination of the water sensor would result in the inability to achieve any level of goal completion, only one agent variation is considered ($SCOUt_{MW} - No Elevation$).
+We see $SCOUt_{MW} - All$ and $SCOUt_{MW} - No Elevation$ topping each performance category besides average remaining health.
+$SCOUt_{MW} - No Elevation$ outperforms $SCOUt_{MW} - All$ in each category outside of remaining health.
+This is likely due to the fact that $SCOUt_{MW} - No Elevation$ only has a water sensor, and therefore can only choose to scan for water, or move.
+The drop in average remaining health could then be attributed to the controller's lack of ability to detect hazardous drops in elevation.
+If this is true, it would suggest that SCOUt's hazard avoidance is not entirely non-existent.
+
+\todo{figya}
+
+Moving on to testing with the \textit{Find Human} goal, we see some very supportive results in figure ~\ref{fig:change_sensors_findhuman}.
+Four variations of sensor sets are examined by removing the elevation, water, temperature and then decibel sensors.
+The four respective controllers are denoted as $SCOUt_{FH} - No Elevation$, $SCOUt_{FH} - No Water$, $SCOUt_{FH} - No Temp$ and $SCOUt_{FH} - No Decibel$.
+In three out of the four performance categories, the majority of SCOUt controllers all take the lead.
+The only SCOUt controller with a large performance difference among the five is $SCOUt_{FH} - No Decibel$.
+Surveillance of decibel values within the environment is a critical behavior to tracking down the location of the human anomaly.
+The fact that $SCOUt_{FH} - No Decibel$ shows performance drops demonstrates the ability of SCOUt's control schema to learn pattern recognition behaviors for goal completion.
+Despite the handicap of no decibel sensor, the controller still outperformed $Random$ and $Heuristic_{FH}$ in goal completion, number of actions performed, and remaining energy.
+Removal of each other sensor surprisingly had little to no effect on performance compared to $SCOUt_{FH} - All$.
+Performance in all categories aside from remaining health for all of these controllers were roughly double $Heuristic_{FH}$'s and triple $Randoms$.
+These results reveal a strong level of adaptability within SCOUt's memory based reinforcement learning schema when dealing with new agent setups.
+
+\todo{figure}
+
+
+\subsection{Additional Training}
+
+
+
+
+
 
 \begin{lstlisting}[language=Scala]
  val mobility = new Mobility(
@@ -105,144 +348,3 @@ The Agent Mobility and Durabilities and each sensor instance used in experimenta
    indicator: Boolean
  )
 \end{lstlisting}
-
-
-\section{Environment Templates}
-Three EnvironmentTemplates with increasing difficulty are created for use in training and experimentation (EASY, MEDIUM, and HARD).
-Increase in difficulty is achieved by increasing the environment size, adding more TerrainModifications, adjusting the average and deviation values for each ElementSeed and reducing the Effects of any Anomalies.
-Increased environment size creates a wider area that an Agent will have to search or map to achieve its goal.
-More TerrainModifications makes each environment potentially more hazardous.
-Changing the average and deviation values of ElementSeeds used to generate the environment has a couple of effects.
-First, as an example, by increasing the average decibel values in the environment, the distinction of the Human's decibel effect is dampened and the agent will need to be closer to detect the noise produced.
-Also, if the variance in decibel values increases, it becomes more difficult for an agent to distinguish what consuetudes as a significant increase that may indicate the presence of the Human.
-Last, by reducing the decibel effect of a Human anomaly itself, the radiation of the effect will cover less area in the environment, meaning the agent will have to search longer before it may pick up on the effect.
-
-Each environment template has one Human that will be placed into it at random in a non-hazardous zone (so not in water).
-The same templates will then be used for both the Find Human and Map Water goals.
-In the case that the goal is Map Water, a Human anomaly will still be present within the environment, but it will be ignored by the agents.
-Each of these EnvironmentTemplates are listed here (\todo{environment templates}) in their Json formats.
-This Json format is what appears in each template's respective file.
-When a template is used in training and experimentation, it will be loaded in from its file, converted to a Scala object and passed to the EnvironmentBuilder.
-
-
-\section{Training}
-Three separate SCOUtControllers are trained to accumulated memory pools of SAPs.
-Once the training phase has completed, these controllers will be tested using their respective memory pools.
-During testing, no further SAPs will be added to the controllers' memory pools.
-In doing so, a consistent measure of performance can be calculated based on the memory collected during the set training phase defined here.
-Each of the three controllers are trained with different goal configurations.
-One is trained using the Find Human goal, the second using the Map Water goal and the third is a hybrid, trained using both goals.
-They are named $SCOUt_{FH}$, $SCOUt_{MW}$ and $SCOUt_{H}$ respectively.
-
-Each is trained for 30 iterations where an iteration runs one operation per environment template.
-Once training has completed, each controller will have collected SAPs from a total of 90 operations (30 on EASY, 30 on MEDIUM and 30 on HARD).
-Every operation that $SCOUt_{FH}$ is run in will be with the Find Human goal and every operation for $SCOUt_{MW}$ will be with the Map Water goal.
-$SCOUt_{H}$ will alternate goals for each iterations.
-In total it will have run 45 operations with the Find Human goal and 45 operations with the Map Water goal (15 on EASY, 15 on MEDIUM and 15 on HARD for both goals).
-
-After each training iteration, the controller is tested with its current memory to track performance improvements.
-Testing at each iteration runs a series of simulated operations to collect performance data.
-Each series uses the controller's respective goal(s) and is run on each testing environment template 20 times (20 on EASY, 20 on MEDIUM, and 20 on HARD).
-The controller tested will have access to its current memory pool that has been gathered in its training so far.
-No SAPs will be gathered during these iteration tests.
-For a base line, the $Random$ controller is run through the same series of tests.
-Results from the 60 total iteration tests will be averaged in each of the four performance categories.
-The averaged results of the learning, SCOUt controller will then be differenced against the averaged results of the $Random$ controller.
-By differencing the averages, we are observing how much better or worse the SCOUt controller was able to perform than the $Random$ controller in the same testing situation.
-This also removes the discrepancy between iteration tests that may have generated a series of exceptionally difficult or easy environments to work within.
-It is expected that over training iterations, the goal completion, remaining health and remaining energy will increase, and the number of actions performed will decrease  in comparison to the $Random$ controller.
-
-% The results of each SCOUt controller's training performances over time are found in \todo{training performance}.
-
-Results for $SCOUt_{FH}$ training (figure ~\ref{fig:findhuman_training_results}) show the desired trends of increased performance over training iterations.
-Average goal completion and average remaining energy begin at the same performance levels as $Random$ and increase to be consistently better than random over training.
-The average number of actions performed begins slightly below $Random$ and continue to decrease before leveling out roughly two-thirds of the way through training.
-This demonstrates that the controller is learning to perform more efficiently over time as both average goal completion and average remaining health show major performance boosts while fewer actions are being used.
-The average remaining health of $SCOUt_{FH}$ shows slight increase over training, but for the most part is equivalent to that of the $Random$ controller.
-
-\begin{figure}[h]
-  \includegraphics[width=1.0\columnwidth]{Figures/Results/Training/SCOUt-FindHuman.JPG}
-  \caption{Training performance results for $SCOUt_{FH}$}
-  \label{fig:findhuman_training_results}
-\end{figure}
-
-Results for $SCOUt_{MW}$ (figure ~\ref{fig:mapwater_training_results} are less impressive.
-Average goal completion and average remaining health both decrease over training, but show upward trends toward the end.
-Average remaining health actually performs worse $Random$ throughout iteration testing.
-$SCOUt_{MS}$ does perform well in the average number of actions taken per operation, however this is likely due to the fact that health is depleted (agent navigating into water) and the operation is ended early.
-The same can be said for the remaining energy, as there will be a large amount of energy remaining after an operation is ended due to depletion of health.
-The reason for these poor performance results seem to be tied with the agents inability to avoid hazardous water areas.
-It is believed that the long term reward equation \todo{ref eq} did not provide adequate values for the controller to learn from because of the goal completion reward for Map Water in combination with the available energy for the agent to use.
-Map Water goal completion is measured by the percent of the environment that has successfully been scanned for water.
-In ~\ref{sec:experiment1}, we will see that all controllers have an average goal completion rate below 40 percent on EASY environments, below 30 percent on MEDIUM, and below 15 percent on HARD.
-Poor goal completion scores will result in poor long term rewards.
-The reinforcement learning schema will have difficulty making clear distinctions between "good" and "bad" actions when all SAPs in the memory pool contain low long term rewards.
-
-\begin{figure}[h]
-  \includegraphics[width=1.0\columnwidth]{Figures/Results/Training/SCOUt-MapWater.JPG}
-  \caption{Training performance results for $SCOUt_{MW}$}
-  \label{fig:mapwater_training_results}
-\end{figure}
-
-$SCOUt_{H}$ does not show any change in performance throughout training.
-This can likely be attributed to the cancelation of good performance on Find Human mixed with poor performance on Map Water.
-Iteration testing is done with both goals and results from operations with both goal types are averaged together.
-Outside of average remaining health, the hybrid controller does consistently perform better than $Random$.
-Performance levels are still not as high as seen in $SCOUt_{FH}$, likely due to the same issue discussed in $SCOUt_{MW}$'s results, where poor long term rewards are diluting the controller's memory pool.
-
-\begin{figure}[h]
-  \includegraphics[width=1.0\columnwidth]{Figures/Results/Training/SCOUt-Hybrid.JPG}
-  \caption{Training performance results for $SCOUt_{H}$}
-  \label{fig:hybrid_training_results}
-\end{figure}
-
-
-
-\section{Experiment 1} \label{sec:experiment1}
-Once training has completed, the resulting SCOUt controllers are individually tested against $Random$ and respective heuristic controllers.
-Test in Experiment 1 run a total of 1000 operations per environment template.
-The environment template is used to generate 200 unique environments, each of which is used in 5 operations.
-Performance results are averaged for each controller and compared under the three test environment templates.
-
-\todo{Find Human}
-
-\begin{figure}[h]
-  \includegraphics[width=1.0\columnwidth]{Figures/Results/Experiment1/FindHuman.JPG}
-  \caption{Performance results for $Random$, $Heuristic_{FH}$ and $SCOUt_{FH}$ on Find Human goal in different environment difficulties.}
-  \label{fig:findhuman_test_results}
-\end{figure}
-
-
-\todo{Map Water}
-
-\begin{figure}[h]
-  \includegraphics[width=1.0\columnwidth]{Figures/Results/Experiment1/MapWater.JPG}
-  \caption{Performance results for $Random$, $Heuristic_{MW}$ and $SCOUt_{MW}$ on Map Water goal in different environment difficulties.}
-  \label{fig:mapwater_test_results}
-\end{figure}
-
-
-\todo{Hybrid}
-
-\begin{figure}[h]
-  \includegraphics[width=1.0\columnwidth]{Figures/Results/Experiment1/HybridFindHuman.JPG}
-  \caption{Performance results for $Random$, $Heuristic_{FH}$ and $SCOUt_{H}$ on Find Human goal in different environment difficulties.}
-  \label{fig:hybrid_findhuman_test_results}
-\end{figure}
-
-\begin{figure}[h]
-  \includegraphics[width=1.0\columnwidth]{Figures/Results/Experiment1/HybridMapWater.JPG}
-  \caption{Performance results for $Random$, $Heuristic_{MW}$ and $SCOUt_{H}$ on Map Water goal in different environment difficulties.}
-  \label{fig:hybrid_mapwater_test_results}
-\end{figure}
-
-
-
-
-
-\section{Experiment 2} \label{sec:experiment2}
-The second experiment is broken into three tests: goal changing, sensor set changing and additional training.
-
-Goal changing tests the performance of $SCOUt_{FH}$ on the Map Water goal and the performance of $SCOUt_{MW}$ on the Find Human goal.
-The SCOUt controllers will have no training on the new goal they are tested within.
-This will exhibit their ability to complete a goal using only memory from the original goal they were trained on.
