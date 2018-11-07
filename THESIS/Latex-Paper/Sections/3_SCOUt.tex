@@ -1,17 +1,19 @@
 
 
-\chapter{SCOUt}
-This project explores the reliability and flexibility of using a single intelligent controller to complete surveillance-based operations in diverse environments.
+\chapter{SCOUt} \label{ch:scout}
+This project explores the reliability and flexibility of using a single intelligent controller to complete exploration-based operations in diverse environments.
 The Surveillance Coordination and Operation Utility (SCOUt) is used to generalize environments, agents, states and actions into abstract data structures.
 This data then builds a platform for creating controllers, running simulations, and visualizing outputs.
 
 
 
 % ==============================================================================
-% PLATFORM
+% Framework
 % ==============================================================================
-\section{Platform}
-Several coding languages and libraries are used in this project to provide a simple and expandable platform.
+\section{Framework} \label{sec:framework}
+\todo{condense}
+\todo{diagram}
+Several coding languages and libraries are used in this project to provide a simple and expandable framework.
 It is laid out in a client-server architecture to allow separation of data handling and data visualization.
 The server portion provides full functionality to generate unique environments, build agents and controllers, run test operations, and collect results.
 Data structures on the server side are implemented using an object-oriented architecture of traits, classes and class instances.
@@ -23,39 +25,40 @@ All classes that inherit from the same trait can be handled using the same logic
 For example, Element is a trait that defines different types of data that an agent could detect in the environment.
 Elevation is a class that inherits the Element trait, and a specific instance of Elevation can be created for an area that has an elevation level of 100 feet.
 The trait-class-instance architecture also simplifies the addition of new class definitions.
-If a future project wanted to utilize the SCOUt platform with an agent that could detect ultra violet rays in their environment, they could define a new "UltraViolet" class that inherits the Element trait.
-The "UltraViolet" class can then effortlessly be integrated with all other pre-existing code since it will be handled as the general Element triat that it extends.
+If a future project wanted to utilize the SCOUt platform with an agent that could detect ultra violet rays in their environment, they could define a new \texttt{UltraViolet} class that inherits the Element trait.
+The \texttt{UltraViolet} class can then effortlessly be integrated with all other pre-existing code since it will be handled as the general Element trait that it extends.
 This architecture's usefulness extends into the client portion of the platform as well.
-The SCOUt client is a Graphical User Interface (GUI) for requesting actions to be executed by the server and visualizing the data structures returned.
+The SCOUt client is a graphical user interface (GUI) for requesting actions to be executed by the server and visualizing the data structures returned.
 Because the majority of the data structures used in this platform are abstracted, the front end can be generalized to handle any new classes created without any maintenance required for the GUI.
 
 
-\subsection{Simulation Back End}
-The back end is written in the Scala language.
+\subsection{Simulation Back End} \label{subsec:back_end}
+The back end is written in the Scala programing language.
 Scala is a Java based, paradigm language that combines object-oriented and functional programming methods.
 Object-oriented programming provides the flexibility needed for the trait-class-instance architecture, while functional programming provides immutability when working on large sets of diverse data.
+Immutability is important when working with a large code base as it will assure that data types and values are not changed once set.
 All data storage and manipulation takes place on the back end of the platform to ensures consistency.
 Data is only imported or exported on the back end in two scenarios: file storage and client-server communication.
 In both cases, it is assumed that immutability is maintained.
 File storage is the only case where data is open to manipulation outside of the back end.
 Client-server communication only allows variables to be passed into the back end via requests, and a copy of data structures are returned to the front end for visualization only.
 Any alterations on the front end will have no effect on the original copy on the back end.
-To allow storage and communication, the back end encodes and decodes data into Json objects.
-When imported, Json objects are immediately decoded and parsed into Scala data structures before usage.
-The circe Scala library \todo{Reference circe} is used for the encoding and decoding of Json data.
-Circe provides integration of Json objects in the Scala language to allow seamless encoding and decoding.
-Communication for passing and receiving Json objects between the front and back end is achieved with the HTTP4s library. \todo{Reference HTTP4s}
-The SCOUt server is setup using HTTP4s' blaze-server to create a local service for handling Http communication.
+To allow storage and communication, the back end encodes and decodes data into JSON objects.
+When imported, JSON objects are immediately decoded and parsed into Scala data structures before usage.
+The Circe Scala library \todo{Reference circe} is used for the encoding and decoding of JSON data.
+Circe provides integration of JSON objects in the Scala language to allow seamless encoding and decoding.
+Communication for passing and receiving JSON objects between the front and back end is achieved with the HTTP4s library. \todo{Reference HTTP4s}
+The SCOUt server is setup using HTTP4s' blaze-server to create a local service for handling HTTP communication.
 
 
-\subsection{Visualization Front End}
+\subsection{Visualization Front End} \label{subsec:front_end}
 The platform's front end is built around Electron, \todo{Reference Electron} a framework that allows building a native desktop application with JavaScript, HTML and CSS.
 The GUI is written using all three of these languages.
 HTML structures the page within Electron, CSS provides styling and JavaScript handles all of the logic.
-The SCOUt platform uses D3, node-fetch and JQuerry JavaScript libraries to assist with data visualization and communication to the back end. \todo{reference Node packages}
+The SCOUt platform uses D3\todo{ref D3}, node-fetch and JQuerry JavaScript libraries to assist with data visualization and communication to the back end. \todo{reference Node packages}
 D3 (Data-Driven Documents) is a visualization library that uses SVG (an XML-Based format for vector graphics) to create graphical representation of data sets.
-Node-fetch is used for Http communication with the back end through XMLHttp request and response handling.
-JQuerry provides integration with Json data that is passed back and forth between the client and server, as well as several functions to simplify working with DOM elements within HTML.
+Node-fetch is used for HTTP communication with the back end through XMLHTTP request and response handling.
+JQuerry provides integration with JSON data that is passed back and forth between the client and server, as well as several functions to simplify working with DOM elements within HTML.
 Node Package Manager (NPM) \todo{Reference NPM} is used to maintain all of the dependencies between Electron, the three languages and the JavaScript libraries on the platform's front end.
 In addition to dependency management, NPM has packages of its own that simplify the process for compiling code into a single file for Electron to handle.
 The Babel \todo{ref Babel} package transpiles JavaScript into a browser friendly format, then webpack \todo{ref webpack} integrates the resulting JavaScript into the HTML code for a single JavaScript file for Electron.
@@ -66,21 +69,22 @@ The GUI can then be launched using an NPM script to compile all of the code, lau
 % ==============================================================================
 % ENVIRONMENT
 % ==============================================================================
-\section{Environment}
-Modeling a real-world environment in a simulation is a tricky process.
+\section{Environment} \label{sec:environment}
+\todo{DIAGRAMS for like everything...}
+Modeling a real-world environment in a simulation is tricky.
 Each model needs to balance simplicity and coverage.
-If too much is left out of the model, it won’t reflect real word scenarios.
+If too much is left out of the model, it won’t reflect real-word scenarios.
 On the other hand, attempting to model too much can be impractical as it consumes effort and resources that could instead be spent running real world experiments.
-For this experiment, environments are modeled as a high level class containing a collection of lower level classes that together form a cleverly simplified representation of a real world environment.
+For this experiment, environments are modeled as a high level class containing a collection of lower level classes that together form a simplified representation of a real world environment.
 
 The \texttt{Environment} class holds an $n x m$ 2D grid of uniformly sized $s x s$ square cells, where $n x m$ is the total area of the \texttt{Environment} and $s x s$ is the area each \texttt{Cell} represents within the \texttt{Environment}.
 Along with positional data, each \texttt{Cell} contains information about the different elements and anomalies present within the $s x s$ area it covers.
 An \texttt{Element} is a generalized object that represents one specific environmental attribute, such as the elevation or temperature.
 An \texttt{Anomaly} represents some object present within an \texttt{Environment} that could be of interest.
-Anomalies often have an effect on element values in their surrounding area which makes them “traceable”.
+Anomalies often have an effect on element values in their surrounding area which makes them ``traceable.''
 
-\todo{add a diagram}
-
+% \todo{photo needed?}
+\todo{appendix}
 \begin{lstlisting}[language=Scala]
 class Environment (
   name: String
@@ -91,12 +95,13 @@ class Environment (
 )
 \end{lstlisting}
 
-\subsubsection{Cell}
-A \texttt{Cell} holds $x$ and $y$ coordinate for its relative position within the \texttt{Environment}'s grid.
+\subsubsection{Cell} \label{subsec:cell}
+A \texttt{Cell} holds $x$ and $y$ coordinates for its relative position within the \texttt{Environment}'s grid.
 These coordinates do not reflect the actual size of the Cell, only an index value for the order they appear within the 2-dimensional array data structure.
 The \texttt{Environment}'s scale can easily be applied to the physical location of a Cell as it is a shared global attribute within the \texttt{Environment} class.
-If an element type or an anomaly is present within the area that the cell covers in the \texttt{Environment} grid, it will appear in its respective list.
+If an element type or an anomaly is present within the area that the cell covers in the \texttt{Environment} grid, it will be stored in an appropriate list within the \texttt{Cell} instance.
 
+\todo{appendix}
 \begin{lstlisting}[language=Scala]
 class Cell (
   x: Int
@@ -106,7 +111,7 @@ class Cell (
 )
 \end{lstlisting}
 
-\subsubsection{Element}
+\subsubsection{Element} \label{subsec:element}
 An element can be any measurable attributes within an environment.
 For example: temperature, elevation and decibel levels are all attributes of the \texttt{Environment} whose values can be measured.
 All element types are all generalized by the abstract trait, Element.
@@ -115,8 +120,9 @@ Name and unit are used for identification and displaying the element type.
 The value attribute holds a numerical value for the measurement of each instance.
 For example, an instance of the Elevation class would store a measurement of the elevation level in a certain area.
 The radial flag, lowerBound and upperBound attributes guide and limit the values that can be set for the element type.
-These are used when procedurally generating an environment (covered in \ref{}). \todo{reference environment gen section}
+These are used when procedurally generating an environment (covered in section~\ref{sec:environment_builder}).
 
+\todo{appendix}
 \begin{lstlisting}[language=Scala]
 trait Element {
   name: String
@@ -130,7 +136,7 @@ trait Element {
 
 
 
-\subsubsection{Anomaly}
+\subsubsection{Anomaly} \label{subsec:anomaly}
 Anomalies are any object that may be of significance to an agent, such as a human or precious mineral.
 Anomalies have their own effects on element values in the environment around them.
 Like Elements, Anomalies and Effects are defined as classes that inherit from a single trait.
@@ -138,6 +144,7 @@ An Anomaly class can occupy multiple Cells, but must occupy at least one cell in
 Anomalies can also have multiple Effects on multiple types of element values in surrounding Cells
 These Effects are declared in a list attribute.
 
+\todo{appendix}
 \begin{lstlisting}[language=Scala]
 trait Anomaly {
   name: String
@@ -146,11 +153,12 @@ trait Anomaly {
 }
 \end{lstlisting}
 
-Each Effect class defines a "seed" Element class and a range of the effect.
+Each Effect class defines a ``seed'' Element class and a range of the effect.
 The seed attribute holds a specific instance of an Element class that will represent the value of that element type in the area that the attribute exists within the environment.
-The range then defines the radius of the area beyond the attribute's position that the effect will "radiate".
+The range then defines the radius of the area beyond the attribute's position that the effect will ``radiate.''
 The term radiate is used because the effect will alter the element type's values in surrounding based upon how close they are to the source of the effect (where the anomaly exists).
 
+\todo{appendix}
 \begin{lstlisting}[language=Scala]
 trait Effect (
   seed: Element
@@ -163,13 +171,14 @@ If the Human is much louder than the ambient noise level in the environment, the
 \todo{Show example code or photo?}
 
 
-\subsubsection{Layer}
+\subsubsection{Layer} \label{subsec:layer}
 One last important data structure is a Layer.
 While Layers are not direct members of the Environment class structure, they are crucial to building and analyzing the Environment.
 For this reason, instances of the Layer class are only generated on demand through method calls.
 A Layer is designed in the same 2-dimentional structure as the Environment grid, but holds a collection of Elements instead of Cells.
 \todo{Photo of Layer}
 
+\todo{appendix}
 \begin{lstlisting}[language=Scala]
 class Layer (
   length: Int
@@ -183,20 +192,20 @@ class Layer (
 % ==============================================================================
 % AGENT
 % ==============================================================================
-\section{Agents}
-Agents within this experiment have a core set of attributes and abilities, along with a set of sensors and a controller.
-The core attributes for an agent are health, energy level, an internal map and its current position relative to the environment grid.
+\section{Agents} \label{sec:agent}
+\todo{diagram of agent}
+Agents within this experiment are modeled with a set of attributes and abilities, along with a set of sensors and a controller (code~\ref{code:agent}).
+The core attributes for an agent are health, energy level, an internal map, and its current position relative to the environment grid.
 Because SCOUt is focused on purely observational interactions with its environment, an agent only has two categories of actions that can be performed: movement and scanning.
 The agent can attempt to move one cell at a time in any of the four cardinal directions.
 This allows the agent to reassess after each movement attempt.
 Scanning collects information about the agent's immediate environment and updates internal map.
-The list of scan actions that an agent can perform is based on the set of sensors the agent is equipped with.
-The agent's controller is in charge of analyzing the current state of the agent and deciding the next action to be performed.
-This project focuses on creating a single controller that is highly adaptable to wide ranges of agent configurations, environments and goals titled as the SCOUt controller.
-This controller should be able to show adaptability when performing new tasks and when controlling different agents.
-To model how an Agent will interact with an Environment, Mobility and a collection of Durability factors are defined per Agent.
+The list of scan actions that an agent can perform is based on the set of sensors the agent has equipped.
+The agent's controller is in charge of analyzing the current state and deciding the next action to be performed.
+To simulate the interactions that will occur an agent and the environment, mobility and durability attributes are defined for each agent.
+These will dictate how an agent can move within the environment and the types of effects each element type within the environment will have on the agent.
 
-\begin{lstlisting}[language=Scala]
+\begin{lstlisting}[language=Scala, label=code:agent]
 class Agent (
   name: String
   controller: Controller
@@ -212,10 +221,10 @@ class Agent (
 \end{lstlisting}
 
 
-\subsection{Sensor}
+\subsection{Sensor} \label{subsec:sensor}
 Sensors are created using the same trait-class-instance architecture as Elements and Anomalies.
 The Sensor class models a scientific instrument that could be used for gathering data measurements of a specific element type.
-Each class defines the element type it is able to measures, the energy it costs to perform a "scan" action, its effective range, and two flags indicating if the element type being searched for if hazardous or considered an indicator.
+Each class defines the element type it is able to measure, the energy it costs to perform a ``scan'' action, its effective range, and two flags indicating if the element type being searched for if hazardous or considered an indicator.
 When performing a scan, the sensor will sweep 360 degrees around the agents location and gather data within the circular area.
 The circular scan area is calculated with the sensors range as the radius and the agents position as the center.
 Any Element values that were previously unknown to the agent are then added to the internal map.
@@ -234,16 +243,17 @@ class Sensor (
 \end{lstlisting}
 
 
-\subsection{Mobility}
+\subsection{Mobility} \label{subsec:mobility}
 Mobility is a stand alone class that will determine the ease and limitations of the agent moving within an environment.
 For example, if a drone was modeled as the agent, it would have a higher range of mobility, but would likely sacrifice the amount of sensors that could be carried.
 A wheeled robot loaded with multiple sensors would likely have decreased mobility, but could collect a wider variety of data.
-Mobility is defined by maximum slope an agent can climb, the minimum slope an agent can traverse before taking "fall damage", a resistance factor and the energy cost required for movement.
+Mobility is defined by maximum slope an agent can climb, the minimum slope an agent can traverse before taking ``fall damage,'' a resistance factor and the energy cost required for movement.
 The resistance factor is used to scales the amount of damage that the agent may take (for example if it fell off of a cliff).
 Movement cost and slope cost used to calculate how much energy is used when attempting a movement action.
 The total cost calculated is scaled based on the distance moved, and the slope of the elevation between the agent's current position and the position that it attempts to move to.
 
 
+\todo{appendix}
 \begin{lstlisting}[language=Scala]
 class Mobility (
   movementSlopeUpperThreshHold: Double
@@ -254,7 +264,7 @@ class Mobility (
 )
 \end{lstlisting}
 
-\subsection{Durability}
+\subsection{Durability} \label{subsec:durability}
 Like many other data structures in this platform, Durability factors are defined per element type.
 These factors model how an Agent will be effected by different Elements they come in contact with during an Operation.
 For example, consider an environment with pools of water in it.
@@ -263,6 +273,7 @@ Durability is defined by an upper and lower value threshold and a resistance fac
 The thresholds define what levels of an element type that the agent can be exposed to before it begins to take damage.
 The resistance factor then influences how much damage the agent will take at levels exceeding the threshold.
 
+\todo{appendix}
 \begin{lstlisting}[language=Scala]
 class Duribility (
   elementType: String
@@ -273,19 +284,19 @@ class Duribility (
 \end{lstlisting}
 
 
-\subsection{Actions}
+\subsection{Actions} \label{subsec:actions}
 Agents interact with the Environment via actions.
 Actions are simplified to either movement or scanning actions.
-These two categories cover the exploration and research aspects that required for most surveillance operations.
+These two categories cover the exploration and research aspects that are required for most surveillance operations.
 The Agent's Controller is in charge of deciding what action to perform.
 
 In simulation, movement is handled by changing the agent's current position to an adjacent cell in one of four direction.
-Movement to an adjacent cell is denoted as "north", "south", "west" or "east" based on the orientation of the x, y grid of cells that make up the environment. \todo{add photo of movement}
+Movement to an adjacent cell is denoted as ``north,'' ``south,'' ``west,'' or ``east'' based on the orientation of the x, y grid of cells that make up the environment. \todo{add photo of movement}
 Moving a single cell at a time gives the agent the opportunity to reassess its current state before selecting the next action.
 Distance covered by successful movement will inherently be equal to the size of the cells within the simulated environment.
 Each time an agent attempts to move to a new cell, Elevation levels will be compared between the current and new cell to check if movement is possible or if it results in damage (based upon the Agent's Mobility).
-After the attempt has been made, changes to health and energy level are calculated based upon the Agent's Durability factors and then updated.
-If the movement action is successfully completed, the current position is also updated.
+After the action has been attempted, changes to health and energy level are calculated based upon the Agent's Durability factors.
+If the movement action is successful, the current position is also updated.
 
 An Agent can perform scans of the Environment using available Sensors.
 For each cell that fall within the Sensor's search radius, the value for the sensor's given element type is extracted.
@@ -294,13 +305,14 @@ Through repeated scanning, the agent will begin to map out its surrounding envir
 Data collected in the internal map can be then be used by the controller to determine what actions would be most beneficial to the goal at hand.
 
 
-\subsection{State Representation}
-For controllers to intelligently decide when to perform what actions, they need to have sufficient data about the agent and the known surrounding environment.
+\subsection{State Representation} \label{subsec:state_representation}
+For controllers to intelligently choose among actions, they need to have sufficient data about the agent and the known surrounding environment.
 The agent's position, health and energy level can easily be analyzed, but the internal map containing the known environment is a very large data structure to analyze each time the controller has to decide upon an action.
 For this reason the data structure is simplified in order to reduce memory usage and computational effort required to analyze a state.
-AgentState is the minimal data structure that contains all of the useful information necessary for a controller to make intelligent decisions.
-Instead of a 2-dimensional array of cells, the internal map is represented as a list of ElementStates, where each ElementState is a summary of the data known about a specific element type.
+\texttt{AgentState} is the minimal data structure that contains all of the useful information necessary for a controller to make intelligent decisions.
+Instead of a 2-dimensional array of cells, the internal map is represented as a list of \texttt{ElementState}s, where each \texttt{ElementState} is a summary of the data known about a specific element type.
 
+\todo{appendix}
 \begin{lstlisting}[language=Scala]
 class AgentState (
   xPosition: Int
@@ -311,6 +323,7 @@ class AgentState (
 )
 \end{lstlisting}
 
+\todo{appendix}
 \begin{lstlisting}[language=Scala]
 ElementState (
   elementType: String
@@ -324,16 +337,17 @@ ElementState (
 )
 \end{lstlisting}
 
-Element states contain useful information about what information is known for a specific element type during the operation.
+Element states contain useful information about what is known for a specific element type during the operation.
 The indicator flag can cue the controller on whether the element type is being analyzed in order to progress the goal at hand.
-If the goal was to map out the elevation levels in an Environment, the elevation ElementState would be flagged true.
-If the goal was to find a human, the Temperature and Decibel ElementStates would be marked true, as irregular changes in these values could help indicate the presence of the Human.
+If the goal was to map out the elevation levels in an Environment, the elevation \texttt{ElementState} would be flagged true.
+If the goal was to find a human, the Temperature and Decibel \texttt{ElementState}s would be marked true, as irregular changes in these values could help indicate the presence of the Human.
 The hazard flag is used to mark any Element that could potentially cause harm to the agent.
-For example: the presence of water, large changes in elevation and extreme temperatures could potentially cause damage, and would be flagged as hazardous.
+For example, the presence of water, large changes in elevation and extreme temperatures could potentially cause damage, and would be flagged as hazardous.
 We also track the percent of known element values that are within the range of the corresponding sensor.
-Technical information of each ElementState is divided into four quadrants, where each quadrant has its own state.
+Technical information of each \texttt{ElementState} is divided into four quadrants, where each quadrant has its own state.
 Because agent movement is limited to north, south, west and east, we can collapse known information from the internal map into four quadrants. \todo{Image of quadrants}
 
+\todo{appendix}
 \begin{lstlisting}[language=Scala]
 class QuadrantState (
   percentKnown: Double
@@ -342,8 +356,9 @@ class QuadrantState (
 )
 \end{lstlisting}
 
-The first thing that a QuadrantState looks at is the percent of values that are already known in all the cells within the quadrant.
-Then, the QuadrantState stores the average and immediate known values into two "Options".
+\todo{unnecessary details?} % regarding "Options"
+The first thing that a \texttt{QuadrantState} looks at is the percent of values that are already known in all the cells within the quadrant.
+Then, the \texttt{QuadrantState} stores the average and immediate known values into two "Options".
 These values are defined as Options because there are instances where the values within the quadrant are not known or may not exist (if the Agent is at the edge of the defined Environment grid).
 Option is a built in Scala data type that can be None when undefined or Some(<value>) when defined.
 This data type preserves data immutability as all variables must be defined within Scala code.
@@ -353,16 +368,17 @@ Immediate differential takes the difference between the current Cell's value and
 So when considering elevation values within the north quadrant, the immediate differential would be the difference between the elevation at the agents current position and the elevation within the adjacent cell to the North.
 
 
-\subsection{Controller}
+\subsection{Controller} \label{subsec:controller}
 A Controller is the goal driven decision making schema that an Agent will use when navigating an Environment.
-The Agent will pass its current state to the controller, along with a list of valid actions that it can take.
-The Controller will then decide the best action that can be taken given the current state.
+The Agent will pass its current state to the controller, along with a list of valid actions that it can execute.
+The Controller will then decide which action to take.
 Controllers are defined using the trait-class-instance architecture.
 Inheriting Controller classes are provided a setup and shutdown function to perform any initializations or final actions once an Operation has ended.
 The Controller's schema is defined within the selectAction function.
 This function takes in the list of valid action and the current AgentState and must return a single action which the Agent will attempt to perform.
-Specific Controllers and their schemas are analyzed and discussed in the \ref{Experiments} section.
+Specific Controllers and their schemas are analyzed and discussed in chapter~\ref{ch:controllers}.
 
+\todo{appendix}
 \begin{lstlisting}[language=Scala]
 trait Controller {
   def setup(mapHeight: Int, mapWidth: Int): Unit
@@ -376,16 +392,18 @@ trait Controller {
 % ==============================================================================
 % OPERATIONS
 % ==============================================================================
-\section{Operations}
-To explore the usefulness and robustness of the intelligent controller, many different scenarios need to be simulated.
-All simulations are made up of three main components: an agent, a goal and the environment.
+\section{Operations} \label{sec:operations}
+To explore the efficiency and adaptability of the intelligent controller, many different scenarios need to be simulated.
+All simulations are made up of three main components: an agent, a goal, and the environment.
 Different combinations of each component allows the creation of a large variety of scenarios.
 Each simulation follows a defined process called an Operation. \todo{Operation Diagram}
-Each Operation will simulate an Agent's attempt to complete a Goal within an Environment.
+Each Operation will simulate an agent's attempt to complete a goal within an environment.
 The Operation will record data for each event that occurs between the Agent and Environment and the final outcome.
 These data collections are denoted as short term and long term events respectively.
 
-Short term events are collected each time the agent performs an action.
+\noindent
+Short-term events are collected each time the agent performs an action.
+They include:
 
 \begin{itemize}
   \item The agent's state when the action was selected
@@ -394,47 +412,49 @@ Short term events are collected each time the agent performs an action.
   \item A short term reward for the outcome of the action
 \end{itemize}
 
+\noindent
 A long term event is only collected once at the simulated operation ends.
+It includes:
 
 \begin{itemize}
   \item Status of internal variables (health and energy)
   \item Number of actions taken during operation
-  \item Level of goal completion
+  \item Goal completion
   \item An overall long term reward
   \item Long term reward given to each action taken
 \end{itemize}
 
 
-\subsection{Goals}
-Because SCOUt is designed for observation and exploration, two Goal types are analyzed: anomaly searching and element mapping.
-This is not say that SCOUt would be limited to Operations which only involve these types of tasks.
-SCOUt is intended to be coupled with other tasks.
+\subsection{Goals} \label{subsec:goals}
+Because SCOUt is designed for exploration, two goal types are analyzed: anomaly searching and element mapping.
+This is not say that SCOUt would be limited to operations which only involve these types of tasks.
+SCOUt is intended to be integrated with other tasks.
 For example, if the entire task of a robot was to traverse a hazardous area to find a certain mineral for extraction.
 SCOUt would be used to guide exploration in the environment and detect the mineral.
-When the mineral is found, SCOUt's process would then be completed successfully and a separate process could take over for the actual extraction, or the location could be recorded by SCOUt and another agent could be sent in.
+When the mineral is found, SCOUt's process would then be completed successfully and a separate process could take over for the actual extraction, or the location could be recorded by SCOUt and another agent could be deployed.
 After the other agent or process completes its task, SCOUt could continue to search for more deposits of the mineral or return to base.
 For anomaly searching goals, the agent is required to find a specified anomaly within an environment.
 This tests SCOUt's ability to use environmental clues to track down the anomaly.
 For example, if the agent was looking for a human after a natural disaster, it could use data such as temperature and decibel readings to locate the person.
-Element mapping is fairly strait forward.
-The agent is must map out as much data about the specified element type as possible.
+The element mapping goal is fairly strait forward.
+The agent must map out as much data about the specified element type as possible.
 
 
-\subsection{Rewards}
-In addition to goal completion, an agent also has to be observant of its health and energy on a short term scale.
+\subsection{Rewards} \label{subsec:rewards}
+In addition to goal completion, an agent must also be observant of its health and energy on a short term scale.
 The more efficiently an agent can complete an Operation the better.
 The overall performance of an agent is measured by both its ability to complete the task at hand and the safety and efficiency of the actions taken.
-These performance measurements are calculated on a short and long term basis, and come in the form of "rewards".
-In addition to measuring the performance of an agent, rewards can be used as a learning metric for an intelligent Controller (\todo{ref controller schema}).
+These performance measurements are calculated on a short and long term basis, and come in the form of ``rewards.''
+In addition to measuring the performance of an agent, rewards can be used as a learning metric for an intelligent Controller.
 
-\subsubsection{Short Term Rewards}
-Short term rewards are given each time an agent performs an action to reflect the event that occurs.
+\subsubsection{Short-Term Rewards}
+Short-term rewards are given each time an agent performs an action.
 Energy and health depletion are major factors in this reward.
 If the action required an excessive amount of energy or resulted in damage to the agent, the reward is decreased.
 Other factors that come into play depend on the specific action taken.
 If the agent attempted to move to a new area and failed to move (ex: a hill was too steep to climb) a deduction is made.
 A small increase in reward is applied if the agent moves into an unexplored area.
-If the agent uses a scanner, the reward is adjusted to reflect the amount of new data learned.
+If the agent uses a scanner, the reward is calculated to reflect the amount of new information learned.
 This penalizes the agent from using a scanner twice in a row or after small movements as it is not efficient use of energy.
 
 \todo{pseudo-code?}
@@ -483,11 +503,11 @@ This penalizes the agent from using a scanner twice in a row or after small move
   }
 \end{lstlisting}
 
-\subsubsection{Long Term Rewards}
-Long term rewards are calculated once the operation is over.
-Operation end cases are when the agent has successfully completed its goal, or it is depleted of health or energy.
-To reflect these scenarios, the reward is determined by the goal completion, remaining health and remaining energy.
-Even if a goal is completed, the agent could receive a low score if it was "reckless" and took lots of damage or used large amounts of energy.
+\subsubsection{Long-Term Rewards}
+Long-term rewards are calculated once an operation is over.
+Operations end when the agent has successfully completed its goal or has depleted its health or energy.
+To reflect these scenarios, reward is determined by the goal completion, remaining health, and remaining energy.
+Even if a goal is completed, the agent could receive a low score if it was ``reckless'' and took lots of damage or used large amounts of energy.
 The long term reward is then propagated backwards through all the actions that were taken.
 The actions performed immediately before the end of the operation are given highest score.
 Previous actions then receive diminishing reward based on \todo{LTS reward distribution equation}.
@@ -517,30 +537,34 @@ Previous actions then receive diminishing reward based on \todo{LTS reward distr
 % ==============================================================================
 % ENVIRONMENT GENERATION
 % ==============================================================================
-\section{Environment Builder}
-The SCOUt EnvironmentBuilder is a tool for creating diverse Environment models, while remaining simple to implement and understand.
+\section{Environment Builder} \label{sec:environment_builder}
+The SCOUt \texttt{EnvironmentBuilder} is a tool for creating diverse environment models.
 The tool is highly abstracted so that more details can easily be added to the model as needed while still maintaining a defined build process.
 Environments are procedurally generated based upon a collection of parameters called an environment template.
-These templates require minimal input to build a dynamic range of possible Environments.
+These templates require minimal input to build a wide range of possible Environments.
 An Environment can be tweaked or even built entirely by hand, but the procedural generation process removes this overhead.
+Procedural generation process:
 
-Procedural Generation Process
 \begin{enumerate}
-  \item Environment Template is passed in
+  \item Environment Template is given
   \item	Builder initializes a grid of empty Cells
-  \item	ElementSeeds are used to populate each present element type into the gird of cells
-  \item	TerrainModifications are applied to manipulate their related element(s)
+  \item	\texttt{ElementSeed}s are used to populate each present element type into the gird of cells
+  \item	\texttt{TerrainModification}s are applied to manipulate their related element(s)
   \item	Anomalies are placed randomly within the environment
   \item	Anomaly effect(s) are applied to corresponding element(s) in neighboring Cells
 \end{enumerate}
 
+\todo{diagram}
+\todo{example seed}
+\todo{example environment}
 
-\subsection{Environment Templates}
+\subsection{Environment Templates} \label{subsec:environment_templates}
 Each template created will act as a guide in the creation of an instance of the Environment class.
-A template can create similar, but unique environments each time it is used by the EnvironmentBuilder.
+A template can create similar, but unique environments each time it is used by the \texttt{EnvironmentBuilder}.
 This allows testing and training agent controllers multiple times in similar conditions, while still providing a dynamic range of scenarios that the Agent may face in each generated Environment.
-Each template is comprised of the name, dimensions and scale of the environment along with lists of ElementSeeds, TerrainModifications and Anomalies to be applied.
+Each template is comprised of the name, dimensions and scale of the environment along with lists of \texttt{ElementSeed}s, \texttt{TerrainModification}s and Anomalies to be applied.
 
+\todo{appendix}
 \begin{lstlisting}[language=Scala]
 class EnvironmentTemplate (
   name: String
@@ -554,13 +578,14 @@ class EnvironmentTemplate (
 \end{lstlisting}
 
 
-\subsection{Element Seeds}
+\subsection{Element Seeds} \label{subsec:element_seeds}
 The environment builder begins by procedurally generating one Layer of Elements at a time.
 Each Element class has a companion class called an ElementSeed which holds parameters used to produce a Layer of its element type, and a unique function defining how procedural generation will take place to produce the Layer.
 The generation of each Layer is modeled on how the element type's values may vary in a real-world scenario.
-Parameters within each Seed are set to default values that can also be overriden by creating a new instance of the ElementSeed.
+Parameters within each Seed are set to default values that can also be overridden by creating a new instance of the \texttt{ElementSeed}.
 This can change how the values within the Layer will vary.
 
+\todo{appendix}
 \begin{lstlisting}[language=Scala]
 trait ElementSeed (
   elementType: String
@@ -568,12 +593,11 @@ trait ElementSeed (
 )
 \end{lstlisting}
 
-The environment builder will use each ElementSeed to produce each Layer of Elements.
-Resulting Layers will be temporarily stored in a list until the end of the build process so they can easily be manipulated before being stored into corresponding Cells within the Environment grid.
-Some layers are far easier to generate than others.
-Latitude and Longitude layers can simply be generated by calculating the distance each cell is from the origin point on the Environment grid (cell (0,0)).
-
-For an example, let’s look at the ElementSeed for producing the Elevation Layer.
+The environment builder will use each \texttt{ElementSeed} to produce each Layer of Elements.
+Resulting Layers will be temporarily stored in a list until the end of the build process so they can easily be manipulated before being stored into corresponding Cells within the \texttt{Environment} grid.
+Some layers are easier to generate than others.
+Latitude and Longitude layers can be generated by calculating the distance each cell is from the origin point on the \texttt{Environment} grid).
+For an example, let’s look at the \texttt{ElementSeed} for producing the Elevation Layer.
 
 \begin{lstlisting}[language=Scala]
 Class ElevationSeed (
@@ -610,18 +634,19 @@ Smoothing is a function defined within the Layer class that will reduce strong v
 For Elevation, this would equate to transforming a highly rigid surface into a smoother, more natural surface.
 
 \todo{smoothing pseudo-code}
-\todo{smoothing before-after photo?}
+\todo{smoothing before-after photo}
 
 
-\subsection{Terrain Modifications}
+\subsection{Terrain Modifications} \label{subsec:terrain_modifications}
 Terrain modifications influence the basic landscape of the environment.
-After each ElementSeed has produced a layer for the Environment, TerrainModifications are applied one after the other, taking care not to overlap modifications (for example, we wouldn't want a hill to overlap with a valley and cancel each other out).
+After each \texttt{ElementSeed} has produced a layer for the Environment, \texttt{TerrainModification}s are applied one after another, taking care not to overlap modifications (for example, we wouldn't want a hill to overlap with a valley and cancel each other out).
 Each modification represents a severe alteration of one or more element type Layers within the environment.
-Following a similar process laid out by Doran and Parberry\cite{doran_controlled_2010}, desired alterations are incorporated into the environment while allowing unique variations of each to develop.
+Following a similar process laid out by Doran and Parberry~\cite{doran_controlled_2010}, desired alterations are incorporated into the environment while allowing unique variations of each to develop.
 Their controlled procedural generation process is used to produce landmasses that potentially have bodies and channels of water.
 SCOUt's environment builder generalizes this process and extends it to allow multitudes of element types to be modified.
 The TerrainModification trait provides an extendable template from which all types of modifications that can be applied.
 
+\todo{appendix}
 \begin{lstlisting}[language=Scala]
 trait TerrainModification (
   name: String
@@ -631,8 +656,10 @@ trait TerrainModification (
 }
 \end{lstlisting}
 
-
+\noindent
 For an example, lets look at Elevation again.
+
+\todo{probably pseudo-code}
 
 \begin{lstlisting}[language=Scala]
 class ElevationModification (
@@ -685,71 +712,74 @@ class ElevationModification (
   }
 }
 \end{lstlisting}
-\todo{turn into pseudo-code}
 
-Here we have an ElevationModification which will allow us to create hills and valleys within the environment.
-Again following the approach of \cite{doran_controlled_2010}, random, unmodified (x,y) positions are selected from the Layer to begin with and updates their value to the specified modification value.
-The modifier then performs "walks" to random, unmodified neighboring Elements, updating their values within a standard deviation of the specified modification value.
+Here we have an \texttt{ElevationModification} that will allow us to create hills and valleys within the environment.
+Again following the approach of~\cite{doran_controlled_2010}, random, unmodified (x,y) positions are selected from the Layer to begin with and updates their value to the specified modification value.
+The modifier then performs ``walks'' to random, unmodified neighboring Elements, updating their values within a standard deviation of the specified modification value.
 These walks continue until the specified coverage area has been modified, or until there are no neighboring cells that can be modified.
 A special Layer smoothing algorithm is then applied to the Elevation values in the modified area, as well as the immediate surrounding unmodified area to reduce rigidity and give a more natural change in values between neighboring cells.
-This type of smoothing applies a given slopping factor within the modified area, allowing the ElevationModification to generate gentle hills or valleys or sharp cliffs depending on the slope defined.
+This type of smoothing applies a given slopping factor within the modified area, allowing the \texttt{ElevationModification} to generate gentle hills or valleys or sharp cliffs depending on the slope defined.
 
 
-\subsection{Anomaly Placement}
-Once all TerrainModifications have been applied, anomalies are placed into the environment.
-Each specified anomaly is randomly placed into cell(s) in the Environment.
-For anomalies that occupy more than one cell, neighboring cells are chosen at random until the Anomaly's coverage area is met, or there are no neighboring cells that can contain the Anomaly.
+\subsection{Anomaly Placement} \label{subsec:anomaly_placement}
+Once all \texttt{TerrainModification}s have been applied, anomalies are placed into the environment.
+Each specified anomaly is randomly placed into cell(s) in the \texttt{Environment}.
+For anomalies that occupy more than one cell, neighboring cells are chosen at random until the \texttt{Anomaly}'s coverage area is met, or there are no neighboring cells that can contain the \texttt{Anomaly}.
 The anomaly type is appended to each occupied Cell's anomalies list for reference within the simulation.
-After an anomaly has been placed, each of the Anomaly's Effects are applied.
+After an anomaly has been placed, each of the \texttt{Anomaly}'s Effects are applied.
 An Effect will alter the Element values for the occupied and surrounding Cells in the effected area.
-These alterations are typically applied as a "radiation".
-For example, a Human Anomaly might radiate heat and sound.
+These alterations are typically applied as a ``radiation.''
+For example, a \texttt{Human A}nomaly might radiate heat and sound.
 To account for this, the radiation function is applied to the temperature and decibel values of cells in the effected radius.
 \todo{radiation function}
 
-Now that all ElementSeeds, TerrainModifications and Anomaly placements have occured, the resulting Layers containing thier respective Elementss are populated into their corresponding (x,y) Cell location within the Environment grid.
-The resulting instance of an Environment class is then returned by the builder to the requesting party.
+Now that all \texttt{ElementSeed}s, \texttt{TerrainModification}s and \texttt{Anomaly} placements have occured, the resulting Layers containing thier respective Elementss are populated into their corresponding (x,y) Cell location within the \texttt{Environment} grid.
+The resulting instance of an \texttt{Environment} class is then returned by the builder to the requesting party.
 
 
 
 % ==============================================================================
 % VISUALIZATION TOOL
 % ==============================================================================
-\section{Visualization Tool}
+\section{Visualization Tool} \label{sec:visualization_tool}
 The environment build tool provides a Graphical User Interface (GUI) for creating and visualizing environments.
-Electron \todo{Possibly cite Electron} is used to simulate a web page contained within a standalone desktop application.
-This allows the front end to be written in JavaScript, HTML and CSS and handle communication to the back end via Http over a localhost network.
-Scala library HTTP4s \todo{Possibly cite http4s} is used to create a server on a localhost network for handling the http requests from the front end.
+Electron \todo{Possibly cite Electron} is used to render a web page contained within a standalone desktop application.
+This allows the front end to be written in JavaScript, HTML and CSS and handle communication to the back end via HTTP over a localhost network.
+A Scala library named HTTP4s \todo{Possibly cite HTTP4s} is used to create a server on a localhost network for handling the HTTP requests from the front end.
 Launching the GUI starts up the Scala server in a new terminal and opens the Electron window which will begin attempts to establish communication with the server.
 
 
-\subsection{Home Page}
-\todo{add photos}
-Once connection between the server and GUI has been established, the user is brought to the Home Page wher they can choose to generate a random environment, build a custom environment, load in an environment or view an operation.
-For a random environment, the user only inputs the name and n x m size of the environment and all other variables are selected by the server.
-Building a custom environment steps the user through a series of form pages to create an EnvironmentTemplate.
-Loading an environment allows the user to select a saved environment or a saved template to use.
+\subsection{Home Page} \label{subsec:home_page}
+Once a connection between the server and GUI has been established, the user is brought to the home page (figure~\ref{fig:visualizer_home_page}), where they can choose to generate a random environment, build a custom environment, load in an environment, or view an operation.
+For a random environment, the user inputs the name and size of the environment and all other variables are set by the server.
+Building a custom environment steps the user through a series of form pages to create an \texttt{EnvironmentTemplate}.
+Loading an environment allows the user to select a saved environment or a saved template.
 Selecting an operation will load the environment and log of all actions taken by an agent during a specific operation run that is saved in memory.
 Once an environment has been generated and/or loaded by the server, it is returned to the GUI to be displayed.
 The environment build tool will parse the returned environment into a graphical data representation, with interactive capabilities to explore the specific variables within the environment.
 In the case that the user selected an operation, the user will additionally be able to step through the event log of an Operation.
 
+\begin{figure}[H]
+  \includegraphics[width=1.0\columnwidth]{Figures/Visualizer/home_page.JPG}
+  \caption{Home page for SCOUt's graphical user interface.}
+  \label{fig:visualizer_home_page}
+\end{figure}
 
-\subsection{Template Forms Page}
-\todo{add photos}
+\subsection{Template Forms Page} \label{subsec:template_forms_page}
+\todo{add photos here or appendix?}
 To create a template, the user will be presented with a series of forms with parameter input fields.
-The forms are generated based on the available Element, TerrainModification and Anomaly classes that are defined in SCOUt's back end.
+The forms are generated based on the available Element, \texttt{TerrainModification} and \texttt{Anomaly} classes that are defined in SCOUt's back end.
 The first three forms will ask the user which element types, terrain modification and anomaly types they would like to include.
 Some elements (environment, latitude and longitude) are required in all environments.
-As the user selects what will be present in the environment, more forms will be generated for them to provide seed data (for Elements and Anomalies), or parameter definitions (for TerrainModifications).
+As the user selects what will be present in the environment, more forms will be generated for them to provide seed data (for Elements and Anomalies), or parameter definitions (for \texttt{TerrainModification}s).
 Each form within this process will save the user’s input data on the front end.
-This allows the user to go back and edit form data while moving through the different form pages, as well as return and edit the form data after an Environment has already been generated and loaded into the \ref{Visualizer Page}.
+This allows the user to go back and edit form data while moving through the different form pages, as well as return and edit the form data after an Environment has already been generated and loaded into the visualization page.
 Form data is also set within required bounds and checked before submission.
 Once the user has filled out all required form info, they can review their entire form entry from a single page and then submit it.
-When submitted, the front end data is converted into Json data and sent in a request to the SCOUt server via a JavaScript fetch request.
-An Environment instance is then built on the back end using the template parameters provided, and returned to the front end where it is loaded into the \ref{Visualizer Page}.
+When submitted, the front end data is converted into JSON data and sent in a request to the SCOUt server via a JavaScript fetch request.
+An Environment instance is then built on the back end using the template parameters provided, and returned to the front end where it is loaded into the visualization page.
 
-
+\todo{Do we need this?}
 Template Form Sections
 \begin{enumerate}
   \item Environment Name and Size
@@ -762,7 +792,7 @@ Template Form Sections
 \end{enumerate}
 
 
-\subsection{Visualization Page}
+\subsection{Visualization Page} \label{subsec:visualization_page}
 \todo{add photos}
 The visualization page provides an interactive overview of any given environment.
 The main focus is on the display section where the entire environment grid is represented using heatmaps.
@@ -778,8 +808,8 @@ Examples of new features would be adding new classes (ex: a new Element type), o
 \todo{add photos}
 The main menu provides high level functions to perform while using the environment build tool.
 The main menu options are displayed at the top of the visualizer as a series of buttons.
-The user can select buttons to return to the home page, regenerate or save the current EnvironmentTemplate (if an environment template is being used), or save the current Environment instance that is currently being viewed.
-If the user wants to tweak the current template that is in use, they can do so by returning to the Home Page\ref{Home Page} via the home button, and choosing "Custom Environment" again.
+The user can select buttons to return to the home page, regenerate or save the current \texttt{EnvironmentTemplate} (if an environment template is being used), or save the current Environment instance that is currently being viewed.
+If the user wants to tweak the current template that is in use, they can do so by returning to the home page via the home button, and choosing ``Custom Environment'' again.
 Their previously set parameters will be loaded back into the form fields for editing.
 
 
@@ -791,7 +821,7 @@ D3's heatmap creates a graphical representation of data values over a 2-dimentio
 Heatmaps display the variation of values using a color scale where higher values are indicated by darker sections and lower values as a lighter section of the map.
 For example, when viewing the elevation's heatmap, a hill will appear darker than a valley.
 The user also has the ability to select individual cells by clicking on their region in the displayed cell grid.
-The display will highlight a display cell once it has been selected and then load the cells data into the Legend\ref{Legend}.
+The display will highlight a display cell once it has been selected and then load the cells data into the legend.
 
 
 \subsubsection{Tool Bar}

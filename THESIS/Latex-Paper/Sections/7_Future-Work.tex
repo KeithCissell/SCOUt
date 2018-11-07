@@ -1,18 +1,38 @@
 
 
-\chapter{Future Work}
-How to improve this approach.
+\chapter{Future Work} \label{ch:future_work}
+This chapter covers a few ideas for future work that could improve upon the current state of the SCOUt project.
 
-Dynamic environments
+\noindent
+\textbf{Artificial Neural Network Integration.}
+Original ideas for the adaptive control schema included the use of an artificial neural network (ANN).
+The ANN would take an agent state and a list of valid actions as input and output the selected action.
+Due to the dynamic nature of agent states, use of an ANN was ruled out.
+If an agent changes the sensors it is equipped with, the ANN would need to account for a new set of input values due to the different set of \texttt{ElementState}s that would be found in the \texttt{AgentState}.
+However, the memory-based approach required the use of several weights to guide each state comparison and action scoring equation.
+Our solution was to optimize the weight set using a genetic algorithm (GA).
+Use of an ANN in place of the state comparison equations would eliminate the need for external weights to be provided.
+This could further enhance the adaptability of SCOUt's decision model.
+State-action pairs (SAPs) could be compared against the current state by passing attributes through the ANN to output difference scores.
+The ANN could be trained with backpropagation using the existing simulation platform and the short-term and long term-reward systems.
+This model would likely require the ANN to remain ``open'' in the sense that its weights are constantly being trained during every operation.
 
+\noindent
+\textbf{Improved Memory Management.}
+Improvements to both the process of saving and loading the SCOUt controller's memory could be made.
+For saving memory, the application of cluster would cut down on memory storage requirements.
+Currently, SCOUt saves the last 20 SAPs from each operation, and uniformly samples 5 percent of the remaining SAPs.
+Instead of only saving a sub-set, all SAPs could be saved in memory and a data clustering algorithm could later be applied to ``clean-up'' the memory.
+The clusters could then be averaged and given a weight based on the number of SAPs that fell within the cluster.
+This would eliminate redundancies within the memory set, as well as reduce the amount of computational time required for the controller to conduct state comparisons.
+As for loading memory, an adaptive approach could be taken to select only a sub-set of the SAPs to use in each operation.
+The controller could begin by analyzing the given goal and agent setup to choose SAPs from memory that correlate to the operation at hand.
+We expect that this would have two positive effects: less memory means less computational time for the action decision model, and a more concise memory set would yield higher performance results.
 
-Sensors can scan in an arc rather than 360 degrees.
-
-
-Better Memory selection/ trimming.
-
-
-Add separate searching algorithm for navigation.
-
-
-Better integration of Goal into the AgentState.
+\noindent
+\textbf{Integration of Goals into Agent States.}
+Currently, the only place that we see the reflection of the current goal in SCOUt's decision model is with the \texttt{indicator} flag found in each \texttt{ElementState}.
+A higher-level approach could be taken so that the decision model analyzes an \textit{OperationState} rather than just an \texttt{AgentState}.
+This could be achieved by classifying the goal type and goal instance.
+For example, a \textit{Find Human} \textit{OperationState} would also include a current goal type of ``anomaly searching'' and a goal instance of ``human'' since this is the specific anomaly that the agent is searching for.
+These attributes could then be weighted into the state comparison system to produce a more concise \textit{OverallStateDifference} score.

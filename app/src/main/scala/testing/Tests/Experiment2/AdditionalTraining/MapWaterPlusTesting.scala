@@ -30,7 +30,7 @@ object MapWaterPlusTesting {
   def main(args: Array[String]): Unit = {
 
     // Testing Setup
-    val testTemplate = "HARD"
+    val testTemplate = "EASY"
     val numEnvironments = 200
     val numTestsPerEnvironment = 5
 
