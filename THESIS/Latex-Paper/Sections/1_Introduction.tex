@@ -20,7 +20,7 @@ Here we discuss how AI can be applied to exploration and present an adaptive sol
 
 The field of robotics has benefited tremendously through growing research in artificial intelligence.
 AI methods are commonly used in situations when there is a known number of controllable variables and a wide solution space, making them valuable tools in exploration.
-\todo{for example}
+For example, in a search and rescue setting, if an earthquake had collapsed a building and agents were deployed to find survivors, the operation has no definition to the landscape of the altered environment, or the potential location of survivors.
 There are many AI approaches that have been applied to create decision making models for robotic agents operating within unknown environments.
 In particular, artificial neural networks (ANN)~\cite{kiumarsi_optimal_2018, arulkumaran_brief_2017, tai_autonomous_2017, bai_toward_2017} and reinforcement learning (RL)~\cite{kiumarsi_optimal_2018, arulkumaran_brief_2017, sutton_reinforcement_1998} decision models have yielded promising solutions for creating optimal control patterns.
 Through data analytics, ANNs and RL models will often find correlations in data that are not always obvious.
@@ -29,7 +29,6 @@ Learning is typically achieved through training in simulation, which has many be
 Simulations allow agent setups and control schemas to be tested and observed without the potential of damaging equipment or the environment.
 Additionally, they offer the ability to conduct multiple tests in short periods of time without the need for any physical setup or supervision.
 
-\todo{how it differs from MDP}
 Our solution to the strong diversity of use cases for autonomous robotics in the field of exploration is a unified Surveillance Coordination and Operations Utility (SCOUt).
 SCOUt takes a top down approach to agent-task definition and provides an adaptive control schema for a wide variety of robotic agents and their uses.
 The combination of an agent-task definition and simulation platform, and an adaptive control schema creates a tool which can be applied to both new and existing use cases of autonomous robots in exploration.
@@ -56,4 +55,4 @@ The layout of this paper is as follows.
 Chapter~\ref{ch:related_works} covers related works in the field of autonomous exploration.
 Chapter~\ref{ch:scout} describes the data structures and methodology of the simulation and control platforms.
 Chapter~\ref{ch:controllers} then goes into detail about how the random, heuristic and SCOUt controllers operate.
-Experimentation and results are covered in chapter~\ref{ch:experiments_and_results}, a conclusion is drawn in chapter~\ref{ch:conclusion}, and ideas for future work on this project are discussed in chapter~\ref{ch:future_work}.
+Experimentation and results are covered in chapter~\ref{ch:experiments_and_results}, a conclusion is drawn in chapter~\ref{ch:conclusion}, and ideas for future work on this project are discussed in section~\ref{sec:future_work}.

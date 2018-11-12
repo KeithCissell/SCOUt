@@ -22,13 +22,76 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{amsmath}
+\usepackage{amsfonts}
 \usepackage{float}
+\usepackage{algorithm,algorithmic}
+
+\usepackage[toc,page]{appendix}
+
+% Equation captions
+\usepackage{caption}
+\DeclareCaptionType{capeq}
+\captionsetup[capeq]{name=Equation, labelformat=simple, labelsep=colon}
+% Code listings
+\captionsetup[lstinputlisting]{name=Code, labelformat=simple, labelsep=colon}
+% Appendix items
+\DeclareCaptionType{appx}
+\captionsetup[appx]{name=Appendix, labelformat=simple, labelsep=colon}
+% tables
+\DeclareCaptionType{tblcap}
+\captionsetup[tblcap]{name=Table, labelformat=simple, labelsep=colon}
+
+
+% Code settings
+\lstset{
+  language=Scala, % C, C++, Java, SQL are from the around hundred available
+  basicstyle=\ttfamily,
+  numbers=left,
+  numberstyle=\footnotesize,
+  stepnumber=1,
+  numbersep=2.0mm}
+
+
+% JSON DEF
+% \colorlet{punct}{red!60!black}
+% \definecolor{background}{HTML}{EEEEEE}
+% \definecolor{delim}{RGB}{20,105,176}
+% \colorlet{numb}{magenta!60!black}
+%
+% \lstdefinelanguage{json}{
+%     basicstyle=\normalfont\ttfamily,
+%     numbers=left,
+%     numberstyle=\scriptsize,
+%     stepnumber=1,
+%     numbersep=8pt,
+%     showstringspaces=false,
+%     breaklines=true,
+%     frame=lines,
+%     backgroundcolor=\color{background},
+%     literate=
+%      *{0}{{{\color{numb}0}}}{1}
+%       {1}{{{\color{numb}1}}}{1}
+%       {2}{{{\color{numb}2}}}{1}
+%       {3}{{{\color{numb}3}}}{1}
+%       {4}{{{\color{numb}4}}}{1}
+%       {5}{{{\color{numb}5}}}{1}
+%       {6}{{{\color{numb}6}}}{1}
+%       {7}{{{\color{numb}7}}}{1}
+%       {8}{{{\color{numb}8}}}{1}
+%       {9}{{{\color{numb}9}}}{1}
+%       {:}{{{\color{punct}{:}}}}{1}
+%       {,}{{{\color{punct}{,}}}}{1}
+%       {\{}{{{\color{delim}{\{}}}}{1}
+%       {\}}{{{\color{delim}{\}}}}}{1}
+%       {[}{{{\color{delim}{[}}}}{1}
+%       {]}{{{\color{delim}{]}}}}{1},
+% }
 
 
 
 \begin{document}
 
-\title{Surveillance Coordination and Operations Utility (SCOUt)}
+\title{An Adaptive Memory-Based Reinforcement Learning Controller}
 \author{Keith August Cissell}
 \date{June 2018}
 
@@ -36,7 +99,7 @@
 
 
 \input{Sections/0_1_Abstract}
-\input{Sections/0_2_Aknowledgements}
+% \input{Sections/0_2_Aknowledgements}
 
 \tableofcontents
 \newpage
@@ -47,9 +110,11 @@
 \input{Sections/4_Controllers}
 \input{Sections/5_Experiments-and-Results}
 \input{Sections/6_Conclusion}
-\input{Sections/7_Future-Work}
+% \input{Sections/7_Future-Work}
 
 \bibliographystyle{plain}
 \bibliography{References}
+
+\input{Appendix}
 
 \end{document}
