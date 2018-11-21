@@ -40,7 +40,7 @@ This will encourage the controllers to make new choices resulting in exploration
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=1.0\columnwidth]{Figures/heuristic_decision_model.png}
-  \caption{The general decision model that our heuristic controllers follow. An \texttt{AgentState} and a list of valid actions are passed to the controller. The controller then assigns a score to each action by analyzing related attributes within the \texttt{AgentState}. The highest scoring action is then returned.}
+  \caption[Heuristic Control Model]{The general decision model that our heuristic controllers follow. An \texttt{AgentState} and a list of valid actions are passed to the controller. The controller then assigns a score to each action by analyzing related attributes within the \texttt{AgentState}. The highest scoring action is then returned.}
   \label{fig:heuristic_decision_model}
 \end{figure}
 
@@ -52,7 +52,7 @@ The resulting score should influence the controller to use sensors efficiently, 
 
 \begin{algorithm}[!htb]
   \setstretch{1.35}
-  \caption{Calculate a score for a considered scanning action for a specific element type based on an \texttt{ElementState}. The returned result will be used to rank the action in the decision-making process. $W_{item}$ denotes the attributed weight for $itemReward$.}
+  \caption[Heuristic - Score Potential Scan Action]{Calculate a score for a considered scanning action for a specific element type based on an \texttt{ElementState}. The returned result will be used to rank the action in the decision-making process. $W_{item}$ denotes the attributed weight for $itemReward$.}
   \begin{algorithmic} \label{algorithmic:score_scan_action}
     \REQUIRE $W_{indicator} \in \left[0, \infty \right)$
     \REQUIRE $W_{hazard} \in \left[0, \infty \right)$
@@ -93,7 +93,7 @@ For an example of how threshold analyses are conducted within a sub-function, se
 
 \begin{algorithm}[!htb]
   \setstretch{1.35}
-  \caption{Calculate a score for a considered movement action in a specific direction based on a set of corresponding \texttt{QuadrantState}s ($QS$). The returned results will be used to rank the action in the decision-making process. $W_{item}$ denotes the attributed weight for $itemReward$. This function also uses a $score<Element-Type>$ function. Example for one such equation is algorithm~\ref{algorithmic:findHuman_scoreElevation}. This equation is used specifically for the $Heuristic_{FH}$ controller's decision model.}
+  \caption[Heuristic - Score Potential Movement Action (Find Human)]{Calculate a score for a considered movement action in a specific direction based on a set of corresponding \texttt{QuadrantState}s ($QS$). The returned results will be used to rank the action in the decision-making process. $W_{item}$ denotes the attributed weight for $itemReward$. This function also uses a $score<Element-Type>$ function. Example for one such equation is algorithm~\ref{algorithmic:findHuman_scoreElevation}. This equation is used specifically for the $Heuristic_{FH}$ controller's decision model.}
   \begin{algorithmic} \label{algorithmic:findHuman_scoreMovmentAction}
     \REQUIRE $W_{elevation} \in \left[0, \infty \right)$
     \REQUIRE $W_{decibel} \in \left[0, \infty \right)$
@@ -117,7 +117,7 @@ For an example of how threshold analyses are conducted within a sub-function, se
 
 \begin{algorithm}[!htb]
   \setstretch{1.35}
-  \caption{Calculate a score for a considered movement action in a specific direction based on a set of corresponding \texttt{QuadrantState}s ($QS$). The returned results will be used to rank the action in the decision-making process. $W_{item}$ denotes the attributed weight for $itemReward$. This function also uses a $score<Element-Type>$ function. Example for one such equation is algorithm~\ref{algorithmic:findHuman_scoreElevation}. This equation is used specifically for the $Heuristic_{MW}$ controller's decision model.}
+  \caption[Heuristic - Score Potential Movement Action (Map Water)]{Calculate a score for a considered movement action in a specific direction based on a set of corresponding \texttt{QuadrantState}s ($QS$). The returned results will be used to rank the action in the decision-making process. $W_{item}$ denotes the attributed weight for $itemReward$. This function also uses a $score<Element-Type>$ function. Example for one such equation is algorithm~\ref{algorithmic:findHuman_scoreElevation}. This equation is used specifically for the $Heuristic_{MW}$ controller's decision model.}
   \begin{algorithmic} \label{algorithmic:mapWater_scoreMovementAction}
     \REQUIRE $W_{elevation} \in \left[0, \infty \right)$
     \REQUIRE $W_{water} \in \left[0, \infty \right)$
@@ -135,7 +135,7 @@ For an example of how threshold analyses are conducted within a sub-function, se
 
 \begin{algorithm}[!htb]
   \setstretch{1.35}
-  \caption{Calculate a score for a \texttt{QuadrantState} ($Q$) of element type ``elevation.'' The returned results will be used to rank the action in the decision-making process. $W_{item}$ denotes the attributed weight for $itemReward$. This equation is used in both the $Heuristic_{FH}$ and $Heuristic_{FH}$ controllers' decision models.}
+  \caption[Heuristic - Score Quadrant (Elevation)]{Calculate a score for a \texttt{QuadrantState} ($Q$) of element type ``elevation.'' The returned results will be used to rank the action in the decision-making process. $W_{item}$ denotes the attributed weight for $itemReward$. This equation is used in both the $Heuristic_{FH}$ and $Heuristic_{FH}$ controllers' decision models.}
   \begin{algorithmic} \label{algorithmic:findHuman_scoreElevation}
     \REQUIRE $W_{percentKnown} \in \left[0, \infty \right)$
     \REQUIRE $W_{immediateValue} \in \left[0, \infty \right)$
@@ -166,8 +166,9 @@ In future operations, the SCOUt controller (figure~\ref{fig:scout_decision_model
 Utilizing data from the agent's current state and the controller's collection of past action-state pairs, SCOUt will predict rewards for each possible action and select one based on these predictions.
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/scout_decision_model.png}
-  \caption{Action decision model for the SCOUt controller. The controller searches for memory state-action rewards (SAR) that have a similar state to the current state. The chosen actions and rewards for each similar SAR is used to create a score for each valid action that the can be taken in the current state.}
+  \caption[SCOUt Control Model]{Action decision model for the SCOUt controller. The controller searches for memory state-action rewards (SAR) that have a similar state to the current state. The chosen actions and rewards for each similar SAR is used to create a score for each valid action that the can be taken in the current state.}
   \label{fig:scout_decision_model}
 \end{figure}
 
@@ -274,7 +275,7 @@ By normalizing the current state against the states in memory, the numerical att
   \begin{equation} \label{eq:gaussian_normalize}
     x_{normal} = \frac{(x - m)}{sd}
   \end{equation}
-  \caption{Normalization of an attribute value, $x$, based on the gaussian mean, $m$, and gaussian standard deviation, $sd$, for the given attribute.}
+  \caption[Value Normalization]{Normalization of an attribute value, $x$, based on the gaussian mean, $m$, and gaussian standard deviation, $sd$, for the given attribute.}
 \end{capeq}
 
 
@@ -300,7 +301,7 @@ This allows the controller to compare only the attributes that are relevant to t
   \begin{equation} \label{eq:weighted_average}
     WeightedAverage = \frac{\sum_{i=0}^{n} A_{i} * W_{i}}{\sum_{i=0}^{n} W_{i}}
   \end{equation}
-  \caption{A general equation that takes a list of $n$ attribute values ($V$) and a list of $n$ corresponding weights ($W$) and calculates a weighted average of all attribute values.}
+  \caption[Weighted Average]{A general equation that takes a list of $n$ attribute values ($V$) and a list of $n$ corresponding weights ($W$) and calculates a weighted average of all attribute values.}
 \end{capeq}
 
 Difference comparisons for each attribute in an \texttt{AgentState} are calculated based on their data type (boolean, normalized numerical value, optional normalized numerical value, or sub-class).
@@ -324,14 +325,14 @@ If both values are unknown a difference of 0 is returned.
     x \neq y & 1
   \end{cases}
 \end{equation}
-\caption{Difference calculation for two boolean values, $x$ and $y$.}
+\caption[Boolean Difference]{Difference calculation for two boolean values, $x$ and $y$.}
 \end{capeq}
 
 \begin{capeq}
 \begin{equation} \label{eq:gaussian_difference}
   GaussianDifference = |x_{normal} - y_{normal}|
 \end{equation}
-\caption{Difference calculation for two normalized vales, $x$ and $y$.}
+\caption[Gaussian Difference]{Difference calculation for two normalized vales, $x$ and $y$.}
 \end{capeq}
 
 \begin{capeq}
@@ -343,7 +344,7 @@ If both values are unknown a difference of 0 is returned.
     x \quad \neg \text{known} \cap y \quad \neg \text{known} & 0
   \end{cases}
 \end{equation}
-\caption{A difference calculation used for two values ($x$ and $y$), when their values are not always known.}
+\caption[Option Difference]{A difference calculation used for two values ($x$ and $y$), when their values are not always known.}
 \end{capeq}
 
 Comparisons with SAR's whose chosen action was a scanning action will apply a weighted average to the health, energy, and element states of the two \texttt{AgentState}s.
@@ -398,8 +399,9 @@ The orientation that yields the lowest \textit{quadrantToQuadrantDifferences} (\
 % \end{capeq}
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/quadrant_orientations.png}
-  \caption{Orientation considerations between two compared states. This displays how rotating the compared environment's quadrant orientation can reveal states of higher similarity. We see that the elevation heatmaps of the two are highly similar when compared at North-to-South orientation, where as an un-altered quadrant comparison (North-to-North) would yield a very negative comparison.}
+  \caption[State Comparison Orientations]{Orientation considerations between two compared states. This displays how rotating the compared environment's quadrant orientation can reveal states of higher similarity. We see that the elevation heatmaps of the two are highly similar when compared at North-to-South orientation, where as an un-altered quadrant comparison (North-to-North) would yield a very negative comparison.}
   \label{fig:quadrant_orientations}
 \end{figure}
 
@@ -410,8 +412,9 @@ The current agent should be encouraged to move towards the quadrant in its own e
 Now, if the SAR's \textit{lowestQuadrantOrientationDifference} is found when rotating its quadrants 180 degrees (North-to-South orientation) and it had chosen to move East, the current agent should choose to move West since the two states are oriented at a 180 degree difference between each other (see figure ~\ref{fig:oriented_movement_example}).
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/oriented_movement_example.png}
-  \caption{Example of two states that have a \textit{lowestQuadrantOrientationDifference} at North-to-South orientation. The display exemplifies how after finding the most similar orientation, the action taken by the compared state must also be re-oriented to match the \textit{lowestQuadrantOrientationDifference}. In doing so the agent will be considering movement relative to the matching features in the environment.}
+  \caption[Orientation Comparison Example]{Example of two states that have a \textit{lowestQuadrantOrientationDifference} at North-to-South orientation. The display exemplifies how after finding the most similar orientation, the action taken by the compared state must also be re-oriented to match the \textit{lowestQuadrantOrientationDifference}. In doing so the agent will be considering movement relative to the matching features in the environment.}
   \label{fig:oriented_movement_example}
 \end{figure}
 
@@ -459,7 +462,7 @@ The prediction algorithm then computes an overall \textit{actionScore} for each 
 \begin{equation} \label{eq:diff_to_similarity}
   similarity = 1 - difference
 \end{equation}
-\caption{Equation for inverting an \textit{overallStateDifference} value to create a similarity value. The minimum \textit{overallStateDifference} that can exist is 0. By this logic, the highest attainable similarity between two states is 1.}
+\caption[Difference to Similarity Inversion]{Equation for inverting an \textit{overallStateDifference} value to create a similarity value. The minimum \textit{overallStateDifference} that can exist is 0. By this logic, the highest attainable similarity between two states is 1.}
 \end{capeq}
 
 \begin{capeq}
@@ -470,7 +473,7 @@ The prediction algorithm then computes an overall \textit{actionScore} for each 
     n >= minimumSimilarStates & \frac{\sum_{n}^{i=0} 1 - SAD_{i}.overallStateDifference}{n} \\
 \end{cases}
 \end{equation}
-\caption{Confidence value assigned to reward prediction values based on a set of $n$ \texttt{StateActionDifference}s ($SAD$), and the $minimumSimilarStates$ value from the evolved weight set (table ~\ref{table:evolved_weight_set}).}
+\caption[Reward Prediction Confidence]{Confidence value assigned to reward prediction values based on a set of $n$ \texttt{StateActionDifference}s ($SAD$), and the $minimumSimilarStates$ value from the evolved weight set (table ~\ref{table:evolved_weight_set}).}
 \end{capeq}
 
 % \begin{capeq}

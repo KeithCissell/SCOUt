@@ -37,7 +37,7 @@ Because the majority of the data structures used in this platform are abstracted
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=0.6\columnwidth]{Figures/client_server_architecture.png}
-  \caption{Client-server architecture of SCOUt's framework. The server handles all data storage and manipulation, while the client provides a graphical user interface for requesting and displaying data.}
+  \caption[Client-Server Architecture]{Client-server architecture of SCOUt's framework. The server handles all data storage and manipulation, while the client provides a graphical user interface for requesting and displaying data.}
   \label{fig:client_server_architecture}
 \end{figure}
 
@@ -87,8 +87,9 @@ On the other hand, attempting to model too much can be impractical as it consume
 For SCOUt's simulation platform, environments are modeled as a high-level class containing a collection of sub-classes that together form a simplified representation of a real world environment (figure~\ref{fig:environment_model}).
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/environment_model.png}
-  \caption{A visual model of SCOUt's \texttt{Environment} class architecture. An environment is made up of cells which hold information about the environment. This information includes any present element type or anomaly.}
+  \caption[Environment Data Architecture]{A visual model of SCOUt's \texttt{Environment} class architecture. An environment is made up of cells which hold information about the environment. This information includes any present element type or anomaly.}
   \label{fig:environment_model}
 \end{figure}
 
@@ -125,7 +126,7 @@ Figure~\ref{fig:human_decibel_effect} shows a heatmap of decibel values in an en
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=0.6\columnwidth]{Figures/human_decibel_effect.JPG}
-  \caption{Heatmap of the layer of decibel values within an environment that contains a human. A darker shade of green represents higher values of decibel levels, lighter shades represent lower values, and the human's location is shown in red.}
+  \caption[Sound Effect Heatmap]{Heatmap of the layer of decibel values within an environment that contains a human. A darker shade of green represents higher values of decibel levels, lighter shades represent lower values, and the human's location is shown in red.}
   \label{fig:human_decibel_effect}
 \end{figure}
 
@@ -156,7 +157,7 @@ Figure~\ref{fig:agent_model} shows the internal agent architecture and how it ap
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=1.0\columnwidth]{Figures/agent_model.png}
-  \caption{Visual model of the \texttt{Agent} class and how it interacts with an environment. A controller makes action decisions based on the agents current state. The agent will then attempt to perform the selected action within its environment. The agent's state will then be updated based on the resulting event.}
+  \caption[Agent-Environment Interaction Diagram]{Visual model of the \texttt{Agent} class and how it interacts with an environment. A controller makes action decisions based on the agents current state. The agent will then attempt to perform the selected action within its environment. The agent's state will then be updated based on the resulting event.}
   \label{fig:agent_model}
 \end{figure}
 
@@ -175,7 +176,7 @@ For example, if an agent was searching for a human, temperature and decibel sens
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=0.70\columnwidth]{Figures/sensor_range.png}
-  \caption{Diagram of a sensor's effective range within a grid of environment cells. The sensor will collect present element values for cells in range. The type of values collected is dependent upon the element type that the sensor is designed for.}
+  \caption[Sensor Scan Range Diagram]{Diagram of a sensor's effective range within a grid of environment cells. The sensor will collect present element values for cells in range. The type of values collected is dependent upon the element type that the sensor is designed for.}
   \label{fig:sensor_range}
 \end{figure}
 
@@ -194,7 +195,7 @@ The total amount of energy used is calculated based on the distance moved, and t
   \begin{equation} \label{eq:movement_cost}
     energyCost = (1.0 + (slope * slopeCost)) * dist * movementCost
   \end{equation}
-  \caption{Equation to calculate the energy required for an agent to move within an environment. This is based on the agent's $movementCost$ and $slopeCost$, and the physical $slope$ and $distance$ that is traveled.}
+  \caption[Movement Energy Cost]{Equation to calculate the energy required for an agent to move within an environment. This is based on the agent's $movementCost$ and $slopeCost$, and the physical $slope$ and $distance$ that is traveled.}
 \end{capeq}
 
 
@@ -211,7 +212,7 @@ The resistance factor between 0 and 1 (0 being no resistance and 1 being immune)
   \begin{equation} \label{eq:duribility_damage}
     damage = |v - threshold| * (1.0 - resistance)
   \end{equation}
-  \caption{Damage calculation based on an agent's $resistance$ to an element type with value $v$ that is above or below a durability $threshold$.}
+  \caption[Agent Damage]{Damage calculation based on an agent's $resistance$ to an element type with value $v$ that is above or below a durability $threshold$.}
 \end{capeq}
 
 \subsection{Actions} \label{subsec:actions}
@@ -223,7 +224,7 @@ Figure~\ref{fig:agent_actions} shows an example of an agent within an environmen
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=0.8\columnwidth]{Figures/agent_actions.png}
-  \caption{Example of an agent considering a movement action and a scanning action, along with the resulting states caused by each of these actions.}
+  \caption[Agent Action Types]{Example of an agent considering a movement action and a scanning action, along with the resulting states caused by each of these actions.}
   \label{fig:agent_actions}
 \end{figure}
 
@@ -261,7 +262,7 @@ Because agent movement is defined as north, south, west and east, we can collaps
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=1.0\columnwidth]{Figures/quadrants.png}
-  \caption{Diagram showing how an environment is divided into quadrants relative to an agent's position within a grid of cells.}
+  \caption[Environment Quadrant Division]{Diagram showing how an environment is divided into quadrants relative to an agent's position within a grid of cells.}
   \label{fig:quadrants}
 \end{figure}
 
@@ -328,7 +329,7 @@ It includes:
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=1.0\columnwidth]{Figures/operation.png}
-  \caption{Diagram depicting the flow of an operation where an agent is attempting to complete a goal within an environment. The agent will continuously select actions to perform until the goal is successfully completed or it is no longer operational. An agent is no longer operational if its health or energy are depleted due to the events that occur as it interacts with the environment. Once an operation has completed, each action the agent attempted will receive a short-term and long-term score.}
+  \caption[Operation Diagram]{Diagram depicting the flow of an operation where an agent is attempting to complete a goal within an environment. The agent will continuously select actions to perform until the goal is successfully completed or it is no longer operational. An agent is no longer operational if its health or energy are depleted due to the events that occur as it interacts with the environment. Once an operation has completed, each action the agent attempted will receive a short-term and long-term score.}
   \label{fig:operation}
 \end{figure}
 
@@ -366,7 +367,7 @@ This penalizes the agent from using a scanner multiple times in the same area, a
 
 \begin{algorithm}
   \setstretch{1.2}
-  \caption{Calculate the short-term reward for an event caused by an agent's action within an environment. $W_{item}$ denotes the attributed weight for $itemReward$.}
+  \caption[Short-Term Reward Calculation]{Calculate the short-term reward for an event caused by an agent's action within an environment. $W_{item}$ denotes the attributed weight for $itemReward$.}
   \begin{algorithmic} \label{algorithmic:short_term_reward}
     \REQUIRE $W_{health} \in \left[0, \infty \right)$
     \REQUIRE $W_{energy} \in \left[0, \infty \right)$
@@ -416,7 +417,7 @@ Previous actions then receive diminishing reward based on equation~\ref{eq:longt
 
 \begin{algorithm}
   \setstretch{1.35}
-  \caption{Calculate the long-term reward for an agent's performance in an operation. $W_{item}$ denotes the attributed weight for $itemReward$.}
+  \caption[Long-Term Reward Calculation]{Calculate the long-term reward for an agent's performance in an operation. $W_{item}$ denotes the attributed weight for $itemReward$.}
   \begin{algorithmic} \label{algorithmic:long_term_reward}
     \REQUIRE $W_{goal} \in \left[0, \infty \right)$
     \REQUIRE $W_{health} \in \left[0, \infty \right)$
@@ -438,7 +439,7 @@ Previous actions then receive diminishing reward based on equation~\ref{eq:longt
   \begin{equation} \label{eq:longtermscore_distribution}
     actionLongTermReward(i) = longTermReward * {0.9}^{\frac{i*10}{n}}
   \end{equation}
-  \caption{Equation representing the diminishing long-term reward that each of the $n$ actions will be assigned based on the $longTermReward$ the agent received for completing an operation, where $i$ is the current action's index within the operation event log.}
+  \caption[Action Long-Term Reward Attribution]{Equation representing the diminishing long-term reward that each of the $n$ actions will be assigned based on the $longTermReward$ the agent received for completing an operation, where $i$ is the current action's index within the operation event log.}
 \end{capeq}
 
 
@@ -489,7 +490,7 @@ Latitude and Longitude layers can be generated by calculating the distance each 
 For an example, let’s look at the \texttt{ElementSeed} for producing the elevation layer.
 
 \begin{lstfloat}
-  \caption{Definition of \texttt{ElevationSeed} which extends the \texttt{ElementSeed} trait (\ref{appendix:elementseed_trait}). This provides the values and functions used to initialize a layer of elevation values in an environment.}
+  \caption[ElevationSeed Class]{Definition of \texttt{ElevationSeed} which extends the \texttt{ElementSeed} trait (\ref{appendix:elementseed_trait}). This provides the values and functions used to initialize a layer of elevation values in an environment.}
   \lstinputlisting{Codes/ElevationSeed.scala}
   \label{code:elevation_seed}
 \end{lstfloat}
@@ -521,7 +522,7 @@ For an example, lets look at elevation again.
 
 \begin{algorithm}
   \setstretch{1.1}
-  \caption{Algorithm for applying a terrain modification to a layer of elevation values denoted as cells. Note that the \texttt{Layer} is a collection of \texttt{Elevation} objects, not \texttt{Cell}s. However, it is easier to think of each location in the layer's grid as a cell, and is therefore denoted as such. The algorithm begins by initializes a random, unmodified cell. Next, it will modify neighboring cells until it has modified the requested \texttt{coverage} area or there are no unmodified, neighboring cells remaining. Once the modification process is completed, a smoothing function will be applied to cells in the modified area and cells in the surrounding area to ``blend'' the modified area into the rest of the environment (this prevents a plateau effect). The number of cells outside of the modified area that are smoothed is determined by the modification's \texttt{coverage} and \texttt{slope} set.}
+  \caption[Elevation Terrain Modification]{Algorithm for applying a terrain modification to a layer of elevation values denoted as cells. Note that the \texttt{Layer} is a collection of \texttt{Elevation} objects, not \texttt{Cell}s. However, it is easier to think of each location in the layer's grid as a cell, and is therefore denoted as such. The algorithm begins by initializes a random, unmodified cell. Next, it will modify neighboring cells until it has modified the requested \texttt{coverage} area or there are no unmodified, neighboring cells remaining. Once the modification process is completed, a smoothing function will be applied to cells in the modified area and cells in the surrounding area to ``blend'' the modified area into the rest of the environment (this prevents a plateau effect). The number of cells outside of the modified area that are smoothed is determined by the modification's \texttt{coverage} and \texttt{slope} set.}
   \begin{algorithmic} \label{algorithmic:terrain_modification}
     \REQUIRE $layer \leftarrow Array\left[Array\left[Elevation\right]\right]$
     \REQUIRE $modification \in \mathbb{Z}$
@@ -603,8 +604,9 @@ The environment build tool will parse the returned environment into a graphical 
 In the case that the user selected an operation, the user will additionally be able to step through the event log of an Operation.
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Visualizer/home_page.JPG}
-  \caption{Home page for SCOUt's graphical user interface. From here the user can select to generate a random environment, define a new environment template for generating an environment, load in existing environment or templates, or load an operation log to view the environment used in the operation and events that occurred.}
+  \caption[GUI Home Page]{Home page for SCOUt's graphical user interface. From here the user can select to generate a random environment, define a new environment template for generating an environment, load in existing environment or templates, or load an operation log to view the environment used in the operation and events that occurred.}
   \label{fig:visualizer_home_page}
 \end{figure}
 
@@ -623,20 +625,23 @@ An \texttt{Environment} instance is then built on the back end using the templat
 Figure~\ref{fig:example_form_page} shows an example of an environment template form page, and figure~\ref{fig:forms_overview} shows an overview of the form input process.
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Visualizer/Forms/Visualizer-Forms-Element-Types.JPG}
-  \caption{User-input form page for selecting element types that will be present in an environment template. For each element type selected a new form page will be generated for the user to define seed data to guide how the element type will be procedurally generated into an environment.}
+  \caption[GUI Element Types Form]{User-input form page for selecting element types that will be present in an environment template. For each element type selected a new form page will be generated for the user to define seed data to guide how the element type will be procedurally generated into an environment.}
   \label{fig:example_form_page}
 \end{figure}
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Visualizer/Forms/Visualizer-Forms-ElementSeed-Temperature.JPG}
-  \caption{User-input form page for specifying element seed data for the ``Temperature'' element type. This seed data will be used in an environment template to procedurally generate an environment with an average ambient temperature of 70 degrees Fahrenheit and a standard deviation of 0.5 degrees from the average throughout the environment.}
+  \caption[GUI Element Seed Form]{User-input form page for specifying element seed data for the ``Temperature'' element type. This seed data will be used in an environment template to procedurally generate an environment with an average ambient temperature of 70 degrees Fahrenheit and a standard deviation of 0.5 degrees from the average throughout the environment.}
   \label{fig:example_form_page2}
 \end{figure}
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/forms_overview.png}
-  \caption{Visual overview of the form process that a user will complete to generate an environment. As the presence of element types, anomalies, and terrain modifications are selected, more forms will be generated for each of one. Once the user has filled out all the generated forms and has submitted them, an environment template will be created and sent to the back end. Here, the \texttt{EnvironmentBuilder} will create an instance of an environment based on the user's input and return it to the front end.}
+  \caption[Environment Template Form Overview]{Visual overview of the form process that a user will complete to generate an environment. As the presence of element types, anomalies, and terrain modifications are selected, more forms will be generated for each of one. Once the user has filled out all the generated forms and has submitted them, an environment template will be created and sent to the back end. Here, the \texttt{EnvironmentBuilder} will create an instance of an environment based on the user's input and return it to the front end.}
   \label{fig:forms_overview}
 \end{figure}
 
@@ -652,8 +657,9 @@ Debugging usage ranges from analyzing an environment that was used for testing a
 Examples of new features would be adding new classes (e.g., a new element type), or altering the process in which environments are generated and stored on the back end.
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/visualization_page.png}
-  \caption{Labeled view of the interactive environment-visualization tool with an example environment loaded. Each section of the page either displays information about the environment viewed or allows the user to interact with the view. The main menu also provides features to leave this view (via ``New Environment'').}
+  \caption[GUI Visualization Page]{Labeled view of the interactive environment-visualization tool with an example environment loaded. Each section of the page either displays information about the environment viewed or allows the user to interact with the view. The main menu also provides features to leave this view (via ``New Environment'').}
   \label{fig:visualization_page}
 \end{figure}
 
@@ -692,8 +698,9 @@ Just as the case with element type layers, only one anomaly type can be viewed a
 Figure~\ref{fig:toolbar} shows an example of how the display is manipulated by selecting different controls within the toolbar.
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Visualizer/toolbar.JPG}
-  \caption{Example of the environment-visualizer's toolbar being used to manipulate the display section. The elevation layer has been toggled off, the decibel layer has been selected to be displayed (as a green-scale heatmap), and the human anomaly has been selected and its location is highlighted as the red cell within the display.}
+  \caption[GUI Visualization Toolbar]{Example of the environment-visualizer's toolbar being used to manipulate the display section. The elevation layer has been toggled off, the decibel layer has been selected to be displayed (as a green-scale heatmap), and the human anomaly has been selected and its location is highlighted as the red cell within the display.}
   \label{fig:toolbar}
 \end{figure}
 
@@ -704,8 +711,9 @@ The layer subsection displays the minimum and maximum values of the selected dis
 When a cell is selected, the values of all element types in the area covered by the cell are presented in a list, as well as the cell's relative coordinates in the grid (e.g., figure~\ref{fig:legend}).
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Visualizer/legend.JPG}
-  \caption{Example of the environment-visualizer's legend displaying position and element value information about cell (7, 7) selected from the environment grid (highlighted as a darker shade of grey within the display grid).}
+  \caption[GUI Visualizer Legend]{Example of the environment-visualizer's legend displaying position and element value information about cell (7, 7) selected from the environment grid (highlighted as a darker shade of grey within the display grid).}
   \label{fig:legend}
 \end{figure}
 
@@ -717,7 +725,8 @@ When each event is loaded into the visualizer, the display section will update b
 There is also a text display section that shows the index of the event that is currently being viewed, the action that was chosen, the health and energy of the agent during this event, and the long-term and short-term rewards that were received.
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Visualizer/operation_controls.JPG}
-  \caption{A command and dialog display tool that will supplement the environment-visualization page when viewing an operation log of an agent. The user can use the ``$\textless\textless\textless$'' and ``$\textless$'' buttons to step backwards 10 and 1 events in the log, and the ``$\textgreater\textgreater\textgreater$'' and ``$\textgreater$'' buttons to step forward 10 and 1 events in the log. The agent's health and energy are displayed during the current event being viewed from the log, along with the action's index within the log, the action selected, and the short-term and long-term rewards that were received for the event.}
+  \caption[GUI Operation View Tool]{A command and dialog display tool that will supplement the environment-visualization page when viewing an operation log of an agent. The user can use the ``$\textless\textless\textless$'' and ``$\textless$'' buttons to step backwards 10 and 1 events in the log, and the ``$\textgreater\textgreater\textgreater$'' and ``$\textgreater$'' buttons to step forward 10 and 1 events in the log. The agent's health and energy are displayed during the current event being viewed from the log, along with the action's index within the log, the action selected, and the short-term and long-term rewards that were received for the event.}
   \label{fig:operation_controls}
 \end{figure}

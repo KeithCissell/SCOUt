@@ -18,8 +18,9 @@ Templates differs in their difficulty to navigate due to the modifications prese
 For example, more difficult templates will generate larger environments to explore that contain more hazardous terrain modifications.
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=0.8\columnwidth]{Figures/human_discovery_zone.png}
-  \caption{Diagram of the area in an environment that an agent must navigate to in order to ``discover'' a human anomaly. This applies to operations where the goal is \textit{Find Human}.}
+  \caption[Human Discovery Area]{Diagram of the area in an environment that an agent must navigate to in order to ``discover'' a human anomaly. This applies to operations where the goal is \textit{Find Human}.}
   \label{fig:human_discovery_zone}
 \end{figure}
 
@@ -89,8 +90,9 @@ $SCOUt_{H}$ will alternate goals for each iteration.
 In total it will have run 45 operations with the \textit{Find Human} goal and 45 operations with the \textit{Map Water} goal (15 on EASY, 15 on MEDIUM and 15 on HARD for each).
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/training_diagram.png}
-  \caption{This diagram shows the training process that each SCOUt controller will follow. Training is completed after 30 iterations of the process. The number of operations for each environment difficulty in training and in iteration testing are shown. The goal for the operation will depend on the specific SCOUt controller that is being trained.}
+  \caption[SCOUt Memory Training Process]{This diagram shows the training process that each SCOUt controller will follow. Training is completed after 30 iterations of the process. The number of operations for each environment difficulty in training and in iteration testing are shown. The goal for the operation will depend on the specific SCOUt controller that is being trained.}
   \label{fig:training_diagram}
 \end{figure}
 
@@ -115,8 +117,9 @@ The average remaining health of $SCOUt_{FH}$ shows slight increase over training
 
 % \todo{Improve captions}
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Results/Training/SCOUt-FindHuman.JPG}
-  \caption{Iteration testing performance results for $SCOUt_{FH}$ attempting \textit{Find Human}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{FH}$ average - $Random$ average) VS the number of training iterations completed.}
+  \caption[Iteration Testing Performance Results: $SCOUt_{FH}$]{Iteration testing performance results for $SCOUt_{FH}$ attempting \textit{Find Human}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{FH}$ average - $Random$ average) VS the number of training iterations completed.}
   \label{fig:findhuman_training_results}
 \end{figure}
 
@@ -131,8 +134,9 @@ These repeated training runs are discussed in subsection~\ref{subsec:training_va
 Despite unimpressive training results, $SCOUt_{MW}$ still performs well in the tests to follow.
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Results/Training/SCOUt-MapWater.JPG}
-  \caption{Iteration testing performance results for $SCOUt_{MW}$ attempting \textit{Map Water}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{MW}$ average - $Random$ average) VS the number of training iterations completed.}
+  \caption[Iteration Testing Performance Results: $SCOUt_{MW}$]{Iteration testing performance results for $SCOUt_{MW}$ attempting \textit{Map Water}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{MW}$ average - $Random$ average) VS the number of training iterations completed.}
   \label{fig:mapwater_training_results}
 \end{figure}
 
@@ -149,14 +153,16 @@ $SCOUt_{H}$ training was also repeated to see if results could be improved (cove
 
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Results/Training/SCOUt-Hybrid-FindHuman.JPG}
-  \caption{Iteration testing performance results for $SCOUt_{H}$ attempting \textit{Find Human}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{H}$ average - $Random$ average) VS the number of training iterations completed.}
+  \caption[Iteration Testing Performance Results: $SCOUt_{H}$ (Find Human)]{Iteration testing performance results for $SCOUt_{H}$ attempting \textit{Find Human}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{H}$ average - $Random$ average) VS the number of training iterations completed.}
   \label{fig:hybrid_training_results_fh}
 \end{figure}
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Results/Training/SCOUt-Hybrid-MapWater.JPG}
-  \caption{Iteration testing performance results for $SCOUt_{H}$ attempting \textit{Map Water}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{H}$ average - $Random$ average) VS the number of training iterations completed.}
+  \caption[Iteration Testing Performance Results: $SCOUt_{H}$ (Map Water)]{Iteration testing performance results for $SCOUt_{H}$ attempting \textit{Map Water}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{H}$ average - $Random$ average) VS the number of training iterations completed.}
   \label{fig:hybrid_training_results_mw}
 \end{figure}
 
@@ -179,26 +185,30 @@ These graphs show an overlay of the performance results for variation 1, variati
 All of the results for variations 1 and 2 can be viewed independently in \ref{sec:training_variation1} and \ref{sec:training_variation2}.
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Results/TrainingVariations/FindHuman.JPG}
-  \caption{Iteration testing performance results for $SCOUt_{FH}$ attempting \textit{Find Human}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{FH}$ average - $Random$ average) VS the number of training iterations completed. This graph overlays the results from three different training setups: variation 1, variation 2, and original.}
+  \caption[Training Variation Comparisons $SCOUt_{FH}$]{Iteration testing performance results for $SCOUt_{FH}$ attempting \textit{Find Human}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{FH}$ average - $Random$ average) VS the number of training iterations completed. This graph overlays the results from three different training setups: variation 1, variation 2, and original.}
   \label{fig:findhuman_training_comparisons}
 \end{figure}
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Results/TrainingVariations/MapWater.JPG}
-  \caption{Iteration testing performance results for $SCOUt_{MW}$ attempting \textit{Map Water}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{MW}$ average - $Random$ average) VS the number of training iterations completed. This graph overlays the results from three different training setups: variation 1, variation 2, and original.}
+  \caption[Training Variation Comparisons $SCOUt_{MW}$]{Iteration testing performance results for $SCOUt_{MW}$ attempting \textit{Map Water}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{MW}$ average - $Random$ average) VS the number of training iterations completed. This graph overlays the results from three different training setups: variation 1, variation 2, and original.}
   \label{fig:mapwater_training_comparisons}
 \end{figure}
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Results/TrainingVariations/Hybrid-FindHuman.JPG}
-  \caption{Iteration testing performance results for $SCOUt_{H}$ attempting \textit{FindHuman}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{H}$ average - $Random$ average) VS the number of training iterations completed. This graph overlays the results from three different training setups: variation 1, variation 2, and original.}
+  \caption[Training Variation Comparisons $SCOUt_{H}$ (Find Human)]{Iteration testing performance results for $SCOUt_{H}$ attempting \textit{FindHuman}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{H}$ average - $Random$ average) VS the number of training iterations completed. This graph overlays the results from three different training setups: variation 1, variation 2, and original.}
   \label{fig:hybrid_training_fh_comparisons}
 \end{figure}
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Results/TrainingVariations/Hybrid-MapWater.JPG}
-  \caption{Iteration testing performance results for $SCOUt_{H}$ attempting \textit{Map Water}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{H}$ average - $Random$ average) VS the number of training iterations completed. This graph overlays the results from three different training setups: variation 1, variation 2, and original.}
+  \caption[Training Variation Comparisons $SCOUt_{H}$ (Map Water)]{Iteration testing performance results for $SCOUt_{H}$ attempting \textit{Map Water}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{H}$ average - $Random$ average) VS the number of training iterations completed. This graph overlays the results from three different training setups: variation 1, variation 2, and original.}
   \label{fig:hybrid_training_mw_comparisons}
 \end{figure}
 
@@ -229,8 +239,9 @@ The margin of performance difference between $Heuristic_{FH}$ and $Random$ tends
 While goal completion consistently remained above that of $Random$, we can see that $Heuristic_{FH}$ is having to use more actions to achieve the goal.
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Results/Experiment1/FindHuman.JPG}
-  \caption{Performance results for $Random$, $Heuristic_{FH}$ and $SCOUt_{FH}$ controllers attempting \textit{Find Human} in various environment difficulties.}
+  \caption[Experiment 1 Results: $SCOUt_{FH}$]{Performance results for $Random$, $Heuristic_{FH}$ and $SCOUt_{FH}$ controllers attempting \textit{Find Human} in various environment difficulties.}
   \label{fig:findhuman_test_results}
 \end{figure}
 
@@ -246,8 +257,9 @@ In this category, $Heuristic_{MW}$ only under performs $Random$ with a margin of
 This shows that the heuristic model is useful, but not necessarily efficient.
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Results/Experiment1/MapWater.JPG}
-  \caption{Performance results for $Random$, $Heuristic_{MW}$ and $SCOUt_{MW}$ attempting \textit{Map Water} in various environment difficulties.}
+  \caption[Experiment 1 Results: $SCOUt_{MW}$]{Performance results for $Random$, $Heuristic_{MW}$ and $SCOUt_{MW}$ attempting \textit{Map Water} in various environment difficulties.}
   \label{fig:mapwater_test_results}
 \end{figure}
 
@@ -259,8 +271,9 @@ In environments of hard difficulty, $SCOUt_{H}$ shows performance levels that ma
 This is likely caused by the fact that it was only trained on \textit{Find Human} for 15 iterations, along with a dilution effect caused by having a mixed memory set (from training on both goals).
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Results/Experiment1/HybridFindHuman.JPG}
-  \caption{Performance results for $Random$, $Heuristic_{FH}$ and $SCOUt_{H}$ attempting \textit{Find Human} in various environment difficulties.}
+  \caption[Experiment 1 Results: $SCOUt_{H}$ (Find Human)]{Performance results for $Random$, $Heuristic_{FH}$ and $SCOUt_{H}$ attempting \textit{Find Human} in various environment difficulties.}
   \label{fig:hybrid_findhuman_test_results}
 \end{figure}
 
@@ -270,8 +283,9 @@ Outside of this, performance scores and trends of all three controllers are roug
 This suggests that operations based on mapping an element type are more difficult than would be expected.
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Results/Experiment1/HybridMapWater.JPG}
-  \caption{Performance results for $Random$, $Heuristic_{MW}$ and $SCOUt_{H}$ attempting \textit{Map Water} in various environment difficulties.}
+  \caption[Experiment 1 Results: $SCOUt_{H}$ (Map Water)]{Performance results for $Random$, $Heuristic_{MW}$ and $SCOUt_{H}$ attempting \textit{Map Water} in various environment difficulties.}
   \label{fig:hybrid_mapwater_test_results}
 \end{figure}
 
@@ -306,8 +320,9 @@ Additionally, $SCOUt_{MW}$ also outperforms $Heuristic_{MW}$ in all categories e
 This supports the primary focus of this paper, which is: demonstrating how autonomous control schemas built for one specific task are not inherently adaptable to new tasks, but there still exists underlying features of autonomous control that can be abstracted to create a unified control schema capable of achieving a variety of tasks.
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Results/Experiment2/GoalChange/FindHumanGoal.JPG}
-  \caption{Results for $SCOUt_{MW}$ in \textit{Find Human} operations compared against $Random$, $Heuristic_{FH}$, $Heuristic_{MW}$, $SCOUt_{FH}$, and $SCOUt_{H}$. While $SCOUt_{MW}$ did not have the best performance results out of all of the SCOUt controllers, it still performed better than $Random$ and both heuristic controllers in the majority of cases. This exemplifies the SCOUt control schema's ability to adapt to new goal types.}
+  \caption[Experiment 2 - Goal Change Testing Results: $SCOUt_{MW}$]{Results for $SCOUt_{MW}$ in \textit{Find Human} operations compared against $Random$, $Heuristic_{FH}$, $Heuristic_{MW}$, $SCOUt_{FH}$, and $SCOUt_{H}$. While $SCOUt_{MW}$ did not have the best performance results out of all of the SCOUt controllers, it still performed better than $Random$ and both heuristic controllers in the majority of cases. This exemplifies the SCOUt control schema's ability to adapt to new goal types.}
   \label{fig:goal_change_findhuman}
 \end{figure}
 
@@ -322,8 +337,9 @@ As stated previously in section~\ref{sec:experiment1}, element type mapping is l
 The fact that the range of goal completion of heuristic and SCOUt controllers was ~24 - 28 percent supports this idea.
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Results/Experiment2/GoalChange/MapWaterGoal.JPG}
-  \caption{Results for $SCOUt_{FH}$ in \textit{Map Water} operations compared against $Random$, $Heuristic_{FH}$, $Heuristic_{MW}$, $SCOUt_{MW}$, and $SCOUt_{H}$. Results show that all SCOUt controllers performed at roughly the same level in all categories. In all categories besides average remaining health, the SCOUt controllers perform best. $SCOUt_{FH}$ takes the lead in goal completion out of all controllers. This again supports the adaptability of the SCOUt control schema.}
+  \caption[Experiment 2 - Goal Change Testing Results: $SCOUt_{FH}$]{Results for $SCOUt_{FH}$ in \textit{Map Water} operations compared against $Random$, $Heuristic_{FH}$, $Heuristic_{MW}$, $SCOUt_{MW}$, and $SCOUt_{H}$. Results show that all SCOUt controllers performed at roughly the same level in all categories. In all categories besides average remaining health, the SCOUt controllers perform best. $SCOUt_{FH}$ takes the lead in goal completion out of all controllers. This again supports the adaptability of the SCOUt control schema.}
   \label{fig:goal_change_mapwater}
 \end{figure}
 
@@ -342,8 +358,9 @@ The drop in average remaining health could then be attributed to the controller'
 If this is true, it would suggest that SCOUt's ability to learn hazard avoidance is not entirely flawed.
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Results/Experiment2/SensorChange/MapWater.JPG}
-  \caption{Performance results for $SCOUt_{MW}$ when its elevation sensor was removed ($SCOUt_{MW} - No Elevation$) in \textit{Map Water} operations. It was also compared against an un-altered version of $SCOUt_{MW}$ ($SCOUt_{MW} - All$), $Heuristic_{MW}$, and $Random$. The results show that the SCOUt control schema was able to perform adaptively without the availability of the elevation sensor.}
+  \caption[Experiment 2 - Sensor Set Changing Results: $SCOUt_{MW}$]{Performance results for $SCOUt_{MW}$ when its elevation sensor was removed ($SCOUt_{MW} - No Elevation$) in \textit{Map Water} operations. It was also compared against an un-altered version of $SCOUt_{MW}$ ($SCOUt_{MW} - All$), $Heuristic_{MW}$, and $Random$. The results show that the SCOUt control schema was able to perform adaptively without the availability of the elevation sensor.}
   \label{fig:change_sensors_mapwater}
 \end{figure}
 
@@ -362,8 +379,9 @@ Performance in all categories aside from remaining health for all of these contr
 These results reveal a strong level of adaptability within SCOUt's memory-based reinforcement learning schema when dealing with new agent setups.
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=0.75\columnwidth]{Figures/Results/Experiment2/SensorChange/FindHuman.JPG}
-  \caption{Performance results for several variations of SCOUt controllers with a sensor removed in \textit{Find Human} operations. These variations were tested against the un-altered SCOUt controller ($SCOUt_{FH}$), $Heuristic_{FH}$, and $Random$. Results show that SCOUt's control schema was able to adapt to each situation where a sensor was removed. The SCOUt controllers outperform $Heuristic_{FH}$ and $Random$ in the majority of performance categories. The only noticeable decline in SCOUt's performance is with the removal of the decibel sensor ($SCOUt_{FH} - No Decibel$). This is likely due to decibel readings being a key indicator of a human's location.}
+  \caption[Experiment 2 - Sensor Set Changing Results: $SCOUt_{FH}$]{Performance results for several variations of SCOUt controllers with a sensor removed in \textit{Find Human} operations. These variations were tested against the un-altered SCOUt controller ($SCOUt_{FH}$), $Heuristic_{FH}$, and $Random$. Results show that SCOUt's control schema was able to adapt to each situation where a sensor was removed. The SCOUt controllers outperform $Heuristic_{FH}$ and $Random$ in the majority of performance categories. The only noticeable decline in SCOUt's performance is with the removal of the decibel sensor ($SCOUt_{FH} - No Decibel$). This is likely due to decibel readings being a key indicator of a human's location.}
   \label{fig:change_sensors_findhuman}
 \end{figure}
 
@@ -388,14 +406,16 @@ Additionally, we see minor climbs in the average remaining health and energy of 
 
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=0.9\columnwidth]{Figures/Results/Experiment2/AdditionalTraining/FHPlus_Training.JPG}
-  \caption{Iteration testing performance results for $SCOUt_{FH+}$ attempting \textit{Map Water}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{FH+}$ average - $Random$ average) VS the number of training iterations completed.}
+  \caption[Experiment 2 - Additional Training Results: $SCOUt_{FH+}$]{Iteration testing performance results for $SCOUt_{FH+}$ attempting \textit{Map Water}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{FH+}$ average - $Random$ average) VS the number of training iterations completed.}
   \label{fig:findhumanplus_training_results}
 \end{figure}
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=0.9\columnwidth]{Figures/Results/Experiment2/AdditionalTraining/MWPlus_Training.JPG}
-  \caption{Iteration testing performance results for $SCOUt_{MW+}$ attempting \textit{Map Water}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{MW+}$ average - $Random$ average) VS the number of training iterations completed.}
+  \caption[Experiment 2 - Additional Training Results: $SCOUt_{MW+}$]{Iteration testing performance results for $SCOUt_{MW+}$ attempting \textit{Map Water}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{MW+}$ average - $Random$ average) VS the number of training iterations completed.}
   \label{fig:mapwaterplus_training_results}
 \end{figure}
 
@@ -407,8 +427,9 @@ Again, we see another SCOUt controller outranking the $Heuristic_{MW}$ controlle
 While hazard avoidance is still an issue, it can still be argued that this controller is operating efficiently as it shows better performance averages in all other categories.
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Results/Experiment2/AdditionalTraining/FindHumanPlus.JPG}
-  \caption{Iteration testing performance results for $SCOUt_{FH+}$ attempting \textit{Map Water}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{FH+}$ average - $Random$ average) VS the number of training iterations completed.}
+  \caption[Experiment 2 - Additional Training Testing Results: $SCOUt_{FH+}$]{Iteration testing performance results for $SCOUt_{FH+}$ attempting \textit{Map Water}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{FH+}$ average - $Random$ average) VS the number of training iterations completed.}
   \label{fig:findhumanplus_test_results}
 \end{figure}
 
@@ -420,8 +441,9 @@ This further supports the argument that a memory-based reinforcement learning mo
 
 
 \begin{figure}[!htb]
+  \centering
   \includegraphics[width=1.0\columnwidth]{Figures/Results/Experiment2/AdditionalTraining/MapWaterPlus.JPG}
-  \caption{Iteration testing performance results for $SCOUt_{MW+}$ attempting \textit{Map Water}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{MW+}$ average - $Random$ average) VS the number of training iterations completed.}
+  \caption[Experiment 2 - Additional Training Testing Results: $SCOUt_{MW+}$]{Iteration testing performance results for $SCOUt_{MW+}$ attempting \textit{Map Water}. All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{MW+}$ average - $Random$ average) VS the number of training iterations completed.}
   \label{fig:mapwaterplus_test_results}
 \end{figure}
 

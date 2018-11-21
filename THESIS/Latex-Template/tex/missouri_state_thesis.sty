@@ -15,7 +15,8 @@
 \RequirePackage{cite}
 \RequirePackage{url}
 \RequirePackage{listings}
-% \RequirePackage[final, colorlinks, linkcolor=black, citecolor=blue, urlcolor=blue]{hyperref}
+\RequirePackage{hyperref}
+% \RequirePackage{nameref}
 \RequirePackage{titlesec}
 \RequirePackage[titles]{tocloft}
 
@@ -42,6 +43,12 @@
 \RequirePackage[doublespacing]{setspace}
 \doublespacing
 \RequirePackage{xspace}
+
+% Space between text and floats (figures algorithms etc.)
+\setlength{\floatsep}{2.5em}
+\setlength{\intextsep}{2.5em}
+\setlength{\textfloatsep}{2.5em}
+\setlength{\belowcaptionskip}{-1em}
 
 
 % Read and store student names in DB
@@ -217,6 +224,17 @@
   % List of algorithms, if not suppressed
   \cleardoublepage
   \listofalgorithms
+
+  % List of equations
+  % \newcommand{\listofequationsname}{LIST OF EQUATIONS}
+  % \newlistof{listofequations}{equ}{\listofequationsname}
+  % \newcommand{\}
+  % \cleardoublepage
+  % \listofequations
+
+  % List of code listings
+  % \cleardoublepage
+  % \listoflistings
 }
 
 % Starting materials
@@ -292,10 +310,6 @@
   \endgroup}
 
 
-
-% MY STUFF ================================================
-
-
 % CAPTIONS
 
 % Equation captions
@@ -310,7 +324,8 @@
 
 % Appendix items
 % label counter
-\newcounter{appxcounter}[section]
+\newcounter{appxcounter}
+\counterwithin*{appxcounter}{section}
 \DeclareCaptionLabelFormat{hyphen}{#1-\arabic{appxcounter}}
 % Listings
 \newfloat{appxlst}{H}{lop}
@@ -319,6 +334,19 @@
 % Figures
 \DeclareCaptionType{appxfig}
 \captionsetup[appxfig]{name=\thesection, labelformat=hyphen, labelsep=colon, list=no}
+%
+% \let\oldappxlst\appxlst
+% \renewcommand{\appxlst}[1]{
+%   \oldappxlst{#1}
+%   \stepcounter{appxcounter}
+% }
+%
+% \let\oldappxfig\appxfig
+% \renewcommand{\appxfig}[1]{
+%   \oldappxfig{#1}
+%   \stepcounter{appxcounter}
+% }
+
 
 
 % Code settings
@@ -328,6 +356,8 @@
   basicstyle=\ttfamily,
   numbers=left,
   numberstyle=\footnotesize,
+  showspaces=false,
+  showstringspaces=false,
   stepnumber=1,
   numbersep=2.0mm,
   xleftmargin=0.25in}
