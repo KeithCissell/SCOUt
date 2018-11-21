@@ -1,0 +1,100 @@
+{
+  "name" : "MEDIUM",
+  "height" : 10,
+  "width" : 10,
+  "elements" : [
+    "Elevation",
+    "Decibel",
+    "Latitude",
+    "Water Depth",
+    "Longitude",
+    "Temperature"
+  ],
+  "seeds" : {
+    "Elevation" : {
+      "Average" : {
+        "value" : 0,
+        "unit" : "ft"
+      },
+      "Deviation" : {
+        "value" : 3,
+        "unit" : "ft"
+      }
+    },
+    "Decibel" : {
+      "Average" : {
+        "value" : 15,
+        "unit" : "db"
+      }
+    },
+    "Water Depth" : {
+    },
+    "Temperature" : {
+      "Average" : {
+        "value" : 60,
+        "unit" : "degrees F"
+      },
+      "Deviation" : {
+        "value" : 1,
+        "unit" : "degrees F"
+      }
+    }
+  },
+  "terrain-modifications" : [
+    {
+      "terrain-modification" : "Elevation Modification",
+      "Modification" : {
+        "value" : 25,
+        "unit" : "ft"
+      },
+      "Deviation" : {
+        "value" : 5,
+        "unit" : "ft"
+      },
+      "Coverage" : {
+        "value" : 10,
+        "unit" : "% of the environment"
+      },
+      "Slope" : {
+        "value" : 60,
+        "unit" : "% of the modification area"
+      }
+    },
+    {
+      "terrain-modification" : "Water Pool Modification",
+      "Max Depth" : {
+        "value" : 30,
+        "unit" : "ft"
+      },
+      "Deviation" : {
+        "value" : 3,
+        "unit" : "ft"
+      },
+      "Coverage" : {
+        "value" : 10,
+        "unit" : "% of the environment"
+      },
+      "Slope" : {
+        "value" : 70,
+        "unit" : "% of the modification area"
+      }
+    }
+  ],
+  "anomalies" : [
+    {
+      "anomaly" : "Human",
+      "Area" : {
+        "value" : 6,
+        "unit" : "ft (diameter)"
+      },
+      "Sound" : {
+        "value" : 80,
+        "unit" : "dB"
+      },
+      "Heat" : {
+        "value" : 98.6,
+        "unit" : "degrees F"
+      }
+    }
+  ]
+}

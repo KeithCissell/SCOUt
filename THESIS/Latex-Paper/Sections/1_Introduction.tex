@@ -1,40 +1,58 @@
 
 
-\chapter{Introduction}
-As research in the fields of autonomous systems and robotics have become more extensive, it is evident that there are a wide range of application for robots with integrated autonomy.
-There are rovers, drones and even aquatic robots capable of intelligently selecting actions to perform in their environments.
-The tasks that these robots carry out greatly vary based on the robot's abilities and the environmental limitations.
-This variance causes a demand for distinct software and hardware that is required to achieve each robot's given task.
-Many similarities can be drawn from the wide rang of robots and their usage.
-Almost all autonomous robots operate through their use of observational sensors to gather data and a control schema to analyze the data collected and plan actions.
+\chapter{INTRODUCTION} \label{ch:introduction}
+As studies in autonomous computing and robotics have become more extensive, the two categories have overlapped to create a field of research combining both areas.
+Autonomous robots of many different forms have been built and applied to a wide variety of use cases.
+Rovers, drones and even aquatic robots, combined with artificial intelligence (AI), have been created to interact with diverse types of environments.
+The tasks that these robots carry out greatly vary based on the robot's abilities and the environmental limitations they may face.
+This variance causes a demand for distinct software and hardware configurations to achieve each robot's given task.
+Exploration-based research is one area that has seen a drastic shift to the use of autonomous robotics.
+Exploration involves the navigation of a previously unknown area to learn new information or seek out specific features that may be held within.
+While the field of exploration presents many different use cases and demands, similarities can be drawn between all of them.
+Almost all operations involving exploration are focused on navigation within unknown environments to gather and analyze data.
+Both autonomous computing and robotics offer unique and clever solutions for this problem space.
 
-A great deal of research has been done in hybrid robots which use adaptive hardware that is multifunctional to various tasks.
-However, there is not an extensive amount of research on software with the capability to integrate with multiple robot compositions and tasks.
-Most of this is due to the fact that each robot has unique capabilities that do not overlap with many other robots.
-Autonomous robots tend to focus in on a certain niche that require their systems to be built from the ground up for each task presented.
-This leaves the question of what pieces of autonomous control can be abstracted.
+While a great deal of research has been conducted in adaptive hardware for robotics, there is not an extensive amount of research on adaptive software for integrating the variety of robot setups with exploration-based tasks.
+Most of this is due to the fact that each robot has a unique set of capabilities and control schema designed for a single purpose.
+Autonomous robots tend to focus in on a certain niche, which requires them to be built from the ground up for each task.
+This diversity in agent-task pairs could greatly benefit from a single adaptive solution of operation setup and control.
+Here we discuss how AI can be applied to exploration and present an adaptive solution for encompassing the variety of use cases of autonomous robotics in the field of exploration.
 
-There are many intelligent approaches that can be applied to decision making processes.
-The field of autonomous robotics has benefited tremendously through the growing field of artificial intelligence (AI).
-AI methods are commonly used in situations when there is a known number of controllable variables and a wide solution space to be explored.
-This makes them great candidates for creating a system which drives the decision-making process of an autonomous robots.
-In particular, neural networks and reinforcement learning architectures trained in simulations have yielded promising results for finding optimal control patterns in the diverse applications of autonomous robots.
+The field of robotics has benefited tremendously through growing research in artificial intelligence.
+AI methods are commonly used in situations when there is a known number of controllable variables and a wide solution space, making them valuable tools in exploration.
+For example, in a search and rescue setting, if an earthquake had collapsed a building and agents were deployed to find survivors, the operation has no definition to the landscape of the altered environment, or the potential location of survivors.
+There are many AI approaches that have been applied to create decision making models for robotic agents operating within unknown environments.
+In particular, artificial neural networks (ANN)~\cite{kiumarsi_optimal_2018, arulkumaran_brief_2017, tai_autonomous_2017, bai_toward_2017} and reinforcement learning (RL)~\cite{kiumarsi_optimal_2018, arulkumaran_brief_2017, sutton_reinforcement_1998} decision models have yielded promising solutions for creating optimal control patterns.
+Through data analytics, ANNs and RL models will often find correlations in data that are not always obvious.
+Their ability to learn from experience make them adaptable to new situations and uses.
+Learning is typically achieved through training in simulation, which has many benefits over real-world training.
+Simulations allow agent setups and control schemas to be tested and observed without the potential of damaging equipment or the environment.
+Additionally, they offer the ability to conduct multiple tests in short periods of time without the need for any physical setup or supervision.
 
-The Surveillance Coordination and Operations Utility (SCOUt) system takes a top down approach to create an adaptive control schema for diverse robotic agents and their uses by abstracting the very basics of autonomous robotics.
-SCOUt is both a control schema and a simulation platform.
-This control schema repeatedly follows the process of collecting of data from sensors, analyzing the agent's state, and the outputting response controls to complete surveillance based operations.
-SCOUt uses memory based reinforcement learning to make state based action decisions.
-The abstraction of this process allows the collected memory pool to be used adaptively across varying environments and robot setups.
-The simulation platform provides tools for the setup of agents, procedural generation of environments, definition of goals and training and testing of the SCOUt control schema.
-The platform is built with an abstracted architecture for easy extendibility across operation setups.
-Robotic sensors, environmental variables and goals can be added or tweaked within the SCOUt simulation platform.
-Interactions between goal driven robot agents and the environment can be simulated and viewed in a graphical user interface (GUI).
+The presented solution to the strong diversity of use cases for autonomous robotics in the field of exploration is a unified Surveillance Coordination and Operations Utility (SCOUt).
+SCOUt takes a top down approach to agent-task definition and provides an adaptive control schema for a wide variety of robotic agents and their uses.
+The combination of an agent-task definition and simulation platform, and an adaptive control schema creates a tool which can be applied to both new and existing use cases of autonomous robots in exploration.
+This is achieved by abstracting the very basics of autonomous robotics.
+SCOUt's control schema repeatedly follows the process of collecting data from sensors, analyzing the agent's state, and the choosing actions based on previous experiences for completing exploration-based operations.
+The schema uses reinforcement learning to build a memory-based decision model.
+When applied, the decision model compares the agent's current state to previous states in memory.
+By analyzing similar states, the controller will then be able to predict what actions will yield the best results given the current situation.
+Data stored in the controller's memory is highly abstracted so that it can be applied to a wide variety of agent setups, goals, and environments.
+For example, locating a human or mapping the presence of water in unknown environments, with a land-based robotic agent.
+SCOUt also provides a simulation platform for training and testing the controller in the variety of situations it can be applied to.
+The platform's architecture is also highly abstracted to create an easy to use tool for defining and simulating different agent abilities, goals, and types of environments.
 
-In this experiment, the SCOUt control schema is tested in various procedurally generated environments.
-The controller's adaptability between changing environments, goals and agent setups are all examined.
+For testing the adaptive control schema, interactions between several configurations of agent setups, goals, and environments are simulated to observe performance.
+Performance is measured by the controller's ability to complete a defined goal, the number of actions that the controller had to perform before completing the goal, and the remaining health and energy levels of the agent.
+As a base line, both random and heuristic control schemas are used in testing for comparison against SCOUt's control solution.
+Heuristic control schemas use a defined logical analysis process to analyze a situation and choose an act.
+This schema is meant to reflect a specialized, non-adaptive control solution that might be applied in these scenarios.
+The SCOUt controller is trained to complete specific goals and then experiments are conducted to test its usefulness.
+First, tests are conducted to observe the performance of the memory-based learning schema.
+Next, adaptability is tested through presentation of agent setups, goals and environments that the controller has experienced.
 
-
-% I have broken this project into three phases.
-% The first phase involves setting up a simulation environment to be used for training the autonomous system.
-% Next, a graphical interphase will be integrated with the simulation data to allow for easy debugging.
-% Finally, an Artificially Intelligent system will be trained to take in various sets of environmental data as inputs, make decisions based on these inputs and its current objective, and produce a response.
+The layout of this paper is as follows.
+Chapter~\ref{ch:related_works} covers related works in the field of autonomous exploration.
+Chapter~\ref{ch:scout} describes the data structures and methodology of the simulation and control platforms.
+Chapter~\ref{ch:controllers} then goes into detail about how the random, heuristic and SCOUt controllers operate.
+Experimentation and results are covered in chapter~\ref{ch:experiments_and_results}, a conclusion is drawn in chapter~\ref{ch:conclusion}, and ideas for future work on this project are discussed in section~\ref{sec:future_work}.

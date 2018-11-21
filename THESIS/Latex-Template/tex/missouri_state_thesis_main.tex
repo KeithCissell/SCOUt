@@ -2,16 +2,10 @@
 
 \usepackage{indentfirst}
 
-% \linespread{2.5}
-% \usepackage[document]{ragged2e}
-
 \usepackage{missouri_state_thesis}
 \usepackage[toc,page]{appendix}
 
 \bibliographystyle{plain}
-
-% Uncomment the following line if you need to write in Bangla
-% \usepackage{usebangla}
 
 % Uncomment any of the following lines should you need to
 % suppress the LOF, or LOT or LOA
@@ -26,45 +20,31 @@
 
 \begin{document}
 
+% Prevent widow and orphaning of text
+\widowpenalty10000
+\clubpenalty10000
+
 % Edit as needed below this line
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Chapter-1 Introduction
-\input{introduction.tex}
-\input{conclusion.tex}
+\input{sections/1_Introduction.tex}
 
+% Main Body
+\input{sections/2_Related-Work.tex}
+\input{sections/3_SCOUt.tex}
+\input{sections/4_Controllers.tex}
+\input{sections/5_Experiments-and-Results.tex}
+
+% Conclusion
+\input{sections/6_Conclusion.tex}
+
+% References
 \renewcommand\bibname{REFERENCES}
 \bibliography{references.bib}
 \addcontentsline{toc}{chapter}{References}
-% \input{buetcseugthesisintroduction.tex}
-%
-% % Citation examples
-% \input{buetcseugthesisciteexamples.tex}
-%
-% % Another chapter
-% \input{buetcseugthesisanotherchapter.tex}
-%
-% % Chapter showing example of index creation
-% \input{buetcseugthesisindexcreation.tex}
-%
-% % Bangla example, uncomment if you need this
-% % \input {banglaexample.tex}
-%
-% % Chapter with math in ttile
-% \input{buetcseugthesischapterwithmathintitle.tex}
-%
-% % Bibliographies and appendices
-% \input{buetcseugthesisbibliography.tex}
-%
-% % Index, comment this out if you do not want to create an index
-% \printindex
-%
-\begin{appendices}
- % Algorithms
-  \input{algorithms.tex}
 
-  % Codes
-  \input{codes.tex}
-\end{appendices}
+% Appendices
+\input{sections/Appendix.tex}
 
 \end{document}

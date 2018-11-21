@@ -1,18 +1,24 @@
 % You should not change anything in this file unless you really know
 % what you are doing.
+% \RequirePackage {ragged2e}
+% \setlength{\parindent}{.5in}
+% \usepackage{parskip}
+% \setlength\RaggedRightParindent{0.5in}
 \RequirePackage{graphicx}
 \RequirePackage{algorithmic}
 \RequirePackage{algorithm}
 \RequirePackage{amsthm}
 \RequirePackage{amsmath}
-\RequirePackage[body={6in,9 in}, top=1 in, left=1.5in, bottom=1.5in, right=1.0in, nohead]{geometry}
+\RequirePackage{amsfonts}
+\RequirePackage[body={8.5in, 11in}, top=1 in, left=1in, bottom=1in, right=1.0in, nohead]{geometry}
 \RequirePackage{times}
 \RequirePackage{cite}
 \RequirePackage{url}
 \RequirePackage{listings}
-\RequirePackage[final, colorlinks, linkcolor=black, citecolor=blue, urlcolor=blue]{hyperref}
+% \RequirePackage[final, colorlinks, linkcolor=black, citecolor=blue, urlcolor=blue]{hyperref}
 \RequirePackage{titlesec}
 \RequirePackage[titles]{tocloft}
+
 
 % Prevent math from being upcased
 % http://tex.stackexchange.com/questions/46525/preventing-makeuppercase-from-affecting-mathematics
@@ -23,19 +29,19 @@
 \def\msu{Missouri State University}
 
 % % sets spacing between paragraphs
-% \parskip 2.5mm           
+% \parskip 2.5mm
 
 % Clever referencing
 \RequirePackage{cleveref}
 
 % Caption setup
-\RequirePackage{caption} 
+\RequirePackage{caption}
 \captionsetup[table]{skip=2.50mm}
 
 % double spacing
 \RequirePackage[doublespacing]{setspace}
 \doublespacing
-\RequirePackage{xspace}  
+\RequirePackage{xspace}
 
 
 % Read and store student names in DB
@@ -44,7 +50,7 @@
 \DTLloaddb[noheader]{Supervisor}{parameters/supervisor.txt}
 
 % Thesis parameters
-\def\thesisstudent{Thesis Student Name}
+\def\thesisstudent{\input{parameters/student.txt}}
 \def\thesisdate{\input{parameters/thesis_date.txt}}
 \def\thesistitle{\input{parameters/thesis_title.txt}}
 \def\thesiskeywords{\input{parameters/keywords.txt}}
@@ -90,14 +96,28 @@
 \newcommand{\khat}{{\bf{k}}}
 \newcommand{\Fhat}{{\bf{F}}}
 
-% \setlength{\RaggedRightParindent}{\parindent}
+% HEADING STYLES
 \newcommand*{\justifyheading}{\raggedright}
-\titleformat{\chapter}{\normalfont\bfseries\centering}{\MakeUppercase{\thechapter}}{.25cm}{ }[ ]
-\titleformat{\section}{\normalfont\bfseries\justifyheading}{\thesection}{1em}{}
+\newcommand*{\uppercasetitle}[1]{\MakeUppercase{#1}}
+\newcommand*{\periodafter}[1]{#1.}
+\newcommand*{\ulperiodafter}[1]{\underline{#1}.}
 
-% \titlespacing*{commandi}{lefti}{before-sepi}{after-sepi}[right-sepi]
-\titlespacing{\chapter}{0.5\textwidth}{0pt}{25pt}
-\titlespacing{\section}{0pt}{25pt}{5pt}
+\renewcommand{\thechapter}{\arabic{chapter}}
+\titleformat{\chapter}{\normalfont\bfseries\centering}{\thechapter}{.25cm}{\uppercasetitle}[]
+\titlespacing{\chapter}{0.5\textwidth}{0pt}{12pt}
+
+\renewcommand{\thesection}{\thechapter.\arabic{section}}
+\titleformat{\section}{\normalfont\bfseries\justifyheading}{\thesection}{1em}{}[]
+\titlespacing{\section}{0pt}{12pt}{5pt}
+
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\titleformat{\subsection}[runin]{\normalfont\bfseries}{\thesubsection}{1em}{\periodafter}[]
+\titlespacing{\subsection}{\the\parindent}{0pt}{6pt}
+
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+\titleformat{\subsubsection}[runin]{\normalfont}{\thesubsubsection}{1em}{\ulperiodafter}[]
+\titlespacing{\subsubsection}{\the\parindent}{0pt}{6pt}
+
 
 % \doublespacing
 
@@ -138,11 +158,10 @@
 
 % sets leading space for paragraphs
 \setlength{\parindent}{.5in}
+% \setlength{\RaggedRightParindent}{\parindent}
 \setlength{\footskip}{.4in}
 
-\def\thesection{\arabic{section}}
-
-% Thesis title page 
+% Thesis title page
 \def\thesistitlepage{\input{titlepage.tex}}
 
 % Thesis copyright page
@@ -164,8 +183,8 @@
 \newtoggle{suppress@lot}
 \newtoggle{suppress@lo@}
 
-\def\suppresslistoffigures{\global\toggletrue{suppress@lof}}
 \def\suppresslistoftables{\global\toggletrue{suppress@lot}}
+\def\suppresslistoffigures{\global\toggletrue{suppress@lof}}
 \def\suppresslistofalgorithms{\global\toggletrue{suppress@lo@}}
 
 
@@ -175,7 +194,7 @@
   \renewcommand{\listfigurename}{LIST OF FIGURES}
   \renewcommand{\listtablename}{LIST OF TABLES}
   \renewcommand{\listalgorithmname}{LIST OF ALGORITHMS}
-  \setcounter{secnumdepth}{0}
+  \setcounter{secnumdepth}{5}
   \renewcommand{\cfttoctitlefont}{\normalfont\Large}% Remove \bfseries from ToC title
   \renewcommand{\cftchapfont}{}
   \renewcommand{\cftchappagefont}{}
@@ -187,13 +206,13 @@
     \tableofcontents
   \end{singlespace}
 
-  % List of figures, if not suppressed
-  \cleardoublepage
-  \listoffigures
-
   % List of tables, if not suppressed
   \cleardoublepage
   \listoftables
+
+  % List of figures, if not suppressed
+  \cleardoublepage
+  \listoffigures
 
   % List of algorithms, if not suppressed
   \cleardoublepage
@@ -207,7 +226,7 @@
 
   \cleardoublepage
   \thesiscopyrightpage
-  
+
   \thesisabstractpage
   \cleardoublepage
   \thesisapprovalpage
@@ -250,9 +269,9 @@
 \AtEndDocument{%
   \clearpage
   \pagestyle{plain}
-  
+
   \begingroup
-  
+
   \flushright
 
   \vspace*{0.0mm}
@@ -272,6 +291,55 @@
 
   \endgroup}
 
+
+
+% MY STUFF ================================================
+
+
+% CAPTIONS
+
+% Equation captions
+\DeclareCaptionType{capeq}
+\captionsetup[capeq]{name=Equation, labelformat=simple, labelsep=colon}
+% tables
+\DeclareCaptionType{tblcap}
+\captionsetup[tblcap]{name=Table, labelformat=simple, labelsep=colon}
+% Code listings
+\newfloat{lstfloat}{!ht}{lop}
+\floatname{lstfloat}{Listing}
+
+% Appendix items
+% label counter
+\newcounter{appxcounter}[section]
+\DeclareCaptionLabelFormat{hyphen}{#1-\arabic{appxcounter}}
+% Listings
+\newfloat{appxlst}{H}{lop}
+\floatname{appxlst}{appxlst}
+\captionsetup[appxlst]{name=\thesection, labelformat=hyphen, labelsep=colon, list=no}
+% Figures
+\DeclareCaptionType{appxfig}
+\captionsetup[appxfig]{name=\thesection, labelformat=hyphen, labelsep=colon, list=no}
+
+
+% Code settings
+\lstset{
+  language=Scala,
+  breaklines=true,
+  basicstyle=\ttfamily,
+  numbers=left,
+  numberstyle=\footnotesize,
+  stepnumber=1,
+  numbersep=2.0mm,
+  xleftmargin=0.25in}
+
+
+% bibliography
+\let\oldbibliography\thebibliography
+\renewcommand{\thebibliography}[1]{%
+  \oldbibliography{#1}%
+  \singlespace
+  \setlength{\itemsep}{12pt}%
+}
 
 
 \endinput
