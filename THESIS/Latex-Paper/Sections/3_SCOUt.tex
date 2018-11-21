@@ -37,7 +37,7 @@ Because the majority of the data structures used in this platform are abstracted
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.6\columnwidth]{Figures/client_server_architecture.png}
-  \caption{Client-server architecture of SCOUt's framework.}
+  \caption{Client-server architecture of SCOUt's framework. The server handles all data storage and manipulation, while the client provides a graphical user interface for requesting and displaying data.}
   \label{fig:client_server_architecture}
 \end{figure}
 
@@ -67,11 +67,11 @@ The GUI is written using all three of these languages.
 HTML structures the page within Electron, CSS provides styling and JavaScript handles all of the logic.
 The SCOUt platform uses D3~\cite{d3}, node-fetch~\cite{node-fetch} and jQuery~\cite{jquery} JavaScript libraries to assist with data visualization and communication to the back end.
 D3 (Data-Driven Documents) is a visualization library that uses SVG (an XML-Based format for vector graphics) to create graphical representation of data sets.
-Node-fetch is used for HTTP communication with the back end through XMLHTTP request and response handling.
+Node-fetch is used for HTTP communication with the back end through HTTP request and response handling.
 jQuery provides integration with JSON data that is passed back and forth between the client and server, as well as several functions to simplify working with DOM elements within HTML.
 Node Package Manager (NPM)~\cite{npm} is used to maintain all of the dependencies between Electron, the three languages and the JavaScript libraries on the platform's front end.
 In addition to dependency management, NPM has packages of its own that simplify the process for compiling code into a single file for Electron to handle.
-The Babel~\cite{babel} package transpiles JavaScript into a browser friendly format, then webpack~\cite{webpack} integrates the resulting JavaScript into the HTML code for a single JavaScript file for Electron.
+The Babel~\cite{babel} package ``transpiles'' JavaScript into a browser friendly format, then webpack~\cite{webpack} integrates the resulting JavaScript into the HTML code for a single JavaScript file for Electron.
 The GUI can then be launched using an NPM script to compile all of the code, launch Electron and load the content.
 
 
@@ -118,8 +118,8 @@ The \texttt{seed} attribute holds a specific instance of an \texttt{Element} cla
 The \texttt{range} then defines the radius of the area beyond the attribute's position that the effect will ``radiate.''
 The term radiate is used because the effect will alter the element type's values in surrounding cells based upon how close they are to the source of the effect (the anomaly).
 
-For example, \texttt{Human} (Appendix~\ref{appendix:human_class}) is an anomaly that takes the area of a single cell, and effects the temperature and decibel values in their environment.
-If the human is much louder than the ambient noise level in the environment, there will be a sharp spike in Decibel values in cells nearest the human, with a diminishing increase for values in surrounding cells.
+For example, \texttt{Human} (Appendix~\ref{appendix:human_class}) is an anomaly that takes the area of a single cell, and affects the temperature and decibel values in their environment.
+If the human is much louder than the ambient noise level in the environment, there will be a sharp spike in decibel values in cells nearest the human, with a diminishing increase for values in surrounding cells.
 Figure~\ref{fig:human_decibel_effect} shows a heatmap of decibel values in an environment that a human is present within.
 
 \begin{figure}[H]
@@ -130,7 +130,7 @@ Figure~\ref{fig:human_decibel_effect} shows a heatmap of decibel values in an en
 \end{figure}
 
 One last important data structure is a \texttt{Layer} (Appendix~\ref{appendix:layer_class}).
-A layer is designed in the same 2-dimentional structure as the \texttt{Environment} grid, but holds a collection of \texttt{Element} instances instead of cells (figure~\ref{fig:human_decibel_effect} is an example of a layer of decibel elements).
+A layer is designed in the same 2-dimensional structure as the \texttt{Environment} grid, but holds a collection of \texttt{Element} instances instead of cells (figure~\ref{fig:human_decibel_effect} is an example of a layer of decibel elements).
 While layers are not direct members of the \texttt{Environment} class structure, they are crucial to building and analyzing the environment.
 For this reason, instances of the \texttt{Layer} class are only generated on demand through method calls.
 
@@ -145,7 +145,7 @@ The state related attributes of an \texttt{Agent} are health, energy level, an i
 Because SCOUt is focused on exploration-based operations, agent behaviors can be divided into two categories of actions: movement and scanning.
 The agent can attempt to move one cell at a time in any of the four cardinal directions.
 This allows the agent to reassess after each movement attempt.
-Agents perform scanning actions to collects information about the immediate environment
+Agents perform scanning actions to collect information about the immediate environment.
 Any new information learned about the environment is stored in the agent's internal map.
 The type of scanning actions that an agent can perform is based on the set of sensors the agent has equipped.
 The agent's controller is in charge of analyzing the current state and deciding the next action to be performed.
@@ -182,7 +182,7 @@ For example, if an agent was searching for a human, temperature and decibel sens
 
 \subsection{Mobility} \label{subsec:mobility}
 \texttt{Mobility} is a standalone class  that will determine the physical limitations of the agent when moving within an environment (Appendix~\ref{appendix:mobility_class}).
-In real-world scenarios, agents often have to trade of functionality and mobility.
+In real-world scenarios, agents often have to trade off functionality and mobility.
 For example, if a drone was modeled as the agent, it would have a higher range of mobility, but would likely sacrifice the number of sensors that could be carried.
 A wheeled robot loaded with multiple sensors would likely have decreased mobility but could collect a wider variety of data.
 An agent's mobility is defined by the maximum slope an agent can climb, the minimum slope an agent can traverse before taking ``fall damage,'' a resistance factor, and the energy cost required for movement.
@@ -209,7 +209,7 @@ The resistance factor between 0 and 1 (0 being no resistance and 1 being immune)
 
 \begin{capeq}[H]
   \begin{equation} \label{eq:duribility_damage}
-    damage = |value - threshold| * (1.0 - resistance)
+    damage = |v - threshold| * (1.0 - resistance)
   \end{equation}
   \caption{Damage calculation based on an agent's $resistance$ to an element type with value $v$ that is above or below a durability $threshold$.}
 \end{capeq}
@@ -261,7 +261,7 @@ Because agent movement is defined as north, south, west and east, we can collaps
 \begin{figure}[H]
   \centering
   \includegraphics[width=1.0\columnwidth]{Figures/quadrants.png}
-  \caption{Diagram showing how an environment is divided into quadrants relative to an agent's position.}
+  \caption{Diagram showing how an environment is divided into quadrants relative to an agent's position within a grid of cells.}
   \label{fig:quadrants}
 \end{figure}
 
@@ -296,7 +296,7 @@ To explore the efficiency and adaptability of the intelligent controller, many d
 All simulations are made up of three main components: an agent, a goal, and the environment.
 Different combinations of each component allow the creation of a large variety of scenarios.
 Each simulation follows a defined process called an operation (figure~\ref{fig:operation}).
-An operation will simulate an agent's attempt to complete a goal within an environment, record data for each event that occurs between the agent, and environment and the final outcome.
+An operation will simulate an agent's attempt to complete a goal within an environment, record data for each event that occurs between the agent and environment, and the final outcome.
 These data collections are denoted as short-term and long-term events respectively.
 
 \noindent
@@ -341,7 +341,7 @@ After the other agent or process completes its task, SCOUt could continue to sea
 For anomaly searching goals, the agent is required to find a specified anomaly within an environment.
 This tests SCOUt's ability to use environmental clues to track down the anomaly.
 For example, if the agent was looking for a human after a natural disaster, it could use data such as temperature and decibel readings to locate the person.
-The element mapping goal is strait forward.
+The element mapping goal is straitforward.
 The agent must map out as much data about the specified element type as possible.
 
 
@@ -365,7 +365,7 @@ This penalizes the agent from using a scanner multiple times in the same area, a
   \setstretch{1.2}
   \caption{Calculate the short-term reward for an event caused by an agent's action within an environment. $W_{item}$ denotes the attributed weight for $itemReward$.}
   \begin{algorithmic} \label{algorithmic:short_term_reward}
-    \REQUIRE $W_health \in \left[0, \infty \right)$
+    \REQUIRE $W_{health} \in \left[0, \infty \right)$
     \REQUIRE $W_{energy} \in \left[0, \infty \right)$
     \REQUIRE $W_{action} \in \left[0, \infty \right)$
     \REQUIRE $maxHealth \leftarrow 1$
@@ -662,7 +662,7 @@ Their previously set parameters will be loaded back into the form fields for edi
 \subsubsection{Display}
 The display is laid out in a grid of display cells corresponding to the environment's cell grid.
 A display layer is created for each element type present within the environment using the D3 library~\cite{d3}.
-D3's heatmap creates a graphical representation of data values over a 2-dimentional space, providing a solution for visually differentiating each cell's value within the environment cell grid.
+D3's heatmap creates a graphical representation of data values over a 2-dimensional space, providing a solution for visually differentiating each cell's value within the environment cell grid.
 Heatmaps display the variation of values using a color scale where higher values are indicated by darker sections and lower values as a lighter section of the map.
 For example, when viewing the elevation's heatmap, a hill will appear darker than a valley.
 The user can also select individual cells by clicking on their region in the displayed cell grid.

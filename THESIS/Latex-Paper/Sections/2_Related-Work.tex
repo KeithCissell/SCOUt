@@ -1,6 +1,6 @@
 
 
-\chapter{Related Work} \label{ch:related_works}
+\chapter{RELATED WORK} \label{ch:related_works}
 Recent advances in hardware capabilities and computational intelligence techniques have led to the introduction of robotics in numerous complex use cases.
 Robotic agents continue to phase out human agents for tasks that are considered mundane or dangerous, or simply because a machine can provide better results for less cost.
 Here we focus on the application of autonomous robots in exploration-based operations.
@@ -14,27 +14,27 @@ Sensors, such as an infrared camera, can accurately collect data that humans do 
 Large amounts of sensor data can also be processed and analyzed by a computer more efficiently than a human.
 This supports the idea that a robotic agent can operate at higher performance levels than a human could in many exploration-based operations.
 
-The basics of modeling and controlling agents within an environment were studied in the works of Poole el~al.~\cite{poole_artificial_2010}, LaVelle~\cite{lavalle_planning_2006}, and Sutton el~al.~\cite{sutton_reinforcement_1998}.
-Using this platform of knowledge, we next began reviewing recent implementations of autonomous control designed for real-world environments.
+The basics of modeling and controlling agents within an environment were studied in the works of Poole et~al.~\cite{poole_artificial_2010}, LaVelle~\cite{lavalle_planning_2006}, and Sutton et~al.~\cite{sutton_reinforcement_1998}.
+Using this platform of knowledge, we next reviewed recent implementations of autonomous control designed for real-world environments.
 There is an abundant amount of existing research on the use of autonomous robots for exploration.
 Both intelligent hardware and software approaches have been researched to create robotic agents that can safely and efficiently navigate in an environment.
 Many of the hardware focused solutions explore clever designs for mobility features that enable an agent to traverse hazardous and complex environments~\cite{kossett_robust_2011, hopkins_survey_2009, haldane_animal-inspired_2013, hoover_bio-inspired_2010, latscha_design_2014, clark_evolving_2017, smith_tri-wheel:_2015, clark_toward_2006}.
 Software solutions typically focus on the application of AI control schemas to plan hazard avoidance, and maximize efficiency~\cite{christensen_multi-robot_2017, tai_autonomous_2017, stachniss_exploration_2004, clark_mobile_2007, perea_strom_robust_2017, fink_tier-scalable_2007, bai_toward_2017}.
 Each of these autonomous exploration-based research experiments share three key components: there is a robotic agent with a set of actions that it can perform, the agent must use intelligence to navigate in an environment, and the agent is goal driven.
 While these components are present in all of these experiments, there is a large variation in the use cases and control schemas.
-Some are designed for mapping indoor or outdoor environments~\cite{tai_autonomous_2017,  stachniss_exploration_2004, perea_strom_robust_2017}, others focus on hazard avoidance~\cite{christensen_multi-robot_2017, fink_tier-scalable_2007}, and some use multiple agents working together \cite{christensen_multi-robot_2017, clark_mobile_2007}, and some focus on operation efficiency~\cite{bai_toward_2017}.
+Some are designed for mapping indoor or outdoor environments~\cite{tai_autonomous_2017,  stachniss_exploration_2004, perea_strom_robust_2017}, others focus on hazard avoidance~\cite{christensen_multi-robot_2017, fink_tier-scalable_2007}, use of multiple agents working together \cite{christensen_multi-robot_2017, clark_mobile_2007}, and operation efficiency~\cite{bai_toward_2017}.
 A variety of intelligent approaches for controlling the agents range from the use of Bayesian prediction models~\cite{christensen_multi-robot_2017}, artificial neural networks~\cite{tai_autonomous_2017} and machine learning~\cite{bai_toward_2017} to name a few.
 Each of these experiments focused on AI controllers that were hand crafted for a specific goal.
 The SCOUt project aims to address all of these use cases for autonomous agents in a unified operation setup process and adaptive control schema.
 
 While preliminary research did not uncover any existing work on a unified process for the setup and control of exploration-based operations, the idea of a single adaptive controller for completing multiple goals is not a new concept.
-Arora el~al.~\cite{arora_approach_2017, hutter_online_2018} have created control schemas that are both adaptive to an agent's capabilities, as well as a diversity of environments.
+Arora et~al.~\cite{arora_approach_2017, hutter_online_2018} have created control schemas that are both adaptive to an agent's capabilities, as well as a diversity of environments.
 In their research conducted in 2017~\cite{arora_approach_2017}, they use a high-level approach to generate a controller that can model and analyze scientific data in a task-based approach across multiple goals.
 Their later research in 2018~\cite{hutter_online_2018} achieves efficient path planning and sensor usage policies through an adaptive Bayesian framework.
 SCOUt exhibits similar functionality through its use of a memory-based learning model to plan actions that will maximize goal completion and minimize damage and energy usage for a variety of operations.
 Memory-based control schemas have also been used in existing experiments for autonomous decision models.
 Experiments such as~\cite{fu_genetic_2003, yi_new_2011}, used a genetic algorithm (GA) to generate decision policies through the use of existing knowledge.
-Arulkumaran el~al.~\cite{arulkumaran_brief_2017} cover an approach to handling memory sets, as large pools of memory can yield more accurate results but lead to issues of increased complexity and storage requirements.
+Arulkumaran et~al.~\cite{arulkumaran_brief_2017} cover an approach to handling memory sets, as large pools of memory can yield more accurate results but lead to issues of increased complexity and storage requirements.
 There has also been a heavy use of machine learning (ML) in the field of robotics.
 Specifically, \cite{arulkumaran_brief_2017, bai_toward_2017, kiumarsi_optimal_2018} all implement reinforcement learning (RL) systems in action decision models.
 SCOUt's decision model follows a similar approach to \cite{kiumarsi_optimal_2018}, using an adaptive process for choosing actions through the use of a reward system.
@@ -44,7 +44,7 @@ SCOUt uses a variation of RL by building a memory of state-action rewards (SAR) 
 
 
 Our memory-based learning model primarily borrows concepts from both partially observable Markov decision process (POMDP) and learning classifier systems (LCS).
-A POMDP is a generalized decision making process used in situations when the an agent's state-space cannot be fully modeled~\cite{r_cassandra_survey_1998, shani_survey_2013}.
+A POMDP is a generalized decision making process used in situations when an agent's state-space cannot be fully modeled~\cite{r_cassandra_survey_1998, shani_survey_2013}.
 A state-space is a collection of finite possible configurations of a problem that could occur during a defined operation.
 For example, in the game of chess, the state-space is a collection of legal game positions that could occur based on the moves that each player makes within the game.
 When states cannot be fully modeled, POMDPs are applied to create a probability distribution of states that might result from the actions an agent can take.

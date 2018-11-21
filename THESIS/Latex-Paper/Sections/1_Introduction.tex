@@ -1,8 +1,8 @@
 
 
-\chapter{Introduction} \label{ch:introduction}
+\chapter{INTRODUCTION} \label{ch:introduction}
 As studies in autonomous computing and robotics have become more extensive, the two categories have overlapped to create a field of research combining both areas.
-Autonomously controlled robots of many different forms have been built and applied to a wide variety of use cases.
+Autonomous robots of many different forms have been built and applied to a wide variety of use cases.
 Rovers, drones and even aquatic robots, combined with artificial intelligence (AI), have been created to interact with diverse types of environments.
 The tasks that these robots carry out greatly vary based on the robot's abilities and the environmental limitations they may face.
 This variance causes a demand for distinct software and hardware configurations to achieve each robot's given task.
@@ -14,7 +14,7 @@ Both autonomous computing and robotics offer unique and clever solutions for thi
 
 While a great deal of research has been conducted in adaptive hardware for robotics, there is not an extensive amount of research on adaptive software for integrating the variety of robot setups with exploration-based tasks.
 Most of this is due to the fact that each robot has a unique set of capabilities and control schema designed for a single purpose.
-Autonomous robots tend to focus in on a certain niche, which requires them to be built from the ground up for each arising task.
+Autonomous robots tend to focus in on a certain niche, which requires them to be built from the ground up for each task.
 This diversity in agent-task pairs could greatly benefit from a single adaptive solution of operation setup and control.
 Here we discuss how AI can be applied to exploration and present an adaptive solution for encompassing the variety of use cases of autonomous robotics in the field of exploration.
 
@@ -29,7 +29,7 @@ Learning is typically achieved through training in simulation, which has many be
 Simulations allow agent setups and control schemas to be tested and observed without the potential of damaging equipment or the environment.
 Additionally, they offer the ability to conduct multiple tests in short periods of time without the need for any physical setup or supervision.
 
-Our solution to the strong diversity of use cases for autonomous robotics in the field of exploration is a unified Surveillance Coordination and Operations Utility (SCOUt).
+The presented solution to the strong diversity of use cases for autonomous robotics in the field of exploration is a unified Surveillance Coordination and Operations Utility (SCOUt).
 SCOUt takes a top down approach to agent-task definition and provides an adaptive control schema for a wide variety of robotic agents and their uses.
 The combination of an agent-task definition and simulation platform, and an adaptive control schema creates a tool which can be applied to both new and existing use cases of autonomous robots in exploration.
 This is achieved by abstracting the very basics of autonomous robotics.
@@ -38,7 +38,7 @@ The schema uses reinforcement learning to build a memory-based decision model.
 When applied, the decision model compares the agent's current state to previous states in memory.
 By analyzing similar states, the controller will then be able to predict what actions will yield the best results given the current situation.
 Data stored in the controller's memory is highly abstracted so that it can be applied to a wide variety of agent setups, goals, and environments.
-For example, locating a human or mapping the presence of water in unknown environments using a land-based robotic agent.
+For example, locating a human or mapping the presence of water in unknown environments, with a land-based robotic agent.
 SCOUt also provides a simulation platform for training and testing the controller in the variety of situations it can be applied to.
 The platform's architecture is also highly abstracted to create an easy to use tool for defining and simulating different agent abilities, goals, and types of environments.
 

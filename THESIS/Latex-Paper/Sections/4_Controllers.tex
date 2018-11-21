@@ -1,11 +1,11 @@
 
 % GOOD
-\chapter{Controllers} \label{ch:controllers}
+\chapter{CONTROLLERS} \label{ch:controllers}
 Three types of control schemas are compared in this project: random, heuristic, and SCOUt's memory-based learning.
 All three controllers are designed to operate within unknown environments using whatever sensors are available.
 Controllers are compared based on their ability to complete a defined goal, the number of actions that the controller had to perform before completing the goal, and the remaining health and energy levels of the agent.
 The random controller will select valid actions at random until the goal is completed successfully, or the agent's health or energy is depleted.
-This behavior provides a primary base line for determining what levels of performance are considered \textit{intelligent}.
+This behavior provides a primary baseline for determining what levels of performance are considered \textit{intelligent}.
 Intelligent controllers would need to exceed the performance of a controller that simply selects actions at random.
 Both the memory-based learning and heuristic approaches can be considered intelligent, as they use knowledge of their environment to select actions.
 It is up to each controller type to effectively use the information provided in the agent's current state to guide them towards success.
@@ -13,7 +13,7 @@ Heuristic controllers perform a set of hard-coded logical analyses to choose act
 This type of approach offers practical solutions to operations but are not expected to be optimal.
 In addition to this, heuristic controllers are not adaptive to new situations as their logical schemas must be defined for each specific goal.
 Experiments in chapter~\ref{ch:experiments_and_results} simulate operations for two goals: \textit{Find Human} and \textit{Map Water}.
-Separate heuristic controllers are created for each of these and provide a secondary performance base line.
+Separate heuristic controllers are created for each of these and provide a secondary performance baseline.
 For SCOUt's memory-based learning schema to be considered both intelligent \textit{and} adaptive, it would need to perform at the same level or better than the heuristic schemas designed specifically for each goal.
 The architecture of the heuristic and SCOUt control schemas are covered in section~\ref{sec:heuristic_controllers}~and~\ref{sec:scout_controller} respectively.
 
@@ -167,7 +167,7 @@ Utilizing data from the agent's current state and the controller's collection of
 
 \begin{figure}[H]
   \includegraphics[width=1.0\columnwidth]{Figures/scout_decision_model.png}
-  \caption{Action decision model for the SCOUt controller.}
+  \caption{Action decision model for the SCOUt controller. The controller searches for memory state-action rewards (SAR) that have a similar state to the current state. The chosen actions and rewards for each similar SAR is used to create a score for each valid action that the can be taken in the current state.}
   \label{fig:scout_decision_model}
 \end{figure}
 
@@ -188,6 +188,7 @@ The weight set with the highest fitness in the final generation was selected for
   \centering
   % \small
   \def\arraystretch{1.25}
+  \caption{Set of variables and weights used by the SCOUt controller for action decision. These variables/weights were produced using a basic genetic algorithm.}
   \resizebox{\textwidth}{!}{%
   \begin{tabular}{ l l c }
     \textbf{Attribute}                & \textbf{Description}            & \textbf{Variable/Weight} \\
@@ -228,7 +229,6 @@ The weight set with the highest fitness in the final generation was selected for
     \hline
   \end{tabular}}
   % \caption{Table ~\ref{table:evolved_weight_set}: Evolved Weight Set}
-  \caption{Set of variables and weights used by the SCOUt controller for action decision. These variables/weights were produced using a basic genetic algorithm.}
   \label{table:evolved_weight_set}
 \end{table}
 
@@ -308,7 +308,7 @@ Difference comparisons will be made for each of the attributes within the sub-cl
 Boolean differences will return 0 when the compared attributes are both true or both false and return 1 otherwise (equation ~\ref{eq:boolean_difference}).
 For example, \textit{BooleanDifference} is used to calculate whether an element type in two \texttt{ElementState}s were both flagged as an indicator or not.
 Normalized numerical attributes follow the \textit{GaussianDifference} equation (equation ~\ref{eq:gaussian_difference}).
-This equation will produce values that hold the same principal as the normalization process, where the closer the difference is to 0, the more similar they are.
+This equation will produce values that hold the same principle as the normalization process, where the closer the difference is to 0, the more similar they are.
 If two values are identical, their \textit{GaussianDifference} will be 0.
 Otherwise, the \textit{GaussianDifference} will be relative to how many standard deviations away from each other the two values are.
 % Proofs for these behaviors are found in appendix item~\ref{appendix:gaussian_difference_identical} and appendix item~\ref{appendix:gaussian_difference_different} respectively.
@@ -404,7 +404,7 @@ The orientation that yields the lowest \textit{quadrantToQuadrantDifferences} (\
 
 Each orientation is important to consider because the controller is only concerned with moving towards interesting features in an environment, regardless of the direction.
 Considering the orientation with the lowest difference makes the comparison relative to the two environments instead of the cardinal direction.
-Consider if a highly similar SAR held record that its agent received good rewards for particular a movement action.
+Consider if a highly similar SAR held information that its agent received good rewards for a particular movement action.
 The current agent should be encouraged to move towards the quadrant in its own environment that holds similar features (not necessarily in the same direction).
 Now, if the SAR's \textit{lowestQuadrantOrientationDifference} is found when rotating its quadrants 180 degrees (North-to-South orientation) and it had chosen to move East, the current agent should choose to move West since the two states are oriented at a 180 degree difference between each other (see figure ~\ref{fig:oriented_movement_example}).
 

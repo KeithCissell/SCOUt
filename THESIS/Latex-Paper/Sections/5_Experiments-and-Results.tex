@@ -1,6 +1,6 @@
 
 
-\chapter{Experiments and Results} \label{ch:experiments_and_results}
+\chapter{EXPERIMENTS AND RESULTS} \label{ch:experiments_and_results}
 To analyze the SCOUt control schema, three instances of a SCOUt controller are trained and then tested in two experiments.
 The first experiment compares the performance of each SCOUt controller against a random and heuristic controller to determine if they exhibit intelligent behavior when attempting to complete a given goal.
 The second experiment tests adaptability of the controllers by removing sensors or changing the goal and providing additional training for new goals.
@@ -33,8 +33,8 @@ Tests will measure the performance of several controllers in these identical ope
 Each test will include at least one random, one heuristic and one SCOUt controller.
 Two different heuristic controllers are used in testing depending on the goal of the operation.
 $Heuristic_{FH}$ and $Heuristic_{MW}$ are used for \textit{Find Human} and \textit{Map Water} operations, respectively.
-The random and heuristic controllers provide base lines for performance of the SCOUt controllers.
-These base lines are important as the difficulty of an operation is difficult to predict.
+The random and heuristic controllers provide baselines for performance of the SCOUt controllers.
+These baselines are important as the difficulty of an operation is difficult to predict.
 Different instances of the same operation setup can yield unique environments and starting positions that will alter the difficulty of goal completion, or even prevent it entirely.
 Performance is measured in four categories: goal completion, the number of actions taken, remaining health and remaining energy.
 Additionally, the agent's starting location for each operation will be chosen in a location that does not result in damage (e.g., starting in a cell with water present) or immediate goal completion (e.g., starting next to the Human anomaly).
@@ -99,7 +99,7 @@ Testing at each iteration runs a series of simulated operations to collect perfo
 Each series uses the controller's respective goal(s) and is run on each testing environment template 20 times (20 on EASY, 20 on MEDIUM, and 20 on HARD).
 The controller tested will have access to its current memory pool that it has gathered during all of the training operations it has completed so far.
 As the purpose of iteration testing is to measure the \textit{current} performance level of the controller, no SARs will be gathered during these tests and the memory will be left un-altered.
-For a base line, the $Random$ controller is run through the same series of tests.
+For a baseline, the $Random$ controller is run through the same series of tests.
 Results from the 60 total operations will be averaged in each of the four performance categories.
 The averaged results of the learning SCOUt controller will then be differenced against the averaged results of the $Random$ controller.
 By differencing the averages, we are observing how much better or worse the SCOUt controller was able to perform than the $Random$ controller in the same testing conditions.
@@ -279,7 +279,7 @@ This suggests that operations based on mapping an element type are more difficul
 \section{Experiment 2} \label{sec:experiment2}
 The second experiment is broken into three tests: goal changing, sensor set changing, and additional training.
 Goal changing, and sensor set changing are both designed to investigate the adaptability of each SCOUt controller.
-Heuristic and random controllers are still used as base lines, but we also use SCOUt controllers as a base line.
+Heuristic and random controllers are still used as baselines, but we also use SCOUt controllers as a baseline.
 By comparing SCOUt controllers that were trained for the specific goal (in the case of goal changing) or un-altered (in the case of sensor set changing), we can study how performance changes when a SCOUt controller is applied in unexpected scenarios.
 Following this, $SCOUt_{FH}$ and $SCOUt_{MW}$ are put through additional training on the goal they were not originally trained, to build two new controllers.
 $SCOUt_{FH+}$ is the result of training on \textit{Map Water}, beginning with a copy of $SCOUt_{FH}$'s existing memory.
@@ -297,7 +297,7 @@ This is done because we have already seen that each controller's performance sco
 Results for $SCOUt_{MW}$ in \textit{Find Human} operations are shown in figure~\ref{fig:goal_change_findhuman}.
 Unsurprisingly, $SCOUt_{FH}$ takes the lead in every performance category, followed by $SCOUt_{H}$.
 What we are primarily interested in here is $SCOUt_{MW}$'s ability to outperform $Heuristic_{FH}$.
-We do see higher averages the number of actions performed and remaining energy, but this is likely due to the same hazard avoidance caveat discussed in Experiment 1 (section~\ref{sec:experiment1}).
+We do see higher averages in the number of actions performed and remaining energy, but this is likely due to the same hazard avoidance caveat discussed in Experiment 1 (section~\ref{sec:experiment1}).
 This is also reflected in the fact that $SCOUt_{MW}$ has the lowest average remaining health out of all controllers, followed by $SCOUt_{H}$ (again, likely suffering from the same issue).
 However, even though the average goal completion for $SCOUt_{MW}$ is less than $Heuristic_{FH}$, the margin of difference is only \textasciitilde1.5 percent.
 This does lead to the idea that adaptability is present within SCOUt's control schema.
@@ -427,7 +427,7 @@ This further supports the argument that a memory-based reinforcement learning mo
 
 
 
-\section{Results}
+\section{Discussion}
 Our testing revealed that SCOUt's control schema was in fact adaptive to new tasks.
 In Experiment 2, we see SCOUt controllers performing better than random and heuristic approaches, even when faced with disadvantages, such as lack of sensors or no knowledge of how to complete a goal.
 These are features that we don't see in our heuristic models.

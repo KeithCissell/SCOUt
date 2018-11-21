@@ -3,7 +3,7 @@
 \noindent
     \textbf{\thesistitle} \\ %all caps will be given. Assume normalcy otherwise.
    \noindent \csc \\
-    \noindent \msu, Month 9999 \\ %add month and year
+    \noindent \msu, \thesisdate \\ %add month and year
     \noindent \thesisdegree \\
     \noindent \thesisstudent \\
 
@@ -12,15 +12,17 @@
 
 \singlespacing{
     \noindent{
-      The use of autonomous robotics in the field of exploration has drastically expanded with innovations in both hardware technology and the applications of artificial intelligence (AI).
-      A wide variety of robotic agents and the environments that they can operate within has led to the creation of many unique control schemas that cater to each specific agent and their goal within an environment.
-      Most control schemas must be built from the ground up for each given operation. Here we discuss a single, adaptive control solution for autonomous exploration across multiple agent setups, goals, and environments.
-      The control schema utilizes a memory-based reinforcement-learning approach to efficiently analyze agent states for planning actions to safely navigate an environment and collect data to achieve a defined goal.
-      The control schema was first tested in simulation against random and heuristic control schemas to compare performance.
-      Next the controller was tested in simulation with alterations to the agent’s sensors, environments, and goals to observe adaptability.
-      Performance comparisons are made for each controller’s goal completion, number of actions taken, and the remaining health and energy of the agent controlled.
-      Results indicate that this control schema is both useful and adaptable to new situations.
-      An adaptive control schema, such as the one presented in this research, could help provide a universal solution for building autonomous robots in the field of exploration.
+      Recently, the use of autonomous robots for exploration has drastically expanded--largely due to innovations in both hardware technology and the development of new artificial intelligence (AI) methods.
+      The wide variety of robotic agents and operating environments has led to the creation of many unique control strategies that cater to each specific agent and their goal within an environment.
+      Most control strategies are single purpose, meaning they are built from the ground up for each given operation.
+      Here we present a single, reinforcement learning control solution for autonomous exploration intended to work across multiple agent types, goals, and environments.
+      The solution presented here includes a memory of past actions and rewards to efficiently analyze an agent’s current state when planning future actions.
+      The agent’s objective is to safely navigate an environment and collect data to achieve a defined goal.
+      The control solution is first compared with random and heuristic control schemas.
+      To test the controller for adaptability, the controller is next subjected to changes in the agent’s sensors, environments, and goals.
+      Control strategies are compared by examining  goal completion rates, the number of actions taken, and the agent’s remaining health and energy at the end of a simulation.
+      Results indicate that the newly developed control strategy is adaptable to new situations.
+      A reinforcement learning based controller, such as the one presented in this research, could help provide a universal solution for controlling autonomous robots in the field of exploration.
     }
 %\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 \vfill
@@ -29,14 +31,14 @@
 
 
 %\vspace*{\fill}
-\medskip
-\hspace*{\fill}
-\parbox{3.75in}{
-    \singlespace{
-        This abstract is approved as to form and content
-
-        \bigskip\bigskip\bigskip
-        (Thesis Advisor Signature Goes Here, Delete this line)\\
-
-        \hrule{\hspace{3.75in}} \\
-        Your Thesis Advisor Typed Name Goes Here \\ Chairperson, Advisory Committee  \\ Missouri State University} }
+% \medskip
+% \hspace*{\fill}
+% \parbox{3.75in}{
+%     \singlespace{
+%         This abstract is approved as to form and content
+%
+%         \bigskip\bigskip\bigskip
+%         (Thesis Advisor Signature Goes Here, Delete this line)\\
+%
+%         \hrule{\hspace{3.75in}} \\
+%         Your Thesis Advisor Typed Name Goes Here \\ Chairperson, Advisory Committee  \\ Missouri State University} }

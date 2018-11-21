@@ -1,0 +1,107 @@
+
+
+\chapter{Conclusion} \label{ch:conclusion}
+The wide variety of use cases for autonomous robotics in the field of exploration suggests the need of a unified solution for the setup and execution of related operations.
+Unique environments and tasks are found throughout the problem spaces of exploration that often require a robotic agent to be constructed from the ground up.
+SCOUt provides a platform for both modeling and simulating wide varieties of goal driven tasks within an environment, as well as an adaptive control solution for robotic agents.
+ % that can adjust its behaviors based on the available set of surveillance tools it has to work with.
+The abstracted data structures used by SCOUt offer a framework that can easily be utilized and expanded upon by the growing communities of robotics and exploration.
+
+Simulation testing is a valuable tool for planning out exploration-based operations.
+It offers both cost and risk avoidance solutions for building, training, and testing new ideas.
+SCOUt's simulation platform touches all of these features in the form of a user friendly setup tool.
+New testing scenarios can be created with minimal input allowing a user to direct their focus towards the primary tasks at hand.
+In this project, thousands of operations were simulated with a variety agents, environments, goals, and the interactions between them.
+Each operation holds the opportunity to present a unique scenario for each controller to be tested within.
+Features of the controlled agent can be adjusted to reflect its available sensors, maneuverability, and durability to environmental factors.
+Environments are procedurally generated to produce unique features within similar settings, and agent starting positions are chosen randomly within.
+Data collected from all of these operations could then be averaged, charted, and analyzed to track the performance of different controllers across the vast problem space.
+The simulation platform also allowed multiple controllers to be tested and compared in identical conditions, removing discrepancies between each unique operations faced.
+% This allows performances to be compared independently from the operation setups that are generated.
+
+The SCOUt project aimed to uncover the concept of a generalized work flow that lies within exploration in unknown environments.
+Through research in a wide variety of studies, we found the core components of such operations to be a continuous cycle of gathering and analyzing data to draw new beliefs and conclusions that help to progress a goal.
+Our memory-based learning control schema presented in this paper demonstrates a unified solution built on this premise.
+Data from both the environment and the agent is condensed into a single ``state'' that is passed as input to the decision model.
+The model will then decide if actions should be performed to gather more data to analyze, or if the controller should navigate the agent towards new, potentially interesting areas within the environment.
+Both types of actions will work together in the cycle of state analysis and decision making to progress goal completion.
+Two types of exploration based goals were examined in varying environmental conditions: anomaly searching and element type mapping.
+SCOUt's unique control schema was tested for its performance and adaptability in these two types of scenarios.
+Heuristic control schemas were also built for each of the specific goals, and were tested in tandem to the SCOUt's control model.
+The heuristic controllers follow the same process of state analysis and action decisions, but apply logical analyses rather than a prediction model based on memory of past events.
+Heuristic controllers created are focused on completing one specific goal and reflect a specialized, non-adaptive control solution that might be applied in these scenarios.
+
+We see in our results that SCOUt's model was in fact able to perform adaptively across a variety of situations.
+SCOUt demonstrated the ability to learn task related behaviors that could be applied to multiple goals.
+When changing the goal, available sensors, and environmental settings, SCOUt was able to maintain an efficient level of performance.
+In scenarios such as the removal of sensors, some controllers showed little to no drop in performance at all.
+In the majority of performance categories, the memory-based learning controllers showed superior results compared to that of the heuristic controllers.
+With better average rates of goal completion, number of actions taken, and remaining energy, we see how SCOUt's model is both adaptive \textit{and} efficient.
+Even in some cases where SCOUt is placed in scenarios in which it was not trained, we still see results that are more efficient than the heuristic approaches.
+On these grounds, it is strongly believed that autonomous control can be abstracted into a unified solution for exploration related operations.
+
+One area of the memory-based control schema that could use improvement is hazard avoidance.
+In the \textit{Map Water} operations especially, we see SCOUt controllers suffer in their ability to maintain the agent's health.
+SCOUt's analytical ability relied heavily on a dense network of weights tied to examining past rewards it had received for performing actions.
+Both the weight and reward systems create a grey area that likely caused poor performance results in hazard avoidance.
+A proper level of importance in the agent's remaining health was not being reflected in the decision model.
+This is a common caveat seen when artificial intelligence (AI) is left to independently control every aspect of a task.
+When AI is introduced to real-world environments, there are certain aspects of problems that typically have desired behaviors which seem trivial from a human's instinctual base of knowledge.
+However, it cannot be guaranteed that an AI will pick up on these since they can only ``think'' analytically and not instinctually.
+When facing undesirable behavior, AI solutions are often enhanced using sets of ``rules'' that they must follow.
+For example, when building autonomous self-driving vehicles, rules are often embedded into the vehicle's control schema to assist with safety (stay within a designated lane, always drive at a safe distance behind the vehicle in front of you, etc.).
+Applying similar sets of rules to SCOUt's control schema could have greatly improved its performance in hazard avoidance and subsequently in all other areas of performance that were measured.
+This project elected to forgo any hard coded rules into SCOUt's control schema for two reasons.
+First, all testing and training was done in simulation so there were no real-world risks involved in a ``rogue'' AI approach to control.
+Second, we wanted to test the memory-based learning model to the fullest of its capabilities without the assistance of any external knowledge.
+
+This project opens research potentials into similar abstracted approaches within the fields of autonomous robotics and exploration.
+Results suggest the potential for other categories of autonomics that could be abstracted into their own unified control models.
+Top-down approaches could be applied by finding the underlying work flow of each sub-field to generalize the process and reduce the amount of repetitive work required in finding solutions on a case-by-case basis.
+
+
+
+
+\section{Future Work} \label{sec:future_work}
+This section covers a few ideas for future work that could improve upon the current state of the SCOUt project.
+
+\subsection{Behavior Rules}
+Adding a set of hard-coded rules to SCOUt's decision model would likely lead to even better results.
+Ideally, we would want to prevent the controller from selecting actions that would damage the agent or have no benefit to the operation (e.g., using sensors in areas that have already been mapped or moving into quadrants that are already mapped).
+Each time the controller is given a set of valid actions to choose from, they could be passed through the set of rules and any undesirable actions could be removed from consideration.
+Using a rule set would additionally provide a tool for investigating suspected causes of poor performance.
+In our results, we saw a poor performance in remaining health and we suspected that the controller was not properly learning to avoid hazards.
+Rules for avoiding movement into cells with water or large drops in elevation could each be implemented and tested independently.
+Testing each rule in isolation would help to determine if poor health performances were being caused by one or the other, by neither, or by both.
+Rules which show obvious performance improvements could then be implemented by the controller to prevent undesired behaviors.
+
+\subsection{Artificial Neural Network Integration}
+Original ideas for the adaptive control schema included the use of an artificial neural network (ANN).
+The ANN would take an agent state and a list of valid actions as input and output the selected action.
+Due to the dynamic nature of agent states, use of an ANN was ruled out.
+If an agent changes the sensors it is equipped with, the ANN would need to account for a new set of input values due to the different set of \texttt{ElementState}s that would be found in the \texttt{AgentState}.
+However, the memory-based approach required the use of several weights to guide each state comparison and action scoring equation.
+Our solution was to optimize the weight set using a genetic algorithm (GA).
+Use of an ANN in place of the state comparison equations would eliminate the need for external weights to be provided.
+This could further enhance the adaptability of SCOUt's decision model.
+State-action rewards (SARs) could be compared against the current state by passing attributes through the ANN to output difference scores.
+The ANN could be trained with backpropagation using the existing simulation platform and the short-term and long term-reward systems.
+This model would likely require the ANN to remain ``open'' in the sense that its weights are constantly being trained during every operation.
+
+\subsection{Improved Memory Management}
+Improvements to both the process of saving and loading the SCOUt controller's memory could be made.
+For saving memory, the application of cluster would cut down on memory storage requirements.
+Currently, SCOUt saves the last 20 SARs from each operation, and uniformly samples 5 percent of the remaining SARs.
+Instead of only saving a sub-set, all SARs could be saved in memory and a data clustering algorithm could later be applied to ``clean-up'' the memory.
+The clusters could then be averaged and given a weight based on the number of SARs that fell within the cluster.
+This would eliminate redundancies within the memory set, as well as reduce the amount of computational time required for the controller to conduct state comparisons.
+As for loading memory, an adaptive approach could be taken to select only a sub-set of the SARs to use in each operation.
+The controller could begin by analyzing the given goal and agent setup to choose SARs from memory that correlate to the operation at hand.
+We expect that this would have two positive effects: less memory means less computational time for the action decision model, and a more concise memory set would yield higher performance results.
+
+\subsection{Integration of Goals into Agent States}
+Currently, the only place that we see the reflection of the current goal in SCOUt's decision model is with the \texttt{indicator} flag found in each \texttt{ElementState}.
+A higher-level approach could be taken so that the decision model analyzes an \textit{OperationState} rather than just an \texttt{AgentState}.
+This could be achieved by classifying the goal type and goal instance.
+For example, a \textit{Find Human} \textit{OperationState} would also include a current goal type of ``anomaly searching'' and a goal instance of ``human'' since this is the specific anomaly that the agent is searching for.
+These attributes could then be weighted into the state comparison system to produce a more concise \textit{OverallStateDifference} score.
