@@ -1,7 +1,7 @@
 % You should not change anything in this file unless you really know
 % what you are doing.
-% \RequirePackage {ragged2e}
-% \setlength{\parindent}{.5in}
+\RequirePackage{ragged2e}
+\setlength{\RaggedRightParindent}{.5in}
 % \usepackage{parskip}
 % \setlength\RaggedRightParindent{0.5in}
 \RequirePackage{graphicx}
@@ -15,7 +15,7 @@
 \RequirePackage{cite}
 \RequirePackage{url}
 \RequirePackage{listings}
-\RequirePackage{hyperref}
+% \RequirePackage{hyperref}
 % \RequirePackage{nameref}
 \RequirePackage{titlesec}
 \RequirePackage[titles]{tocloft}
@@ -31,6 +31,9 @@
 
 % % sets spacing between paragraphs
 % \parskip 2.5mm
+
+% Figure Counter
+% \counterwithout{figure}{chapter}
 
 % Clever referencing
 \RequirePackage{cleveref}
@@ -222,8 +225,8 @@
   \listoffigures
 
   % List of algorithms, if not suppressed
-  \cleardoublepage
-  \listofalgorithms
+  % \cleardoublepage
+  % \listofalgorithms
 
   % List of equations
   % \newcommand{\listofequationsname}{LIST OF EQUATIONS}
@@ -281,7 +284,7 @@
 
 % Versionn information at the end
 \RequirePackage[nofancy,notoday]{rcsinfo}
-\rcsInfo $Id: missouri_state_university.sty,v 1.3 2018/09/30 12:51:13 dipto Exp $
+\rcsInfo $Id: missouri_state_university.sty,v 1.4 2018/09/30 12:51:13 keith Exp $
 \RequirePackage{datetime}
 
 \AtEndDocument{%
@@ -303,7 +306,7 @@
 
   \settimeformat{ampmtime}
 
-  This thesis was generated on~\today\xspace at~\currenttime.
+  % This thesis was generated on~\today\xspace at~\currenttime.
 
   \vfill
 
@@ -334,19 +337,6 @@
 % Figures
 \DeclareCaptionType{appxfig}
 \captionsetup[appxfig]{name=\thesection, labelformat=hyphen, labelsep=colon, list=no}
-%
-% \let\oldappxlst\appxlst
-% \renewcommand{\appxlst}[1]{
-%   \oldappxlst{#1}
-%   \stepcounter{appxcounter}
-% }
-%
-% \let\oldappxfig\appxfig
-% \renewcommand{\appxfig}[1]{
-%   \oldappxfig{#1}
-%   \stepcounter{appxcounter}
-% }
-
 
 
 % Code settings

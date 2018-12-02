@@ -86,32 +86,32 @@ If too much is left out of the model, it won’t reflect real-word scenarios.
 On the other hand, attempting to model too much can be impractical as it consumes effort and resources that could instead be applied to running real world experiments.
 For SCOUt's simulation platform, environments are modeled as a high-level class containing a collection of sub-classes that together form a simplified representation of a real world environment (figure~\ref{fig:environment_model}).
 
-\begin{figure}[!htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=1.0\columnwidth]{Figures/environment_model.png}
   \caption[Environment Data Architecture]{A visual model of SCOUt's \texttt{Environment} class architecture. An environment is made up of cells which hold information about the environment. This information includes any present element type or anomaly.}
   \label{fig:environment_model}
 \end{figure}
 
-The \texttt{Environment} class (Appendix~\ref{appendix:environment_class}) holds an $n \text{x} m$ 2D grid of uniformly sized $s \text{x} s$ square cells, where $n \text{x} m$ is the total area of the environment and $s \text{x} s$ is the area each cell represents within the environment.
-A \texttt{Cell} (Appendix~\ref{appendix:cell_class}) holds $x$ and $y$ coordinates for its relative position within the \texttt{Environment}'s grid.
+The \texttt{Environment} class (Appendix~A-1) holds an $n \text{x} m$ 2D grid of uniformly sized $s \text{x} s$ square cells, where $n \text{x} m$ is the total area of the environment and $s \text{x} s$ is the area each cell represents within the environment.
+A \texttt{Cell} (Appendix~A-2) holds $x$ and $y$ coordinates for its relative position within the \texttt{Environment}'s grid.
 These coordinates do not reflect the actual size of the cell, only an index value for the order they appear within the 2-dimensional array data structure (e.g., see ``Position'' of ``Cell'' in figure~\ref{fig:environment_model}).
 The environment's scale can easily be applied to the physical location of a cell as it is a shared global attribute within the \texttt{Environment} class.
 If an element type or an anomaly is present within the area of the environment that the cell covers, it will be stored in an appropriate list within the \texttt{Cell} instance.
 
 An element can be any measurable attribute within an environment.
 For example, temperature, elevation and decibel levels are all attributes of the environment whose values can be measured.
-All element types are all generalized by the abstract trait, \texttt{Element} (Appendix~\ref{appendix:elelment_trait}).
+All element types are all generalized by the abstract trait, \texttt{Element} (Appendix~A-3).
 The trait has a set of attributes that an inheriting class must define to identify the element's type and how it behaves.
 Each element type has \texttt{name} and \texttt{unit} attributes that are used for identification and denoting the unit of measurement.
 The \texttt{value} attribute holds a numerical value for the measurement of each instance.
-For example, an instance of the \texttt{Elevation} class (Appendix~\ref{appendix:elevation_class}) stores a measurement of the elevation level in feet for the area within a cell.
+For example, an instance of the \texttt{Elevation} class (Appendix~A-4) stores a measurement of the elevation level in feet for the area within a cell.
 The \texttt{radial} flag, \texttt{lowerBound} and \texttt{upperBound} attributes guide and limit the values that can be set for each element type.
 These are used when procedurally generating an environment (covered in section~\ref{sec:environment_builder}).
 
 An anomaly is any object that may be of significance to an agent, such as a human or precious mineral.
 Anomalies each have their own effects on element values in the environment around them.
-Like \texttt{Element}, \texttt{Anomaly} and \texttt{Effect} (Appendix~\ref{appendix:anomaly_trait} and Appendix~\ref{appendix:effect_trait}) are both defined as a single trait that specific classes can inherit from.
+Like \texttt{Element}, \texttt{Anomaly} and \texttt{Effect} (Appendix~A-5 and Appendix~A-6) are both defined as a single trait that specific classes can inherit from.
 An \texttt{Anomaly} class can occupy multiple cells, but must occupy at least one cell in an environment.
 Anomalies can also have multiple effects on the values of different element types in its surrounding area.
 Each \texttt{Effect} class defines a ``seed'' element and a range of the effect.
@@ -119,18 +119,18 @@ The \texttt{seed} attribute holds a specific instance of an \texttt{Element} cla
 The \texttt{range} then defines the radius of the area beyond the attribute's position that the effect will ``radiate.''
 The term radiate is used because the effect will alter the element type's values in surrounding cells based upon how close they are to the source of the effect (the anomaly).
 
-For example, \texttt{Human} (Appendix~\ref{appendix:human_class}) is an anomaly that takes the area of a single cell, and affects the temperature and decibel values in their environment.
+For example, \texttt{Human} (Appendix~A-7) is an anomaly that takes the area of a single cell, and affects the temperature and decibel values in their environment.
 If the human is much louder than the ambient noise level in the environment, there will be a sharp spike in decibel values in cells nearest the human, with a diminishing increase for values in surrounding cells.
 Figure~\ref{fig:human_decibel_effect} shows a heatmap of decibel values in an environment that a human is present within.
 
-\begin{figure}[!htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.6\columnwidth]{Figures/human_decibel_effect.JPG}
   \caption[Sound Effect Heatmap]{Heatmap of the layer of decibel values within an environment that contains a human. A darker shade of green represents higher values of decibel levels, lighter shades represent lower values, and the human's location is shown in red.}
   \label{fig:human_decibel_effect}
 \end{figure}
 
-One last important data structure is a \texttt{Layer} (Appendix~\ref{appendix:layer_class}).
+One last important data structure is a \texttt{Layer} (Appendix~A-8).
 A layer is designed in the same 2-dimensional structure as the \texttt{Environment} grid, but holds a collection of \texttt{Element} instances instead of cells (figure~\ref{fig:human_decibel_effect} is an example of a layer of decibel elements).
 While layers are not direct members of the \texttt{Environment} class structure, they are crucial to building and analyzing the environment.
 For this reason, instances of the \texttt{Layer} class are only generated on demand through method calls.
@@ -141,9 +141,12 @@ For this reason, instances of the \texttt{Layer} class are only generated on dem
 % ==============================================================================
 \section{Agents} \label{sec:agent}
 Agents within this experiment are modeled based on a set of abilities that dictate how it will interact within an environment.
-The \texttt{Agent} class defines these with state related attributes, physical limitations, a set of sensors that can be used, and a controller for decision making (Appendix~\ref{appendix:agent_class}).
+The \texttt{Agent} class defines these with state related attributes, physical limitations, a set of sensors that can be used, and a controller for decision making (Appendix~B-1).
 The state related attributes of an \texttt{Agent} are health, energy level, an internal map, and its current position relative to the \texttt{Environment} grid.
-Because SCOUt is focused on exploration-based operations, agent behaviors can be divided into two categories of actions: movement and scanning.
+Because SCOUt is focused on
+
+\noindent
+exploration-based operations, agent behaviors can be divided into two categories of actions: movement and scanning.
 The agent can attempt to move one cell at a time in any of the four cardinal directions.
 This allows the agent to reassess after each movement attempt.
 Agents perform scanning actions to collect information about the immediate environment.
@@ -163,8 +166,11 @@ Figure~\ref{fig:agent_model} shows the internal agent architecture and how it ap
 
 
 \subsection{Sensor} \label{subsec:sensor}
-Sensors are defined using the same trait-class-instance architecture as \texttt{Element} and \texttt{Anomaly}.
-The \texttt{Sensor} class (Appendix~\ref{appendix:sensor_class}) models a scientific instrument that could be used for gathering data measurements of a specific element type.
+Sensors are defined using the same trait-class-instance architecture as
+
+\noindent
+\texttt{Element} and \texttt{Anomaly}.
+The \texttt{Sensor} class (Appendix~B-2) models a scientific instrument that could be used for gathering data measurements of a specific element type.
 Each class defines the element type it is able to measure, the energy it costs to use, its effective range, and two flags indicating if the element type is hazardous or considered an indicator for the given operation.
 When performing a scan, the sensor will sweep 360 degrees around the agents location and gather data within the circular area (figure~\ref{fig:sensor_range}).
 The circular scan area is calculated with the sensors range as the radius and the agent's position as the center.
@@ -182,7 +188,7 @@ For example, if an agent was searching for a human, temperature and decibel sens
 
 
 \subsection{Mobility} \label{subsec:mobility}
-\texttt{Mobility} is a standalone class  that will determine the physical limitations of the agent when moving within an environment (Appendix~\ref{appendix:mobility_class}).
+\texttt{Mobility} is a standalone class  that will determine the physical limitations of the agent when moving within an environment (Appendix~B-3).
 In real-world scenarios, agents often have to trade off functionality and mobility.
 For example, if a drone was modeled as the agent, it would have a higher range of mobility, but would likely sacrifice the number of sensors that could be carried.
 A wheeled robot loaded with multiple sensors would likely have decreased mobility but could collect a wider variety of data.
@@ -191,7 +197,7 @@ The resistance factor is used to scale the amount of fall damage that the agent 
 Movement and slope costs are used to calculate how much energy is used when attempting a movement action.
 The total amount of energy used is calculated based on the distance moved, and the slope of the elevation between the agent's current position and the position that it attempts to move to (equation~\ref{eq:movement_cost}).
 
-\begin{capeq}[!htb]
+\begin{capeq}[H]
   \begin{equation} \label{eq:movement_cost}
     energyCost = (1.0 + (slope * slopeCost)) * dist * movementCost
   \end{equation}
@@ -200,7 +206,7 @@ The total amount of energy used is calculated based on the distance moved, and t
 
 
 \subsection{Durability} \label{subsec:durability}
-Like many other data structures in this platform, \texttt{Durability} (Appendix~\ref{appendix:durability_class}) factors are defined per element type.
+Like many other data structures in this platform, \texttt{Durability} (Appendix~B-4) factors are defined per element type.
 These factors model how an agent will be affected by different element types they come in contact with during an operation.
 For example, consider an environment with pools of water in it.
 Most robots would be damaged when emerged in water, but an amphibious robot's durability could be modeled such that it would be impervious to water damage.
@@ -208,7 +214,7 @@ Durability is defined by an upper and lower value threshold, and a resistance fa
 The thresholds define what values of an element type the agent can be exposed to before it begins to take damage.
 The resistance factor between 0 and 1 (0 being no resistance and 1 being immune) then influences how much damage the agent will take when in contact with values beyond these thresholds (equation~\ref{eq:duribility_damage}).
 
-\begin{capeq}[!htb]
+\begin{capeq}[H]
   \begin{equation} \label{eq:duribility_damage}
     damage = |v - threshold| * (1.0 - resistance)
   \end{equation}
@@ -223,7 +229,7 @@ Figure~\ref{fig:agent_actions} shows an example of an agent within an environmen
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.8\columnwidth]{Figures/agent_actions.png}
+  \includegraphics[width=0.75\columnwidth]{Figures/agent_actions.png}
   \caption[Agent Action Types]{Example of an agent considering a movement action and a scanning action, along with the resulting states caused by each of these actions.}
   \label{fig:agent_actions}
 \end{figure}
@@ -235,7 +241,7 @@ Each time an agent attempts to move to a new cell, elevation levels will be comp
 After the action has been attempted, changes to health and energy level are calculated based upon the agent's durability factors.
 If the movement action is successful, the current position is updated.
 
-An Agent can also perform scans of the environment using equipped sensors.
+An agent can also perform scans of the environment using equipped sensors.
 For each cell that falls within the sensor's search radius, the value for the sensor's given element type is extracted.
 These values are then added to the agent's internal map if they did not previously exist there.
 Through repeated scanning, the agent will begin to fill its internal map with data collected from the surrounding environment.
@@ -246,8 +252,8 @@ Data collected in the internal map can then be used by the controller to determi
 For controllers to intelligently choose among actions, they need to have sufficient data about the agent and surrounding environment.
 The agent's position, health and energy level can easily be analyzed, but the internal map containing the known environment is a very large data structure to analyze each time the controller must choose an action.
 For this reason, the data structure is simplified to reduce memory usage and the computational effort required to analyze a state.
-\texttt{AgentState} (Appendix~\ref{appendix:agentstate_class}) is a minimal data structure that contains all of the useful information necessary for a controller to make intelligent decisions.
-Instead of a 2-dimensional array of cells, the internal map is represented as a list of \texttt{ElementState}s (Appendix~\ref{appendix:elementstate_class}), where each \texttt{ElementState} is a summary of the data known about a specific element type.
+\texttt{AgentState} (Appendix~B-5) is a minimal data structure that contains all of the useful information necessary for a controller to make intelligent decisions.
+Instead of a 2-dimensional array of cells, the internal map is represented as a list of \texttt{ElementState}s (Appendix~B-6), where each \texttt{ElementState} is a summary of the data known about a specific element type.
 
 Element states contain useful information about what is currently known about a specific element type during an operation.
 The indicator flag can cue the controller on whether the element type is being analyzed in order to progress the goal at hand.
@@ -255,9 +261,9 @@ If the goal was to map out the elevation levels in an environment, the elevation
 If the goal was to find a human, the temperature and decibel \texttt{ElementState}s would be marked true, as irregular changes in these values could indicate the presence of the human.
 The hazard flag is used to mark any element that could potentially cause harm to the agent.
 For example, the presence of water, large changes in elevation, and extreme temperatures could potentially cause damage and would be flagged as hazardous.
-We also track the percent of known element values that are within range of the corresponding sensor.
+I also track the percent of known element values that are within range of the corresponding sensor.
 Technical information of each \texttt{ElementState} is divided into four quadrants, where each quadrant has its own state.
-Because agent movement is defined as north, south, west and east, we can collapse known information from the internal map into four quadrants (figure~\ref{fig:quadrants}).
+Because agent movement is defined as north, south, west and east, known information from the internal map can be collapsed into four quadrants (figure~\ref{fig:quadrants}).
 
 \begin{figure}[!htb]
   \centering
@@ -266,7 +272,7 @@ Because agent movement is defined as north, south, west and east, we can collaps
   \label{fig:quadrants}
 \end{figure}
 
-Each quadrant is defined using a \texttt{QuadrantState} (Appendix~\ref{appendix:quadrantstate_class}).
+Each quadrant is defined using a \texttt{QuadrantState} (Appendix~B-7).
 To reflect the amount of information that is known about an element type within the quadrant, the \texttt{QuadrantState} first looks at the percentage of cells in the agent's internal map that hold known values.
 If there are known values within the quadrant, the averages will be reflected in the \texttt{QuadrantState}.
 Additionally, if the value in the cell immediately adjacent to the agent's current position is known, it will also be reflected in the \texttt{QuadrantState}.
@@ -280,11 +286,11 @@ In doing so, the controller will have data that is relative to the agent's curre
 A controller is the goal driven decision model that an agent will use when navigating within an environment.
 The agent will pass its current state to the controller, along with a list of valid actions that it can execute.
 The controller will then decide which action to take.
-Controllers are defined as an extendable trait (Appendix~\ref{appendix:controller_trait}).
+Controllers are defined as an extendable trait (Appendix~B-8).
 The \texttt{Controller} trait requires that inheriting classes define a \texttt{setup} and \texttt{shutdown} function to perform any initializations or final actions once an operation has ended, and a \texttt{selectAction} function.
 The \texttt{selectAction} function is where the controller's decision model is implemented.
 This function takes the list of valid action and the current \texttt{AgentState} as input, and returns a single action for the agent to perform.
-Specific Controllers and their schemas are analyzed and discussed in chapter~\ref{ch:controllers}.
+Specific controllers and their schemas are analyzed and discussed in chapter~\ref{ch:controllers}.
 
 
 
@@ -435,7 +441,7 @@ Previous actions then receive diminishing reward based on equation~\ref{eq:longt
   \end{algorithmic}
 \end{algorithm}
 
-\begin{capeq}[!htb]
+\begin{capeq}[H]
   \begin{equation} \label{eq:longtermscore_distribution}
     actionLongTermReward(i) = longTermReward * {0.9}^{\frac{i*10}{n}}
   \end{equation}
@@ -469,28 +475,34 @@ Procedural generation process:
 % \todo{example environment}
 
 \subsection{Environment Templates} \label{subsec:environment_templates}
-Each \texttt{EnvironmentTemplate} (Appendix~\ref{appendix:environmenttemplate_class}) will act as a guide in the creation of an instance of the \texttt{Environment} class.
+Each \texttt{EnvironmentTemplate} (Appendix~C-1) will act as a guide in the creation of an instance of the \texttt{Environment} class.
 A template can create similar, but unique environments each time it is used by the \texttt{EnvironmentBuilder}.
 This allows testing and training agent controllers multiple times in similar conditions, while still providing a dynamic range of scenarios that the agent may face in each generated environment.
-Each template is comprised of the name, dimensions and scale of the environment along with lists of \texttt{ElementSeed}s, \texttt{TerrainModification}s and anomalies to be applied.
+Each template is composed of the name, dimensions and scale of the environment along with lists of \texttt{ElementSeed}s, \texttt{TerrainModification}s and anomalies to be applied.
 
 
 \subsection{Element Seeds} \label{subsec:element_seeds}
 The environment builder begins by procedurally generating one layer of elements at a time.
-Each \texttt{Element} class has a companion class called an \texttt{ElementSeed} which holds parameters used to produce a layer of its element type, and a unique function defining how procedural generation will take place to produce the layer.
+Each \texttt{Element} class has a companion class called an \texttt{ElementSeed}, which holds parameters used to produce a layer of its element type, and a unique function defining how procedural generation will take place to produce the layer.
 The generation of each layer is modeled on how the element type's values may vary in a real-world scenario.
-Parameters within each Seed are set to default values that can also be overridden by creating a new instance of the \texttt{ElementSeed} (Appendix~\ref{appendix:elementseed_trait}).
+Parameters within each Seed are set to default values that can also be overridden by creating a new instance of the \texttt{ElementSeed} (Appendix~C-2).
 This can change how the values within the layer will vary.
 
 
 The environment builder will use each \texttt{ElementSeed} to produce each layer of elements.
-Resulting layers will be temporarily stored in a list until the end of the build process so they can easily be manipulated before being stored into corresponding cells within the \texttt{Environment} grid.
+Resulting layers will be temporarily stored in a list until the end of the build process so they can easily be manipulated before being stored into corresponding cells within the
+
+\noindent
+\texttt{Environment} grid.
 Some layers are easier to generate than others.
-Latitude and Longitude layers can be generated by calculating the distance each cell is from the origin point on the \texttt{Environment} grid).
+Latitude and Longitude layers can be generated by calculating the distance each cell is from the origin point on the
+
+\noindent
+\texttt{Environment} grid).
 For an example, let’s look at the \texttt{ElementSeed} for producing the elevation layer.
 
 \begin{lstfloat}
-  \caption[ElevationSeed Class]{Definition of \texttt{ElevationSeed} which extends the \texttt{ElementSeed} trait (\ref{appendix:elementseed_trait}). This provides the values and functions used to initialize a layer of elevation values in an environment.}
+  \caption[ElevationSeed Class]{Definition of \texttt{ElevationSeed} which extends the \texttt{ElementSeed} trait (Appendix~C-2). This provides the values and functions used to initialize a layer of elevation values in an environment.}
   \lstinputlisting{Codes/ElevationSeed.scala}
   \label{code:elevation_seed}
 \end{lstfloat}
@@ -509,12 +521,15 @@ For elevation, this would equate to transforming a highly rigid surface into a s
 
 \subsection{Terrain Modifications} \label{subsec:terrain_modifications}
 Terrain modifications influence the basic landscape of the environment.
-After each \texttt{ElementSeed} has produced a layer for the environment, \texttt{TerrainModification}s are applied one after another, taking care not to overlap modifications (e.g., we wouldn't want a hill to overlap with a valley and cancel each other out).
+After each \texttt{ElementSeed} has produced a layer for the environment,
+
+\noindent
+\texttt{TerrainModification}s are applied one after another, taking care not to overlap modifications (e.g., you wouldn't want a hill to overlap with a valley and cancel each other out).
 Each modification represents a severe alteration of one or more element type layers within the environment.
 Following a similar process laid out by Doran and Parberry~\cite{doran_controlled_2010}, desired alterations are incorporated into the environment while allowing unique variations of each to develop.
 Their controlled procedural generation process is used to produce landmasses that potentially have bodies and channels of water.
 SCOUt's environment builder generalizes this process and extends it to allow multitudes of element types to be modified.
-The \texttt{TerrainModification} trait provides an extendable template from which all types of modifications that can be applied (Appendix~\ref{appendix:terrainmodification_trait}).
+The \texttt{TerrainModification} trait provides an extendable template from which all types of modifications that can be applied (Appendix~C-3).
 
 
 \noindent
@@ -558,7 +573,7 @@ For an example, lets look at elevation again.
 \end{algorithm}
 
 
-Here we have an \texttt{ElevationModification} that will allow us to create hills and valleys within the environment.
+Here is an \texttt{ElevationModification} that will allow creation of hills and valleys within an environment.
 Again following the approach of~\cite{doran_controlled_2010}, random, unmodified (x,y) positions are selected from the layer to begin with and updates their value to the specified modification value.
 The modifier then performs ``walks'' to random, unmodified neighboring cells, updating their values within a standard deviation of the specified modification value.
 These walks continue until the specified coverage area has been modified, or until there are no neighboring cells that can be modified.
@@ -605,9 +620,16 @@ In the case that the user selected an operation, the user will additionally be a
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=1.0\columnwidth]{Figures/Visualizer/home_page.JPG}
+  \includegraphics[width=0.725\columnwidth]{Figures/Visualizer/home_page.JPG}
   \caption[GUI Home Page]{Home page for SCOUt's graphical user interface. From here the user can select to generate a random environment, define a new environment template for generating an environment, load in existing environment or templates, or load an operation log to view the environment used in the operation and events that occurred.}
   \label{fig:visualizer_home_page}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.725\columnwidth]{Figures/Visualizer/Forms/Visualizer-Forms-Element-Types.JPG}
+  \caption[GUI Element Types Form]{User-input form page for selecting element types that will be present in an environment template. For each element type selected a new form page will be generated for the user to define seed data to guide how the element type will be procedurally generated into an environment.}
+  \label{fig:example_form_page}
 \end{figure}
 
 \subsection{Template Forms Page} \label{subsec:template_forms_page}
@@ -626,14 +648,7 @@ Figure~\ref{fig:example_form_page} shows an example of an environment template f
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=1.0\columnwidth]{Figures/Visualizer/Forms/Visualizer-Forms-Element-Types.JPG}
-  \caption[GUI Element Types Form]{User-input form page for selecting element types that will be present in an environment template. For each element type selected a new form page will be generated for the user to define seed data to guide how the element type will be procedurally generated into an environment.}
-  \label{fig:example_form_page}
-\end{figure}
-
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=1.0\columnwidth]{Figures/Visualizer/Forms/Visualizer-Forms-ElementSeed-Temperature.JPG}
+  \includegraphics[width=0.725\columnwidth]{Figures/Visualizer/Forms/Visualizer-Forms-ElementSeed-Temperature.JPG}
   \caption[GUI Element Seed Form]{User-input form page for specifying element seed data for the ``Temperature'' element type. This seed data will be used in an environment template to procedurally generate an environment with an average ambient temperature of 70 degrees Fahrenheit and a standard deviation of 0.5 degrees from the average throughout the environment.}
   \label{fig:example_form_page2}
 \end{figure}
@@ -658,7 +673,7 @@ Examples of new features would be adding new classes (e.g., a new element type),
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=1.0\columnwidth]{Figures/visualization_page.png}
+  \includegraphics[width=0.725\columnwidth]{Figures/visualization_page.png}
   \caption[GUI Visualization Page]{Labeled view of the interactive environment-visualization tool with an example environment loaded. Each section of the page either displays information about the environment viewed or allows the user to interact with the view. The main menu also provides features to leave this view (via ``New Environment'').}
   \label{fig:visualization_page}
 \end{figure}
@@ -699,7 +714,7 @@ Figure~\ref{fig:toolbar} shows an example of how the display is manipulated by s
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=1.0\columnwidth]{Figures/Visualizer/toolbar.JPG}
+  \includegraphics[width=0.725\columnwidth]{Figures/Visualizer/toolbar.JPG}
   \caption[GUI Visualization Toolbar]{Example of the environment-visualizer's toolbar being used to manipulate the display section. The elevation layer has been toggled off, the decibel layer has been selected to be displayed (as a green-scale heatmap), and the human anomaly has been selected and its location is highlighted as the red cell within the display.}
   \label{fig:toolbar}
 \end{figure}
@@ -712,7 +727,7 @@ When a cell is selected, the values of all element types in the area covered by 
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=1.0\columnwidth]{Figures/Visualizer/legend.JPG}
+  \includegraphics[width=0.725\columnwidth]{Figures/Visualizer/legend.JPG}
   \caption[GUI Visualizer Legend]{Example of the environment-visualizer's legend displaying position and element value information about cell (7, 7) selected from the environment grid (highlighted as a darker shade of grey within the display grid).}
   \label{fig:legend}
 \end{figure}
@@ -726,7 +741,7 @@ There is also a text display section that shows the index of the event that is c
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=1.0\columnwidth]{Figures/Visualizer/operation_controls.JPG}
+  \includegraphics[width=0.725\columnwidth]{Figures/Visualizer/operation_controls.JPG}
   \caption[GUI Operation View Tool]{A command and dialog display tool that will supplement the environment-visualization page when viewing an operation log of an agent. The user can use the ``$\textless\textless\textless$'' and ``$\textless$'' buttons to step backwards 10 and 1 events in the log, and the ``$\textgreater\textgreater\textgreater$'' and ``$\textgreater$'' buttons to step forward 10 and 1 events in the log. The agent's health and energy are displayed during the current event being viewed from the log, along with the action's index within the log, the action selected, and the short-term and long-term rewards that were received for the event.}
   \label{fig:operation_controls}
 \end{figure}

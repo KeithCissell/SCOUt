@@ -1,7 +1,10 @@
 
 % GOOD
 \chapter{Controllers} \label{ch:controllers}
-Three types of control schemas are compared in this project: random, heuristic, and SCOUt's memory-based learning.
+Three types of control schemas are compared in this project: random, heuristic, and
+
+\noindent
+SCOUt's memory-based learning.
 All three controllers are designed to operate within unknown environments using whatever sensors are available.
 Controllers are compared based on their ability to complete a defined goal, the number of actions that the controller had to perform before completing the goal, and the remaining health and energy levels of the agent.
 The random controller will select valid actions at random until the goal is completed successfully, or the agent's health or energy is depleted.
@@ -37,20 +40,20 @@ After action scores are initially calculated using their respective function, a 
 If the controller has previously selected one of the considered actions while in the same location, the calculated score will be cut in half.
 This will encourage the controllers to make new choices resulting in exploration of new areas, and a more efficient use of sensors.
 
-\begin{figure}[!htb]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=1.0\columnwidth]{Figures/heuristic_decision_model.png}
-  \caption[Heuristic Control Model]{The general decision model that our heuristic controllers follow. An \texttt{AgentState} and a list of valid actions are passed to the controller. The controller then assigns a score to each action by analyzing related attributes within the \texttt{AgentState}. The highest scoring action is then returned.}
+  \includegraphics[width=0.85\columnwidth]{Figures/heuristic_decision_model.png}
+  \caption[Heuristic Control Model]{The general decision model that the heuristic controllers follow. An \texttt{AgentState} and a list of valid actions are passed to the controller. The controller then assigns a score to each action by analyzing related attributes within the \texttt{AgentState}. The highest scoring action is then returned.}
   \label{fig:heuristic_decision_model}
 \end{figure}
 
-Valid scanning actions are all scored using function~\ref{algorithmic:score_scan_action}.
+Valid scanning actions are all scored using algorithm~\ref{algorithmic:score_scan_action}.
 Higher scores will be given to scanning actions for an element type that is considered more important and has fewer known values within the corresponding sensor's range.
 Importance of an element type is determined by whether it is flagged as hazardous and/or as an indicator.
 The amount of known values in the corresponding sensor's range is calculated by referencing the agent's \texttt{internalMap}.
 The resulting score should influence the controller to use sensors efficiently, assist with hazard avoidance, and emphasize goal completion.
 
-\begin{algorithm}[!htb]
+\begin{algorithm}[H]
   \setstretch{1.35}
   \caption[Heuristic - Score Potential Scan Action]{Calculate a score for a considered scanning action for a specific element type based on an \texttt{ElementState}. The returned result will be used to rank the action in the decision-making process. $W_{item}$ denotes the attributed weight for $itemReward$.}
   \begin{algorithmic} \label{algorithmic:score_scan_action}
@@ -80,18 +83,21 @@ The resulting score should influence the controller to use sensors efficiently, 
     \RETURN $scanActionScore \leftarrow scoresTotal / W_{total}$
   \end{algorithmic}
 \end{algorithm}
-
+\vspace*{-2em}
 
 Scoring each valid movement actions is based on the controller's specific implementation of the \texttt{scoreMovmentAction} function.
 These functions involve a series of sub-functions tied to each available sensor's element type.
 Each of the sub-functions calculate a sub-score for their element type.
 These sub-functions use threshold analyses on the \texttt{QuadrantState}s corresponding to the direction of movement being considered.
 Once each element type's sub-score has been returned to the \texttt{scoreMovmentAction} function, an overall score is determined by a weighted average.
-The overall scoring functions used for $Heuristic_{FH}$ (algorithm~\ref{algorithmic:findHuman_scoreMovmentAction}) and $Heuristic_{MW}$ (algorithm~\ref{algorithmic:mapWater_scoreMovementAction}) follow the same logic, but contain different sub-functions and related weights.
+The overall scoring functions used for $Heuristic_{FH}$ (algorithm~\ref{algorithmic:findHuman_scoreMovmentAction}) and
+
+\noindent
+$Heuristic_{MW}$ (algorithm~\ref{algorithmic:mapWater_scoreMovementAction}) follow the same logic, but contain different sub-functions and related weights.
 For an example of how threshold analyses are conducted within a sub-function, see $Heuristic_{FH}$'s \texttt{scoreElevation} algorithm (algorithm~\ref{algorithmic:findHuman_scoreElevation}).
 
 
-\begin{algorithm}[!htb]
+\begin{algorithm}[H]
   \setstretch{1.35}
   \caption[Heuristic - Score Potential Movement Action (Find Human)]{Calculate a score for a considered movement action in a specific direction based on a set of corresponding \texttt{QuadrantState}s ($QS$). The returned results will be used to rank the action in the decision-making process. $W_{item}$ denotes the attributed weight for $itemReward$. This function also uses a $score<Element-Type>$ function. Example for one such equation is algorithm~\ref{algorithmic:findHuman_scoreElevation}. This equation is used specifically for the $Heuristic_{FH}$ controller's decision model.}
   \begin{algorithmic} \label{algorithmic:findHuman_scoreMovmentAction}
@@ -115,7 +121,7 @@ For an example of how threshold analyses are conducted within a sub-function, se
 \end{algorithm}
 
 
-\begin{algorithm}[!htb]
+\begin{algorithm}[H]
   \setstretch{1.35}
   \caption[Heuristic - Score Potential Movement Action (Map Water)]{Calculate a score for a considered movement action in a specific direction based on a set of corresponding \texttt{QuadrantState}s ($QS$). The returned results will be used to rank the action in the decision-making process. $W_{item}$ denotes the attributed weight for $itemReward$. This function also uses a $score<Element-Type>$ function. Example for one such equation is algorithm~\ref{algorithmic:findHuman_scoreElevation}. This equation is used specifically for the $Heuristic_{MW}$ controller's decision model.}
   \begin{algorithmic} \label{algorithmic:mapWater_scoreMovementAction}
@@ -131,9 +137,9 @@ For an example of how threshold analyses are conducted within a sub-function, se
     \RETURN $movementActionScore \leftarrow scoresTotal / W_{total}$
   \end{algorithmic}
 \end{algorithm}
+\vspace*{-3em}
 
-
-\begin{algorithm}[!htb]
+\begin{algorithm}[H]
   \setstretch{1.35}
   \caption[Heuristic - Score Quadrant (Elevation)]{Calculate a score for a \texttt{QuadrantState} ($Q$) of element type ``elevation.'' The returned results will be used to rank the action in the decision-making process. $W_{item}$ denotes the attributed weight for $itemReward$. This equation is used in both the $Heuristic_{FH}$ and $Heuristic_{FH}$ controllers' decision models.}
   \begin{algorithmic} \label{algorithmic:findHuman_scoreElevation}
@@ -165,7 +171,7 @@ A state-action reward (SAR) contains the action that the agent took, the state t
 In future operations, the SCOUt controller (figure~\ref{fig:scout_decision_model}) will search in memory to find SARs with states that are similar to the agent's current state.
 Utilizing data from the agent's current state and the controller's collection of past action-state pairs, SCOUt will predict rewards for each possible action and select one based on these predictions.
 
-\begin{figure}[!htb]
+\begin{figure}[H]
   \centering
   \includegraphics[width=1.0\columnwidth]{Figures/scout_decision_model.png}
   \caption[SCOUt Control Model]{Action decision model for the SCOUt controller. The controller searches for memory state-action rewards (SAR) that have a similar state to the current state. The chosen actions and rewards for each similar SAR is used to create a score for each valid action that the can be taken in the current state.}
@@ -264,7 +270,7 @@ This applies to health and \texttt{energyLevel} within \texttt{AgentState}s, \te
 \texttt{immediateValueDifferential} within \texttt{QuadrantState}s.
 
 The normalization process begins by extracting each of these attributes from all SAR states within the loaded memory.
-Next the mean and standard deviation values are calculated and stored in an instance of a \texttt{GuassianData} class (Appendix~\ref{appendix:gaussian_data}).
+Next the mean and standard deviation values are calculated and stored in an instance of a \texttt{GuassianData} class (Appendix~D-1).
 Once mean and standard deviation values are known, the controller will go back through every SAR's state and normalize their attributes using each corresponding \texttt{GaussianData} class instance.
 The normalization function (equation~\ref{eq:gaussian_normalize}) will produce a ``normal'' value that reflects how many standard deviations the attribute falls above or below the mean.
 A value of 0 represents no difference between the attribute's value and the mean, values of 1 and -1 represent a difference of one standard deviation from the mean, and so on.
@@ -348,7 +354,10 @@ If both values are unknown a difference of 0 is returned.
 \end{capeq}
 
 Comparisons with SAR's whose chosen action was a scanning action will apply a weighted average to the health, energy, and element states of the two \texttt{AgentState}s.
-Each \texttt{ElementState} within the current \texttt{AgentState} will calculate their own weighted average based on the number of the immediately adjacent cells that are known, the percent of known element values in range of the sensor, the hazard and indicator flags.
+Each
+
+\noindent
+\texttt{ElementState} within the current \texttt{AgentState} will calculate their own weighted average based on the number of the immediately adjacent cells that are known, the percent of known element values in range of the sensor, the hazard and indicator flags.
 All of these \textit{elementStateDifference}s will be averaged (non-weighted) into a single difference value, \textit{averageElementStateDifference}.
 This compares the usage of the element type (hazard and/or indicator detection), and knowledge of the element type (percent known within the environment).
 The \textit{hazard} and \textit{indicator} differences can help the controller determine the usage of the element type's data being collected.
@@ -382,7 +391,7 @@ For example, if an agent does not have knowledge of the elevation in adjacent ce
 If the SAR's action type is movement, overall state difference is calculated using differences in each \texttt{AgentState}s' health, energy, element states, and quadrant states.
 In addition to calculating \textit{elementStateDifference}s, \textit{quadrantToQuadrantDifferences} are calculated between every quadrant in the current state and every quadrant in the SAR state.
 Only one ``orientation'' of quadrant-to-quadrant comparisons will be used in the overall difference calculation.
-Four orientations are considered by rotating the SAR's quadrants in 90 degree intervals (see figure ~\ref{fig:quadrant_orientations}).
+Four orientations are considered by rotating the SAR's quadrants in 90 degree intervals (see figure~\ref{fig:quadrant_orientations}).
 The resulting orientation comparisons are denoted as North-to-North, North-to-West, North-to-South and North-to-East (based on the SAR's quadrant that is matched to the current state's North quadrant).
 The orientation that yields the lowest \textit{quadrantToQuadrantDifferences} (\textit{lowestQuadrantOrientationDifference}) is used in calculating $OverallDifference_{m}$.
 
@@ -401,7 +410,7 @@ The orientation that yields the lowest \textit{quadrantToQuadrantDifferences} (\
 \begin{figure}[!htb]
   \centering
   \includegraphics[width=1.0\columnwidth]{Figures/quadrant_orientations.png}
-  \caption[State Comparison Orientations]{Orientation considerations between two compared states. This displays how rotating the compared environment's quadrant orientation can reveal states of higher similarity. We see that the elevation heatmaps of the two are highly similar when compared at North-to-South orientation, where as an un-altered quadrant comparison (North-to-North) would yield a very negative comparison.}
+  \caption[State Comparison Orientations]{Orientation considerations between two compared states. This displays how rotating the compared environment's quadrant orientation can reveal states of higher similarity. The elevation heatmaps of the two are highly similar when compared at North-to-South orientation, where as an un-altered quadrant comparison (North-to-North) would yield a very negative comparison.}
   \label{fig:quadrant_orientations}
 \end{figure}
 
@@ -418,15 +427,24 @@ Now, if the SAR's \textit{lowestQuadrantOrientationDifference} is found when rot
   \label{fig:oriented_movement_example}
 \end{figure}
 
-Quadrant-to-quadrant comparisons produce a non-weighted average of \textit{quadrantElementStateDifference}s.
-A \textit{quadrantElementStateDifference} is calculated between every \texttt{ElementState} in the current state's considered quadrant and the matching \texttt{ElementState} in the SAR state's considered quadrant (if it exists).
+Quadrant-to-quadrant comparisons produce a non-weighted average of
+
+\noindent
+\textit{quadrantElementStateDifference}s.
+A \textit{quadrantElementStateDifference} is calculated between every \texttt{ElementState} in the current state's considered quadrant and the matching
+
+\noindent
+\texttt{ElementState} in the SAR state's considered quadrant (if it exists).
 The \textit{quadrantElementStateDifference} uses a weighted average to compare attributes within the two \texttt{ElementState}s' considered quadrants.
 For example, making a North-to-South quadrant comparison would consider element types in the current state's North quadrant against element types in the SAR's South quadrant.
 When making these comparisons, it is not guaranteed that the current state and SAR state will share all the same element types.
 For example, if the current state contains decibel data and the SAR state does not, no comparison can be made, and it will receive a \textit{quadrantElementStateDifference} of 1.
-Because we are only comparing against element types in the current \texttt{AgentState}, if the SAR contains any element types not present in the current state, they are simply ignored.
+Because comparisons are only made against element types in the current \texttt{AgentState}, if the SAR contains any element types not present in the current state, they are simply ignored.
 These comparisons examine how much information about the element type is known, and the actual values in the quadrants (if they are known).
-Because \texttt{averageValueDifferential} and \texttt{immediateValueDifferential} are not guaranteed to be known values for every quadrant, they use the unique option difference equation (equation ~\ref{eq:option_difference}).
+Because
+
+\noindent
+\texttt{averageValueDifferential} and \texttt{immediateValueDifferential} are not guaranteed to be known values for every quadrant, they use the unique option difference equation (equation ~\ref{eq:option_difference}).
 
 % \begin{capeq}
 % \begin{equation} \label{eq:quadrant_element_state_difference}
@@ -440,18 +458,33 @@ Because \texttt{averageValueDifferential} and \texttt{immediateValueDifferential
 % \caption{Calculation for comparing the difference between two \texttt{ElementState}s in given quadrants, where $V$ is a list of attributes values and $W$ is the list of weights for the attributes.}
 % \end{capeq}
 
-Once all sub-differences have been calculated and either $OverallDifference_{s}$ or $OverallDifference_{m}$ is known, the controller can decide whether the SAR qualifies to be used in future reward prediction for the current agent.
-If the calculated overall difference is below the \textit{similarityThreshold}, the SAR will qualify and an instance of the \texttt{StateActionDifference} class (Appendix~\ref{appendix:state_action_difference}) is created.
+Once all sub-differences have been calculated and either $OverallDifference_{s}$ or
+
+\noindent
+$OverallDifference_{m}$ is known, the controller can decide whether the SAR qualifies to be used in future reward prediction for the current agent.
+If the calculated overall difference is below the \textit{similarityThreshold}, the SAR will qualify and an instance of the \texttt{StateActionDifference} class (Appendix~D-2) is created.
 Each instance stores the overall difference value, the SAR's action taken, and the short-term and long-term rewards.
 State comparison will be repeated for every SAR in the memory pool, and the resulting collection of \texttt{StateActionDifference} instances is passed to the action reward prediction algorithm.
 
 
 
 \subsection{Action Reward Prediction}
-Once the controller has generated a set of \texttt{StateActionDifference}s (SAD), it will predict a short-term and long-term reward value that each possible action might receive, along with a confidence score for the predictions.
-For each valid action considered, the algorithm will select a sub-set of SAD where the \texttt{StateActionDifference}'s \texttt{action} is the same as the one being considered.
+Once the controller has generated a set of
+
+\noindent
+\texttt{StateActionDifference}s (SAD), it will predict a short-term and long-term reward value that each possible action might receive, along with a confidence score for the predictions.
+For each valid action considered, the algorithm will select a sub-set of SAD where the
+
+\noindent
+\texttt{StateActionDifference}'s \texttt{action} is the same as the one being considered.
 Predicted short-term and long-term rewards are calculated as an average of all the \texttt{shortTermScore}s and \texttt{longTermScore}s in the sub-set.
-Confidence is evaluated using the average of the \texttt{overallStateDifference}s in the sub-set, weighted by the number of \texttt{StateActionDifference}s in the sub-set (equation~\ref{eq:confidence}).
+Confidence is evaluated using the average of the
+
+\noindent
+\texttt{overallStateDifference}s in the sub-set, weighted by the number of
+
+\noindent
+\texttt{StateActionDifference}s in the sub-set (equation~\ref{eq:confidence}).
 The equation will invert \textit{overallStateDifference}s when averaging them by subtracting their value from 1 (equation~\ref{eq:diff_to_similarity}).
 This allows the prediction algorithm to look at them as ``similarity'' scores instead of ``difference'' scores.
 If the overall difference had been 0 (the states compared were identical), their similarity score will be 1.
