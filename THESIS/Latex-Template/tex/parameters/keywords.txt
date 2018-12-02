@@ -1,1 +1,1 @@
-autonomous, robotics, control, memory, reinforcement, learning, exploration
+autonomous robotics control memory reinforcement learning exploration

@@ -30,13 +30,14 @@ Together these traits, classes, and instances can be combined in different ways 
   \caption{A class for representing a real-world environment. It is laid out in a grid of cells that contain information related to each of their respective areas within the grid.}
   \lstinputlisting{Codes/Environment.scala} \label{appendix:environment_class}
 \end{appxlst}
-
+\vspace*{-2em}
 
 \stepcounter{appxcounter}
 \begin{appxlst}
   \caption{A class that represents a sub-section of an environment. The data stored in each instance represents the features that are found within the \texttt{Cell}'s area within the environment.}
   \lstinputlisting{Codes/Cell.scala} \label{appendix:cell_class}
 \end{appxlst}
+\vspace*{-2em}
 
 
 \stepcounter{appxcounter}
@@ -44,6 +45,7 @@ Together these traits, classes, and instances can be combined in different ways 
   \caption{An \texttt{Element} trait is a generalized representation of a measurable feature type within an environment. Specific element types can be created by extending this trait. Each instance defines specific information about what values can be represented for the specific element type.}
   \lstinputlisting{Codes/Element.scala} \label{appendix:elelment_trait}
 \end{appxlst}
+\vspace*{-2em}
 
 
 \stepcounter{appxcounter}
@@ -51,6 +53,7 @@ Together these traits, classes, and instances can be combined in different ways 
   \caption{\texttt{Elevation} is a class which extends the \texttt{Element} trait. This class models elevation levels within an environment. Different instances can be created to specify a level of elevation for each cell in an environment.}
   \lstinputlisting{Codes/Elevation.scala} \label{appendix:elevation_class}
 \end{appxlst}
+\vspace*{-2em}
 
 
 \stepcounter{appxcounter}
@@ -58,18 +61,21 @@ Together these traits, classes, and instances can be combined in different ways 
   \caption{An \texttt{Anomaly} is any object within an environment that may be of interest. Anomalies often have a set of effects that will alter the environment around them. This trait can be extended to define specific types of anomalies that can be represented in an environment.}
   \lstinputlisting{Codes/Anomaly.scala} \label{appendix:anomaly_trait}
 \end{appxlst}
+\vspace*{-2em}
 
 \stepcounter{appxcounter}
 \begin{appxlst}
   \caption{The \texttt{Effect} trait is a generalized description of an alteration that an \texttt{Anomaly} has on the environment. Effects will alter a single element type in an area of the environment that the anomaly is located within.}
   \lstinputlisting{Codes/Effect.scala} \label{appendix:effect_trait}
 \end{appxlst}
+\vspace*{-2em}
 
 \stepcounter{appxcounter}
 \begin{appxlst}
   \caption{\texttt{Human} is a specific \texttt{Anomaly} class. This class represents a peron that could be found in an environment. Human's have two defined \texttt{Effects}: sound and heat. These effects will alter the decibel and temperature element values in the human's general area within the environment.}
   \lstinputlisting{Codes/Human.scala} \label{appendix:human_class}
 \end{appxlst}
+\vspace*{-2em}
 
 \stepcounter{appxcounter}
 \begin{appxlst}
@@ -93,6 +99,7 @@ These structures model the different capabilities an agent has to interact with 
   \caption{An \texttt{Agent} represents a physical member capable of acting within an environment. The class defines a controller for selecting actions, sensors that the agent is equipped with, mobility and durability features of the agent for modeling interactions with an environment, and several internal status variables.}
   \lstinputlisting{Codes/Agent.scala} \label{appendix:agent_class}
 \end{appxlst}
+\vspace*{-2em}
 
 
 \stepcounter{appxcounter}
@@ -100,6 +107,7 @@ These structures model the different capabilities an agent has to interact with 
   \caption{A \texttt{Sensor} is a tool that an agent can utilize to collect data about a specific element type within an environment. Sensors have a set range and energy cost related to using them.}
   \lstinputlisting{Codes/Sensor.scala} \label{appendix:sensor_class}
 \end{appxlst}
+\vspace*{-2em}
 
 
 \stepcounter{appxcounter}
@@ -107,6 +115,7 @@ These structures model the different capabilities an agent has to interact with 
   \caption{\texttt{Mobility} contains a set of variables related to how an agent will be able to safely move within an environment.}
   \lstinputlisting{Codes/Mobility.scala} \label{appendix:mobility_class}
 \end{appxlst}
+\vspace*{-2em}
 
 
 \stepcounter{appxcounter}
@@ -114,6 +123,7 @@ These structures model the different capabilities an agent has to interact with 
   \caption{\texttt{Durability} defines how an agent will interact with an element type in an environment. Different agents will each have strengths and weaknesses defined by how they will react when in contact with certain elements in an environment.}
   \lstinputlisting{Codes/Durability.scala} \label{appendix:durability_class}
 \end{appxlst}
+\vspace*{-2em}
 
 
 \stepcounter{appxcounter}
@@ -121,14 +131,15 @@ These structures model the different capabilities an agent has to interact with 
   \caption{An \texttt{AgentState} represents an instance of the internal status of an agent and the information that the agent knows about its environment. An \texttt{Agent}'s internal map is condensed into a set of sub-states within the entire agent state for each element type that the agent has knowledge of.}
   \lstinputlisting{Codes/AgentState.scala} \label{appendix:agentstate_class}
 \end{appxlst}
+\vspace*{-2em}
 
 
 \stepcounter{appxcounter}
 \begin{appxlst}
   \caption{\texttt{ElementState}s are representative of an agent's knowledge of a specific element type in an environment. The information contained is directly related to what the agent has gathered into its internal map through the use a sensor. Specific known values of the element type are divided into four quadrants relative to the agent's current position.}
   \lstinputlisting{Codes/ElementState.scala} \label{appendix:elementstate_class}
-\stepcounter{appxcounter}
 \end{appxlst}
+\vspace*{-2em}
 
 
 \stepcounter{appxcounter}
@@ -136,6 +147,7 @@ These structures model the different capabilities an agent has to interact with 
   \caption{A \texttt{QuadrantState} represents a collection of known information about a specific element type in a sub-set of cells within an environment. The data is condensed to an average known value differential and immediate known value differential relative to the value in the cell that the agent currently occupies.}
   \lstinputlisting{Codes/QuadrantState.scala} \label{appendix:quadrantstate_class}
 \end{appxlst}
+\vspace*{-2em}
 
 
 \stepcounter{appxcounter}
@@ -158,6 +170,7 @@ This appendix includes the data structures used to guide the procedural generati
   \caption{\texttt{EnvironmentTemplate}s hold the entire collection of attributes that are used to guide the process of generating an environment.}
 \lstinputlisting{Codes/EnvironmentTemplate.scala} \label{appendix:environmenttemplate_class}
 \end{appxlst}
+\vspace*{-2em}
 
 
 \stepcounter{appxcounter}
@@ -165,6 +178,7 @@ This appendix includes the data structures used to guide the procedural generati
   \caption{\texttt{ElementSeed} is a trait used to define helper classes for specific \texttt{Element} classes. They have a set of attributes that can be set to guide how the element type will be initialized in an environment and functions related to the actual process in which the element type will be procedurally generated within the environment.}
 \lstinputlisting{Codes/ElementSeed.scala} \label{appendix:elementseed_trait}
 \end{appxlst}
+\vspace*{-2em}
 
 
 \stepcounter{appxcounter}
@@ -187,6 +201,7 @@ This appendix includes data structures related to comparing multiple \texttt{Age
   \caption{\texttt{GaussianData} holds the mean and standard deviation of a collection of values.}
 \lstinputlisting{Codes/GaussianData.scala} \label{appendix:gaussian_data}
 \end{appxlst}
+\vspace*{-2em}
 
 
 \stepcounter{appxcounter}
@@ -205,7 +220,10 @@ This appendix includes data structures related to comparing multiple \texttt{Age
 \pagebreak
 \tocless\section{Experimentation Setup} \label{sec:experiment_setup}
 \addcontentsline{toc}{section}{\thesection. Experimentation Setup}
-This appendix includes the code listings for the \texttt{Agent} configuration and \texttt{EnvironmentTemplate}s used in experimentation.
+This appendix includes the code listings for the \texttt{Agent} configuration and
+
+\noindent
+\texttt{EnvironmentTemplate}s used in experimentation.
 
 \stepcounter{appxcounter}
 \begin{appxlst}
@@ -214,7 +232,7 @@ This appendix includes the code listings for the \texttt{Agent} configuration an
 \end{appxlst}
 \begin{appxlst}
   \caption{...Continued}
-  \lstinputlisting[linerange={34-68},firstnumber=34]{Codes/TestAgentSetup.scala} \label{appendix:agent_setup}
+  \lstinputlisting[linerange={34-68},firstnumber=34]{Codes/TestAgentSetup.scala}
 \end{appxlst}
 
 
@@ -225,7 +243,7 @@ This appendix includes the code listings for the \texttt{Agent} configuration an
 \end{appxlst}
 \begin{appxlst}
   \caption{...Continued}
-  \lstinputlisting[language=Java,linerange={41-85},firstnumber=41]{Codes/EASY.json} \label{appendix:easy_environmenttemplate}
+  \lstinputlisting[language=Java,linerange={41-85},firstnumber=41]{Codes/EASY.json}
 \end{appxlst}
 
 
@@ -236,11 +254,11 @@ This appendix includes the code listings for the \texttt{Agent} configuration an
 \end{appxlst}
 \begin{appxlst}
   \caption{...Continued}
-  \lstinputlisting[language=Java,linerange={39-81},firstnumber=39]{Codes/MEDIUM.json} \label{appendix:medium_environmenttemplate}
+  \lstinputlisting[language=Java,linerange={39-81},firstnumber=39]{Codes/MEDIUM.json}
 \end{appxlst}
 \begin{appxlst}
   \caption{...Continued}
-  \lstinputlisting[language=Java,linerange={82-101},firstnumber=82]{Codes/MEDIUM.json} \label{appendix:medium_environmenttemplate}
+  \lstinputlisting[language=Java,linerange={82-101},firstnumber=82]{Codes/MEDIUM.json}
 \end{appxlst}
 
 
@@ -252,15 +270,15 @@ This appendix includes the code listings for the \texttt{Agent} configuration an
 \end{appxlst}
 \begin{appxlst}
   \caption{...Continued}
-  \lstinputlisting[language=Java,linerange={37-79},firstnumber=37]{Codes/HARD.json} \label{appendix:hard_environmenttemplate}
+  \lstinputlisting[language=Java,linerange={37-79},firstnumber=37]{Codes/HARD.json}
 \end{appxlst}
 \begin{appxlst}
   \caption{...Continued}
-  \lstinputlisting[language=Java,linerange={80-122},firstnumber=80]{Codes/HARD.json} \label{appendix:hard_environmenttemplate}
+  \lstinputlisting[language=Java,linerange={80-122},firstnumber=80]{Codes/HARD.json}
 \end{appxlst}
 \begin{appxlst}
   \caption{...Continued}
-  \lstinputlisting[language=Java,linerange={123-139},firstnumber=123]{Codes/HARD.json} \label{appendix:hard_environmenttemplate}
+  \lstinputlisting[language=Java,linerange={123-139},firstnumber=123]{Codes/HARD.json}
 \end{appxlst}
 
 
@@ -270,18 +288,18 @@ This appendix includes the code listings for the \texttt{Agent} configuration an
 \pagebreak
 \tocless\section{Training Variation 1} \label{sec:training_variation1}
 \addcontentsline{toc}{section}{\thesection. Training Variation 1}
-This appendix contains results for our first variation of training the three SCOUt controller memories ($SCOUt_{FH}$, $SCOUt_{MW}$, and $SCOUt_{H}$).
+This appendix contains results for my first variation of training the three SCOUt controller memories ($SCOUt_{FH}$, $SCOUt_{MW}$, and $SCOUt_{H}$).
 During training and iteration testing, the long-term reward (algorithm~\ref{algorithmic:long_term_reward}) was adjusted to only factor in a \texttt{goalReward} if the agent had remaining health at the end of an operation.
 This was done to observe how SCOUt controllers would change the agent's behavior when their memory of state-action rewards reflected smaller long-term rewards from operations where the agent's health was depleted.
-It was hoped that we would see better performance in average remaining energy and subsequently all other areas.
-However, we found no significant improvements in performance.
-Appendix~\ref{appendix:findhuman_training_variation1} shows the results for $SCOUt_{FH}$, Appendix~\ref{appendix:mapwater_training_variation1} shows the results for $SCOUt_{MW}$, and Appendix~\ref{appendix:hybrid_training_fh_variation1} and~\ref{appendix:hybrid_training_mw_variation1} show results for $SCOUt_{H}$ in \textit{Find Human} and \textit{Map Water} operations, respectively.
+It was hoped that better performance would be seen in average remaining energy and subsequently all other areas.
+However, no significant improvements in performance were found.
+Appendix~F1 shows the results for $SCOUt_{FH}$, Appendix~F2 shows the results for $SCOUt_{MW}$, and Appendix~F3 and Appendix~F4 show results for $SCOUt_{H}$ in \textit{Find Human} and \textit{Map Water} operations, respectively.
 
 \stepcounter{appxcounter}
 \begin{appxfig}[H]
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.9\columnwidth]{Figures/Results/TrainingVariation1/FindHuman.JPG}
+  \includegraphics[width=1.0\columnwidth]{Figures/Results/TrainingVariation1/FindHuman.JPG}
 \end{figure}
 \caption{Iteration testing performance results for $SCOUt_{FH}$ attempting \textit{Find Human} using setup variation 1 (see subsection~\ref{subsec:training_variations}). All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{FH}$ average - $Random$ average) VS the number of training iterations completed.}
 \label{appendix:findhuman_training_variation1}
@@ -292,7 +310,7 @@ Appendix~\ref{appendix:findhuman_training_variation1} shows the results for $SCO
 \begin{appxfig}[H]
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.9\columnwidth]{Figures/Results/TrainingVariation1/MapWater.JPG}
+  \includegraphics[width=1.0\columnwidth]{Figures/Results/TrainingVariation1/MapWater.JPG}
 \end{figure}
 \caption{Iteration testing performance results for $SCOUt_{MW}$ attempting \textit{Map Water} using setup variation 1 (see subsection~\ref{subsec:training_variations}). All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{MW}$ average - $Random$ average) VS the number of training iterations completed.}
 \label{appendix:mapwater_training_variation1}
@@ -303,7 +321,7 @@ Appendix~\ref{appendix:findhuman_training_variation1} shows the results for $SCO
 \begin{appxfig}[H]
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.9\columnwidth]{Figures/Results/TrainingVariation1/Hybrid-FindHuman.JPG}
+  \includegraphics[width=1.0\columnwidth]{Figures/Results/TrainingVariation1/Hybrid-FindHuman.JPG}
 \end{figure}
 \caption{Iteration testing performance results for $SCOUt_{H}$ attempting \textit{Find Human} using setup variation 1 (see subsection~\ref{subsec:training_variations}). All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{H}$ average - $Random$ average) VS the number of training iterations completed.}
 \label{appendix:hybrid_training_fh_variation1}
@@ -314,7 +332,7 @@ Appendix~\ref{appendix:findhuman_training_variation1} shows the results for $SCO
 \begin{appxfig}[H]
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.9\columnwidth]{Figures/Results/TrainingVariation1/Hybrid-MapWater.JPG}
+  \includegraphics[width=1.0\columnwidth]{Figures/Results/TrainingVariation1/Hybrid-MapWater.JPG}
 \end{figure}
 \caption{Iteration testing performance results for $SCOUt_{H}$ attempting \textit{Map Water} using setup variation 1 (see subsection~\ref{subsec:training_variations}). All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{H}$ average - $Random$ average) VS the number of training iterations completed.}
 \label{appendix:hybrid_training_mw_variation1}
@@ -329,18 +347,18 @@ Appendix~\ref{appendix:findhuman_training_variation1} shows the results for $SCO
 \pagebreak
 \tocless\section{Training Variation 2} \label{sec:training_variation2}
 \addcontentsline{toc}{section}{\thesection. Training Variation 2}
-This appendix contains results for our second variation of training the three SCOUt controller memories ($SCOUt_{FH}$, $SCOUt_{MW}$, and $SCOUt_{H}$).
+This appendix contains results for my second variation of training the three SCOUt controller memories ($SCOUt_{FH}$, $SCOUt_{MW}$, and $SCOUt_{H}$).
 During training and iteration testing, the \textit{goalRewardWeight} used for calculating long-term reward (algorithm~\ref{algorithmic:long_term_reward}) was set to 1.5.
 This was done to observe how SCOUt controllers would change the agent's behavior when their memory of state-action rewards reflected a stronger emphasis on the level of goal completion attained.
-It was hoped that we would see better performance in all categories.
-While only slight improvements were observed, this method was chosen for all testing conducted in our experimentation.
-Appendix~\ref{appendix:findhuman_training_variation2} shows the results for $SCOUt_{FH}$, Appendix~\ref{appendix:mapwater_training_variation2} shows the results for $SCOUt_{MW}$, and Appendix~\ref{appendix:hybrid_training_fh_variation2} and~\ref{appendix:hybrid_training_mw_variation2} show results for $SCOUt_{H}$ in \textit{Find Human} and \textit{Map Water} operations, respectively.
+It was hoped that better performance would be seen in all categories.
+While only slight improvements were observed, this method was chosen for all testing conducted in the experimentation.
+Appendix~G1 shows the results for $SCOUt_{FH}$, Appendix~G2 shows the results for $SCOUt_{MW}$, and Appendix~G3 and Appendix~G4 show results for $SCOUt_{H}$ in \textit{Find Human} and \textit{Map Water} operations, respectively.
 
 \stepcounter{appxcounter}
 \begin{appxfig}[H]
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.9\columnwidth]{Figures/Results/TrainingVariation2/FindHuman.JPG}
+  \includegraphics[width=1.0\columnwidth]{Figures/Results/TrainingVariation2/FindHuman.JPG}
 \end{figure}
 \caption{Iteration testing performance results for $SCOUt_{FH}$ attempting \textit{Find Human} using setup variation 2 (see subsection~\ref{subsec:training_variations}). All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{FH}$ average - $Random$ average) VS the number of training iterations completed.}
 \label{appendix:findhuman_training_variation2}
@@ -351,7 +369,7 @@ Appendix~\ref{appendix:findhuman_training_variation2} shows the results for $SCO
 \begin{appxfig}[H]
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.9\columnwidth]{Figures/Results/TrainingVariation2/MapWater.JPG}
+  \includegraphics[width=1.0\columnwidth]{Figures/Results/TrainingVariation2/MapWater.JPG}
 \end{figure}
 \caption{Iteration testing performance results for $SCOUt_{MW}$ attempting \textit{Map Water} using setup variation 2 (see subsection~\ref{subsec:training_variations}). All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{MW}$ average - $Random$ average) VS the number of training iterations completed.}
 \label{appendix:mapwater_training_variation2}
@@ -362,7 +380,7 @@ Appendix~\ref{appendix:findhuman_training_variation2} shows the results for $SCO
 \begin{appxfig}[H]
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.9\columnwidth]{Figures/Results/TrainingVariation2/Hybrid-FindHuman.JPG}
+  \includegraphics[width=1.0\columnwidth]{Figures/Results/TrainingVariation2/Hybrid-FindHuman.JPG}
 \end{figure}
 \caption{Iteration testing performance results for $SCOUt_{H}$ attempting \textit{Find Human} using setup variation 2 (see subsection~\ref{subsec:training_variations}). All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{H}$ average - $Random$ average) VS the number of training iterations completed.}
 \label{appendix:hybrid_training_fh_variation2}
@@ -373,7 +391,7 @@ Appendix~\ref{appendix:findhuman_training_variation2} shows the results for $SCO
 \begin{appxfig}[H]
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.9\columnwidth]{Figures/Results/TrainingVariation2/Hybrid-MapWater.JPG}
+  \includegraphics[width=1.0\columnwidth]{Figures/Results/TrainingVariation2/Hybrid-MapWater.JPG}
 \end{figure}
 \caption{Iteration testing performance results for $SCOUt_{H}$ attempting \textit{Map Water} using setup variation 2 (see subsection~\ref{subsec:training_variations}). All graphs show the controller's average difference in performance compared to $Random$ ($SCOUt_{H}$ average - $Random$ average) VS the number of training iterations completed.}
 \label{appendix:hybrid_training_mw_variation2}
